@@ -1,0 +1,10 @@
+{
+  "name": "教学演示平台",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev --prefix gem-lab",
+    "build": "npm run build --prefix gem-lab",
+    "preview": "npm run preview --prefix gem-lab",
+    "install:lab": "npm install --prefix gem-lab"
+  }
+}

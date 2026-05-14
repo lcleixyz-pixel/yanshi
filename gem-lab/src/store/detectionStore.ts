@@ -17,7 +17,11 @@ export interface PolariscopeData {
   notes: string;
 }
 
+export type SpectroscopeMethod = 'transmission' | 'internal-reflection' | 'surface-reflection';
+
 export interface SpectroscopeData {
+  /** 选用的照明方法 */
+  method: SpectroscopeMethod | null;
   markedLines: number[]; // 用户标记的吸收线波长
   bandRanges: Array<{ start: number; end: number }>;
   notes: string;
@@ -61,6 +65,7 @@ const blank: DetectionSession = {
     notes: '',
   },
   spectroscope: {
+    method: null,
     markedLines: [],
     bandRanges: [],
     notes: '',

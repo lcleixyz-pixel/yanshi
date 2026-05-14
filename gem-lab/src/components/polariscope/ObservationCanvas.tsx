@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useRef, type ReactNode } from 'react';
 import clsx from '@/utils/clsx';
 import type { OpticalCharacter } from '@/data/types';
 
@@ -150,60 +150,45 @@ function drawSampleOverlay(
 ) {
   // 样品区域（约占视场 40%）
   const sampleR = r * 0.42;
+  // 视觉平滑：避免 brightness 在阈值附近发生“分支跳变”
+  const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
+  const smoothstep = (edge0: number, edge1: number, x: number) => {
+    const t = clamp01((x - edge0) / (edge1 - edge0));
+    return t * t * (3 - 2 * t);
+  };
+  const alpha = clamp01(Math.pow(brightness, 0.9)); // 轻微 gamma，过渡更柔和
 
-  if (brightness >= 0.99) {
-    // 全亮：暖白色透射光
-    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, sampleR);
-    grad.addColorStop(0, 'rgba(255, 251, 230, 0.92)');
-    grad.addColorStop(0.4, 'rgba(254, 243, 199, 0.85)');
-    grad.addColorStop(0.75, 'rgba(253, 230, 138, 0.70)');
-    grad.addColorStop(1, 'rgba(212, 160, 23, 0.30)');
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.arc(cx, cy, sampleR, 0, Math.PI * 2);
-    ctx.fill();
-  } else if (brightness <= 0.01) {
-    // 全暗：几乎无透射光
-    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, sampleR);
-    grad.addColorStop(0, 'rgba(30, 20, 25, 0.90)');
-    grad.addColorStop(0.5, 'rgba(20, 12, 18, 0.85)');
-    grad.addColorStop(1, 'rgba(10, 5, 10, 0.60)');
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.arc(cx, cy, sampleR, 0, Math.PI * 2);
-    ctx.fill();
-  } else {
-    // 过渡态：部分亮部分暗，模拟干涉色
-    // 亮区用暖白/黄色，暗区用深紫/棕色
-    const alpha = brightness;
+  // 暗底始终存在，再连续叠加亮层
+  const darkBase = ctx.createRadialGradient(cx, cy, 0, cx, cy, sampleR);
+  darkBase.addColorStop(0, `rgba(30, 20, 25, ${0.90 - 0.40 * alpha})`);
+  darkBase.addColorStop(0.5, `rgba(20, 12, 18, ${0.85 - 0.35 * alpha})`);
+  darkBase.addColorStop(1, `rgba(10, 5, 10, ${0.60 - 0.25 * alpha})`);
+  ctx.fillStyle = darkBase;
+  ctx.beginPath();
+  ctx.arc(cx, cy, sampleR, 0, Math.PI * 2);
+  ctx.fill();
 
-    // 先画暗底
-    ctx.fillStyle = 'rgba(25, 15, 20, 0.80)';
-    ctx.beginPath();
-    ctx.arc(cx, cy, sampleR, 0, Math.PI * 2);
-    ctx.fill();
+  const brightMix = smoothstep(0.03, 0.97, alpha);
+  const r255 = Math.round(200 + 55 * brightMix);
+  const g255 = Math.round(180 + 75 * brightMix);
+  const b255 = Math.round(80 + 140 * brightMix);
+  const brightGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, sampleR);
+  brightGrad.addColorStop(0, `rgba(${r255}, ${g255}, ${b255}, ${0.08 + 0.84 * brightMix})`);
+  brightGrad.addColorStop(0.5, `rgba(${r255 - 20}, ${g255 - 20}, ${b255 - 30}, ${0.06 + 0.70 * brightMix})`);
+  brightGrad.addColorStop(1, `rgba(${r255 - 60}, ${g255 - 60}, ${b255 - 50}, ${0.03 + 0.35 * brightMix})`);
+  ctx.fillStyle = brightGrad;
+  ctx.beginPath();
+  ctx.arc(cx, cy, sampleR, 0, Math.PI * 2);
+  ctx.fill();
 
-    // 再叠加亮区（透明度由 brightness 控制）
-    const brightGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, sampleR);
-    const r255 = Math.round(200 + 55 * alpha);
-    const g255 = Math.round(180 + 75 * alpha);
-    const b255 = Math.round(80 + 140 * alpha);
-    brightGrad.addColorStop(0, `rgba(${r255}, ${g255}, ${b255}, ${0.15 + 0.75 * alpha})`);
-    brightGrad.addColorStop(0.5, `rgba(${r255 - 20}, ${g255 - 20}, ${b255 - 30}, ${0.10 + 0.65 * alpha})`);
-    brightGrad.addColorStop(1, `rgba(${r255 - 60}, ${g255 - 60}, ${b255 - 50}, ${0.05 + 0.30 * alpha})`);
-    ctx.fillStyle = brightGrad;
+  // 中段干涉色改为连续权重，避免 0.2/0.8 附近突变
+  const midBand = smoothstep(0.12, 0.5, alpha) * (1 - smoothstep(0.5, 0.88, alpha));
+  if (midBand > 0.001) {
+    const hueShift = alpha * 30;
+    ctx.fillStyle = `rgba(${120 + hueShift}, ${80 + hueShift * 0.5}, ${200 - hueShift}, ${0.12 * midBand})`;
     ctx.beginPath();
-    ctx.arc(cx, cy, sampleR, 0, Math.PI * 2);
+    ctx.arc(cx, cy, sampleR * 0.7, 0, Math.PI * 2);
     ctx.fill();
-
-    // 在中等亮度时添加微弱的干涉色（蓝紫/橙色）
-    if (alpha > 0.2 && alpha < 0.8) {
-      const hueShift = alpha * 30;
-      ctx.fillStyle = `rgba(${120 + hueShift}, ${80 + hueShift * 0.5}, ${200 - hueShift}, ${0.08 * (1 - Math.abs(alpha - 0.5) * 2)})`;
-      ctx.beginPath();
-      ctx.arc(cx, cy, sampleR * 0.7, 0, Math.PI * 2);
-      ctx.fill();
-    }
   }
 }
 
@@ -270,12 +255,15 @@ export default function ObservationCanvas({
   rotation,
   sampleOn,
   size = 280,
+  children,
 }: {
   view: PolariscopeCanvasView;
   brightness: number;
   rotation: number;
   sampleOn: boolean;
   size?: number;
+  /** 叠在圆形观察区内的浮层（如观察姿势示意），建议 pointer-events-none */
+  children?: ReactNode;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1;
@@ -304,7 +292,7 @@ export default function ObservationCanvas({
         style={{ width: size, height: size, background: '#0a0a0a' }}
       >
         {view === 'off' ? (
-          <div className="flex h-full w-full flex-col items-center justify-center gap-1.5 text-center">
+          <div className="relative z-[1] flex h-full w-full flex-col items-center justify-center gap-1.5 text-center">
             <div className="text-3xl opacity-60">💡</div>
             <div className="text-xs font-medium text-slate-300">观察窗口已锁定</div>
             <div className="px-6 text-[10px] leading-relaxed text-slate-500">
@@ -318,9 +306,14 @@ export default function ObservationCanvas({
             ref={canvasRef}
             width={pixelSize}
             height={pixelSize}
-            className="absolute inset-0 h-full w-full"
+            className="absolute inset-0 z-0 h-full w-full"
             style={{ width: size, height: size }}
           />
+        )}
+        {children != null && (
+          <div className="pointer-events-none absolute inset-0 z-20 flex justify-end p-1">
+            <div className="max-h-full max-w-[42%] shrink-0 overflow-hidden">{children}</div>
+          </div>
         )}
       </div>
 

@@ -151,6 +151,21 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
         '光泽强、火彩明显的宝石（如钻石）易出现假象',
       ],
     },
+    /* ═══════════════════════════════════════════════════════════════════
+     * 偏光镜结构讲解 — 部件热点配置
+     *
+     * ★ 调整热点圆点位置 → 改 position.x / position.y
+     * ★ 调整标签卡纵向位置 → 改 labelPosition.y（不加此字段则标签 y 跟随圆点 y）
+     * ★ 调整标签卡出现在图片的哪一侧 → 改 labelSide（'left' | 'right'）
+     *
+     * position.x  : 水平坐标，0 = 图片最左，1 = 图片最右
+     * position.y  : 垂直坐标，0 = 图片最上，1 = 图片最下
+     * labelPosition.y : 标签卡的垂直位置（0–1），不设则自动跟随 position.y
+     *                    若同侧标签过近（< 0.18），代码会自动下推防重叠
+     * labelSide   : 'left' 标签显示在图片左侧，'right' 显示在右侧
+     *
+     * 注意：x/y 均为相对于图片内容区域的百分比（0–1），不是像素值
+     * ═══════════════════════════════════════════════════════════════════ */
     components: [
       {
         id: 'upper-polar',
@@ -158,26 +173,38 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
         shortDesc: '可旋转，切换正交 / 平行状态',
         description:
           '位于支架顶端、载物台正上方，为可绕竖轴旋转的圆环式偏振片。与下偏光片配合可转到正交（消光）位置，用于区分均质体与非均质体、观察消光与干涉色。',
-        position: { x: 0.62, y: 0.13 },
+        // ▼▼▼ 圆点位置：x 水平(0–1)，y 垂直(0–1) ▼▼▼
+        position: { x: 0.66, y: 0.14 },
+        // ▼▼▼ 标签侧：'left' 或 'right' ▼▼▼
         labelSide: 'right',
+        // ▼▼▼ 标签纵向位置（可选，不设则跟随 y 值）▼▼▼
+        // labelPosition: { y: 0.13 },
       },
       {
         id: 'stage',
         name: '载物台',
-        shortDesc: '放置待测样品的平台',
+        shortDesc: '可旋转，放置待测样品的平台',
         description:
           '样品放置的圆形平台，位于上下偏光片之间。光从下往上穿过样品后再进入上偏光片。',
-        position: { x: 0.52, y: 0.32 },
-        labelSide: 'left',
+        // ▼▼▼ 圆点位置：x 水平(0–1)，y 垂直(0–1) ▼▼▼
+        position: { x: 0.66, y: 0.40 },
+        // ▼▼▼ 标签侧：'left' 或 'right' ▼▼▼
+        labelSide: 'right',
+        // ▼▼▼ 标签纵向位置（可选，不设则跟随 y 值）▼▼▼
+        // labelPosition: { y: 0.32 },
       },
       {
         id: 'lower-polar',
         name: '下偏光片（起偏镜）',
-        shortDesc: '将自然光转化为线偏振光',
+        shortDesc: '固定，将自然光转化为线偏振光',
         description:
           '在载物台下方、贴近光路。将 LED 出射光变为线偏振光，作为系统的起偏端，与上偏光片共同构成正交偏光（或任意夹角）的照明—观察光路。',
-        position: { x: 0.52, y: 0.50 },
-        labelSide: 'left',
+        // ▼▼▼ 圆点位置：x 水平(0–1)，y 垂直(0–1) ▼▼▼
+        position: { x: 0.565, y: 0.56 },
+        // ▼▼▼ 标签侧：'left' 或 'right' ▼▼▼
+        labelSide: 'right',
+        // ▼▼▼ 标签纵向位置（可选，不设则跟随 y 值）▼▼▼
+        // labelPosition: { y: 0.50 },
       },
       {
         id: 'led',
@@ -185,8 +212,12 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
         shortDesc: '底部均匀面照明',
         description:
           '在底座内，经窗口可见，提供自下而上的均匀面照明，保证视场亮度与观察条件稳定。',
-        position: { x: 0.52, y: 0.68 },
-        labelSide: 'left',
+        // ▼▼▼ 圆点位置：x 水平(0–1)，y 垂直(0–1) ▼▼▼
+        position: { x: 0.565, y: 0.74 },
+        // ▼▼▼ 标签侧：'left' 或 'right' ▼▼▼
+        labelSide: 'right',
+        // ▼▼▼ 标签纵向位置（可选，不设则跟随 y 值）▼▼▼
+        // labelPosition: { y: 0.68 },
       },
       {
         id: 'condenser',
@@ -194,8 +225,12 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
         shortDesc: '锥光观察干涉图',
         description:
           '装在立柱上的小透镜，置于光路中可把近平行光会聚为锥形光穿过样品，便于在正交偏光下观察干涉图（如宝石光性、一轴/二轴晶干涉图样）。',
-        position: { x: 0.22, y: 0.28 },
+        // ▼▼▼ 圆点位置：x 水平(0–1)，y 垂直(0–1) ▼▼▼
+        position: { x: 0.24, y: 0.28 },
+        // ▼▼▼ 标签侧：'left' 或 'right' ▼▼▼
         labelSide: 'left',
+        // ▼▼▼ 标签纵向位置（可选，不设则跟随 y 值）▼▼▼
+        // labelPosition: { y: 0.28 },
       },
       {
         id: 'base',
@@ -203,16 +238,24 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
         shortDesc: '整机结构主体',
         description:
           '白色壳体，承托光源、下偏光片、载物台机构及电气部分，是仪器的结构主体。',
-        position: { x: 0.52, y: 0.84 },
-        labelSide: 'right',
+        // ▼▼▼ 圆点位置：x 水平(0–1)，y 垂直(0–1) ▼▼▼
+        position: { x: 0.44, y: 0.84 },
+        // ▼▼▼ 标签侧：'left' 或 'right' ▼▼▼
+        labelSide: 'left',
+        // ▼▼▼ 标签纵向位置（可选，不设则跟随 y 值）▼▼▼
+        // labelPosition: { y: 0.84 },
       },
       {
         id: 'switch',
         name: '电源开关',
         shortDesc: '控制光源通断（位于背面）',
         description: '控制光源通断，实际位于仪器背面。',
-        position: { x: 0.82, y: 0.72 },
-        labelSide: 'right',
+        // ▼▼▼ 圆点位置：x 水平(0–1)，y 垂直(0–1) ▼▼▼
+        position: { x: 0.18, y: 0.60 },
+        // ▼▼▼ 标签侧：'left' 或 'right' ▼▼▼
+        labelSide: 'left',
+        // ▼▼▼ 标签纵向位置（可选，不设则跟随 y 值）▼▼▼
+        // labelPosition: { y: 0.72 },
       },
     ],
     methods: [
@@ -260,48 +303,60 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
     themeHex: '#0ea5e9',
     productImage: '/assets/instruments/spectroscope.png',
     intro: {
-      tagline: '观察特征吸收光谱，识别致色元素',
+      tagline: '观察特征吸收光谱，识别致色元素与宝石品种',
       principle: [
-        '白光由不同波长的光组成。利用色散元件（棱镜或光栅），分光镜可将白光分解成连续可见光光谱。',
-        '宝石中的致色元素（如 Cr³⁺、Fe³⁺、V³⁺ 等过渡金属）对特定波长的光具有选择性吸收，因此穿透或反射后的光进入分光镜后，会在连续光谱中产生黑带或黑线，这就是吸收光谱。',
-        '不同元素产生不同特征光谱，同一宝石的吸收特征稳定，是辅助鉴定的重要依据，尤其能区分外观相似的宝石（如红宝石与红色尖晶石）。',
+        '白光由 400–700 nm 不同波长的可见光组成。分光镜利用色散元件（棱镜或光栅）将白光分解为连续可见光谱。',
+        '宝石中的致色离子——以过渡金属 Cr³⁺、Fe²⁺/³⁺、V³⁺、Co²⁺、Mn²⁺ 及稀土元素 U、Nd 为代表——对特定波长的光产生选择性吸收，因此穿透或反射出宝石的光进入分光镜后，会在连续光谱中形成稳定的吸收线（窄黑线）或吸收带（黑带）。',
+        '同种致色离子产生相似的"特征谱"——铬谱（红宝石/祖母绿/翡翠）、铁谱（蓝宝石/橄榄石）、钴谱（合成蓝色尖晶石）、锰谱（粉色电气石）、铀谱（锆石）、稀土谱（磷灰石）。这是分光镜区分外观相似宝石（如红宝石 vs 红色尖晶石、天然 vs 合成）的核心依据。',
       ],
       usage: [
-        '观察吸收光谱中黑带/黑线的位置与强度',
-        '识别致色元素种类（Cr / Fe / V / Mn / Co 等）',
-        '区分外观相似但化学组分不同的宝石',
-        '部分宝石可凭特征光谱直接定名',
+        '识别致色元素：依据吸收线/带位置推断 Cr / Fe / V / Co / Mn / U / 稀土等致色离子',
+        '区分外观相似宝石：红宝石（铬谱）vs 红玻璃（稀土谱）；天然蓝色尖晶石（铁谱）vs 合成蓝色尖晶石（钴谱）',
+        '辅助处理鉴定：天然翡翠红区 630–690 nm 三阶梯谱 vs 染色翡翠模糊吸收带',
+        '部分宝石可凭典型谱直接定名：锆石 653.5 nm、钻石 415.5 nm 等典型吸收线',
       ],
       limitations: [
-        '观察需要在暗环境中进行',
-        '颜色越深、透明度越好，光谱越清晰',
-        '形状极端（过小/过大）需选择合适照明法',
-        '不要用手拿宝石（人血、镜片均有吸收光谱干扰）',
+        '不能区分某些天然 / 合成宝石（如天然与合成红宝石的吸收谱几乎相同）',
+        '颜色过浅、透明度过差或颗粒过小的样品光谱微弱，常需切换照明法',
+        '观察须在暗环境进行；环境杂光、屏幕反光均会降低对比度',
+        '日光灯 / 节能灯本身具有发射谱线，不能作为分光镜光源；务必使用光纤灯（冷光源）',
+        '不要用手指持小型宝石——手指血液血红蛋白在 592 nm 处具吸收线，干扰读数',
       ],
     },
     components: [
       {
+        id: 'fiber-light',
+        name: '光纤灯（冷光源）',
+        shortDesc: '强且无吸收特征的白光源',
+        description:
+          '点光源经光导纤维（多次全反射）输出强而集中的连续光谱白光，本身无特征吸收。冷光源避免热量损伤宝石。日光灯 / 节能灯有发射谱线，绝不可替代。',
+        position: { x: 0.18, y: 0.30 },
+        labelSide: 'left',
+      },
+      {
         id: 'objective',
         name: '物镜（光源入口）',
-        shortDesc: '光线从此进入分光镜',
-        description: '光线从此处进入分光镜，经棱镜或光栅色散后被观察。',
+        shortDesc: '收集来自样品的光',
+        description:
+          '物镜端正对待测样品。被宝石选择性吸收后的光由此进入分光镜，再经色散元件展开为光谱。物镜端与样品的相对位姿决定使用哪种照明法（透射 / 内反射 / 表面反射）。',
         position: { x: 0.2, y: 0.78 },
         labelSide: 'left',
       },
       {
-        id: 'prism',
-        name: '棱镜（色散元件）',
+        id: 'dispersion',
+        name: '色散元件（棱镜 / 光栅）',
         shortDesc: '将白光分解为连续光谱',
         description:
-          '棱镜式：光谱蓝紫区相对扩展，红光区相对压缩。透光性好，可产生明亮光谱。',
+          '棱镜式：由一组光学接触的棱镜组成，透光性好、视场明亮，但色区分布不均——蓝紫区被相对扩展、红区被相对压缩，便于观察短波端但红区分辨率较低。光栅式：基于衍射光栅，色区线性等距、红区分辨率高，适合识别锆石 653.5 nm、稀土谱等红区谱线，但透光弱、需更强光源。教学常用棱镜式。',
         position: { x: 0.5, y: 0.5 },
         labelSide: 'left',
       },
       {
         id: 'slit',
         name: '狭缝调节',
-        shortDesc: '调节进光量与清晰度',
-        description: '调节进光量与光谱清晰度。狭缝大 → 亮度大但吸收线清晰度差。',
+        shortDesc: '控制进光量与谱线锐度',
+        description:
+          '观察时由宽到窄缓慢收紧，至狭缝接近闭合时光谱最清晰，吸收线/带边缘最实。过宽 → 视场亮但谱线发糊；过窄 → 视场过暗。狭缝须保持清洁，灰尘会在光谱上拖出黑色水平线，易误判为吸收特征。',
         position: { x: 0.78, y: 0.28 },
         labelSide: 'right',
       },
@@ -309,15 +364,17 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
         id: 'focus',
         name: '焦距调节',
         shortDesc: '使光谱聚焦清晰',
-        description: '调节焦距，使吸收线（黑线 / 黑带）边缘锐利清晰。',
+        description:
+          '调节内部物—像距，使吸收线/带边缘锐利。与狭缝宽度共同决定读数精度——焦距偏离 → 谱线虚化模糊；居中 → 边界最实。每次更换样品/方法后均应微调一次。',
         position: { x: 0.6, y: 0.42 },
         labelSide: 'right',
       },
       {
         id: 'eyepiece',
         name: '目镜（观察窗）',
-        shortDesc: '观察光谱的窗口',
-        description: '将眼睛贴近此处，观察色散后的连续光谱及吸收特征。',
+        shortDesc: '人眼贴近的观察端',
+        description:
+          '将眼睛贴近目镜端观察色散后的连续光谱及吸收特征。务必在暗背景、暗环境下观察，单眼对光轴；从红区扫至紫区记录主要吸收线/带的位置（nm）与强度。',
         position: { x: 0.83, y: 0.16 },
         labelSide: 'right',
       },
@@ -325,35 +382,119 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
     methods: [
       {
         id: 'transmission',
-        name: '透射光法',
-        suitableFor: '透明 – 半透明的宝石，形状不规则也可',
+        name: '透射光法（首选）',
+        suitableFor: '透明—半透明、颗粒较大、颜色较深的宝石（红宝石、祖母绿、紫水晶、橄榄石等）',
         steps: [
-          { id: 1, iconId: 'place-sample', title: '将宝石置于光源上方' },
-          { id: 2, iconId: 'align', title: '使光线透过宝石' },
-          { id: 3, iconId: 'align', title: '分光镜方向与透光方向平行，让光线进入狭缝' },
-          { id: 4, iconId: 'focus', title: '调节焦距与狭缝至光谱清晰' },
-          { id: 5, iconId: 'record', title: '读取吸收光谱中黑带或黑线的位置' },
+          {
+            id: 1,
+            iconId: 'power-on',
+            title: '开启光纤灯（冷光源）',
+            hint: '严禁使用日光灯/节能灯（自身有发射谱线，会污染观察光谱）',
+          },
+          {
+            id: 2,
+            iconId: 'place-sample',
+            title: '将宝石置于带小孔的黑板（锁光圈）上',
+            hint: '黑板小孔仅放过透过宝石的光，避免周边漏光稀释吸收特征。小型宝石不要直接用手指持拿（手指血液 592 nm 吸收线会干扰）',
+          },
+          {
+            id: 3,
+            iconId: 'align',
+            title: '光纤灯从下方垂直入射宝石',
+            hint: '光纤灯—宝石—分光镜物镜呈一条同轴直线；微调样品位置至透光最强',
+          },
+          {
+            id: 4,
+            iconId: 'focus',
+            title: '调狭缝至接近闭合，再微调焦距',
+            hint: '狭缝由宽到窄缓慢收紧，至吸收线/带边缘最实；焦距旋转至谱线最锐',
+          },
+          {
+            id: 5,
+            iconId: 'record',
+            title: '由红到紫依次扫描，记录吸收位置（nm）',
+            hint: '红宝石：694/692/668/659、580 黄绿带、476/475；祖母绿：683/680、670–650 弱、630 黄绿带、477；锆石：653.5 等十余条铀谱线',
+          },
         ],
       },
       {
         id: 'internal-reflection',
         name: '内反射光法',
-        suitableFor: '颜色较浅、颗粒较小的宝石',
+        suitableFor: '颜色较浅、颗粒较小的透明刻面型宝石（浅色蓝宝、海蓝宝、变石、浅色碧玺等）',
         steps: [
-          { id: 1, iconId: 'place-sample', title: '将宝石置于黑色背景上' },
-          { id: 2, iconId: 'align', title: '调节入射光角度，使光在宝石内部反射' },
-          { id: 3, iconId: 'align', title: '分光镜对准宝石表面露出的光亮点' },
-          { id: 4, iconId: 'record', title: '读取吸收光谱黑带 / 黑线位置' },
+          {
+            id: 1,
+            iconId: 'power-on',
+            title: '开启光纤灯',
+            hint: '该法目的是延长光在样品内部的光程，增强弱吸收特征的可读性',
+          },
+          {
+            id: 2,
+            iconId: 'place-sample',
+            title: '宝石台面向下置于黑色背景上（亭部朝上）',
+            hint: '黑色背景吸收漏光、提升对比度；台面贴黑底使光从亭部再反回冠部',
+          },
+          {
+            id: 3,
+            iconId: 'align',
+            title: '调节入射光与分光镜约成 45°',
+            hint: '光从冠部一侧斜入 → 在亭部刻面全反射 → 从冠部另一侧出射进入分光镜，光程被延长 1.5–2 倍',
+          },
+          {
+            id: 4,
+            iconId: 'align',
+            title: '分光镜物镜对准冠部出射的光亮点',
+            hint: '在样品上方略偏对侧可见一明显亮点；微动分光镜对准并锁定',
+          },
+          {
+            id: 5,
+            iconId: 'focus',
+            title: '调狭缝/焦距（浅色样品狭缝可稍宽以保证亮度）',
+            hint: '吸收特征往往比透射法弱；可结合细微样品姿态调整找到最强谱位',
+          },
+          {
+            id: 6,
+            iconId: 'record',
+            title: '只记录有把握识别的强吸收线/带',
+            hint: '内反射法读数误差大于透射法；不确定的弱线建议留疑或用透射法复测',
+          },
         ],
       },
       {
         id: 'surface-reflection',
         name: '表面反射光法',
-        suitableFor: '透明度差的宝石',
+        suitableFor: '透明度差或不透明的宝石与玉石（翡翠、绿松石、孔雀石、青金石等）',
         steps: [
-          { id: 1, iconId: 'place-sample', title: '宝石置于黑色背景上' },
-          { id: 2, iconId: 'align', title: '调节入射光角度，使表面反射光进入分光镜' },
-          { id: 3, iconId: 'record', title: '读取吸收光谱位置' },
+          {
+            id: 1,
+            iconId: 'power-on',
+            title: '开启光纤灯',
+            hint: '反射光通常较弱，光源应近距离对准抛光面',
+          },
+          {
+            id: 2,
+            iconId: 'place-sample',
+            title: '将宝石/玉石抛光面朝上置于黑色背景上',
+            hint: '表面越光滑越平整，反射越强；粗糙表面会因漫反射使光谱过弱',
+          },
+          {
+            id: 3,
+            iconId: 'align',
+            title: '调入射角，使尽量多白光从表面反射进入分光镜',
+            hint: '镜面反射规律：入射角 = 反射角；常用范围 30°–60°，先在此范围试探找到最强反射方向',
+          },
+          {
+            id: 4,
+            iconId: 'focus',
+            title: '调节狭缝（可稍宽换取亮度）与焦距',
+            hint: '反射光通常较弱，狭缝在保证谱线可分辨前提下可适度放宽',
+          },
+          {
+            id: 5,
+            iconId: 'record',
+            title: '识别经典玉石谱线',
+            hint: '翡翠：红区 630–660–690 nm 三阶梯吸收带（"翡翠三脚架"）；染色翡翠仅显模糊吸收带，可凭此区分',
+          },
         ],
       },
     ],

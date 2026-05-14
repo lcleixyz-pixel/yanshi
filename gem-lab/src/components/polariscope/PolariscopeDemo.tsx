@@ -24,7 +24,7 @@ const STEP_META: Record<StepId, { iconId: string; title: string; tip: string }> 
   crossed: {
     iconId: 'rotate',
     title: '将上偏光片调至正交（视域全黑）',
-    tip: '点击上偏光片热区切换正交 / 平行',
+    tip: '绕竖轴旋转上偏光片环，使与下偏光片振动方向垂直——此处点击一次模拟「已旋至正交」',
   },
   place: { iconId: 'place-sample', title: '放置样品', tip: '点击载物台中央放置样品' },
   rotate: {
@@ -44,6 +44,27 @@ const POLAR_LAYOUT = {
     upper:    { x: 0.62, y: 0.13, side: 'right' as const },
     stage:    { x: 0.52, y: 0.38, side: 'left'  as const },
   },
+} as const;
+
+/**
+ * 载物台「自动旋转」速度（仅影响「▶ 自动旋转」按钮，不影响手动拖动旋钮）。
+ * 每毫秒增加的 rotation01 增量 = STAGE_AUTO_ROTATE_DEG_PER_MS / 360。
+ * 调慢：减小 STAGE_AUTO_ROTATE_DEG_PER_MS；调快：增大该值（原约 0.06）。
+ */
+const STAGE_AUTO_ROTATE_DEG_PER_MS = 0.028;
+
+/**
+ * 观察窗口布局微调参数（手动调整入口）
+ * - 调小圆形视域：减小 widthRatio / zoneHeightRatio / viewportMaxRatio
+ * - 调大圆形视域：增大以上比例
+ * - 调整最小/最大圆径：改 minSize / maxSize
+ */
+const OBS_LAYOUT = {
+  viewportMaxRatio: 0.50,
+  zoneHeightRatio: 0.68,
+  widthRatio: 0.78,
+  minSize: 210,
+  maxSize: 520,
 } as const;
 
 interface DemoState {
@@ -121,10 +142,10 @@ export default function PolariscopeDemo({
       const h = el.clientHeight;
       if (w < 48) return;
       const vh = typeof window !== 'undefined' ? window.innerHeight : 900;
-      const maxByViewport = Math.floor(vh * 0.55);
-      const maxByH = h > 64 ? Math.floor(h * 0.80) : maxByViewport;
-      const s = Math.min(560, w * 0.88, maxByViewport, maxByH);
-      setObsSize(Math.round(Math.max(220, s)));
+      const maxByViewport = Math.floor(vh * OBS_LAYOUT.viewportMaxRatio);
+      const maxByH = h > 64 ? Math.floor(h * OBS_LAYOUT.zoneHeightRatio) : maxByViewport;
+      const s = Math.min(OBS_LAYOUT.maxSize, w * OBS_LAYOUT.widthRatio, maxByViewport, maxByH);
+      setObsSize(Math.round(Math.max(OBS_LAYOUT.minSize, s)));
     });
     ro.observe(el);
     return () => ro.disconnect();
@@ -138,7 +159,7 @@ export default function PolariscopeDemo({
     const tick = (now: number) => {
       const dt = now - last;
       last = now;
-      setRotation01((r) => (r + dt * 0.06 / 360) % 1);
+      setRotation01((r) => (r + (dt * STAGE_AUTO_ROTATE_DEG_PER_MS) / 360) % 1);
       rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
@@ -326,99 +347,116 @@ export default function PolariscopeDemo({
             </div>
           )}
 
-          {/* 仪器图 + HotPoint */}
-          <div className="mx-auto flex h-full min-h-0 w-full items-center justify-center gap-4 p-3">
-            <div className="relative aspect-square h-full max-h-full w-full max-w-[min(100%,min(90dvh,70vw,56vw))]">
-              <ObjectFitHotspotFrame src={instrument.productImage} alt={instrument.name} className="h-full w-full">
-                {/* LED 指示灯 */}
-                <span
-                  className={clsx(
-                    'absolute bottom-[26%] right-[18%] h-3 w-3 rounded-full',
-                    state.power
-                      ? 'animate-soft-pulse bg-emerald-400 shadow-[0_0_12px_2px_rgba(74,222,128,0.8)]'
-                      : 'bg-slate-400',
+          {/* 左栏主区：仪器加宽约 68%，略向右（ml）；右侧 pr 固定预留旋钮位，避免跳动 */}
+          <div className="flex h-full min-h-0 w-full flex-col pt-14 md:pt-[4.75rem]">
+            <div className="flex min-h-0 flex-1 items-center justify-center px-3 pb-8 pr-32 md:pr-36">
+              <div className="relative ml-10 aspect-square min-h-[220px] w-[68%] min-w-0 max-h-full max-w-[min(78dvh,96vw)] shrink-0 translate-x-3 md:ml-16 md:translate-x-7">
+                <ObjectFitHotspotFrame
+                  src={instrument.productImage}
+                  alt={instrument.name}
+                  className="h-full w-full"
+                  hotspotLayerClassName="z-[28]"
+                >
+                  {state.power && (
+                    <PolarUpperPolarHints
+                      x={POLAR_LAYOUT.hotpoint.upper.x}
+                      y={POLAR_LAYOUT.hotpoint.upper.y}
+                      title={
+                        state.polarPosition === 'crossed' ? '上偏光片（正交）' : '上偏光片（平行）'
+                      }
+                      sub={
+                        state.polarPosition === 'crossed'
+                          ? '已旋至与下偏光片正交 · 点击切回平行'
+                          : '绕竖轴旋转环至正交 · 点击模拟一步到位'
+                      }
+                      isDone={state.polarPosition === 'crossed'}
+                    />
                   )}
-                />
-
-                {/* 电源开关 */}
-                <HotPoint
-                  x={POLAR_LAYOUT.hotpoint.power.x}
-                  y={POLAR_LAYOUT.hotpoint.power.y}
-                  label="LED 开关"
-                  sub="点击切换电源"
-                  side={POLAR_LAYOUT.hotpoint.power.side}
-                  themeHex={instrument.themeHex}
-                  status={state.power ? 'done' : currentStep === 'power' ? 'active' : 'disabled'}
-                  onClick={() => handleHotpoint('power')}
-                />
-
-                {/* 上偏光片 */}
-                <HotPoint
-                  x={POLAR_LAYOUT.hotpoint.upper.x}
-                  y={POLAR_LAYOUT.hotpoint.upper.y}
-                  label={state.polarPosition === 'crossed' ? '上偏光片（正交）' : '上偏光片（平行）'}
-                  sub={state.polarPosition === 'crossed' ? '视域全黑 · 点击切换' : '视域全亮 · 点击切换'}
-                  side={POLAR_LAYOUT.hotpoint.upper.side}
-                  themeHex={state.polarPosition === 'crossed' ? instrument.themeHex : '#d97706'}
-                  status={
-                    !state.power
-                      ? 'disabled'
-                      : state.crossed
-                        ? 'done'
-                        : currentStep === 'crossed'
-                          ? 'active'
-                          : 'active'
-                  }
-                  onClick={() => handleHotpoint('upper')}
-                />
-
-                {/* 载物台 */}
-                <HotPoint
-                  x={POLAR_LAYOUT.hotpoint.stage.x}
-                  y={POLAR_LAYOUT.hotpoint.stage.y}
-                  label={state.sampleOn ? '载物台（已放样品）' : '载物台'}
-                  sub={state.sampleOn ? '点击取下样品' : '点击放置样品'}
-                  side={POLAR_LAYOUT.hotpoint.stage.side}
-                  themeHex={instrument.themeHex}
-                  status={state.sampleOn ? 'done' : currentStep === 'place' ? 'active' : 'disabled'}
-                  onClick={() => handleHotpoint('stage')}
-                />
-              </ObjectFitHotspotFrame>
-            </div>
-
-            {/* 旋转旋钮（放置样品后显示） */}
-            {state.sampleOn && state.power && state.crossed && (
-              <div className="flex shrink-0 flex-col items-center gap-3">
-                <div className="rounded-xl border border-line bg-white/95 p-3 shadow-card backdrop-blur">
-                  <RotationKnob
-                    value={rotation01}
-                    onChange={(v) => {
-                      setAutoRotating(false);
-                      setRotation01(v);
-                    }}
-                    onReady={() => setKnobReady(true)}
-                    label="旋转载物台"
-                    hint="拖动旋钮旋转样品"
-                    ready={knobReady}
-                    size={110}
-                    themeHex={instrument.themeHex}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setAutoRotating((v) => !v)}
+                  <span
                     className={clsx(
-                      'mt-2 w-full rounded px-2 py-1 text-[11px] font-medium ring-1 transition',
-                      autoRotating
-                        ? 'bg-violet-600 text-white ring-violet-600'
-                        : 'bg-white text-ink-2 ring-line-2 hover:bg-violet-50',
+                      'absolute bottom-[26%] right-[18%] h-3 w-3 rounded-full',
+                      state.power
+                        ? 'animate-soft-pulse bg-emerald-400 shadow-[0_0_12px_2px_rgba(74,222,128,0.8)]'
+                        : 'bg-slate-400',
                     )}
-                  >
-                    {autoRotating ? '⏸ 停止自动' : '▶ 自动旋转'}
-                  </button>
-                </div>
+                  />
+                  <HotPoint
+                    x={POLAR_LAYOUT.hotpoint.power.x}
+                    y={POLAR_LAYOUT.hotpoint.power.y}
+                    label="LED 开关"
+                    sub="点击切换电源"
+                    side={POLAR_LAYOUT.hotpoint.power.side}
+                    themeHex={instrument.themeHex}
+                    status={state.power ? 'done' : currentStep === 'power' ? 'active' : 'disabled'}
+                    onClick={() => handleHotpoint('power')}
+                  />
+                  <HotPoint
+                    x={POLAR_LAYOUT.hotpoint.upper.x}
+                    y={POLAR_LAYOUT.hotpoint.upper.y}
+                    label={
+                      state.polarPosition === 'crossed'
+                        ? '上偏光片（正交），已旋至与下偏光片正交，点击切回平行'
+                        : '上偏光片（平行），绕竖轴旋转环至正交，点击模拟一步到位'
+                    }
+                    showLabel={false}
+                    themeHex={state.polarPosition === 'crossed' ? instrument.themeHex : '#d97706'}
+                    status={
+                      !state.power
+                        ? 'disabled'
+                        : state.crossed
+                          ? 'done'
+                          : currentStep === 'crossed'
+                            ? 'active'
+                            : 'active'
+                    }
+                    onClick={() => handleHotpoint('upper')}
+                  />
+                  <HotPoint
+                    x={POLAR_LAYOUT.hotpoint.stage.x}
+                    y={POLAR_LAYOUT.hotpoint.stage.y}
+                    label={state.sampleOn ? '载物台（已放样品）' : '载物台'}
+                    sub={state.sampleOn ? '点击取下样品' : '点击放置样品'}
+                    side={POLAR_LAYOUT.hotpoint.stage.side}
+                    themeHex={instrument.themeHex}
+                    status={state.sampleOn ? 'done' : currentStep === 'place' ? 'active' : 'disabled'}
+                    onClick={() => handleHotpoint('stage')}
+                  />
+                </ObjectFitHotspotFrame>
               </div>
-            )}
+            </div>
           </div>
+
+          {state.sampleOn && state.power && state.crossed && (
+            <div className="absolute right-3 top-1/2 z-30 max-w-[min(8.5rem,calc(100%-1rem))] -translate-y-1/2 md:right-4">
+              <div className="rounded-xl border border-line bg-white/95 p-3 shadow-card backdrop-blur">
+                <RotationKnob
+                  value={rotation01}
+                  onChange={(v) => {
+                    setAutoRotating(false);
+                    setRotation01(v);
+                  }}
+                  onReady={() => setKnobReady(true)}
+                  label="旋转载物台"
+                  hint="拖动旋钮旋转样品"
+                  ready={knobReady}
+                  size={110}
+                  themeHex={instrument.themeHex}
+                />
+                <button
+                  type="button"
+                  onClick={() => setAutoRotating((v) => !v)}
+                  className={clsx(
+                    'mt-2 w-full rounded px-2 py-1 text-[11px] font-medium ring-1 transition',
+                    autoRotating
+                      ? 'bg-violet-600 text-white ring-violet-600'
+                      : 'bg-white text-ink-2 ring-line-2 hover:bg-violet-50',
+                  )}
+                >
+                  {autoRotating ? '⏸ 停止自动' : '▶ 自动旋转'}
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* 底部提示 */}
           {tip && (
@@ -480,17 +518,23 @@ export default function PolariscopeDemo({
             ref={obsZoneRef}
             className="flex min-h-0 flex-[3] flex-col border-b border-line-2/80 bg-gradient-to-b from-[#fff9d5] to-[#fff3a6] px-3 py-3 text-ink"
           >
-            <div className="mx-auto flex w-full min-w-0 max-w-4xl flex-1 flex-col items-stretch gap-2">
-              <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 px-0.5 text-xs font-semibold text-ink">
-                <span>🔍 观察窗口</span>
-                {sample && state.sampleOn && (
-                  <span className="font-mono text-[9px] uppercase tracking-widest text-ink-4">
-                    {sample.name}
-                  </span>
-                )}
+            <div className="mx-auto flex w-full min-w-0 max-w-4xl flex-1 flex-col items-stretch gap-1.5">
+              {/* 顶部信息行：观察位置示意 / 样品名 / 标题，均限制在观察窗口内 */}
+              <div className="flex min-w-0 items-start justify-between gap-2 px-0.5">
+                <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold text-ink">
+                  <span>🔍 观察窗口</span>
+                  {sample && state.sampleOn && (
+                    <span className="font-mono text-[9px] uppercase tracking-widest text-ink-4">
+                      {sample.name}
+                    </span>
+                  )}
+                </div>
+                <div className="shrink-0 max-w-[min(17rem,52%)]">
+                  <ObservationPoseSchematic variant="inline" />
+                </div>
               </div>
 
-              <div className="flex flex-1 items-center justify-center">
+              <div className="flex min-h-0 flex-1 items-center justify-center">
                 <ObservationCanvas
                   view={activeCanvasView}
                   brightness={brightness}
@@ -508,7 +552,7 @@ export default function PolariscopeDemo({
                     <span className="font-normal text-ink-2"> · 操作要点</span>
                     <span className="ml-1 text-[9px] text-brand-600">▼ 展开</span>
                   </summary>
-                  <p className="px-2 pb-1 text-[10px] leading-relaxed text-ink-2">
+                  <p className="max-h-24 overflow-y-auto px-2 pb-1 text-[10px] leading-relaxed text-ink-2">
                     将样品置于载物台中央，使光线从下方穿透。单眼俯视目镜，缓慢旋转载物台 360°，观察视场明暗变化次数。
                     每旋转 90° 经历一次亮暗交替（共四明四暗）为非均质体；始终全暗为均质体；始终全亮为多晶质集合体。
                     须从 2–3 个不同方向重复测试，以排除光轴方向导致的全暗假象。
@@ -621,7 +665,11 @@ function renderOpticalHint(
 ): React.ReactNode {
   if (!sampleOn) return <p>放置样品后即可在正交偏光下观察明暗变化。</p>;
   if (polarPosition === 'parallel') {
-    return <p>当前为平行偏光模式，视场全亮。切换至正交偏光可观察光性特征。平行偏光可用于观察多色性（有色非均质体在不同方向可见颜色差异）。</p>;
+    return (
+      <p>
+        当前为<strong>平行偏光</strong>（视场全亮）：上、下偏光片振动方向一致。正交偏光需<strong>绕竖轴旋转上偏光片</strong>，使与下偏光片振动方向垂直；本演示中点击上偏光片热点模拟「已旋至正交」。平行偏光亦可观察多色性（有色非均质体不同方向颜色差异）。
+      </p>
+    );
   }
   if (!optical) return <p>放置样品并旋转，观察视场明暗变化。</p>;
 
@@ -653,6 +701,100 @@ function renderOpticalHint(
 }
 
 // ── 子组件 ────────────────────────────────────────────────────
+
+/** 上偏光片：标题在热点正上方，说明在热点右侧（避免与左上角模式/步骤卡叠在同一象限） */
+function PolarUpperPolarHints({
+  x,
+  y,
+  title,
+  sub,
+  isDone,
+}: {
+  x: number;
+  y: number;
+  title: string;
+  sub: string;
+  isDone: boolean;
+}) {
+  return (
+    <>
+      <div
+        className={clsx(
+          'pointer-events-none absolute z-[34] rounded-lg border px-2.5 py-1 text-center text-[11px] font-semibold leading-tight shadow-card whitespace-nowrap',
+          isDone ? 'border-emerald-200 bg-emerald-50 text-emerald-900' : 'border-line-2 bg-white text-ink',
+        )}
+        style={{
+          left: `${x * 100}%`,
+          top: `${Math.max(6, y * 100 - 7)}%`,
+          transform: 'translate(-50%, -100%)',
+        }}
+      >
+        {title}
+      </div>
+      <div
+        className={clsx(
+          'pointer-events-none absolute z-[34] w-[clamp(10.5rem,18vw,14rem)] rounded-lg border px-2 py-1 text-[10px] leading-snug shadow-card whitespace-normal break-keep',
+          isDone ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-line-2 bg-white text-ink-2',
+        )}
+        style={{
+          left: `${Math.min(86, x * 100 + 10)}%`,
+          top: `${y * 100}%`,
+          transform: 'translateY(-50%)',
+        }}
+      >
+        {sub}
+      </div>
+    </>
+  );
+}
+
+/** 观察位置示意：inline = 与标题行并排占高小；panel / window 备用 */
+function ObservationPoseSchematic({ variant = 'panel' }: { variant?: 'panel' | 'window' | 'inline' }) {
+  const svg = (
+    <svg viewBox="0 0 72 96" className="text-current" aria-hidden>
+      <ellipse cx="36" cy="14" rx="16" ry="9" fill="none" stroke="currentColor" strokeWidth="1.25" />
+      <text x="36" y="17" textAnchor="middle" fill="currentColor" fontSize="8" fontWeight="600" opacity="0.95">
+        眼
+      </text>
+      <line x1="36" y1="24" x2="36" y2="72" stroke="currentColor" strokeWidth="1" strokeDasharray="3 2" opacity="0.85" />
+      <polygon points="36,78 32,70 40,70" fill="currentColor" opacity="0.75" />
+      <ellipse cx="36" cy="86" rx="26" ry="7" fill="currentColor" fillOpacity="0.12" stroke="currentColor" strokeWidth="1.25" />
+      <text x="36" y="88" textAnchor="middle" fill="currentColor" fontSize="7" opacity="0.85">
+        载物台 / 视场
+      </text>
+    </svg>
+  );
+
+  if (variant === 'window') {
+    return (
+      <div className="flex max-w-[5.5rem] flex-col items-center gap-0.5 rounded-lg border border-white/25 bg-black/50 px-1 py-1 text-white shadow-md backdrop-blur-[6px]">
+        <div className="text-center text-[8px] font-semibold leading-tight text-white/95">观察姿势</div>
+        <div className="w-12 shrink-0 [&_svg]:h-14 [&_svg]:w-full">{svg}</div>
+        <p className="text-center text-[7px] leading-tight text-white/75">自上而下俯视</p>
+      </div>
+    );
+  }
+
+  if (variant === 'inline') {
+    return (
+      <div className="flex max-w-full flex-row items-center gap-2 rounded-lg border border-line bg-white/95 px-2 py-1 shadow-soft">
+        <div className="h-8 w-6 shrink-0 text-slate-500 [&_svg]:h-full [&_svg]:w-full">{svg}</div>
+        <div className="min-w-0 flex-1">
+          <div className="text-[10px] font-semibold leading-tight text-ink">观察位置示意</div>
+          <p className="text-[9px] leading-snug text-ink-3 whitespace-nowrap">自上而下俯视载物台 / 视场</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex w-full max-w-[9.5rem] shrink-0 flex-col items-center gap-1 rounded-xl border border-line bg-white/90 px-2 py-2 text-ink shadow-soft backdrop-blur">
+      <div className="text-center text-[10px] font-semibold leading-tight text-ink">观察位置示意</div>
+      <div className="w-[4.5rem] text-slate-500 [&_svg]:h-[5.75rem] [&_svg]:w-full">{svg}</div>
+      <p className="text-center text-[9px] leading-snug text-ink-3">自上而下俯视，勿侧视</p>
+    </div>
+  );
+}
 
 function Checkbox({
   label,

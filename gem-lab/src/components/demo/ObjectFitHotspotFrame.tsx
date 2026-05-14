@@ -10,6 +10,8 @@ export default function ObjectFitHotspotFrame({
   className,
   imgClassName,
   children,
+  /** 热点层 z-index；偏光镜等需高于左上角浮层（多为 z-20）时用 z-[28] 等 */
+  hotspotLayerClassName = 'z-10',
 }: {
   src: string;
   alt: string;
@@ -17,6 +19,7 @@ export default function ObjectFitHotspotFrame({
   /** 外层为定位上下文，通常 relative + aspect + h/w full */
   imgClassName?: string;
   children: ReactNode;
+  hotspotLayerClassName?: string;
 }) {
   const boxRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -68,7 +71,7 @@ export default function ObjectFitHotspotFrame({
       />
       {fit.width > 0.5 && fit.height > 0.5 && (
         <div
-          className="absolute z-10"
+          className={clsx('absolute', hotspotLayerClassName)}
           style={{ left: fit.left, top: fit.top, width: fit.width, height: fit.height }}
         >
           <div className="relative h-full w-full">{children}</div>

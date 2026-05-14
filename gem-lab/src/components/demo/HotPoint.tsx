@@ -10,6 +10,7 @@ export default function HotPoint({
   status = 'active',
   themeHex = '#e8a93a',
   onClick,
+  showLabel = true,
 }: {
   /** 0-1 相对于父容器 */
   x: number;
@@ -20,6 +21,8 @@ export default function HotPoint({
   status?: 'active' | 'done' | 'disabled';
   themeHex?: string;
   onClick?: () => void;
+  /** 为 false 时仅渲染热点圆点（说明由外部绝对定位自行排版） */
+  showLabel?: boolean;
 }) {
   const isDone = status === 'done';
   const isDisabled = status === 'disabled';
@@ -33,7 +36,7 @@ export default function HotPoint({
 
   return (
     <div
-      className="absolute z-10 -translate-x-1/2 -translate-y-1/2"
+      className="absolute z-[2] -translate-x-1/2 -translate-y-1/2"
       style={{ left: `${x * 100}%`, top: `${y * 100}%` }}
     >
       <button
@@ -71,36 +74,36 @@ export default function HotPoint({
         )}
       </button>
 
-      {/* 标签气泡 */}
-      <div
-        className={clsx(
-          'pointer-events-none absolute z-20 min-w-max rounded-lg border bg-white px-3 py-1.5 shadow-card',
-          labelOffsets[side],
-          isDone ? 'border-emerald-200 bg-emerald-50' : 'border-line-2',
-        )}
-      >
+      {showLabel && (
         <div
           className={clsx(
-            'text-[12px] font-semibold leading-tight',
-            isDone ? 'text-emerald-700' : 'text-ink',
+            'pointer-events-none absolute z-[40] min-w-max rounded-lg border bg-white px-3 py-1.5 shadow-card',
+            labelOffsets[side],
+            isDone ? 'border-emerald-200 bg-emerald-50' : 'border-line-2',
           )}
         >
-          {label}
+          <div
+            className={clsx(
+              'text-[12px] font-semibold leading-tight',
+              isDone ? 'text-emerald-700' : 'text-ink',
+            )}
+          >
+            {label}
+          </div>
+          {sub && <div className="mt-0.5 text-[10px] text-ink-3">{sub}</div>}
+          <span
+            className={clsx(
+              'absolute h-2 w-2 rotate-45 border bg-white',
+              isDone && 'border-emerald-200 bg-emerald-50',
+              !isDone && 'border-line-2',
+              side === 'right' && '-left-1 top-1/2 -translate-y-1/2 border-r-0 border-t-0',
+              side === 'left' && '-right-1 top-1/2 -translate-y-1/2 border-l-0 border-b-0',
+              side === 'top' && '-bottom-1 left-1/2 -translate-x-1/2 border-l-0 border-t-0',
+              side === 'bottom' && '-top-1 left-1/2 -translate-x-1/2 border-r-0 border-b-0',
+            )}
+          />
         </div>
-        {sub && <div className="mt-0.5 text-[10px] text-ink-3">{sub}</div>}
-        {/* 连线指针 */}
-        <span
-          className={clsx(
-            'absolute h-2 w-2 rotate-45 border bg-white',
-            isDone && 'border-emerald-200 bg-emerald-50',
-            !isDone && 'border-line-2',
-            side === 'right' && '-left-1 top-1/2 -translate-y-1/2 border-r-0 border-t-0',
-            side === 'left' && '-right-1 top-1/2 -translate-y-1/2 border-l-0 border-b-0',
-            side === 'top' && '-bottom-1 left-1/2 -translate-x-1/2 border-l-0 border-t-0',
-            side === 'bottom' && '-top-1 left-1/2 -translate-x-1/2 border-r-0 border-b-0',
-          )}
-        />
-      </div>
+      )}
     </div>
   );
 }

@@ -7,7 +7,7 @@
  */
 
 export const RI_MIN = 1.35;
-export const RI_MAX = 1.81;
+export const RI_MAX = 1.78;
 export const RI_SCALE_MIN = 1.33;
 export const RI_SCALE_MAX = 1.87;
 export const OIL_REFRACTIVE_INDEX = 1.78;
@@ -23,8 +23,8 @@ export function riToY(ri: number, innerTopY: number, innerBottomY: number): numb
 }
 
 /** 点测法样品真值 RI（取范围中值） */
-export function getSpotTargetRi(ri: number | [number, number] | 'over-1.81'): number {
-  if (ri === 'over-1.81') return RI_MAX + 0.1;
+export function getSpotTargetRi(ri: number | [number, number] | 'over-1.78'): number {
+  if (ri === 'over-1.78') return RI_MAX + 0.1;
   if (typeof ri === 'number') return ri;
   return (ri[0] + ri[1]) / 2;
 }

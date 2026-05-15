@@ -241,7 +241,7 @@ export default function RefractometerDemo({
   const truthRI = useMemo<{ min: number; max: number; dr: number }>(() => {
     if (!sample) return { min: 0, max: 0, dr: 0 };
     const ri = sample.characteristics.refractiveIndex;
-    if (ri === 'over-1.81') return { min: 1.78, max: 1.78, dr: 0 };
+    if (ri === 'over-1.78') return { min: 1.78, max: 1.78, dr: 0 };
     if (typeof ri === 'number') {
       if (ri > 1.78) return { min: 1.78, max: 1.78, dr: 0 };
       return { min: ri, max: ri, dr: 0 };
@@ -816,7 +816,7 @@ function isAnisotropicHint(sample?: SampleDef) {
 function renderHint(sample: SampleDef, view: RefractometerView, method: 'facet' | 'spot') {
   const ri = sample.characteristics.refractiveIndex;
   const optical = sample.characteristics.opticalCharacter;
-  if (ri === 'over-1.81' || view === 'over-range') {
+  if (ri === 'over-1.78' || view === 'over-range') {
     return <p>当前样品 RI 高于折射油，仅见截止于 1.780 的阴影边界；记录与结论应为“折射率 &gt; 1.780”。</p>;
   }
   if (method === 'spot') {
@@ -1042,7 +1042,7 @@ function computeView(
 }
 
 function isOverOilLimit(ri: SampleDef['characteristics']['refractiveIndex']): boolean {
-  if (ri === 'over-1.81') return true;
+  if (ri === 'over-1.78') return true;
   if (typeof ri === 'number') return ri > 1.78;
   return Math.max(ri[0], ri[1]) > 1.78;
 }

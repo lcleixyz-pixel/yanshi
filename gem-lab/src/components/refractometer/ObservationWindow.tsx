@@ -495,7 +495,7 @@ export default function ObservationWindow({
   const sampleBoundsRi: number | null = (() => {
     if (!sample) return null;
     const ri = sample.characteristics.refractiveIndex;
-    if (ri === 'over-1.81') return null;
+    if (ri === 'over-1.78') return null;
     return getSpotTargetRi(ri);
   })();
 
@@ -512,7 +512,7 @@ export default function ObservationWindow({
   } | null = useMemo(() => {
     if (!sample || (view !== 'single' && view !== 'double')) return null;
     const r = sample.characteristics.refractiveIndex;
-    if (r === 'over-1.81') return null;
+    if (r === 'over-1.78') return null;
     if (typeof r === 'number') return { singleRi: r, pair: null };
     return { singleRi: r[0], pair: r };
   }, [sample, view]);
@@ -668,7 +668,7 @@ function computeFacetReading(view: RefractometerView, sample?: SampleDef): strin
   if (!sample) return null;
   const ri = sample.characteristics.refractiveIndex;
   const isOverOil =
-    ri === 'over-1.81' || (typeof ri === 'number' ? ri > OIL_REFRACTIVE_INDEX : Math.max(ri[0], ri[1]) > OIL_REFRACTIVE_INDEX);
+    ri === 'over-1.78' || (typeof ri === 'number' ? ri > OIL_REFRACTIVE_INDEX : Math.max(ri[0], ri[1]) > OIL_REFRACTIVE_INDEX);
   if (isOverOil || view === 'over-range') return null;
   if (view === 'single') {
     const v = typeof ri === 'number' ? ri : ri[0];

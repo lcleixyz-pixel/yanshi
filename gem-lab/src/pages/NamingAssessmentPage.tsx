@@ -695,7 +695,7 @@ function checkRI(
   userMax: number | null,
   standard: import('@/data/types').GemCharacteristics['refractiveIndex'],
 ): boolean {
-  if (standard === 'over-1.81') return userMin === null;
+  if (standard === 'over-1.78') return userMin === null;
   if (typeof standard === 'number' && standard > 1.78) return userMin === null;
   if (Array.isArray(standard) && Math.max(standard[0], standard[1]) > 1.78) return userMin === null;
   if (userMin === null) return false;

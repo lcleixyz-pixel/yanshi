@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import clsx from '@/utils/clsx';
 import type { InstrumentComponent } from '@/data/types';
 
@@ -16,6 +16,43 @@ export default function ComponentDiagram({
   themeHex?: string;
 }) {
   const [active, setActive] = useState<string | null>(null);
+  const boxRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const [fit, setFit] = useState({ left: 0, top: 0, width: 0, height: 0 });
+
+  const updateFit = useCallback(() => {
+    const box = boxRef.current;
+    const img = imgRef.current;
+    if (!box || !img?.naturalWidth) return;
+
+    const W = box.clientWidth;
+    const H = box.clientHeight;
+    if (W < 1 || H < 1) return;
+
+    const scale = Math.min(W / img.naturalWidth, H / img.naturalHeight);
+    const width = img.naturalWidth * scale;
+    const height = img.naturalHeight * scale;
+    setFit({
+      left: (W - width) / 2,
+      top: (H - height) / 2,
+      width,
+      height,
+    });
+  }, []);
+
+  useLayoutEffect(() => {
+    const box = boxRef.current;
+    if (!box) return;
+
+    const ro = new ResizeObserver(updateFit);
+    ro.observe(box);
+    imgRef.current?.addEventListener('load', updateFit);
+    updateFit();
+    return () => {
+      ro.disconnect();
+      imgRef.current?.removeEventListener('load', updateFit);
+    };
+  }, [productImage, updateFit]);
 
   // 拆分左右两侧标签，并按 y 位置升序排列
   const { left, right } = useMemo(() => {
@@ -49,83 +86,104 @@ export default function ComponentDiagram({
         />
 
         {/* 中央：产品图 + 圆点 + 内部连线 */}
-        <div className="relative flex aspect-[4/3] items-center justify-center">
+        <div ref={boxRef} className="relative flex aspect-[4/3] items-center justify-center">
           <img
+            ref={imgRef}
             src={productImage}
             alt=""
             className="absolute inset-0 h-full w-full select-none object-contain"
             draggable={false}
           />
 
-          {/* SVG 连线层（仅在中央图区域内画） */}
-          <svg
-            className="pointer-events-none absolute inset-0 h-full w-full"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
+          <div
+            className="pointer-events-none absolute"
+            style={{
+              left: fit.left,
+              top: fit.top,
+              width: fit.width,
+              height: fit.height,
+            }}
+          >
+            {/* SVG 连线层（按图片实际 object-contain 绘制区域定位） */}
+            <svg
+              className="absolute inset-0 h-full w-full"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+            >
+              {components.map((c) => {
+                if (!c.position) return null;
+                const isActive = active === c.id;
+                const side = c.labelSide ?? 'left';
+                const x1 = c.position.x * 100;
+                const y1 = c.position.y * 100;
+                const x2 = side === 'left' ? 0 : 100;
+                const y2 = c.position.y * 100;
+                return (
+                  <line
+                    key={c.id}
+                    x1={x1}
+                    y1={y1}
+                    x2={x2}
+                    y2={y2}
+                    stroke={themeHex}
+                    strokeWidth={isActive ? 0.3 : 0.18}
+                    strokeDasharray={isActive ? '0 0' : '0.6 0.4'}
+                    opacity={isActive ? 0.95 : 0.45}
+                    vectorEffect="non-scaling-stroke"
+                  />
+                );
+              })}
+            </svg>
+          </div>
+
+          {/* 圆点层 */}
+          <div
+            className="absolute"
+            style={{
+              left: fit.left,
+              top: fit.top,
+              width: fit.width,
+              height: fit.height,
+            }}
           >
             {components.map((c) => {
               if (!c.position) return null;
               const isActive = active === c.id;
-              const side = c.labelSide ?? 'left';
-              const x1 = c.position.x * 100;
-              const y1 = c.position.y * 100;
-              const x2 = side === 'left' ? 0 : 100;
-              const y2 = c.position.y * 100;
+              const idx = indexOf(c);
               return (
-                <line
+                <button
                   key={c.id}
-                  x1={x1}
-                  y1={y1}
-                  x2={x2}
-                  y2={y2}
-                  stroke={themeHex}
-                  strokeWidth={isActive ? 0.3 : 0.18}
-                  strokeDasharray={isActive ? '0 0' : '0.6 0.4'}
-                  opacity={isActive ? 0.95 : 0.45}
-                  vectorEffect="non-scaling-stroke"
-                />
+                  type="button"
+                  onMouseEnter={() => setActive(c.id)}
+                  onMouseLeave={() => setActive(null)}
+                  className={clsx(
+                    'absolute -translate-x-1/2 -translate-y-1/2 rounded-full transition-transform',
+                    isActive ? 'scale-125' : 'hover:scale-110',
+                  )}
+                  style={{
+                    left: `${c.position.x * 100}%`,
+                    top: `${c.position.y * 100}%`,
+                  }}
+                  aria-label={c.name}
+                >
+                  {/* 脉动外圈 */}
+                  {isActive && (
+                    <span
+                      className="absolute inset-0 animate-pulse-ring rounded-full"
+                      style={{ border: `2px solid ${themeHex}` }}
+                    />
+                  )}
+                  {/* 数字徽章 */}
+                  <span
+                    className="relative z-10 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white text-[12px] font-semibold text-white shadow-card"
+                    style={{ background: themeHex }}
+                  >
+                    {idx}
+                  </span>
+                </button>
               );
             })}
-          </svg>
-
-          {/* 圆点层 */}
-          {components.map((c) => {
-            if (!c.position) return null;
-            const isActive = active === c.id;
-            const idx = indexOf(c);
-            return (
-              <button
-                key={c.id}
-                type="button"
-                onMouseEnter={() => setActive(c.id)}
-                onMouseLeave={() => setActive(null)}
-                className={clsx(
-                  'absolute -translate-x-1/2 -translate-y-1/2 rounded-full transition-transform',
-                  isActive ? 'scale-125' : 'hover:scale-110',
-                )}
-                style={{
-                  left: `${c.position.x * 100}%`,
-                  top: `${c.position.y * 100}%`,
-                }}
-                aria-label={c.name}
-              >
-                {/* 脉动外圈 */}
-                {isActive && (
-                  <span
-                    className="absolute inset-0 animate-pulse-ring rounded-full"
-                    style={{ border: `2px solid ${themeHex}` }}
-                  />
-                )}
-                {/* 数字徽章 */}
-                <span
-                  className="relative z-10 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white text-[12px] font-semibold text-white shadow-card"
-                  style={{ background: themeHex }}
-                >
-                  {idx}
-                </span>
-              </button>
-            );
-          })}
+          </div>
         </div>
 
         {/* 右侧标签栏 */}
@@ -186,6 +244,7 @@ function CalloutColumn({
       {components.map((c, i) => {
         const isActive = active === c.id;
         const idx = indexOf(c);
+        const isExternal = !c.position;
         const top = `${labelYs[i] * 100}%`;
         return (
           <div
@@ -243,6 +302,17 @@ function CalloutColumn({
                     <div className="font-display text-sm font-semibold text-ink">
                       {c.name}
                     </div>
+                    {isExternal && (
+                      <div
+                        className={clsx(
+                          'mt-1 inline-flex rounded-full px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-widest',
+                          side === 'right' && 'justify-end',
+                        )}
+                        style={{ background: `${themeHex}12`, color: themeHex }}
+                      >
+                        外接附件
+                      </div>
+                    )}
                     <p className="mt-0.5 text-[11px] leading-snug text-ink-3">
                       {c.shortDesc ?? c.description}
                     </p>
@@ -251,18 +321,20 @@ function CalloutColumn({
               </div>
 
               {/* 指向中央图的小三角 */}
-              <span
-                className={clsx(
-                  'absolute top-1/2 h-2.5 w-2.5 -translate-y-1/2 rotate-45 border bg-white transition-all',
-                  side === 'left'
-                    ? '-right-[5px] border-l-0 border-b-0'
-                    : '-left-[5px] border-r-0 border-t-0',
-                )}
-                style={{
-                  borderColor: isActive ? themeHex : '#d4dfee',
-                  background: isActive ? `${themeHex}08` : '#fff',
-                }}
-              />
+              {!isExternal && (
+                <span
+                  className={clsx(
+                    'absolute top-1/2 h-2.5 w-2.5 -translate-y-1/2 rotate-45 border bg-white transition-all',
+                    side === 'left'
+                      ? '-right-[5px] border-l-0 border-b-0'
+                      : '-left-[5px] border-r-0 border-t-0',
+                  )}
+                  style={{
+                    borderColor: isActive ? themeHex : '#d4dfee',
+                    background: isActive ? `${themeHex}08` : '#fff',
+                  }}
+                />
+              )}
             </button>
           </div>
         );

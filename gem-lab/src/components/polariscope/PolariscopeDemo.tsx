@@ -115,6 +115,8 @@ export default function PolariscopeDemo({
   const sampleId = forcedSampleId ?? learningSampleId;
   const sample = SAMPLES_BY_ID[sampleId];
   const optical = sample?.characteristics.opticalCharacter;
+  const opaqueForStandardPolariscope = sample?.characteristics.transparency === '不透明';
+  const effectiveOptical = opaqueForStandardPolariscope ? undefined : optical;
 
   // 检测会话
   const setPolariscopeData = useDetection((s) => s.setPolariscope);
@@ -130,6 +132,16 @@ export default function PolariscopeDemo({
     allDark: false,
     allBright: false,
   });
+  const selectedPhenomenaCount = [
+    userPhenomena.fourBright,
+    userPhenomena.allDark,
+    userPhenomena.allBright,
+  ].filter(Boolean).length;
+  const canSave =
+    !!sample &&
+    !opaqueForStandardPolariscope &&
+    state.rotated &&
+    (mode === 'learning' || (selectedPhenomenaCount === 1 && userJudgement !== ''));
 
   // 观察窗尺寸自适应
   const obsZoneRef = useRef<HTMLDivElement>(null);
@@ -171,7 +183,7 @@ export default function PolariscopeDemo({
   // 旋转过程中记录亮/暗
   const { view: canvasView, brightness } = computePhenomenonBrightness(
     rotation,
-    optical,
+    effectiveOptical,
     state.polarPosition,
   );
 
@@ -183,9 +195,35 @@ export default function PolariscopeDemo({
 
   useEffect(() => {
     if (observed.has('bright') && observed.has('dark') && !state.rotated) {
-      setState((s) => ({ ...s, rotated: true }));
+      setState((s) => ({ ...s, rotated: true, recorded: false }));
     }
   }, [observed, state.rotated]);
+
+  const resetObservationState = () => {
+    setRotation01(0);
+    setAutoRotating(false);
+    setObserved(new Set());
+    setKnobReady(false);
+    setUserJudgement('');
+    setUserPhenomena({ fourBright: false, allDark: false, allBright: false });
+  };
+
+  const markRotationReady = () => {
+    setKnobReady(true);
+    setState((s) => (
+      s.power && s.crossed && s.sampleOn
+        ? { ...s, rotated: true, recorded: false }
+        : s
+    ));
+  };
+
+  const setSinglePhenomenon = (key: 'fourBright' | 'allDark' | 'allBright', checked: boolean) => {
+    setUserPhenomena({
+      fourBright: key === 'fourBright' ? checked : false,
+      allDark: key === 'allDark' ? checked : false,
+      allBright: key === 'allBright' ? checked : false,
+    });
+  };
 
   // 步骤
   const currentStep = computeCurrentStep(state);
@@ -205,34 +243,41 @@ export default function PolariscopeDemo({
   // 热点点击
   const handleHotpoint = (id: 'power' | 'upper' | 'stage') => {
     if (id === 'power') {
-      setState((s) => ({ ...s, power: !s.power }));
+      if (state.power) {
+        setState(INITIAL_STATE);
+        resetObservationState();
+      } else {
+        setState((s) => ({ ...s, power: true, recorded: false }));
+      }
     } else if (id === 'upper' && state.power) {
+      const nextPolarPosition = state.polarPosition === 'crossed' ? 'parallel' : 'crossed';
+      resetObservationState();
       setState((s) => ({
         ...s,
-        polarPosition: s.polarPosition === 'crossed' ? 'parallel' : 'crossed',
-        crossed: s.polarPosition === 'parallel' ? true : s.crossed,
+        polarPosition: nextPolarPosition,
+        crossed: nextPolarPosition === 'crossed',
+        rotated: false,
+        recorded: false,
       }));
     } else if (id === 'stage' && state.power) {
       if (!state.sampleOn) {
-        setState((s) => ({ ...s, sampleOn: true }));
+        resetObservationState();
+        setState((s) => ({ ...s, sampleOn: true, rotated: false, recorded: false }));
         setPreviewSampleId(sampleId);
       } else {
-        setState((s) => ({ ...s, sampleOn: false }));
+        resetObservationState();
+        setState((s) => ({ ...s, sampleOn: false, rotated: false, recorded: false }));
       }
     }
   };
 
   const handleReset = () => {
     setState(INITIAL_STATE);
-    setRotation01(0);
-    setAutoRotating(false);
-    setObserved(new Set());
-    setKnobReady(false);
-    setUserJudgement('');
-    setUserPhenomena({ fourBright: false, allDark: false, allBright: false });
+    resetObservationState();
   };
 
   const handleSave = () => {
+    if (!canSave) return;
     if (mode === 'detection') {
       let ph: 'four-bright-four-dark' | 'all-dark' | 'all-bright' | 'anomalous' | null = null;
       if (userPhenomena.fourBright) ph = 'four-bright-four-dark';
@@ -435,7 +480,7 @@ export default function PolariscopeDemo({
                     setAutoRotating(false);
                     setRotation01(v);
                   }}
-                  onReady={() => setKnobReady(true)}
+                  onReady={markRotationReady}
                   label="旋转载物台"
                   hint="拖动旋钮旋转样品"
                   ready={knobReady}
@@ -554,7 +599,7 @@ export default function PolariscopeDemo({
                   </summary>
                   <p className="max-h-24 overflow-y-auto px-2 pb-1 text-[10px] leading-relaxed text-ink-2">
                     将样品置于载物台中央，使光线从下方穿透。单眼俯视目镜，缓慢旋转载物台 360°，观察视场明暗变化次数。
-                    每旋转 90° 经历一次亮暗交替（共四明四暗）为非均质体；始终全暗为均质体；始终全亮为多晶质集合体。
+                    每旋转 90° 经历一次亮暗交替（共四明四暗）通常为非均质体；始终全暗为均质体；始终全亮多见于可透光的多晶质集合体。
                     须从 2–3 个不同方向重复测试，以排除光轴方向导致的全暗假象。
                   </p>
                 </details>
@@ -577,9 +622,9 @@ export default function PolariscopeDemo({
                       checked={
                         mode === 'detection'
                           ? userPhenomena.fourBright
-                          : (optical !== 'isotropic' && optical !== 'aggregate' && !!optical)
+                          : (!opaqueForStandardPolariscope && optical !== 'isotropic' && optical !== 'aggregate' && !!optical)
                       }
-                      onChange={(v) => setUserPhenomena({ ...userPhenomena, fourBright: v })}
+                      onChange={(v) => setSinglePhenomenon('fourBright', v)}
                       disabled={mode !== 'detection'}
                     />
                     <Checkbox
@@ -587,9 +632,9 @@ export default function PolariscopeDemo({
                       checked={
                         mode === 'detection'
                           ? userPhenomena.allDark
-                          : optical === 'isotropic'
+                          : (!opaqueForStandardPolariscope && optical === 'isotropic')
                       }
-                      onChange={(v) => setUserPhenomena({ ...userPhenomena, allDark: v })}
+                      onChange={(v) => setSinglePhenomenon('allDark', v)}
                       disabled={mode !== 'detection'}
                     />
                     <Checkbox
@@ -597,9 +642,9 @@ export default function PolariscopeDemo({
                       checked={
                         mode === 'detection'
                           ? userPhenomena.allBright
-                          : optical === 'aggregate'
+                          : (!opaqueForStandardPolariscope && optical === 'aggregate')
                       }
-                      onChange={(v) => setUserPhenomena({ ...userPhenomena, allBright: v })}
+                      onChange={(v) => setSinglePhenomenon('allBright', v)}
                       disabled={mode !== 'detection'}
                     />
                   </div>
@@ -622,7 +667,7 @@ export default function PolariscopeDemo({
                     <button
                       type="button"
                       onClick={handleSave}
-                      disabled={!state.rotated && mode === 'learning'}
+                      disabled={!canSave}
                       className="btn-primary flex-1 text-xs"
                       style={{ background: instrument.themeHex }}
                     >
@@ -644,7 +689,11 @@ export default function PolariscopeDemo({
                 {mode === 'learning' && state.sampleOn && sample && (
                   <div className="rounded-lg border border-amber-200 bg-amber-50 p-2 text-[10px] leading-relaxed text-amber-800">
                     <div className="mb-1 font-semibold">观察解析</div>
-                    {opticalHint}
+                    {opaqueForStandardPolariscope ? (
+                      <p>
+                        当前样品为<strong>不透明</strong>材料，标准偏光镜透射光性判定不适用。应改用折射仪点测、分光镜反射法或其他仪器交叉验证；不要把全暗或全亮直接记录为光性结论。
+                      </p>
+                    ) : opticalHint}
                   </div>
                 )}
               </div>

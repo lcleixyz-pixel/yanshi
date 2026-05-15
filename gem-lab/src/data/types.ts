@@ -87,7 +87,7 @@ export interface AbsorptionFeature {
 
 export interface GemCharacteristics {
   /** 折射率：单值（均质体）或区间（非均质体） */
-  refractiveIndex: number | [number, number] | 'over-1.81';
+  refractiveIndex: number | [number, number] | 'over-1.78';
   /** 双折射率 */
   birefringence?: number;
   /** 光学特征 */

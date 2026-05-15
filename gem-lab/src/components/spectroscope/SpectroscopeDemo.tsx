@@ -1,11 +1,9 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import HotPoint from '@/components/demo/HotPoint';
-import ObjectFitHotspotFrame from '@/components/demo/ObjectFitHotspotFrame';
 import StepGuide, { type DemoStep } from '@/components/demo/StepGuide';
-import RotationKnob from '@/components/refractometer/RotationKnob';
 import SpectrumStrip from '@/components/spectroscope/SpectrumStrip';
 import SpectroscopeIllumination from '@/components/spectroscope/SpectroscopeIllumination';
+import SpectroscopeWorkbench from '@/components/spectroscope/SpectroscopeWorkbench';
 import { INSTRUMENTS } from '@/data/instruments';
 import { SAMPLES, SAMPLES_BY_ID } from '@/data/samples';
 import type { SampleDef } from '@/data/types';
@@ -14,6 +12,7 @@ import { useProgress } from '@/store/progressStore';
 import clsx from '@/utils/clsx';
 
 type DemoMode = 'learning' | 'detection';
+type LightSource = 'fiber' | 'fluorescent';
 type StepId = 'power' | 'place' | 'pick-method' | 'align' | 'tune' | 'observe' | 'record';
 const STEP_ORDER: StepId[] = ['power', 'place', 'pick-method', 'align', 'tune', 'observe', 'record'];
 
@@ -35,18 +34,14 @@ const STEP_META: Record<StepId, { iconId: string; title: string; tip: string }> 
   record: { iconId: 'record', title: '保存数据', tip: '提交本次观察结果' },
 };
 
-/**
- * 热点坐标（相对仪器图 0–1）
- */
-const HOT_LAYOUT = {
-  hotpoint: {
-    light:    { x: 0.18, y: 0.30, side: 'left'  as const },
-    sample:   { x: 0.42, y: 0.62, side: 'left'  as const },
-    eyepiece: { x: 0.82, y: 0.18, side: 'right' as const },
-    slit:     { x: 0.78, y: 0.32, side: 'right' as const },
-    focus:    { x: 0.62, y: 0.42, side: 'right' as const },
-  },
-} as const;
+const INITIAL_ANGLE = 0.5;
+const METHOD_INITIAL_ANGLE: Record<SpectroscopeMethod, number> = {
+  transmission: INITIAL_ANGLE,
+  'internal-reflection': 0.5,
+  'surface-reflection': 40 / 90,
+};
+const INITIAL_SLIT_WIDTH = 0.72;
+const INITIAL_FOCUS = 0.2;
 
 interface DemoState {
   power: boolean;
@@ -84,11 +79,12 @@ export default function SpectroscopeDemo({
   const [state, setState] = useState<DemoState>(INITIAL_STATE);
 
   // 光路 / 调节
-  const [angle01, setAngle01] = useState(0.5);
-  const [slitWidth, setSlitWidth] = useState(0.35);
-  const [focus, setFocus] = useState(0.5);
+  const [angle01, setAngle01] = useState(INITIAL_ANGLE);
+  const [slitWidth, setSlitWidth] = useState(INITIAL_SLIT_WIDTH);
+  const [focus, setFocus] = useState(INITIAL_FOCUS);
   const [marks, setMarks] = useState<number[]>([]);
   const [dispersion, setDispersion] = useState<'prism' | 'grating'>('prism');
+  const [lightSource, setLightSource] = useState<LightSource>('fiber');
 
   // 弹窗
   const [showMethodPicker, setShowMethodPicker] = useState(false);
@@ -120,16 +116,31 @@ export default function SpectroscopeDemo({
   const slitOk = slitWidth >= 0.18 && slitWidth <= 0.45;
   const tuneScore = (focusOk ? 1 : 0) + (slitOk ? 1 : 0);
 
-  // 推进 aligned/tuned
+  // 推进 aligned/tuned，并在上游步骤失效时清理下游观测。
   useEffect(() => {
-    if (state.power && state.sampleOn && state.method && angleOk && !state.aligned) {
-      setState((s) => ({ ...s, aligned: true }));
+    const nextAligned = state.power && state.sampleOn && !!state.method && angleOk;
+    if (state.aligned !== nextAligned) {
+      setState((s) => ({
+        ...s,
+        aligned: nextAligned,
+        tuned: nextAligned ? s.tuned : false,
+        observed: nextAligned ? s.observed : false,
+        recorded: nextAligned ? s.recorded : false,
+      }));
+      if (!nextAligned) setMarks([]);
     }
   }, [state.power, state.sampleOn, state.method, angleOk, state.aligned]);
 
   useEffect(() => {
-    if (state.aligned && focusOk && slitOk && !state.tuned) {
-      setState((s) => ({ ...s, tuned: true }));
+    const nextTuned = state.aligned && focusOk && slitOk;
+    if (state.tuned !== nextTuned) {
+      setState((s) => ({
+        ...s,
+        tuned: nextTuned,
+        observed: nextTuned ? s.observed : false,
+        recorded: nextTuned ? s.recorded : false,
+      }));
+      if (!nextTuned) setMarks([]);
     }
   }, [state.aligned, focusOk, slitOk, state.tuned]);
 
@@ -164,8 +175,17 @@ export default function SpectroscopeDemo({
   const dispersionPenalty = dispersion === 'grating' ? 0.08 : 0;
   const noise = Math.min(0.95, baseNoise + mismatchPenalty + slitPenalty + focusPenalty + dispersionPenalty);
 
+  const validLightSource = lightSource === 'fiber';
+  const lightSourceLabel = validLightSource ? '光纤灯' : '日光灯';
   const showSpectrum = state.power && state.sampleOn && !!state.method && state.aligned;
-  const spectrumReady = showSpectrum && state.tuned;
+  const spectrumReady = showSpectrum && state.tuned && validLightSource;
+  const canSave = spectrumReady && marks.length > 0;
+
+  useEffect(() => {
+    if (validLightSource || (!marks.length && !state.observed && !state.recorded)) return;
+    setMarks([]);
+    setState((s) => ({ ...s, observed: false, recorded: false }));
+  }, [validLightSource, marks.length, state.observed, state.recorded]);
 
   // 观察窗尺寸自适应
   const obsZoneRef = useRef<HTMLDivElement>(null);
@@ -184,16 +204,56 @@ export default function SpectroscopeDemo({
   }, []);
 
   // 热点点击
+  const resetOptics = () => {
+    setAngle01(INITIAL_ANGLE);
+    setSlitWidth(INITIAL_SLIT_WIDTH);
+    setFocus(INITIAL_FOCUS);
+    setMarks([]);
+  };
+
+  const handleLightSourceChange = (next: LightSource) => {
+    setLightSource(next);
+    setMarks([]);
+    setState((s) => ({ ...s, observed: false, recorded: false }));
+  };
+
   const handleHotpoint = (id: 'light' | 'sample' | 'eyepiece' | 'slit' | 'focus') => {
     if (id === 'light') {
-      setState((s) => ({ ...s, power: !s.power }));
+      if (state.power) {
+        setState(INITIAL_STATE);
+        setShowMethodPicker(false);
+        resetOptics();
+      } else {
+        setState((s) => ({ ...s, power: true, recorded: false }));
+      }
     } else if (id === 'sample') {
       if (!state.power) return;
       if (!state.sampleOn) {
-        setState((s) => ({ ...s, sampleOn: true }));
+        resetOptics();
+        setState((s) => ({
+          ...s,
+          sampleOn: true,
+          method: null,
+          aligned: false,
+          tuned: false,
+          observed: false,
+          recorded: false,
+        }));
+        setShowMethodPicker(true);
+      } else if (!state.method) {
         setShowMethodPicker(true);
       } else {
-        setState((s) => ({ ...s, sampleOn: false, method: null, aligned: false, tuned: false }));
+        resetOptics();
+        setShowMethodPicker(false);
+        setState((s) => ({
+          ...s,
+          sampleOn: false,
+          method: null,
+          aligned: false,
+          tuned: false,
+          observed: false,
+          recorded: false,
+        }));
       }
     } else if (id === 'slit' || id === 'focus' || id === 'eyepiece') {
       // 视觉反馈：滚动到右侧调节面板（无操作）
@@ -201,28 +261,41 @@ export default function SpectroscopeDemo({
   };
 
   const handlePickMethod = (m: SpectroscopeMethod) => {
-    setState((s) => ({ ...s, method: m, aligned: m === 'transmission', tuned: false }));
+    resetOptics();
+    setState((s) => ({
+      ...s,
+      method: m,
+      aligned: m === 'transmission',
+      tuned: false,
+      observed: false,
+      recorded: false,
+    }));
     setShowMethodPicker(false);
-    setAngle01(m === 'internal-reflection' ? 0.5 : m === 'surface-reflection' ? 0.45 : 0.5);
+    setAngle01(METHOD_INITIAL_ANGLE[m]);
   };
 
   const handleAddMark = (wl: number) => {
     if (!spectrumReady) return;
     setMarks((m) => (m.includes(wl) ? m : [...m, wl].sort((a, b) => b - a)));
-    if (!state.observed) setState((s) => ({ ...s, observed: true }));
+    setState((s) => ({ ...s, observed: true, recorded: false }));
   };
-  const handleRemoveMark = (wl: number) => setMarks((m) => m.filter((x) => x !== wl));
+  const handleRemoveMark = (wl: number) => {
+    setMarks((m) => {
+      const next = m.filter((x) => x !== wl);
+      setState((s) => ({ ...s, observed: next.length > 0, recorded: false }));
+      return next;
+    });
+  };
 
   const handleReset = () => {
     setState(INITIAL_STATE);
-    setAngle01(0.5);
-    setSlitWidth(0.35);
-    setFocus(0.5);
-    setMarks([]);
+    resetOptics();
+    setLightSource('fiber');
     setShowMethodPicker(false);
   };
 
   const handleSave = () => {
+    if (!canSave) return;
     if (mode === 'detection') {
       setSpectroscopeData({
         method: state.method,
@@ -276,247 +349,94 @@ export default function SpectroscopeDemo({
         </button>
       </header>
 
-      <div className="flex min-h-0 flex-1">
+      <div className="flex min-h-0 flex-1 overflow-hidden">
         {/* 左：仪器交互 */}
-        <section className="relative flex-[3] overflow-hidden bg-gradient-to-br from-[#f6f9fd] via-white to-[#eef4fb] text-ink">
-          {/* 左上：模式 + 进度 + StepGuide */}
-          <div className="absolute left-3 top-3 z-20 w-[min(95%,24rem)] rounded-xl border border-line bg-white/90 p-2 shadow-card backdrop-blur">
-            <div className="grid grid-cols-2 gap-1">
-              <ModeBtn
-                active={mode === 'learning'}
-                themeHex={instrument.themeHex}
-                onClick={() => setMode('learning')}
-                icon="📖"
-                label="学习模式"
-              />
-              <ModeBtn
-                active={mode === 'detection'}
-                themeHex={instrument.themeHex}
-                onClick={() => !embedded && setMode('detection')}
-                icon={embedded ? '🔒' : '🎯'}
-                label="检测模式"
-                disabled={embedded}
-              />
-            </div>
-            <div className="mt-2 rounded-lg border border-line bg-white px-3 py-2">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-[10px] uppercase tracking-widest text-ink-4">Progress</span>
-                <span className="font-mono text-[11px] tabular-nums text-ink-2">{Math.round(progress)}%</span>
-              </div>
-              <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-200">
-                <div
-                  className="h-full rounded-full transition-all"
-                  style={{ width: `${progress}%`, background: instrument.themeHex }}
+        <section className="relative flex min-h-0 flex-[3] flex-col overflow-hidden bg-gradient-to-br from-[#f6f9fd] via-white to-[#eef4fb] text-ink">
+          <div className="z-20 grid shrink-0 gap-3 p-3 xl:grid-cols-[minmax(20rem,24rem)_1fr]">
+            <div className="rounded-xl border border-line bg-white/90 p-2 shadow-card backdrop-blur">
+              <div className="grid grid-cols-2 gap-1">
+                <ModeBtn
+                  active={mode === 'learning'}
+                  themeHex={instrument.themeHex}
+                  onClick={() => setMode('learning')}
+                  icon="📖"
+                  label="学习模式"
+                />
+                <ModeBtn
+                  active={mode === 'detection'}
+                  themeHex={instrument.themeHex}
+                  onClick={() => !embedded && setMode('detection')}
+                  icon={embedded ? '🔒' : '🎯'}
+                  label="检测模式"
+                  disabled={embedded}
                 />
               </div>
+              <div className="mt-2 rounded-lg border border-line bg-white px-3 py-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-ink-4">Progress</span>
+                  <span className="font-mono text-[11px] tabular-nums text-ink-2">{Math.round(progress)}%</span>
+                </div>
+                <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-200">
+                  <div
+                    className="h-full rounded-full transition-all"
+                    style={{ width: `${progress}%`, background: instrument.themeHex }}
+                  />
+                </div>
+              </div>
+              <div className="mt-2">
+                <StepGuide steps={stepsData} themeHex={instrument.themeHex} variant="inline" />
+              </div>
             </div>
-            <div className="mt-2">
-              <StepGuide steps={stepsData} themeHex={instrument.themeHex} variant="inline" />
+
+            <div className="flex flex-wrap content-start items-start justify-end gap-1.5">
+              {!embedded && mode === 'learning' && (
+                <div className="flex max-w-full flex-wrap items-center gap-2 rounded-lg border border-line bg-white/85 px-3 py-2 shadow-card backdrop-blur">
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-ink-4">演示样品</span>
+                  <select
+                    value={learningSampleId}
+                    onChange={(e) => {
+                      const nextId = e.target.value;
+                      setLearningSampleId(nextId);
+                      setShowSamplePreview(nextId);
+                      handleReset();
+                    }}
+                    className="rounded border border-line-2 bg-white px-2 py-1 text-xs"
+                  >
+                    {SAMPLES.filter((s) => s.spectrum.features.length > 0).map((s) => (
+                      <option key={s.id} value={s.id}>{s.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              <LightSourceToggle value={lightSource} onChange={handleLightSourceChange} themeHex={instrument.themeHex} />
+              <DispersionToggle value={dispersion} onChange={setDispersion} themeHex={instrument.themeHex} />
             </div>
           </div>
 
-          {/* 右上：演示样品 + 色散类型 */}
-          {!embedded && mode === 'learning' && (
-            <div className="absolute right-3 top-3 z-20 flex flex-col items-end gap-1.5">
-              <div className="flex items-center gap-2 rounded-lg border border-line bg-white/85 px-3 py-2 shadow-card backdrop-blur">
-                <span className="font-mono text-[10px] uppercase tracking-widest text-ink-4">演示样品</span>
-                <select
-                  value={learningSampleId}
-                  onChange={(e) => {
-                    const nextId = e.target.value;
-                    setLearningSampleId(nextId);
-                    setShowSamplePreview(nextId);
-                    handleReset();
-                  }}
-                  className="rounded border border-line-2 bg-white px-2 py-1 text-xs"
-                >
-                  {SAMPLES.filter((s) => s.spectrum.features.length > 0).map((s) => (
-                    <option key={s.id} value={s.id}>{s.name}</option>
-                  ))}
-                </select>
-              </div>
-              <DispersionToggle value={dispersion} onChange={setDispersion} themeHex={instrument.themeHex} />
-            </div>
-          )}
-
-          {/* 检测模式也支持色散切换 */}
-          {(embedded || mode === 'detection') && (
-            <div className="absolute right-3 top-3 z-20">
-              <DispersionToggle value={dispersion} onChange={setDispersion} themeHex={instrument.themeHex} />
-            </div>
-          )}
-
-          {/* 仪器图 + 热点 + 光路示意 */}
-          <div className="mx-auto flex h-full min-h-0 w-full items-center justify-center gap-4 p-3">
-            <div className="relative aspect-[4/3] h-full max-h-full w-full max-w-[min(100%,min(85dvh,68vw,52vw))]">
-              <ObjectFitHotspotFrame src={instrument.productImage} alt={instrument.name} className="h-full w-full">
-                {/* 光纤灯 */}
-                <HotPoint
-                  x={HOT_LAYOUT.hotpoint.light.x}
-                  y={HOT_LAYOUT.hotpoint.light.y}
-                  label={state.power ? '光纤灯（已开启）' : '光纤灯（关闭）'}
-                  sub={state.power ? '点击关闭' : '点击开启冷光源'}
-                  side={HOT_LAYOUT.hotpoint.light.side}
-                  themeHex={instrument.themeHex}
-                  status={state.power ? 'done' : currentStep === 'power' ? 'active' : 'disabled'}
-                  onClick={() => handleHotpoint('light')}
-                />
-                {/* 样品台 */}
-                <HotPoint
-                  x={HOT_LAYOUT.hotpoint.sample.x}
-                  y={HOT_LAYOUT.hotpoint.sample.y}
-                  label={state.sampleOn ? '样品已就位' : '样品台'}
-                  sub={!state.power ? '请先开光源' : state.sampleOn ? '点击移除样品' : '点击放置样品'}
-                  side={HOT_LAYOUT.hotpoint.sample.side}
-                  themeHex={instrument.themeHex}
-                  status={
-                    state.sampleOn
-                      ? 'done'
-                      : currentStep === 'place' && state.power
-                        ? 'active'
-                        : 'disabled'
-                  }
-                  onClick={() => handleHotpoint('sample')}
-                />
-                {/* 目镜 */}
-                <HotPoint
-                  x={HOT_LAYOUT.hotpoint.eyepiece.x}
-                  y={HOT_LAYOUT.hotpoint.eyepiece.y}
-                  label="目镜（观察窗）"
-                  sub="光谱在右侧实时显示"
-                  side={HOT_LAYOUT.hotpoint.eyepiece.side}
-                  themeHex={instrument.themeHex}
-                  status={spectrumReady ? 'done' : 'disabled'}
-                  onClick={() => handleHotpoint('eyepiece')}
-                />
-                {/* 狭缝 */}
-                <HotPoint
-                  x={HOT_LAYOUT.hotpoint.slit.x}
-                  y={HOT_LAYOUT.hotpoint.slit.y}
-                  label="狭缝调节"
-                  sub={!state.aligned ? '对准后启用' : slitOk ? '✓ 接近闭合' : '过宽 → 模糊'}
-                  side={HOT_LAYOUT.hotpoint.slit.side}
-                  themeHex={instrument.themeHex}
-                  status={slitOk && state.aligned ? 'done' : state.aligned ? 'active' : 'disabled'}
-                  onClick={() => handleHotpoint('slit')}
-                />
-                {/* 焦距 */}
-                <HotPoint
-                  x={HOT_LAYOUT.hotpoint.focus.x}
-                  y={HOT_LAYOUT.hotpoint.focus.y}
-                  label="焦距调节"
-                  sub={!state.aligned ? '对准后启用' : focusOk ? '✓ 已聚焦' : '调至最清晰'}
-                  side={HOT_LAYOUT.hotpoint.focus.side}
-                  themeHex={instrument.themeHex}
-                  status={focusOk && state.aligned ? 'done' : state.aligned ? 'active' : 'disabled'}
-                  onClick={() => handleHotpoint('focus')}
-                />
-              </ObjectFitHotspotFrame>
-            </div>
-
-            {/* 右：光路示意 + 角度旋钮 + 滑块 */}
-            <div className="flex shrink-0 flex-col items-stretch gap-2 self-stretch">
-              {/* 光路示意 */}
-              {state.method && state.sampleOn && (
-                <div className="rounded-xl border border-line bg-white/95 p-2 shadow-card backdrop-blur">
-                  <div className="mb-1 flex items-center justify-between">
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-ink-4">
-                      光路示意
-                    </span>
-                    <span
-                      className={clsx(
-                        'rounded-full px-1.5 py-0.5 text-[9px] font-bold',
-                        methodMatchOk
-                          ? 'bg-emerald-100 text-emerald-700'
-                          : 'bg-amber-100 text-amber-800',
-                      )}
-                    >
-                      {methodMatchOk ? '✓ 推荐方法' : '⚠ 慎用'}
-                    </span>
-                  </div>
-                  <div className="h-[160px] w-[300px]">
-                    <SpectroscopeIllumination
-                      method={state.method}
-                      angleDeg={angleDeg}
-                      lightOn={state.power}
-                      sampleOn={state.sampleOn}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* 角度旋钮 */}
-              {state.method && angleNeeded && state.sampleOn && state.power && (
-                <div className="rounded-xl border border-line bg-white/95 p-3 shadow-card backdrop-blur">
-                  <RotationKnob
-                    value={angle01}
-                    onChange={setAngle01}
-                    label={`入射角 ${angleDeg.toFixed(0)}°`}
-                    hint={state.method === 'internal-reflection' ? '推荐 35°–55°' : '推荐 25°–65°'}
-                    ready={angleOk}
-                    size={100}
-                    themeHex={instrument.themeHex}
-                  />
-                </div>
-              )}
-
-              {/* 狭缝 + 焦距 */}
-              {state.aligned && (
-                <div className="rounded-xl border border-line bg-white/95 p-3 shadow-card backdrop-blur">
-                  <SliderRow
-                    label="狭缝宽度"
-                    leftLabel="闭合"
-                    rightLabel="宽"
-                    value={slitWidth}
-                    onChange={setSlitWidth}
-                    ok={slitOk}
-                    okHint="接近闭合最清晰"
-                  />
-                  <div className="mt-2">
-                    <SliderRow
-                      label="焦距调节"
-                      leftLabel="近"
-                      rightLabel="远"
-                      value={focus}
-                      onChange={setFocus}
-                      ok={focusOk}
-                      okHint="居中位置"
-                    />
-                  </div>
-                  <div className="mt-2 flex items-center justify-between text-[11px]">
-                    <span className="text-ink-3">调节质量</span>
-                    <div className="flex items-center gap-1">
-                      {[1, 2].map((i) => (
-                        <span
-                          key={i}
-                          className={clsx(
-                            'h-1.5 w-12 rounded',
-                            tuneScore >= i ? 'bg-emerald-500' : 'bg-line-2',
-                          )}
-                        />
-                      ))}
-                      <span className="ml-1 font-mono text-ink-3">{tuneScore} / 2</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* 底部提示 */}
           {tip && (
-            <div className="absolute bottom-3 left-1/2 z-20 max-w-[min(96%,32rem)] -translate-x-1/2 rounded-full border border-line-2 bg-white/90 px-3 py-1.5 text-center text-xs text-ink-2 shadow-card backdrop-blur">
+            <div className="mx-3 mb-2 shrink-0 rounded-full border border-line-2 bg-white/90 px-3 py-1.5 text-center text-xs text-ink-2 shadow-card backdrop-blur">
               <span className="mr-1">💡</span>{tip}
             </div>
           )}
 
-          {/* 光源状态角标 */}
-          <div className="absolute bottom-3 left-3 rounded-lg border border-line bg-white/85 px-3 py-2 text-xs shadow-card backdrop-blur">
-            <div className="font-mono text-[10px] uppercase tracking-widest text-ink-4">光纤灯</div>
-            <div className={clsx('mt-0.5 flex items-center gap-1.5 font-semibold', state.power ? 'text-emerald-600' : 'text-slate-500')}>
-              <span className={clsx('h-2 w-2 rounded-full', state.power ? 'animate-soft-pulse bg-emerald-500' : 'bg-slate-400')} />
-              {state.power ? '已开启' : '已关闭'}
-            </div>
+          {/* 实操台：外置光源、样品与分光镜收光端的空间关系 */}
+          <div className="min-h-0 flex-1 px-3 pb-3">
+            <SpectroscopeWorkbench
+              instrumentImage={instrument.productImage}
+              method={state.method}
+              angleDeg={angleDeg}
+              power={state.power}
+              sampleOn={state.sampleOn}
+              aligned={state.aligned}
+              spectrumReady={spectrumReady}
+              slitOk={slitOk}
+              focusOk={focusOk}
+              currentStep={currentStep}
+              lightSourceLabel={lightSourceLabel}
+              validLightSource={validLightSource}
+              themeHex={instrument.themeHex}
+              onHotpoint={handleHotpoint}
+            />
           </div>
 
           {/* 方法选择弹窗 */}
@@ -532,6 +452,7 @@ export default function SpectroscopeDemo({
                 </p>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                   <MethodCard
+                    methodId="transmission"
                     active={state.method === 'transmission'}
                     recommend={recommendedMethod === 'transmission'}
                     title="透射光法"
@@ -544,6 +465,7 @@ export default function SpectroscopeDemo({
                     }
                   />
                   <MethodCard
+                    methodId="internal-reflection"
                     active={state.method === 'internal-reflection'}
                     recommend={recommendedMethod === 'internal-reflection'}
                     title="内反射光法"
@@ -556,6 +478,7 @@ export default function SpectroscopeDemo({
                     }
                   />
                   <MethodCard
+                    methodId="surface-reflection"
                     active={state.method === 'surface-reflection'}
                     recommend={recommendedMethod === 'surface-reflection'}
                     title="表面反射法"
@@ -626,7 +549,7 @@ export default function SpectroscopeDemo({
           {/* 上：光谱观察 */}
           <section
             ref={obsZoneRef}
-            className="flex min-h-0 flex-[3] flex-col border-b border-line-2/80 bg-gradient-to-b from-[#0c1d3a] to-[#0a172e] px-3 py-3 text-white"
+            className="flex min-h-0 flex-[3] flex-col overflow-y-auto border-b border-line-2/80 bg-gradient-to-b from-[#0c1d3a] to-[#0a172e] px-3 py-3 text-white"
           >
             <div className="mx-auto flex w-full min-w-0 max-w-4xl flex-1 flex-col items-stretch gap-2">
               <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-xs font-semibold">
@@ -645,6 +568,16 @@ export default function SpectroscopeDemo({
                   <span className="rounded-full bg-white/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest text-cyan-200">
                     {dispersion === 'prism' ? '棱镜式' : '光栅式'}
                   </span>
+                  <span
+                    className={clsx(
+                      'rounded-full px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest',
+                      validLightSource
+                        ? 'bg-emerald-500/15 text-emerald-200 ring-1 ring-emerald-400/30'
+                        : 'bg-amber-500/20 text-amber-200 ring-1 ring-amber-400/40',
+                    )}
+                  >
+                    {lightSourceLabel}
+                  </span>
                   {sample && spectrumReady && (
                     <span className="font-mono text-[9px] uppercase tracking-widest text-slate-300">
                       {sample.name}
@@ -658,6 +591,12 @@ export default function SpectroscopeDemo({
                 <div className="rounded-lg border border-amber-300/60 bg-amber-500/10 px-2 py-1 text-[10px] leading-tight text-amber-200">
                   ⚠ 与推荐方法（<strong>{methodLabel(recommendedMethod)}</strong>）不一致 —— 光谱清晰度下降，吸收特征对比度被衰减。
                   仅当切实需要时才使用反射类方法（透明度差、颗粒太小或颜色过浅）。
+                </div>
+              )}
+              {state.power && !validLightSource && (
+                <div className="rounded-lg border border-amber-300/60 bg-amber-500/10 px-2 py-1 text-[10px] leading-tight text-amber-200">
+                  ⚠ 当前为日光灯/节能灯类错误光源：它本身会出现离散亮线，容易被误记为宝石吸收特征。
+                  请切换回光纤灯/冷光源后再读谱和提交。
                 </div>
               )}
 
@@ -677,25 +616,60 @@ export default function SpectroscopeDemo({
 
               {!spectrumReady && (
                 <div className="mt-1 text-center text-[11px] text-slate-400">
-                  {!state.power
-                    ? '请先点击仪器图上的「光纤灯」开启冷光源'
-                    : !state.sampleOn
-                      ? '请放置样品'
-                      : !state.method
-                        ? '请选择照明方法'
-                        : !state.aligned
-                          ? state.method === 'internal-reflection'
-                            ? `请将入射角调至 35°–55°（当前 ${angleDeg.toFixed(0)}°）`
-                            : state.method === 'surface-reflection'
-                              ? `请将入射角调至 25°–65°（当前 ${angleDeg.toFixed(0)}°）`
-                              : '请等待对准…'
-                          : '请调节狭缝（接近闭合）与焦距至「合格」'}
+                  <div>
+                    {!state.power
+                      ? '请先点击仪器图上的「光纤灯」开启冷光源'
+                      : !state.sampleOn
+                        ? '请放置样品'
+                        : !state.method
+                          ? '请选择照明方法'
+                          : !state.aligned
+                            ? state.method === 'internal-reflection'
+                              ? `请将入射角调至 35°–55°（当前 ${angleDeg.toFixed(0)}°）`
+                              : state.method === 'surface-reflection'
+                                ? `请将入射角调至 25°–65°（当前 ${angleDeg.toFixed(0)}°）`
+                                : '请等待对准…'
+                            : !state.tuned
+                              ? '请调节狭缝（接近闭合）与焦距至「合格」'
+                              : !validLightSource
+                                ? '当前光源不适合读吸收光谱，请切换回光纤灯/冷光源'
+                                : '请调节狭缝（接近闭合）与焦距至「合格」'}
+                  </div>
+                  {state.sampleOn && !state.method && (
+                    <button
+                      type="button"
+                      onClick={() => setShowMethodPicker(true)}
+                      className="mt-2 rounded-md border border-cyan-300/50 bg-cyan-400/10 px-3 py-1 text-[11px] font-semibold text-cyan-100 hover:bg-cyan-400/20"
+                    >
+                      选择照明方法
+                    </button>
+                  )}
                 </div>
               )}
               {spectrumReady && (
                 <div className="text-center text-[10px] text-slate-300">
                   点击光谱条标记吸收线 · 点击红色标记可删除
                 </div>
+              )}
+
+              {state.method && state.sampleOn && state.power && (
+                <OpticsControlPanel
+                  method={state.method}
+                  angleNeeded={angleNeeded}
+                  angleDeg={angleDeg}
+                  angleValue={angle01}
+                  onAngleChange={setAngle01}
+                  angleOk={angleOk}
+                  aligned={state.aligned}
+                  slitWidth={slitWidth}
+                  onSlitWidthChange={setSlitWidth}
+                  slitOk={slitOk}
+                  focus={focus}
+                  onFocusChange={setFocus}
+                  focusOk={focusOk}
+                  tuneScore={tuneScore}
+                  themeHex={instrument.themeHex}
+                />
               )}
 
               {/* 当前方法操作要点 */}
@@ -783,7 +757,7 @@ export default function SpectroscopeDemo({
                   <button
                     type="button"
                     onClick={handleSave}
-                    disabled={!state.observed && marks.length === 0}
+                    disabled={!canSave}
                     className="btn-primary flex-1 text-xs"
                     style={{ background: instrument.themeHex }}
                   >
@@ -992,6 +966,193 @@ function ModeBtn({
   );
 }
 
+function OpticsControlPanel({
+  method,
+  angleNeeded,
+  angleDeg,
+  angleValue,
+  onAngleChange,
+  angleOk,
+  aligned,
+  slitWidth,
+  onSlitWidthChange,
+  slitOk,
+  focus,
+  onFocusChange,
+  focusOk,
+  tuneScore,
+  themeHex,
+}: {
+  method: SpectroscopeMethod;
+  angleNeeded: boolean;
+  angleDeg: number;
+  angleValue: number;
+  onAngleChange: (v: number) => void;
+  angleOk: boolean;
+  aligned: boolean;
+  slitWidth: number;
+  onSlitWidthChange: (v: number) => void;
+  slitOk: boolean;
+  focus: number;
+  onFocusChange: (v: number) => void;
+  focusOk: boolean;
+  tuneScore: number;
+  themeHex: string;
+}) {
+  return (
+    <div className="min-w-[260px] rounded-xl border border-cyan-200 bg-white p-3 text-ink shadow-soft">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <div>
+          <div className="text-xs font-semibold text-ink">{methodLabel(method)}调节</div>
+          <div className="mt-0.5 text-[10px] text-ink-3">
+            {method === 'transmission'
+              ? '样品出射光已锁定分光镜中轴'
+              : '先调入射角，再微调狭缝与焦距'}
+          </div>
+        </div>
+        <span
+          className={clsx(
+            'shrink-0 rounded px-1.5 py-0.5 font-mono text-[10px]',
+            aligned ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700',
+          )}
+        >
+          {aligned ? '光路合格' : '调光路'}
+        </span>
+      </div>
+
+      {angleNeeded && (
+        <AngleSlider
+          method={method}
+          value={angleValue}
+          onChange={onAngleChange}
+          angleDeg={angleDeg}
+          ok={angleOk}
+          themeHex={themeHex}
+        />
+      )}
+
+      {aligned && (
+        <div className={clsx(angleNeeded && 'mt-3 border-t border-line pt-3')}>
+          <SliderRow
+            label="狭缝宽度"
+            leftLabel="闭合"
+            rightLabel="宽"
+            value={slitWidth}
+            onChange={onSlitWidthChange}
+            ok={slitOk}
+            okHint="接近闭合最清晰"
+          />
+          <div className="mt-3">
+            <SliderRow
+              label="焦距调节"
+              leftLabel="近"
+              rightLabel="远"
+              value={focus}
+              onChange={onFocusChange}
+              ok={focusOk}
+              okHint="居中位置"
+            />
+          </div>
+          <div className="mt-3 flex items-center justify-between text-[11px]">
+            <span className="text-ink-3">调节质量</span>
+            <div className="flex items-center gap-1">
+              {[1, 2].map((i) => (
+                <span
+                  key={i}
+                  className={clsx(
+                    'h-1.5 w-12 rounded',
+                    tuneScore >= i ? 'bg-emerald-500' : 'bg-line-2',
+                  )}
+                />
+              ))}
+              <span className="ml-1 font-mono text-ink-3">{tuneScore} / 2</span>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AngleSlider({
+  method,
+  value,
+  onChange,
+  angleDeg,
+  ok,
+  themeHex,
+}: {
+  method: SpectroscopeMethod;
+  value: number;
+  onChange: (v: number) => void;
+  angleDeg: number;
+  ok: boolean;
+  themeHex: string;
+}) {
+  const hint = method === 'internal-reflection' ? '推荐 35°–55°' : '推荐 25°–65°';
+  return (
+    <div>
+      <div className="mb-1 flex items-center justify-between text-[11px]">
+        <span className="font-medium text-ink-2">入射角</span>
+        <span
+          className={clsx(
+            'rounded px-1.5 py-0.5 font-mono text-[10px]',
+            ok ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700',
+          )}
+        >
+          {angleDeg.toFixed(0)}° · {ok ? '合格' : hint}
+        </span>
+      </div>
+      <input
+        type="range"
+        min={0}
+        max={1}
+        step={0.01}
+        value={value}
+        onChange={(e) => onChange(parseFloat(e.target.value))}
+        className="h-2 w-full accent-cyan-500"
+        style={{ accentColor: themeHex }}
+        aria-label="入射角"
+      />
+      <div className="flex justify-between font-mono text-[10px] text-ink-4">
+        <span>0°</span>
+        <span>{hint}</span>
+        <span>90°</span>
+      </div>
+    </div>
+  );
+}
+
+function LightSourceToggle({
+  value,
+  onChange,
+  themeHex,
+}: {
+  value: LightSource;
+  onChange: (v: LightSource) => void;
+  themeHex: string;
+}) {
+  return (
+    <div className="flex items-center gap-1 rounded-lg border border-line bg-white/85 px-2 py-1.5 shadow-card backdrop-blur">
+      <span className="font-mono text-[10px] uppercase tracking-widest text-ink-4">光源</span>
+      {(['fiber', 'fluorescent'] as const).map((v) => (
+        <button
+          key={v}
+          type="button"
+          onClick={() => onChange(v)}
+          className={clsx(
+            'rounded px-2 py-0.5 text-[11px] font-medium transition',
+            value === v ? 'text-white shadow-card' : 'text-ink-3 hover:bg-slate-100',
+          )}
+          style={value === v ? { background: v === 'fiber' ? themeHex : '#d97706' } : {}}
+        >
+          {v === 'fiber' ? '光纤灯' : '日光灯'}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function DispersionToggle({
   value,
   onChange,
@@ -1059,8 +1220,9 @@ function SliderRow({
 }
 
 function MethodCard({
-  active, recommend, title, desc, suit, typicalSamples, sketch, onClick,
+  methodId, active, recommend, title, desc, suit, typicalSamples, sketch, onClick,
 }: {
+  methodId: SpectroscopeMethod;
   active: boolean;
   recommend: boolean;
   title: string;
@@ -1073,6 +1235,7 @@ function MethodCard({
   return (
     <button
       type="button"
+      data-method-card={methodId}
       onClick={onClick}
       className={clsx(
         'relative flex flex-col gap-2 rounded-xl border-2 p-3 text-left transition',

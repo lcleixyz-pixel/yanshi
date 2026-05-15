@@ -31,6 +31,7 @@ export default function KnowledgeBasePage() {
   if (!instrument) return <Navigate to="/" replace />;
 
   const otherInstruments = INSTRUMENT_LIST.filter((i) => i.id !== instrument.id);
+  const hasExternalComponents = instrument.components.some((c) => !c.position);
 
   return (
     <div className="min-h-screen bg-brand-50/40 text-ink">
@@ -146,7 +147,10 @@ export default function KnowledgeBasePage() {
           <section id="structure" className="scroll-mt-24">
             <SectionTitle index={2} title="结构讲解" themeHex={instrument.themeHex} />
             <p className="mb-5 max-w-3xl text-sm leading-relaxed text-ink-3">
-              点击或悬停产品图上的编号热点，查看每个部件的详细说明。下方列表与图示双向联动。
+              点击或悬停产品图上的编号热点，查看每个部件的详细说明。
+              {hasExternalComponents
+                ? ' 标记为外接附件的项目不在本体图片上，但会参与实际操作。'
+                : ' 下方列表与图示双向联动。'}
             </p>
             <ComponentDiagram
               productImage={instrument.productImage}

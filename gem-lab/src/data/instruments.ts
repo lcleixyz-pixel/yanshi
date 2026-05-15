@@ -21,7 +21,7 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
         '辅助宝石品种鉴别',
       ],
       limitations: [
-        '测量范围 1.35 – 1.81，超出无法读数',
+        '本演示默认使用 nD≈1.78 折射油；高于此值只能记录 > 1.780，无法直接给出精确 RI',
         '需要抛光良好的平面（刻面型）或弧面（弧面型）',
         '颗粒过小、未抛光、抛光差的宝石无法测试',
         '宝石颜色与透明度不影响测试',
@@ -71,7 +71,7 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
         name: '折射油（接触液）',
         shortDesc: '保证良好光学接触',
         description:
-          '由二碘甲烷加晶体硫制得，常见折射率 1.78（或加 18% 四碘乙烯达到 1.81）。用于消除棱镜与样品之间的空气，保证良好光学接触。',
+          '本演示按常规 nD≈1.78 折射油处理。折射油用于消除棱镜与样品之间的空气，保证良好光学接触；样品 RI 高于油液上限时只能判定为 > 1.780。',
         position: { x: 0.80, y: 0.55 },
         labelPosition: { y: 0.55 },
         labelSide: 'right',
@@ -327,19 +327,20 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
       {
         id: 'fiber-light',
         name: '光纤灯（冷光源）',
-        shortDesc: '强且无吸收特征的白光源',
+        shortDesc: '外接连续白光源，不属于分光镜本体',
         description:
-          '点光源经光导纤维（多次全反射）输出强而集中的连续光谱白光，本身无特征吸收。冷光源避免热量损伤宝石。日光灯 / 节能灯有发射谱线，绝不可替代。',
-        position: { x: 0.18, y: 0.30 },
+          '分光镜实操需要外接连续白光源。光纤灯经光导纤维输出强而集中的连续光谱白光，本身无特征吸收；冷光源也能避免热量损伤宝石。日光灯 / 节能灯有发射谱线，不能替代。',
+        labelPosition: { y: 0.18 },
         labelSide: 'left',
       },
       {
         id: 'objective',
-        name: '物镜（光源入口）',
-        shortDesc: '收集来自样品的光',
+        name: '入光端 / 狭缝',
+        shortDesc: '接收样品出射光并形成窄光束',
         description:
-          '物镜端正对待测样品。被宝石选择性吸收后的光由此进入分光镜，再经色散元件展开为光谱。物镜端与样品的相对位姿决定使用哪种照明法（透射 / 内反射 / 表面反射）。',
-        position: { x: 0.2, y: 0.78 },
+          '入光端对准待测样品，样品透射或反射后的光由此进入分光镜。狭缝控制进入仪器的光束宽度：接近闭合时谱线最锐，过宽会使吸收线/带边缘发糊，过窄则视场过暗。',
+        position: { x: 0.19, y: 0.73 },
+        labelPosition: { y: 0.72 },
         labelSide: 'left',
       },
       {
@@ -348,25 +349,18 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
         shortDesc: '将白光分解为连续光谱',
         description:
           '棱镜式：由一组光学接触的棱镜组成，透光性好、视场明亮，但色区分布不均——蓝紫区被相对扩展、红区被相对压缩，便于观察短波端但红区分辨率较低。光栅式：基于衍射光栅，色区线性等距、红区分辨率高，适合识别锆石 653.5 nm、稀土谱等红区谱线，但透光弱、需更强光源。教学常用棱镜式。',
-        position: { x: 0.5, y: 0.5 },
+        position: { x: 0.50, y: 0.52 },
+        labelPosition: { y: 0.48 },
         labelSide: 'left',
       },
       {
-        id: 'slit',
-        name: '狭缝调节',
-        shortDesc: '控制进光量与谱线锐度',
-        description:
-          '观察时由宽到窄缓慢收紧，至狭缝接近闭合时光谱最清晰，吸收线/带边缘最实。过宽 → 视场亮但谱线发糊；过窄 → 视场过暗。狭缝须保持清洁，灰尘会在光谱上拖出黑色水平线，易误判为吸收特征。',
-        position: { x: 0.78, y: 0.28 },
-        labelSide: 'right',
-      },
-      {
         id: 'focus',
-        name: '焦距调节',
-        shortDesc: '使光谱聚焦清晰',
+        name: '调焦 / 标尺窗口',
+        shortDesc: '使谱线清晰并辅助定位读数',
         description:
-          '调节内部物—像距，使吸收线/带边缘锐利。与狭缝宽度共同决定读数精度——焦距偏离 → 谱线虚化模糊；居中 → 边界最实。每次更换样品/方法后均应微调一次。',
-        position: { x: 0.6, y: 0.42 },
+          '调节内部物—像距，使吸收线/带边缘锐利；镜筒上的标尺窗口用于辅助重复调焦位置。焦距偏离时谱线虚化模糊，居中后边界最实。每次更换样品或照明方法后均应微调一次。',
+        position: { x: 0.74, y: 0.34 },
+        labelPosition: { y: 0.40 },
         labelSide: 'right',
       },
       {
@@ -375,7 +369,8 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
         shortDesc: '人眼贴近的观察端',
         description:
           '将眼睛贴近目镜端观察色散后的连续光谱及吸收特征。务必在暗背景、暗环境下观察，单眼对光轴；从红区扫至紫区记录主要吸收线/带的位置（nm）与强度。',
-        position: { x: 0.83, y: 0.16 },
+        position: { x: 0.78, y: 0.22 },
+        labelPosition: { y: 0.20 },
         labelSide: 'right',
       },
     ],
@@ -401,7 +396,7 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
             id: 3,
             iconId: 'align',
             title: '光纤灯从下方垂直入射宝石',
-            hint: '光纤灯—宝石—分光镜物镜呈一条同轴直线；微调样品位置至透光最强',
+            hint: '光纤灯—宝石—分光镜入光端呈一条同轴直线；微调样品位置至透光最强',
           },
           {
             id: 4,
@@ -443,7 +438,7 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
           {
             id: 4,
             iconId: 'align',
-            title: '分光镜物镜对准冠部出射的光亮点',
+            title: '分光镜入光端对准冠部出射的光亮点',
             hint: '在样品上方略偏对侧可见一明显亮点；微动分光镜对准并锁定',
           },
           {

@@ -384,7 +384,7 @@ export const SAMPLES: SampleDef[] = [
       description: '653.5 nm 是锆石的特征吸收线（铀致色）。',
     },
     detectionTips: [
-      'RI 超出折射仪量程（>1.81），表现为"负读数"',
+      'RI 超出本演示默认折射油上限（>1.780），表现为"负读数"',
       'DR 极大（≈ 0.059），重影现象明显',
     ],
   },
@@ -625,7 +625,7 @@ export const SAMPLES: SampleDef[] = [
     image: '/assets/samples/diamond.png',
     refractometerShape: 'faceted',
     characteristics: {
-      refractiveIndex: 'over-1.81',
+      refractiveIndex: 'over-1.78',
       opticalCharacter: 'isotropic',
       color: '无色 / 彩色',
       transparency: '透明',

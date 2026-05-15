@@ -1,7 +1,7 @@
 import type { GemCharacteristics, OpticalCharacter } from '@/data/types';
 
 export function formatRI(ri: GemCharacteristics['refractiveIndex']): string {
-  if (ri === 'over-1.81') return '> 1.81（超量程）';
+  if (ri === 'over-1.78') return '> 1.780（超折射油）';
   if (typeof ri === 'number') return ri.toFixed(3);
   return `${ri[0].toFixed(3)} – ${ri[1].toFixed(3)}`;
 }

@@ -5,6 +5,7 @@ import {
   OIL_REFRACTIVE_INDEX,
   RI_MAX,
   RI_MIN,
+  getSpotDisplayRi,
   getSpotTargetRi,
   isSpotBisected,
   riToY,
@@ -496,7 +497,7 @@ export default function ObservationWindow({
     if (!sample) return null;
     const ri = sample.characteristics.refractiveIndex;
     if (ri === 'over-1.78') return null;
-    return getSpotTargetRi(ri);
+    return getSpotDisplayRi(ri);
   })();
 
   // 是否处于"对半"可估读状态
@@ -636,7 +637,7 @@ export default function ObservationWindow({
           : view === 'over-range' && showReading
             ? <>&gt; 1.780<span className="ml-1 text-[9px] text-amber-300/70">nD</span></>
             : view === 'spot' && bisected && sampleBoundsRi != null
-              ? <>{sampleBoundsRi.toFixed(2)}<span className="ml-1 text-[9px] text-amber-300/70">nD</span></>
+              ? <span data-testid="refractometer-spot-reading">{sampleBoundsRi.toFixed(2)}<span className="ml-1 text-[9px] text-amber-300/70">nD</span></span>
               : <>&nbsp;</>
         }
       </div>

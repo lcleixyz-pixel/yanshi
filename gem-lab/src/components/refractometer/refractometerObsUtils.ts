@@ -29,6 +29,10 @@ export function getSpotTargetRi(ri: number | [number, number] | 'over-1.78'): nu
   return (ri[0] + ri[1]) / 2;
 }
 
+export function getSpotDisplayRi(ri: number | [number, number] | 'over-1.78'): number {
+  return Math.round(getSpotTargetRi(ri) * 100) / 100;
+}
+
 /**
  * 判断椭圆是否"对半"被边界平分（可估读两位小数）
  * toleranceRI：允许偏差，默认 0.009（约 0.01 精度的一半再宽一点）

@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import HotPoint from '@/components/demo/HotPoint';
 import ObjectFitHotspotFrame from '@/components/demo/ObjectFitHotspotFrame';
@@ -6,6 +6,11 @@ import StepGuide, { type DemoStep } from '@/components/demo/StepGuide';
 import ObservationWindow, {
   type RefractometerView,
 } from '@/components/refractometer/ObservationWindow';
+import {
+  getSpotDisplayRi,
+  RI_MAX,
+  RI_MIN,
+} from '@/components/refractometer/refractometerObsUtils';
 import { INSTRUMENTS } from '@/data/instruments';
 import { requiredRefractometerMethod, shapeLabelCn } from '@/data/refractometerSampleMethod';
 import { SAMPLES_BY_ID, SAMPLES } from '@/data/samples';
@@ -65,10 +70,12 @@ export default function RefractometerDemo({
   forcedSampleId,
   /** 检测流程内嵌时锁定模式与流程 */
   embedded = false,
+  qaReady = false,
   onDetectionComplete,
 }: {
   forcedSampleId?: string;
   embedded?: boolean;
+  qaReady?: boolean;
   onDetectionComplete?: () => void;
 }) {
   const instrument = INSTRUMENTS.refractometer;
@@ -84,6 +91,7 @@ export default function RefractometerDemo({
   const [previewSampleId, setPreviewSampleId] = useState<string | null>(null);
   const sampleId = forcedSampleId ?? learningSampleId;
   const sample = SAMPLES_BY_ID[sampleId];
+  const sampleLabel = mode === 'detection' ? '未知样品' : sample?.name;
   const isOverOilSample = sample ? isOverOilLimit(sample.characteristics.refractiveIndex) : false;
 
   // 检测会话
@@ -114,7 +122,9 @@ export default function RefractometerDemo({
   const requiredMethod = sample ? requiredRefractometerMethod(sample) : 'facet';
   const aniso = sample ? isAnisotropic(sample.characteristics.opticalCharacter) : false;
   const facetRecordUnlocked =
-    method !== 'facet'
+    isOverOilSample
+      ? state.observed
+      : method !== 'facet'
       ? true
       : !state.observed
         ? false
@@ -130,6 +140,26 @@ export default function RefractometerDemo({
 
   const showSampleKnob = method === 'facet' && state.sampleOn && showSampleSliderPanel;
   const showPolarizerKnob = method === 'facet' && state.observed && aniso && usePolarizer && view !== 'over-range' && showPolarizerSliderPanel;
+
+  useEffect(() => {
+    if (!qaReady || !sample) return;
+    const nextMethod = requiredRefractometerMethod(sample);
+    const spotRi = getSpotDisplayRi(sample.characteristics.refractiveIndex);
+    const nextUsesPolarizer = nextMethod === 'facet';
+    const nextAniso = isAnisotropic(sample.characteristics.opticalCharacter);
+    setMethod(nextMethod);
+    setUsePolarizer(nextUsesPolarizer);
+    setShowMethodPicker(false);
+    setShowPolarizerPicker(false);
+    setShowSampleSliderPanel(nextMethod === 'facet');
+    setShowPolarizerSliderPanel(nextMethod === 'facet');
+    setSpotSlider(Math.max(0, Math.min(1, (spotRi - RI_MIN) / (RI_MAX - RI_MIN))));
+    setFacetSample01(0.82);
+    setFacetPol01(0.72);
+    setFacetSampleReady(nextMethod === 'facet');
+    setFacetPolReady(nextUsesPolarizer && nextAniso);
+    setState({ power: true, oil: true, sampleOn: true, observed: true, recorded: false });
+  }, [qaReady, sample]);
 
   const stepsData: DemoStep[] = STEP_ORDER.map((id) => ({
     id: STEP_ORDER.indexOf(id) + 1,
@@ -215,9 +245,12 @@ export default function RefractometerDemo({
   const handleSave = () => {
     if (method === 'facet' && state.observed && !facetRecordUnlocked) return;
     if (mode === 'detection') {
-      const riMin = parseFloat(userRiMin);
-      const riMax = parseFloat(userRiMax) || riMin;
-      const bire = parseFloat(userBire) || 0;
+      const spotRi = sample && method === 'spot'
+        ? getSpotDisplayRi(sample.characteristics.refractiveIndex)
+        : null;
+      const riMin = spotRi ?? parseFloat(userRiMin);
+      const riMax = method === 'spot' ? riMin : parseFloat(userRiMax) || riMin;
+      const bire = method === 'spot' ? 0 : parseFloat(userBire) || 0;
       setRefractometerData({
         method,
         riMin: isOverOilSample ? null : isFinite(riMin) ? riMin : null,
@@ -290,6 +323,14 @@ export default function RefractometerDemo({
           <span className="font-display text-base text-white/70">
             - {mode === 'learning' ? '学习模式' : '检测模式'}
           </span>
+          {mode === 'detection' && sample && (
+            <span
+              className="rounded-full border border-white/15 bg-white/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-cyan-100"
+              data-testid="unknown-sample-label"
+            >
+              未知样品
+            </span>
+          )}
         </div>
         <button
           type="button"
@@ -628,14 +669,19 @@ export default function RefractometerDemo({
             className="flex min-h-0 flex-[3] flex-col border-b border-line-2/80 bg-gradient-to-b from-[#fff9d5] to-[#fff3a6] px-3 py-3 text-ink"
           >
             <div className="mx-auto flex w-full min-w-0 max-w-4xl flex-1 flex-col items-stretch gap-1.5">
-              <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 px-0.5 text-xs font-semibold text-ink">
-                <span>🔍 观察窗口</span>
-                <div className="flex flex-wrap items-center gap-2">
-                  {sample && state.observed && (
-                    <span className="font-mono text-[9px] uppercase tracking-widest text-ink-4">{sample.name}</span>
-                  )}
+                <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 px-0.5 text-xs font-semibold text-ink">
+                  <span>🔍 观察窗口</span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {sample && state.observed && (
+                      <span
+                        className="font-mono text-[9px] uppercase tracking-widest text-ink-4"
+                        data-testid={mode === 'detection' ? 'unknown-sample-label' : undefined}
+                      >
+                        {sampleLabel}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
               {!state.sampleOn && !forcedSampleId && (
                 <p className="px-0.5 text-[9px] text-ink-4">方法在「放置样品」弹窗中确认。</p>
               )}
@@ -712,7 +758,10 @@ export default function RefractometerDemo({
                   <div className="mb-1 text-xs font-semibold text-ink">📝 数据记录</div>
                   {mode === 'detection' && state.observed ? (
                     isOverOilSample ? (
-                      <div className="rounded-md border border-amber-200 bg-amber-50 px-2 py-1.5 text-[10px] leading-relaxed text-amber-800">
+                      <div
+                        className="rounded-md border border-amber-200 bg-amber-50 px-2 py-1.5 text-[10px] leading-relaxed text-amber-800"
+                        data-testid="refractometer-over-oil-note"
+                      >
                         视场仅见截止于 1.780 的阴影边界。该样品在折射仪下的记录与结论应为：
                         <strong> 折射率 {'>'} 1.780</strong>（超折射油，无法直接给出 RI 精确值）。
                       </div>
@@ -720,10 +769,12 @@ export default function RefractometerDemo({
                       <div className="space-y-1.5">
                         <DataInputRow
                           label="折射率读数"
-                          value={userRiMin}
+                          value={method === 'spot' && sample ? getSpotDisplayRi(sample.characteristics.refractiveIndex).toFixed(2) : userRiMin}
                           onChange={setUserRiMin}
                           unit="nD"
-                          placeholder={truthRI.min.toFixed(3)}
+                          placeholder={method === 'spot' && sample ? getSpotDisplayRi(sample.characteristics.refractiveIndex).toFixed(2) : truthRI.min.toFixed(3)}
+                          readOnly={method === 'spot'}
+                          testId="refractometer-record-ri"
                         />
                         {method === 'facet' && (
                           <DataInputRow
@@ -777,6 +828,7 @@ export default function RefractometerDemo({
                       type="button"
                       onClick={handleSave}
                       disabled={!state.observed || (method === 'facet' && !facetRecordUnlocked)}
+                      data-testid="refractometer-save"
                       className="btn-primary flex-1"
                       style={{ background: instrument.themeHex }}
                     >
@@ -963,12 +1015,16 @@ function DataInputRow({
   onChange,
   unit,
   placeholder,
+  readOnly = false,
+  testId,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   unit?: string;
   placeholder?: string;
+  readOnly?: boolean;
+  testId?: string;
 }) {
   return (
     <div className="flex items-center gap-2 text-xs">
@@ -979,7 +1035,12 @@ function DataInputRow({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="flex-1 rounded border border-line-2 px-2 py-1 font-mono text-sm focus:border-brand focus:outline-none"
+        readOnly={readOnly}
+        data-testid={testId}
+        className={clsx(
+          'flex-1 rounded border border-line-2 px-2 py-1 font-mono text-sm focus:border-brand focus:outline-none',
+          readOnly && 'bg-slate-50 text-ink-2',
+        )}
       />
       {unit && <span className="w-6 text-right text-ink-4">{unit}</span>}
     </div>

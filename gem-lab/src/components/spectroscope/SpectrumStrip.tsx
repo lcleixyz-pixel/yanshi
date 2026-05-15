@@ -26,6 +26,7 @@ export default function SpectrumStrip({
   dispersion = 'prism',
   showWavelengthScale = true,
   showFeatures = true,
+  showFeatureDescriptions = true,
   height = 80,
   interactive = true,
 }: {
@@ -42,6 +43,7 @@ export default function SpectrumStrip({
   dispersion?: 'prism' | 'grating';
   showWavelengthScale?: boolean;
   showFeatures?: boolean;
+  showFeatureDescriptions?: boolean;
   height?: number;
   interactive?: boolean;
 }) {
@@ -145,7 +147,11 @@ export default function SpectrumStrip({
                   opacity,
                   pointerEvents: 'none',
                 }}
-                title={`${f.wavelength}nm · ${f.description ?? ''}`}
+                title={
+                  showFeatureDescriptions && f.description
+                    ? `${f.wavelength}nm · ${f.description}`
+                    : `${f.wavelength}nm`
+                }
               />
             );
           })}

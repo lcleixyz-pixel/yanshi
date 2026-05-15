@@ -1,6 +1,6 @@
 # 宝石检测实训系统
 
-本仓库是一个用于宝石检测教学的半成品前端项目。当前远端版本已经覆盖到本地，仓库根目录主要负责包装脚本和保存原始素材；实际可运行的 Vite 应用位于 `gem-lab/`。
+本仓库是一个用于宝石检测教学的前端演示交付版项目。当前阶段只交付浏览器内运行的教学体验，不包含后端服务、账号体系、班级管理或云端评分。仓库根目录主要负责包装脚本和保存原始素材；实际可运行的 Vite 应用位于 `gem-lab/`。
 
 ## 当前实现状态
 
@@ -13,10 +13,10 @@
 - 命名评估页面，根据当前检测会话生成候选答案和反馈。
 - 学习进度持久化，包括知识库访问、演示完成、检测历史和积分。
 
-仍属于半成品的部分：
+当前交付边界：
 
 - 当前没有后端服务、账号体系、班级管理或云端评分。
-- 当前没有 Vitest、Playwright 等自动化测试配置。
+- 当前加入了 Playwright 路由烟测和 GitHub Actions 构建检查，用于保障核心页面可打开。
 - 命名评估和仪器交互以教学演示为主，不应直接作为真实鉴定结论。
 - 部分资源和设计说明来自历史需求输入，实际运行资源以 `gem-lab/public/assets/` 为准。
 
@@ -74,6 +74,7 @@ npm run install:lab   # 安装 gem-lab 依赖
 npm run dev           # 启动开发服务器
 npm run build         # 生产构建
 npm run preview       # 预览构建产物
+npm run test:smoke --prefix gem-lab  # 运行核心页面烟测
 ```
 
 应用目录脚本：
@@ -85,6 +86,7 @@ npm install
 npm run dev
 npm run build
 npm run preview
+npm run test:smoke
 npm run prepare-assets
 ```
 
@@ -92,17 +94,21 @@ npm run prepare-assets
 
 - `npm run build` 会执行 TypeScript 项目引用构建和 Vite 生产构建。
 - `npm run preview` 默认使用 Vite preview，端口为 `4173`。
+- `npm run test:smoke` 会通过 Playwright 启动生产预览并检查核心路由是否正常渲染。
 - `npm run prepare-assets` 会把根目录中文素材规范化复制到 `gem-lab/public/assets/`，并切分步骤/状态图标。
 
 ## 项目结构
 
 ```text
 yanshi/
+├── .github/workflows/        # GitHub Actions 构建和烟测配置
 ├── package.json              # 根目录包装脚本
 ├── 设计.md                    # 历史设计/需求输入，不完全等同当前实现
 ├── gem-lab/                  # 实际前端应用
 │   ├── package.json          # 应用依赖和脚本
+│   ├── playwright.config.ts  # Playwright 烟测配置
 │   ├── src/                  # React + TypeScript 源码
+│   ├── tests/                # 核心页面烟测
 │   ├── public/assets/        # 运行时静态资源
 │   ├── scripts/              # 素材准备脚本
 │   └── vite.config.ts        # Vite 配置
@@ -135,20 +141,38 @@ yanshi/
 - React Router 6
 - Zustand
 - Framer Motion
+- Playwright 路由烟测
 - Sharp / tsx 用于素材准备脚本
 
-## 验证建议
+## 自动化验证
 
-当前项目没有自动化测试套件。交接或改动后建议至少执行：
+GitHub Actions 会在推送到 `main` 或向 `main` 发起 Pull Request 时运行：
+
+```bash
+npm ci --prefix gem-lab
+npm run build
+npx playwright install --with-deps chromium
+npm run test:smoke --prefix gem-lab
+```
+
+本地交接或改动后建议至少执行：
+
+```bash
+cd /Users/lc.leixyz/Desktop/yanshi
+npm run build
+npm run test:smoke --prefix gem-lab
+```
+
+如果本地首次运行烟测时提示缺少浏览器，请执行：
 
 ```bash
 cd /Users/lc.leixyz/Desktop/yanshi/gem-lab
-npm exec tsc -- -p tsconfig.app.json --noEmit --pretty false
-npm exec tsc -- -p tsconfig.node.json --noEmit --pretty false
-npm exec vite -- build
+npx playwright install chromium
 ```
 
-再启动前端，手动验证：
+## 手动验收清单
+
+自动化检查通过后，再启动前端并手动验证：
 
 - 首页是否显示工作台标题、三件仪器入口、样品盘入口和进度区。
 - 新手引导是否可以关闭。
@@ -161,5 +185,5 @@ npm exec vite -- build
 
 - 本项目当前只覆盖前端教学演示，没有数据提交、登录、教师端或报表能力。
 - 学习进度保存在浏览器本地持久化存储中，换浏览器或清理站点数据后会丢失。
-- 当前没有自动化回归测试；前端改动后需要结合手动浏览器验证。
+- 当前自动化测试只覆盖核心路由烟测；完整操作流程仍需要结合手动浏览器验证。
 - 部分页面面向桌面端体验设计，移动端适配没有作为当前版本的主目标。

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import clsx from '@/utils/clsx';
 import type { InstrumentMethod } from '@/data/types';
 
@@ -10,7 +10,15 @@ export default function MethodTabs({
   themeHex?: string;
 }) {
   const [activeId, setActiveId] = useState(methods[0]?.id);
-  const active = methods.find((m) => m.id === activeId)!;
+  const active = methods.find((m) => m.id === activeId) ?? methods[0];
+
+  useEffect(() => {
+    if (!methods.some((m) => m.id === activeId)) {
+      setActiveId(methods[0]?.id);
+    }
+  }, [activeId, methods]);
+
+  if (!active) return null;
 
   return (
     <div className="overflow-hidden rounded-2xl bg-white ring-1 ring-line">

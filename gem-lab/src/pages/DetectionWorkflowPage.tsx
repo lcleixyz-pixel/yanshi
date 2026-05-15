@@ -365,7 +365,9 @@ export default function DetectionWorkflowPage() {
                       <DataLine
                         label="光性判定"
                         value={
-                          session.polariscope.optical === 'isotropic'
+                          session.polariscope.notes
+                            ? session.polariscope.notes
+                            : session.polariscope.optical === 'isotropic'
                             ? '均质体'
                             : session.polariscope.optical === 'anisotropic'
                               ? '非均质体'
@@ -389,6 +391,8 @@ export default function DetectionWorkflowPage() {
                         value={
                           session.spectroscope.markedLines.length > 0
                             ? session.spectroscope.markedLines.map((w) => `${w}nm`).join(' / ')
+                            : session.spectroscope.notes
+                              ? session.spectroscope.notes
                             : '—'
                         }
                       />

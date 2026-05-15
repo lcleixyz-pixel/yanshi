@@ -67,10 +67,12 @@ const INITIAL_STATE: DemoState = {
 export default function SpectroscopeDemo({
   forcedSampleId,
   embedded = false,
+  qaReady = false,
   onDetectionComplete,
 }: {
   forcedSampleId?: string;
   embedded?: boolean;
+  qaReady?: boolean;
   onDetectionComplete?: () => void;
 }) {
   const instrument = INSTRUMENTS.spectroscope;
@@ -94,8 +96,10 @@ export default function SpectroscopeDemo({
   const [learningSampleId, setLearningSampleId] = useState('ruby');
   const sampleId = forcedSampleId ?? learningSampleId;
   const sample = SAMPLES_BY_ID[sampleId];
+  const sampleLabel = mode === 'detection' ? '未知样品' : sample?.name;
   const features = sample?.spectrum.features ?? [];
   const recommendedMethod = sample ? recommendMethod(sample) : 'transmission';
+  const [noAbsorption, setNoAbsorption] = useState(false);
 
   // 检测会话
   const setSpectroscopeData = useDetection((s) => s.setSpectroscope);
@@ -179,11 +183,33 @@ export default function SpectroscopeDemo({
   const lightSourceLabel = validLightSource ? '光纤灯' : '日光灯';
   const showSpectrum = state.power && state.sampleOn && !!state.method && state.aligned;
   const spectrumReady = showSpectrum && state.tuned && validLightSource;
-  const canSave = spectrumReady && marks.length > 0;
+  const canSave = spectrumReady && (marks.length > 0 || noAbsorption);
+
+  useEffect(() => {
+    if (!qaReady || !sample) return;
+    const method = recommendMethod(sample);
+    setLightSource('fiber');
+    setState({
+      power: true,
+      sampleOn: true,
+      method,
+      aligned: true,
+      tuned: true,
+      observed: false,
+      recorded: false,
+    });
+    setAngle01(METHOD_INITIAL_ANGLE[method]);
+    setSlitWidth(0.32);
+    setFocus(0.5);
+    setMarks([]);
+    setNoAbsorption(false);
+    setShowMethodPicker(false);
+  }, [qaReady, sample]);
 
   useEffect(() => {
     if (validLightSource || (!marks.length && !state.observed && !state.recorded)) return;
     setMarks([]);
+    setNoAbsorption(false);
     setState((s) => ({ ...s, observed: false, recorded: false }));
   }, [validLightSource, marks.length, state.observed, state.recorded]);
 
@@ -209,11 +235,13 @@ export default function SpectroscopeDemo({
     setSlitWidth(INITIAL_SLIT_WIDTH);
     setFocus(INITIAL_FOCUS);
     setMarks([]);
+    setNoAbsorption(false);
   };
 
   const handleLightSourceChange = (next: LightSource) => {
     setLightSource(next);
     setMarks([]);
+    setNoAbsorption(false);
     setState((s) => ({ ...s, observed: false, recorded: false }));
   };
 
@@ -276,15 +304,27 @@ export default function SpectroscopeDemo({
 
   const handleAddMark = (wl: number) => {
     if (!spectrumReady) return;
+    setNoAbsorption(false);
     setMarks((m) => (m.includes(wl) ? m : [...m, wl].sort((a, b) => b - a)));
     setState((s) => ({ ...s, observed: true, recorded: false }));
   };
   const handleRemoveMark = (wl: number) => {
     setMarks((m) => {
       const next = m.filter((x) => x !== wl);
-      setState((s) => ({ ...s, observed: next.length > 0, recorded: false }));
+      setState((s) => ({ ...s, observed: next.length > 0 || noAbsorption, recorded: false }));
       return next;
     });
+  };
+
+  const handleNoAbsorptionChange = (checked: boolean) => {
+    if (!spectrumReady) return;
+    setNoAbsorption(checked);
+    if (checked) {
+      setMarks([]);
+      setState((s) => ({ ...s, observed: true, recorded: false }));
+    } else {
+      setState((s) => ({ ...s, observed: marks.length > 0, recorded: false }));
+    }
   };
 
   const handleReset = () => {
@@ -299,8 +339,9 @@ export default function SpectroscopeDemo({
     if (mode === 'detection') {
       setSpectroscopeData({
         method: state.method,
-        markedLines: marks,
+        markedLines: noAbsorption ? [] : marks,
         bandRanges: [],
+        notes: noAbsorption ? '无明显特征吸收' : '',
       });
       markInstrument('spectroscope');
       onDetectionComplete?.();
@@ -339,6 +380,14 @@ export default function SpectroscopeDemo({
           <span className="font-display text-base text-white/70">
             - {mode === 'learning' ? '学习模式' : '检测模式'}
           </span>
+          {mode === 'detection' && sample && (
+            <span
+              className="rounded-full border border-white/15 bg-white/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-cyan-100"
+              data-testid="unknown-sample-label"
+            >
+              未知样品
+            </span>
+          )}
         </div>
         <button
           type="button"
@@ -446,7 +495,7 @@ export default function SpectroscopeDemo({
                 <div className="mb-1 text-sm font-semibold text-ink">选择照明方法</div>
                 <p className="mb-3 text-xs leading-relaxed text-ink-3">
                   根据样品的<strong>透明度</strong>、<strong>颜色深浅</strong>、<strong>颗粒大小</strong>选择。
-                  当前样品「<strong>{sample.name}</strong>」（{sample.characteristics.transparency}，{sample.characteristics.color}），
+                  当前样品「<strong>{sampleLabel}</strong>」（{sample.characteristics.transparency}，{sample.characteristics.color}），
                   系统推荐 <strong>{methodLabel(recommendedMethod)}</strong>——{methodReasonForSample(sample, recommendedMethod)}。
                   错配方法会显示「慎用」并使光谱质量明显下降。
                 </p>
@@ -579,8 +628,11 @@ export default function SpectroscopeDemo({
                     {lightSourceLabel}
                   </span>
                   {sample && spectrumReady && (
-                    <span className="font-mono text-[9px] uppercase tracking-widest text-slate-300">
-                      {sample.name}
+                    <span
+                      className="font-mono text-[9px] uppercase tracking-widest text-slate-300"
+                      data-testid={mode === 'detection' ? 'unknown-sample-label' : undefined}
+                    >
+                      {sampleLabel}
                     </span>
                   )}
                 </div>
@@ -610,6 +662,7 @@ export default function SpectroscopeDemo({
                 noise={spectrumReady ? noise : 0.6}
                 dispersion={dispersion}
                 showFeatures={spectrumReady}
+                showFeatureDescriptions={mode === 'learning'}
                 height={obsHeight}
                 interactive={spectrumReady}
               />
@@ -680,7 +733,7 @@ export default function SpectroscopeDemo({
                     <span className="ml-1 text-[9px] text-cyan-300/80">▼ 展开</span>
                   </summary>
                   <p className="px-2 pb-1 text-[10px] leading-relaxed text-cyan-50/95">
-                    {operationHint(state.method)}
+                    {operationHint(state.method, mode)}
                   </p>
                 </details>
               )}
@@ -736,6 +789,24 @@ export default function SpectroscopeDemo({
                     </span>
                   ))}
                 </div>
+                <label className="mt-2 flex items-center gap-2 rounded-md border border-line bg-slate-50 px-2 py-1.5 text-xs text-ink-2">
+                  <input
+                    type="checkbox"
+                    checked={noAbsorption}
+                    disabled={!spectrumReady}
+                    onChange={(e) => handleNoAbsorptionChange(e.target.checked)}
+                    data-testid="spectroscope-no-absorption"
+                  />
+                  无特征吸收
+                </label>
+                {noAbsorption && (
+                  <div
+                    className="mt-1.5 rounded-md bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700 ring-1 ring-emerald-200"
+                    data-testid="spectroscope-no-absorption-summary"
+                  >
+                    已记录：无明显特征吸收
+                  </div>
+                )}
 
                 {/* 学习模式：致色元素解析 */}
                 {mode === 'learning' && elementAnalysis && spectrumReady && (
@@ -758,6 +829,7 @@ export default function SpectroscopeDemo({
                     type="button"
                     onClick={handleSave}
                     disabled={!canSave}
+                    data-testid="spectroscope-save"
                     className="btn-primary flex-1 text-xs"
                     style={{ background: instrument.themeHex }}
                   >
@@ -783,7 +855,9 @@ export default function SpectroscopeDemo({
                   <li><strong>不要用手指直接持小宝石</strong>，手指血液在 <strong>592 nm</strong> 有吸收线。</li>
                   <li>狭缝<strong>由宽到窄</strong>缓慢收紧，至光谱最清晰；保持狭缝清洁（灰尘形成水平黑线易误判）。</li>
                   <li>颜色越深、透明度越好，光谱越清晰；建议在<strong>暗背景下</strong>观察。</li>
-                  <li>吸收谱并非万能：天然 vs 合成红宝石的吸收谱几乎一致，需配合其他仪器。</li>
+                  <li>
+                    吸收谱并非万能：部分天然与合成同类宝石的吸收谱可能高度相似，需配合其他仪器。
+                  </li>
                 </ul>
               </div>
             </div>
@@ -837,14 +911,16 @@ function methodLabel(m: SpectroscopeMethod): string {
   }
 }
 
-function operationHint(m: SpectroscopeMethod): string {
+function operationHint(m: SpectroscopeMethod, mode: DemoMode): string {
   switch (m) {
     case 'transmission':
       return '将宝石置于带小孔的黑板（锁光圈）上，光从下方垂直穿透样品。光纤灯—宝石—分光镜呈一条同轴直线；不要用手指持拿小宝石（手指血液在 592 nm 有吸收线，会污染光谱）。狭缝由宽到窄缓慢收紧，至吸收线/带的边缘最实最清晰再读数。读数从红区扫到紫区，记录主要特征位置。';
     case 'internal-reflection':
       return '宝石台面向下置于黑色背景，亭部朝上；光纤灯从冠部一侧斜射，与分光镜约成 45° 夹角。光从冠部进入 → 亭部刻面全反射 → 从冠部另一侧出射进入分光镜，光程被延长 1.5–2 倍。颜色浅时狭缝可稍宽以保证亮度。该法适合识别较弱的特征吸收，但定位读数误差大于透射法，弱线建议留疑。';
     case 'surface-reflection':
-      return '抛光面朝上，置于黑色背景；光纤灯调到合适角度使尽量多的白光从样品表面反射进入分光镜（入射角 = 反射角，先在 30°–60° 范围试探最强反射方向）。表面越光滑反射越强，反射光通常较弱，狭缝可稍宽换取亮度。翡翠在红光区 630–660–690 nm 处的三阶梯吸收带是经典识别特征——天然显清晰阶梯，染色仅显模糊宽带。';
+      return mode === 'detection'
+        ? '抛光面朝上，置于黑色背景；光纤灯调到合适角度使尽量多的白光从样品表面反射进入分光镜（入射角 = 反射角，先在 30°–60° 范围试探最强反射方向）。表面越光滑反射越强，反射光通常较弱，狭缝可稍宽换取亮度。检测模式下只记录观察到的吸收线/带，不显示样品身份提示。'
+        : '抛光面朝上，置于黑色背景；光纤灯调到合适角度使尽量多的白光从样品表面反射进入分光镜（入射角 = 反射角，先在 30°–60° 范围试探最强反射方向）。表面越光滑反射越强，反射光通常较弱，狭缝可稍宽换取亮度。翡翠在红光区 630–660–690 nm 处的三阶梯吸收带是经典识别特征——天然显清晰阶梯，染色仅显模糊宽带。';
   }
 }
 

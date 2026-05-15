@@ -88,10 +88,12 @@ const INITIAL_STATE: DemoState = {
 export default function PolariscopeDemo({
   forcedSampleId,
   embedded = false,
+  qaReady = false,
   onDetectionComplete,
 }: {
   forcedSampleId?: string;
   embedded?: boolean;
+  qaReady?: boolean;
   onDetectionComplete?: () => void;
 }) {
   const instrument = INSTRUMENTS.polariscope;
@@ -114,6 +116,7 @@ export default function PolariscopeDemo({
   const [previewSampleId, setPreviewSampleId] = useState<string | null>(null);
   const sampleId = forcedSampleId ?? learningSampleId;
   const sample = SAMPLES_BY_ID[sampleId];
+  const sampleLabel = mode === 'detection' ? '未知样品' : sample?.name;
   const optical = sample?.characteristics.opticalCharacter;
   const opaqueForStandardPolariscope = sample?.characteristics.transparency === '不透明';
   const effectiveOptical = opaqueForStandardPolariscope ? undefined : optical;
@@ -137,11 +140,45 @@ export default function PolariscopeDemo({
     userPhenomena.allDark,
     userPhenomena.allBright,
   ].filter(Boolean).length;
+  const opaqueDetectionReady = mode === 'detection' && opaqueForStandardPolariscope && state.sampleOn;
   const canSave =
     !!sample &&
-    !opaqueForStandardPolariscope &&
-    state.rotated &&
-    (mode === 'learning' || (selectedPhenomenaCount === 1 && userJudgement !== ''));
+    (opaqueDetectionReady ||
+      (!opaqueForStandardPolariscope &&
+        state.rotated &&
+        (mode === 'learning' || (selectedPhenomenaCount === 1 && userJudgement !== ''))));
+
+  useEffect(() => {
+    if (!qaReady || !sample) return;
+    const nextPhenomena = opaqueForStandardPolariscope
+      ? { fourBright: false, allDark: false, allBright: false }
+      : optical === 'isotropic'
+        ? { fourBright: false, allDark: true, allBright: false }
+        : optical === 'aggregate'
+          ? { fourBright: false, allDark: false, allBright: true }
+          : { fourBright: true, allDark: false, allBright: false };
+    setState({
+      power: true,
+      polarPosition: 'crossed',
+      crossed: true,
+      sampleOn: true,
+      rotated: true,
+      recorded: false,
+    });
+    setObserved(new Set(['bright', 'dark']));
+    setKnobReady(true);
+    setAutoRotating(false);
+    setUserPhenomena(nextPhenomena);
+    setUserJudgement(
+      opaqueForStandardPolariscope
+        ? ''
+        : optical === 'isotropic'
+          ? 'isotropic'
+          : optical === 'aggregate'
+            ? 'aggregate'
+            : 'anisotropic',
+    );
+  }, [qaReady, sample, optical, opaqueForStandardPolariscope]);
 
   // 观察窗尺寸自适应
   const obsZoneRef = useRef<HTMLDivElement>(null);
@@ -263,7 +300,9 @@ export default function PolariscopeDemo({
       if (!state.sampleOn) {
         resetObservationState();
         setState((s) => ({ ...s, sampleOn: true, rotated: false, recorded: false }));
-        setPreviewSampleId(sampleId);
+        if (mode === 'learning') {
+          setPreviewSampleId(sampleId);
+        }
       } else {
         resetObservationState();
         setState((s) => ({ ...s, sampleOn: false, rotated: false, recorded: false }));
@@ -283,7 +322,12 @@ export default function PolariscopeDemo({
       if (userPhenomena.fourBright) ph = 'four-bright-four-dark';
       else if (userPhenomena.allBright) ph = 'all-bright';
       else if (userPhenomena.allDark) ph = 'all-dark';
-      setPolariscopeData({ rotation, phenomenon: ph, optical: userJudgement || null });
+      setPolariscopeData({
+        rotation,
+        phenomenon: opaqueForStandardPolariscope ? null : ph,
+        optical: opaqueForStandardPolariscope ? null : userJudgement || null,
+        notes: opaqueForStandardPolariscope ? '不透明样品，标准偏光镜透射法不适用' : '',
+      });
       markInstrument('polariscope');
       onDetectionComplete?.();
     }
@@ -322,6 +366,14 @@ export default function PolariscopeDemo({
           <span className="font-display text-base text-white/70">
             - {mode === 'learning' ? '学习模式' : '检测模式'}
           </span>
+          {mode === 'detection' && sample && (
+            <span
+              className="rounded-full border border-white/15 bg-white/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-cyan-100"
+              data-testid="unknown-sample-label"
+            >
+              未知样品
+            </span>
+          )}
         </div>
         <button
           type="button"
@@ -569,8 +621,11 @@ export default function PolariscopeDemo({
                 <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold text-ink">
                   <span>🔍 观察窗口</span>
                   {sample && state.sampleOn && (
-                    <span className="font-mono text-[9px] uppercase tracking-widest text-ink-4">
-                      {sample.name}
+                    <span
+                      className="font-mono text-[9px] uppercase tracking-widest text-ink-4"
+                      data-testid={mode === 'detection' ? 'unknown-sample-label' : undefined}
+                    >
+                      {sampleLabel}
                     </span>
                   )}
                 </div>
@@ -613,6 +668,15 @@ export default function PolariscopeDemo({
               <div className="flex min-h-0 flex-col gap-2">
                 <div className="rounded-lg border border-line bg-white p-2 shadow-soft">
                   <div className="mb-2 text-xs font-semibold text-ink">📝 数据记录</div>
+
+                  {mode === 'detection' && opaqueForStandardPolariscope && (
+                    <div
+                      className="mb-2 rounded-lg border border-amber-200 bg-amber-50 px-2 py-1.5 text-[11px] leading-relaxed text-amber-800"
+                      data-testid="polariscope-opaque-note"
+                    >
+                      当前未知样品不透明，标准偏光镜透射法不适用。可将本仪器记录为“不适用”，再换用折射仪点测或分光镜反射法交叉验证。
+                    </div>
+                  )}
 
                   {/* 现象勾选 */}
                   <div className="mb-1 text-[10px] text-ink-3">观察到的现象（可多选）</div>
@@ -668,6 +732,7 @@ export default function PolariscopeDemo({
                       type="button"
                       onClick={handleSave}
                       disabled={!canSave}
+                      data-testid="polariscope-save"
                       className="btn-primary flex-1 text-xs"
                       style={{ background: instrument.themeHex }}
                     >
@@ -681,6 +746,14 @@ export default function PolariscopeDemo({
                   {state.recorded && mode === 'learning' && (
                     <div className="mt-2 rounded-lg bg-emerald-50 px-2.5 py-1.5 text-[11px] text-emerald-700 ring-1 ring-emerald-200">
                       ✓ 已完成观察。{sample && `本样品光性：${OPTICAL_LABEL[sample.characteristics.opticalCharacter]}`}
+                    </div>
+                  )}
+                  {state.recorded && mode === 'detection' && (
+                    <div
+                      className="mt-2 rounded-lg bg-emerald-50 px-2.5 py-1.5 text-[11px] text-emerald-700 ring-1 ring-emerald-200"
+                      data-testid="polariscope-detection-recorded"
+                    >
+                      ✓ 已提交检测结果。
                     </div>
                   )}
                 </div>

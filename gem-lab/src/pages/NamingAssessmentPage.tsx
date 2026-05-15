@@ -151,7 +151,9 @@ export default function NamingAssessmentPage() {
               <Row
                 label="光性"
                 value={
-                  session.polariscope.optical === 'isotropic'
+                  session.polariscope.notes
+                    ? session.polariscope.notes
+                    : session.polariscope.optical === 'isotropic'
                     ? '均质体'
                     : session.polariscope.optical === 'anisotropic'
                       ? '非均质体'
@@ -181,6 +183,8 @@ export default function NamingAssessmentPage() {
                 value={
                   session.spectroscope.markedLines.length > 0
                     ? session.spectroscope.markedLines.join(', ')
+                    : session.spectroscope.notes
+                      ? session.spectroscope.notes
                     : '未观察'
                 }
                 large
@@ -511,6 +515,8 @@ export default function NamingAssessmentPage() {
                       userValue={
                         session.spectroscope.markedLines.length > 0
                           ? session.spectroscope.markedLines.join(',') + 'nm'
+                          : session.spectroscope.notes
+                            ? session.spectroscope.notes
                           : '—'
                       }
                       standardValue={
@@ -523,7 +529,7 @@ export default function NamingAssessmentPage() {
                       }
                       ok={null}
                       onRetry={
-                        session.spectroscope.markedLines.length === 0
+                        session.spectroscope.markedLines.length === 0 && !session.spectroscope.notes
                           ? () => navigate('/detection')
                           : undefined
                       }

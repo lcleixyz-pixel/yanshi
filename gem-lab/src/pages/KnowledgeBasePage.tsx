@@ -223,6 +223,7 @@ export default function KnowledgeBasePage() {
                 <Link
                   key={it.id}
                   to={`/knowledge/${it.id}`}
+                  data-testid={`other-instrument-link-${it.id}`}
                   className="group flex items-center gap-4 rounded-2xl border-2 border-transparent bg-white p-4 ring-1 ring-line transition-all hover:-translate-y-1 hover:shadow-lift"
                   style={
                     {

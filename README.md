@@ -74,7 +74,8 @@ npm run install:lab   # 安装 gem-lab 依赖
 npm run dev           # 启动开发服务器
 npm run build         # 生产构建
 npm run preview       # 预览构建产物
-npm run test:smoke --prefix gem-lab  # 运行核心页面烟测
+npm run test:smoke    # 运行核心页面烟测
+npm run test:matrix   # 运行 28 样品 x 3 仪器检测矩阵
 ```
 
 应用目录脚本：
@@ -87,6 +88,7 @@ npm run dev
 npm run build
 npm run preview
 npm run test:smoke
+npm run test:matrix
 npm run prepare-assets
 ```
 
@@ -95,6 +97,7 @@ npm run prepare-assets
 - `npm run build` 会执行 TypeScript 项目引用构建和 Vite 生产构建。
 - `npm run preview` 默认使用 Vite preview，端口为 `4173`。
 - `npm run test:smoke` 会通过 Playwright 启动生产预览并检查核心路由是否正常渲染。
+- `npm run test:matrix` 会遍历 28 个样品和 3 台仪器的检测模式，检查未知样品遮蔽、页面错误和可提交状态；该检查较烟测更慢，适合交付前或交互改动后运行。
 - `npm run prepare-assets` 会把根目录中文素材规范化复制到 `gem-lab/public/assets/`，并切分步骤/状态图标。
 
 ## 项目结构
@@ -108,7 +111,7 @@ yanshi/
 │   ├── package.json          # 应用依赖和脚本
 │   ├── playwright.config.ts  # Playwright 烟测配置
 │   ├── src/                  # React + TypeScript 源码
-│   ├── tests/                # 核心页面烟测
+│   ├── tests/                # Playwright 烟测与检测矩阵
 │   ├── public/assets/        # 运行时静态资源
 │   ├── scripts/              # 素材准备脚本
 │   └── vite.config.ts        # Vite 配置
@@ -160,7 +163,14 @@ npm run test:smoke --prefix gem-lab
 ```bash
 cd /Users/lc.leixyz/Desktop/yanshi
 npm run build
-npm run test:smoke --prefix gem-lab
+npm run test:smoke
+```
+
+交互逻辑、样品数据或检测流程改动后，建议额外运行：
+
+```bash
+cd /Users/lc.leixyz/Desktop/yanshi
+npm run test:matrix
 ```
 
 如果本地首次运行烟测时提示缺少浏览器，请执行：
@@ -185,5 +195,5 @@ npx playwright install chromium
 
 - 本项目当前只覆盖前端教学演示，没有数据提交、登录、教师端或报表能力。
 - 学习进度保存在浏览器本地持久化存储中，换浏览器或清理站点数据后会丢失。
-- 当前自动化测试只覆盖核心路由烟测；完整操作流程仍需要结合手动浏览器验证。
+- 自动化测试已覆盖核心路由烟测和检测矩阵；完整课堂演示节奏、视觉细节和移动端体验仍需要结合手动浏览器验证。
 - 部分页面面向桌面端体验设计，移动端适配没有作为当前版本的主目标。

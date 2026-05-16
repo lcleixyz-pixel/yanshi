@@ -5,6 +5,8 @@
     "dev": "npm run dev --prefix gem-lab",
     "build": "npm run build --prefix gem-lab",
     "preview": "npm run preview --prefix gem-lab",
+    "test:smoke": "npm run test:smoke --prefix gem-lab",
+    "test:matrix": "npm run test:matrix --prefix gem-lab",
     "install:lab": "npm install --prefix gem-lab"
   }
 }

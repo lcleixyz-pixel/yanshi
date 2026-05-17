@@ -168,6 +168,37 @@ test('polariscope detection mode carries spatial locator through setup and rotat
   await expect(page.getByTestId('polariscope-detection-sample-transfer-cue')).toBeVisible();
   await expect(page.getByTestId('polariscope-detection-sample-transfer-cue')).toContainText('未知样品');
   await expect(page.getByTestId('polariscope-save')).toBeDisabled();
+  await expect(page.getByTestId('polariscope-detection-direct-stage-control')).toBeVisible();
+  await expect(page.getByTestId('polariscope-detection-direct-stage-control')).toHaveAttribute(
+    'data-sample-shape',
+    'faceted-rectangle',
+  );
+  await expect(page.getByText('旋转旋钮带动样品')).toHaveCount(0);
+
+  const stageRing = page.getByTestId('polariscope-stage-ring-control');
+  const stageBox = await stageRing.boundingBox();
+  expect(stageBox).not.toBeNull();
+  const stageCenter = {
+    x: stageBox!.x + stageBox!.width / 2,
+    y: stageBox!.y + stageBox!.height / 2,
+  };
+  const stageRadius = stageBox!.width * 0.42;
+  const initialStageAngle = await page
+    .getByTestId('polariscope-detection-direct-stage-control')
+    .getAttribute('data-stage-angle');
+  await page.mouse.move(stageCenter.x, stageCenter.y - stageRadius);
+  await page.mouse.down();
+  await page.mouse.move(stageCenter.x + stageRadius, stageCenter.y, { steps: 8 });
+  await page.mouse.move(stageCenter.x, stageCenter.y + stageRadius, { steps: 8 });
+  await page.mouse.up();
+
+  await expect
+    .poll(() => page.getByTestId('polariscope-detection-direct-stage-control').getAttribute('data-stage-angle'))
+    .not.toBe(initialStageAngle);
+  await expect(page.getByTestId('polariscope-save')).toBeDisabled();
+  await page.getByRole('checkbox', { name: '四明四暗（非均质体）' }).check();
+  await page.getByRole('combobox').selectOption('anisotropic');
+  await expect(page.getByTestId('polariscope-save')).toBeEnabled();
   await expect(page.getByText('紫水晶')).toHaveCount(0);
   await expect(page.getByText('拖动')).toHaveCount(0);
 });

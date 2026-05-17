@@ -13,7 +13,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import HotPoint from '@/components/demo/HotPoint';
 import ObjectFitHotspotFrame from '@/components/demo/ObjectFitHotspotFrame';
 import StepGuide, { type DemoStep } from '@/components/demo/StepGuide';
-import RotationKnob from '@/components/refractometer/RotationKnob';
 import ObservationCanvas, {
   computePhenomenonBrightness,
   type PolariscopeSampleShape,
@@ -142,7 +141,7 @@ export default function PolariscopeDemo({
   const [state, setState] = useState<DemoState>(INITIAL_STATE);
   const [learningView, setLearningView] = useState<LearningView>('overview');
   const [upperPolarAngle, setUpperPolarAngle] = useState(0);
-  const [rotation01, setRotation01] = useState(0); // RotationKnob 0–1
+  const [rotation01, setRotation01] = useState(0); // 载物台旋转进度 0–1
   const [autoRotating, setAutoRotating] = useState(false);
 
   // 旋转角度 0–360°
@@ -708,38 +707,6 @@ export default function PolariscopeDemo({
             </div>
           </div>
 
-          {state.sampleOn && state.power && state.crossed && (
-            <div className="absolute right-3 top-1/2 z-30 max-w-[min(8.5rem,calc(100%-1rem))] -translate-y-1/2 md:right-4">
-              <div className="rounded-xl border border-line bg-white/95 p-3 shadow-card backdrop-blur">
-                <RotationKnob
-                  value={rotation01}
-                  onChange={(v) => {
-                    setAutoRotating(false);
-                    setRotation01(v);
-                  }}
-                  onReady={markRotationReady}
-                  label="旋转载物台"
-                  hint="旋转旋钮带动样品"
-                  ready={knobReady}
-                  size={110}
-                  themeHex={instrument.themeHex}
-                />
-                <button
-                  type="button"
-                  onClick={() => setAutoRotating((v) => !v)}
-                  className={clsx(
-                    'mt-2 w-full rounded px-2 py-1 text-[11px] font-medium ring-1 transition',
-                    autoRotating
-                      ? 'bg-violet-600 text-white ring-violet-600'
-                      : 'bg-white text-ink-2 ring-line-2 hover:bg-violet-50',
-                  )}
-                >
-                  {autoRotating ? '⏸ 停止自动' : '▶ 自动旋转'}
-                </button>
-              </div>
-            </div>
-          )}
-
           {/* 底部提示 */}
           {tip && (
             <div className="absolute bottom-3 left-1/2 z-20 max-w-[min(96%,28rem)] -translate-x-1/2 rounded-full border border-line-2 bg-white/90 px-3 py-1.5 text-center text-xs text-ink-2 shadow-card backdrop-blur">
@@ -820,13 +787,40 @@ export default function PolariscopeDemo({
               </div>
 
               <div className="flex min-h-0 flex-1 items-center justify-center">
-                <ObservationCanvas
-                  view={activeCanvasView}
-                  brightness={brightness}
-                  rotation={rotation}
-                  sampleOn={state.sampleOn}
-                  size={obsSize}
-                />
+                {state.sampleOn && state.power && state.crossed ? (
+                  <div
+                    data-testid="polariscope-detection-direct-stage-control"
+                    data-sample-shape={learningSampleShape}
+                    data-stage-angle={Math.round(rotation)}
+                    className="flex min-h-0 w-full items-center justify-center"
+                  >
+                    <IntegratedLiveUseControl
+                      activeCanvasView={activeCanvasView}
+                      brightness={brightness}
+                      compact
+                      hideObservationCue
+                      observed={observed}
+                      onStageAngleChange={(angle) => {
+                        setAutoRotating(false);
+                        setRotation01((((angle % 360) + 360) % 360) / 360);
+                        markRotationReady();
+                      }}
+                      response={learningResponse}
+                      rotation={rotation}
+                      sampleShape={learningSampleShape}
+                      setAutoRotating={setAutoRotating}
+                      themeHex={instrument.themeHex}
+                    />
+                  </div>
+                ) : (
+                  <ObservationCanvas
+                    view={activeCanvasView}
+                    brightness={brightness}
+                    rotation={rotation}
+                    sampleOn={state.sampleOn}
+                    size={obsSize}
+                  />
+                )}
               </div>
 
               {/* 观察姿势提示 */}
@@ -1853,6 +1847,8 @@ function PolariscopeInstrumentLocator({
 function IntegratedLiveUseControl({
   activeCanvasView,
   brightness,
+  compact = false,
+  hideObservationCue = false,
   observed,
   onStageAngleChange,
   response,
@@ -1863,6 +1859,8 @@ function IntegratedLiveUseControl({
 }: {
   activeCanvasView: ReturnType<typeof computePhenomenonBrightness>['view'] | 'off' | 'crossed-dark' | 'parallel';
   brightness: number;
+  compact?: boolean;
+  hideObservationCue?: boolean;
   observed: Set<'bright' | 'dark'>;
   onStageAngleChange: (angle: number) => void;
   response: PolariscopeLearningResponse | undefined;
@@ -1904,7 +1902,12 @@ function IntegratedLiveUseControl({
   ), []);
 
   return (
-    <div className="flex w-[min(62vh,84vw,34rem)] flex-col items-center gap-3 xl:w-[min(70vh,44vw,36rem)]">
+    <div
+      className={clsx(
+        'flex flex-col items-center',
+        compact ? 'w-[min(38vh,70vw,21rem)] gap-1.5' : 'w-[min(62vh,84vw,34rem)] gap-3 xl:w-[min(70vh,44vw,36rem)]',
+      )}
+    >
       <div className="relative aspect-square w-full">
         <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,#3a3228_0%,#161514_58%,#070707_100%)] shadow-[0_30px_100px_rgba(15,23,42,0.32)]" />
         <AngleRingControl
@@ -1934,7 +1937,12 @@ function IntegratedLiveUseControl({
           />
         </AngleRingControl>
 
-        <div className="pointer-events-none absolute inset-[10%] rounded-full border-[24px] border-[#0b0c0e] bg-black shadow-[0_0_0_1px_rgba(255,255,255,0.16),inset_0_0_34px_rgba(255,255,255,0.08)]">
+        <div
+          className={clsx(
+            'pointer-events-none absolute inset-[10%] rounded-full bg-black shadow-[0_0_0_1px_rgba(255,255,255,0.16),inset_0_0_34px_rgba(255,255,255,0.08)]',
+            compact ? 'border-[14px] border-[#0b0c0e]' : 'border-[24px] border-[#0b0c0e]',
+          )}
+        >
           <div
             data-testid="polariscope-live-observation"
             data-sample-shape={sampleShape}
@@ -1956,28 +1964,33 @@ function IntegratedLiveUseControl({
         </div>
       </div>
 
-      <div className="flex min-h-8 items-center justify-center">
-        {observationCue && (
-          <div
-            key={observationCue}
-            data-testid="polariscope-first-observation-cue"
-            className={clsx(
-              'animate-scale-in rounded-full border px-3 py-1 text-xs font-semibold shadow-card backdrop-blur',
-              observationCue === 'bright'
-                ? 'border-amber-200 bg-amber-50/95 text-amber-800'
-                : 'border-slate-200 bg-slate-950/90 text-white',
-            )}
-          >
-            {observationCue === 'bright'
-              ? phenomenonLabels.brightCue
-              : phenomenonLabels.darkCue}
-          </div>
-        )}
-      </div>
+      {!hideObservationCue && (
+        <div className="flex min-h-8 items-center justify-center">
+          {observationCue && (
+            <div
+              key={observationCue}
+              data-testid="polariscope-first-observation-cue"
+              className={clsx(
+                'animate-scale-in rounded-full border px-3 py-1 text-xs font-semibold shadow-card backdrop-blur',
+                observationCue === 'bright'
+                  ? 'border-amber-200 bg-amber-50/95 text-amber-800'
+                  : 'border-slate-200 bg-slate-950/90 text-white',
+              )}
+            >
+              {observationCue === 'bright'
+                ? phenomenonLabels.brightCue
+                : phenomenonLabels.darkCue}
+            </div>
+          )}
+        </div>
+      )}
 
       <div
         data-testid="polariscope-live-progress"
-        className="rounded-full border border-line bg-white/92 px-4 py-2 text-center text-xs font-semibold text-ink shadow-card backdrop-blur"
+        className={clsx(
+          'rounded-full border border-line bg-white/92 text-center text-xs font-semibold text-ink shadow-card backdrop-blur',
+          compact ? 'px-3 py-1.5' : 'px-4 py-2',
+        )}
       >
         <span>{observedLabel}</span>
         <span className="mx-2 text-ink-4">|</span>

@@ -8,11 +8,11 @@ export type PolariscopeCanvasView =
   | 'crossed-sample'
   | 'parallel'
   | 'upper-polar-calibration';
-type PolariscopeSampleShape = 'round' | 'faceted-rectangle';
+export type PolariscopeSampleShape = 'round' | 'faceted-rectangle' | 'cabochon-oval';
 
 /**
  * 根据旋转角度 + 样品光性 + 偏光位置计算当前现象。
- * bright 值域 [0,1]，0=全暗，1=全亮，中间值表示过渡态。
+ * bright 值域 [0,1]，0=样品响应全暗，1=样品响应最亮，中间值表示过渡态。
  */
 export function computePhenomenonBrightness(
   rotation: number,
@@ -28,7 +28,7 @@ export function computePhenomenonBrightness(
     return { view: 'crossed-sample', brightness: 0, label: '全暗（均质体）' };
   }
   if (optical === 'aggregate') {
-    return { view: 'crossed-sample', brightness: 1, label: '全亮（集合体）' };
+    return { view: 'crossed-sample', brightness: 1, label: '样品持续亮（集合体）' };
   }
 
   // 非均质体：四明四暗。每 90° 一个完整明暗周期。
@@ -156,7 +156,7 @@ function drawPolariscopeCanvas(
 
 /**
  * 绘制样品在偏光镜下的明暗叠加效果。
- * brightness=0 → 全暗遮罩，brightness=1 → 全亮透明。
+ * brightness=0 → 样品响应暗，brightness=1 → 样品响应最亮。
  */
 function drawSampleOverlay(
   ctx: CanvasRenderingContext2D,
@@ -169,6 +169,10 @@ function drawSampleOverlay(
 ) {
   if (sampleShape === 'faceted-rectangle') {
     drawFacetedRectangleSample(ctx, cx, cy, r, brightness, rotation);
+    return;
+  }
+  if (sampleShape === 'cabochon-oval') {
+    drawCabochonOvalSample(ctx, cx, cy, r, brightness, rotation);
     return;
   }
 
@@ -214,6 +218,89 @@ function drawSampleOverlay(
     ctx.arc(cx, cy, sampleR * 0.7, 0, Math.PI * 2);
     ctx.fill();
   }
+}
+
+function drawCabochonOvalSample(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  r: number,
+  brightness: number,
+  rotation: number,
+) {
+  const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
+  const alpha = clamp01(Math.pow(brightness, 0.85));
+  const brightMix = alpha * alpha * (3 - 2 * alpha);
+  const width = r * 0.78;
+  const height = r * 0.46;
+
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate((rotation * Math.PI) / 180);
+  ctx.scale(1, height / width);
+
+  const ovalR = width / 2;
+  ctx.beginPath();
+  ctx.arc(0, 0, ovalR, 0, Math.PI * 2);
+  ctx.closePath();
+
+  ctx.save();
+  ctx.clip();
+
+  ctx.fillStyle = `rgba(78, 220, 164, ${0.04 + 0.42 * brightMix})`;
+  ctx.fill();
+
+  const glow = ctx.createRadialGradient(-ovalR * 0.12, -ovalR * 0.16, 0, 0, 0, ovalR * 0.92);
+  glow.addColorStop(0, `rgba(214,255,232,${0.01 + 0.41 * brightMix})`);
+  glow.addColorStop(0.48, `rgba(82,224,169,${0.02 + 0.24 * brightMix})`);
+  glow.addColorStop(1, 'rgba(25,92,68,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(-ovalR, -ovalR, ovalR * 2, ovalR * 2);
+
+  const dome = ctx.createLinearGradient(0, -ovalR, 0, ovalR);
+  dome.addColorStop(0, `rgba(230,255,238,${0.01 + 0.23 * brightMix})`);
+  dome.addColorStop(0.55, 'rgba(255,255,255,0)');
+  dome.addColorStop(1, `rgba(7,36,27,${0.02 + 0.10 * brightMix})`);
+  ctx.fillStyle = dome;
+  ctx.fillRect(-ovalR, -ovalR, ovalR * 2, ovalR * 2);
+
+  ctx.beginPath();
+  ctx.ellipse(-ovalR * 0.26, -ovalR * 0.32, ovalR * 0.28, ovalR * 0.11, -0.55, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(238,255,244,${0.01 + 0.20 * brightMix})`;
+  ctx.fill();
+
+  ctx.restore();
+
+  const guideAlpha = 0.14 + 0.42 * brightMix;
+  ctx.strokeStyle = `rgba(214,255,232,${guideAlpha})`;
+  ctx.lineWidth = Math.max(1.2, r * 0.004);
+
+  ctx.beginPath();
+  ctx.arc(0, 0, ovalR * 0.58, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.strokeStyle = `rgba(214,255,232,${guideAlpha * 0.82})`;
+  for (const y of [-0.28, 0.28]) {
+    ctx.beginPath();
+    ctx.moveTo(-ovalR * 0.58, ovalR * y);
+    ctx.bezierCurveTo(
+      -ovalR * 0.24,
+      ovalR * y * 0.54,
+      ovalR * 0.24,
+      ovalR * y * 0.54,
+      ovalR * 0.58,
+      ovalR * y,
+    );
+    ctx.stroke();
+  }
+
+  ctx.beginPath();
+  ctx.arc(0, 0, ovalR, 0, Math.PI * 2);
+  ctx.strokeStyle = `rgba(198,255,224,${0.22 + 0.74 * brightMix})`;
+  ctx.lineWidth = Math.max(2.2, r * 0.01);
+  ctx.stroke();
+
+  ctx.restore();
 }
 
 function traceEmeraldCutPath(ctx: CanvasRenderingContext2D, width: number, height: number, corner: number) {
@@ -517,7 +604,7 @@ function computePhenomenonLabel(
   }
   if (view === 'parallel') return { label: '平行偏光（全亮）' };
 
-  if (brightness >= 0.99) return { label: '亮位 / 全亮' };
+  if (brightness >= 0.99) return { label: '样品最亮位' };
   if (brightness <= 0.01) return { label: '暗位 / 全暗' };
   if (brightness > 0.5) return { label: '明位' };
   return { label: '暗位' };

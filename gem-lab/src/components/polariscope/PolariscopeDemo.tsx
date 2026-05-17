@@ -15,6 +15,7 @@ import StepGuide, { type DemoStep } from '@/components/demo/StepGuide';
 import RotationKnob from '@/components/refractometer/RotationKnob';
 import ObservationCanvas, {
   computePhenomenonBrightness,
+  type PolariscopeSampleShape,
 } from '@/components/polariscope/ObservationCanvas';
 import { INSTRUMENTS } from '@/data/instruments';
 import { SAMPLES, SAMPLES_BY_ID } from '@/data/samples';
@@ -26,6 +27,11 @@ import clsx from '@/utils/clsx';
 
 type DemoMode = 'learning' | 'detection';
 type LearningView = 'overview' | 'align-upper-polar' | 'place-sample' | 'live-use' | 'result-summary';
+type PolariscopeLearningResponse =
+  | 'anisotropic-four-bright-dark'
+  | 'isotropic-all-dark'
+  | 'aggregate-continuous-bright'
+  | 'opaque-not-applicable';
 type PolariscopeLocatorPart = 'upper-polar' | 'sample-gap' | 'stage';
 type StepId = 'power' | 'crossed' | 'place' | 'rotate' | 'record';
 const STEP_ORDER: StepId[] = ['power', 'crossed', 'place', 'rotate', 'record'];
@@ -143,6 +149,7 @@ export default function PolariscopeDemo({
   const optical = sample?.characteristics.opticalCharacter;
   const opaqueForStandardPolariscope = sample?.characteristics.transparency === '不透明';
   const effectiveOptical = opaqueForStandardPolariscope ? undefined : optical;
+  const learningResponse = getPolariscopeLearningResponse(sample);
 
   // 检测会话
   const setPolariscopeData = useDetection((s) => s.setPolariscope);
@@ -164,9 +171,12 @@ export default function PolariscopeDemo({
     userPhenomena.allBright,
   ].filter(Boolean).length;
   const opaqueDetectionReady = mode === 'detection' && opaqueForStandardPolariscope && state.sampleOn;
+  const opaqueLearningReady =
+    mode === 'learning' && learningResponse === 'opaque-not-applicable' && state.sampleOn;
   const canSave =
     !!sample &&
     (opaqueDetectionReady ||
+      opaqueLearningReady ||
       (!opaqueForStandardPolariscope &&
         state.rotated &&
         (mode === 'learning' || (selectedPhenomenaCount === 1 && userJudgement !== ''))));
@@ -370,8 +380,15 @@ export default function PolariscopeDemo({
       : canvasView;
 
   // 当前光性文字标注
-  const opticalHint = renderOpticalHint(optical, brightness, state.polarPosition, state.sampleOn);
+  const opticalHint = renderOpticalHint(
+    learningResponse,
+    optical,
+    brightness,
+    state.polarPosition,
+    state.sampleOn,
+  );
   const upperCrossedReady = isUpperPolarCrossed(upperPolarAngle);
+  const learningSampleShape = getPolariscopeSampleShape(sample);
 
   const beginLearningOperation = () => {
     setState((s) => ({
@@ -390,7 +407,6 @@ export default function PolariscopeDemo({
 
   const commitUpperPolarAngle = (angle: number) => {
     if (!isUpperPolarCrossed(angle)) return;
-    setUpperPolarAngle(90);
     resetObservationState();
     setState((s) => ({
       ...s,
@@ -414,7 +430,7 @@ export default function PolariscopeDemo({
       polarPosition: 'crossed',
       crossed: true,
       sampleOn: true,
-      rotated: false,
+      rotated: learningResponse === 'opaque-not-applicable',
       recorded: false,
     }));
     setPreviewSampleId(null);
@@ -477,12 +493,13 @@ export default function PolariscopeDemo({
         navigateHome={() => navigate('/')}
         observed={observed}
         onStageAngleChange={updateLearningStageAngle}
-        optical={optical}
         opticalHint={opticalHint}
         placeLearningSample={placeLearningSample}
         progress={progress}
+        response={learningResponse}
         rotation={rotation}
         sample={sample}
+        sampleShape={learningSampleShape}
         sampleLabel={sampleLabel}
         setAutoRotating={setAutoRotating}
         setLearningSampleId={setLearningSampleId}
@@ -782,7 +799,7 @@ export default function PolariscopeDemo({
                   </summary>
                   <p className="max-h-24 overflow-y-auto px-2 pb-1 text-[10px] leading-relaxed text-ink-2">
                     将样品置于载物台中央，使光线从下方穿透。单眼俯视目镜，缓慢旋转载物台 360°，观察视场明暗变化次数。
-                    每旋转 90° 经历一次亮暗交替（共四明四暗）通常为非均质体；始终全暗为均质体；始终全亮多见于可透光的多晶质集合体。
+                    每旋转 90° 经历一次亮暗交替（共四明四暗）通常为非均质体；始终全暗为均质体；样品持续透亮多见于可透光的多晶质集合体。
                     须从 2–3 个不同方向重复测试，以排除光轴方向导致的全暗假象。
                   </p>
                 </details>
@@ -830,7 +847,7 @@ export default function PolariscopeDemo({
                       disabled={mode !== 'detection'}
                     />
                     <Checkbox
-                      label="转动 360° 全亮（多晶质集合体）"
+                      label="转动 360° 样品持续亮（多晶质集合体）"
                       checked={
                         mode === 'detection'
                           ? userPhenomena.allBright
@@ -906,12 +923,13 @@ interface PolariscopeLearningExperienceProps {
   navigateHome: () => void;
   observed: Set<'bright' | 'dark'>;
   onStageAngleChange: (angle: number) => void;
-  optical: OpticalCharacter | undefined;
   opticalHint: ReactNode;
   placeLearningSample: () => void;
   progress: number;
+  response: PolariscopeLearningResponse | undefined;
   rotation: number;
   sample: SampleDef | undefined;
+  sampleShape: PolariscopeSampleShape;
   sampleLabel: string | undefined;
   setAutoRotating: Dispatch<SetStateAction<boolean>>;
   setLearningSampleId: Dispatch<SetStateAction<string>>;
@@ -939,12 +957,13 @@ function PolariscopeLearningExperience({
   navigateHome,
   observed,
   onStageAngleChange,
-  optical,
   opticalHint,
   placeLearningSample,
   progress,
+  response,
   rotation,
   sample,
+  sampleShape,
   sampleLabel,
   setAutoRotating,
   setLearningSampleId,
@@ -957,6 +976,10 @@ function PolariscopeLearningExperience({
   const viewLabel = getLearningViewLabel(learningView);
   const upperPolarBrightness = computeUpperPolarTransmission(upperPolarAngle);
   const upperPolarBrightnessLabel = getUpperPolarBrightnessLabel(upperPolarBrightness);
+  const transitionCue = useLearningTransitionCue(learningView);
+  const phenomenonState: 'bright' | 'dark' =
+    brightness > 0.5 || activeCanvasView === 'parallel' ? 'bright' : 'dark';
+  const phenomenonLabels = getLearningPhenomenonLabels(response);
 
   return (
     <div className="flex h-screen flex-col bg-[#111827] text-white">
@@ -1080,10 +1103,28 @@ function PolariscopeLearningExperience({
         </aside>
 
         <main className="relative min-h-0 overflow-y-auto bg-[radial-gradient(circle_at_50%_20%,#ffffff_0%,#f1f5f9_42%,#d9e2ec_100%)] lg:overflow-hidden">
-          <div className="absolute left-5 top-5 z-20 rounded-lg border border-white/70 bg-white/90 px-3 py-2 shadow-card backdrop-blur">
+          <div
+            key={learningView}
+            data-testid="polariscope-learning-status"
+            className="absolute left-5 top-5 z-20 animate-scale-in rounded-lg border border-white/70 bg-white/90 px-3 py-2 shadow-card backdrop-blur"
+          >
             <div className="font-mono text-[10px] uppercase tracking-widest text-ink-4">当前状态</div>
-            <div className="mt-0.5 text-sm font-semibold text-ink">{viewLabel}</div>
+            <div className="mt-0.5 flex items-center gap-2 text-sm font-semibold text-ink">
+              <span className="h-1.5 w-1.5 animate-soft-pulse rounded-full" style={{ backgroundColor: instrument.themeHex }} />
+              {viewLabel}
+            </div>
           </div>
+
+          {transitionCue && (
+            <div
+              key={transitionCue.key}
+              data-testid="polariscope-transition-cue"
+              className="pointer-events-none absolute left-1/2 top-5 z-30 flex -translate-x-1/2 animate-drop-in items-center gap-2 rounded-full border border-white/80 bg-white/95 px-4 py-2 text-xs font-semibold text-ink shadow-lift backdrop-blur"
+            >
+              <span className="h-2 w-2 rounded-full" style={{ backgroundColor: instrument.themeHex }} />
+              {transitionCue.label}
+            </div>
+          )}
 
           {learningView === 'overview' && (
             <section
@@ -1282,7 +1323,9 @@ function PolariscopeLearningExperience({
                   brightness={brightness}
                   observed={observed}
                   onStageAngleChange={onStageAngleChange}
+                  response={response}
                   rotation={rotation}
+                  sampleShape={sampleShape}
                   setAutoRotating={setAutoRotating}
                   themeHex={instrument.themeHex}
                 />
@@ -1293,10 +1336,11 @@ function PolariscopeLearningExperience({
                 <h2 className="mt-1 text-lg font-semibold text-ink">边旋转载物台，边看样品视域</h2>
                 <div className="mt-4 grid grid-cols-2 gap-2">
                   <MetricPill label="载物台角度" value={`${Math.round(rotation)}°`} />
-                  <MetricPill
-                    label="现象"
-                    value={brightness > 0.5 || activeCanvasView === 'parallel' ? '亮位' : '暗位'}
-                    tone={brightness > 0.5 || activeCanvasView === 'parallel' ? 'warn' : 'neutral'}
+                  <PhenomenonStatusPill
+                    brightLabel={phenomenonLabels.bright}
+                    darkLabel={phenomenonLabels.dark}
+                    phenomenon={phenomenonState}
+                    themeHex={instrument.themeHex}
                   />
                 </div>
                 <PolariscopeInstrumentLocator
@@ -1367,6 +1411,51 @@ function PolariscopeLearningExperience({
       </div>
     </div>
   );
+}
+
+function useLearningTransitionCue(learningView: LearningView) {
+  const previousViewRef = useRef<LearningView>(learningView);
+  const timeoutRef = useRef<number | null>(null);
+  const [cue, setCue] = useState<{ key: string; label: string } | null>(null);
+
+  useEffect(() => {
+    const previousView = previousViewRef.current;
+    if (previousView === learningView) return;
+    previousViewRef.current = learningView;
+
+    const label = getLearningTransitionCue(previousView, learningView);
+    if (!label) return;
+    if (timeoutRef.current != null) window.clearTimeout(timeoutRef.current);
+    setCue({ key: `${previousView}-${learningView}-${Date.now()}`, label });
+    timeoutRef.current = window.setTimeout(() => {
+      setCue(null);
+      timeoutRef.current = null;
+    }, 2400);
+  }, [learningView]);
+
+  useEffect(() => (
+    () => {
+      if (timeoutRef.current != null) window.clearTimeout(timeoutRef.current);
+    }
+  ), []);
+
+  return cue;
+}
+
+function getLearningTransitionCue(previousView: LearningView, nextView: LearningView): string | null {
+  if (previousView === 'overview' && nextView === 'align-upper-polar') {
+    return '电源已开启，开始调整上偏光片';
+  }
+  if (previousView === 'align-upper-polar' && nextView === 'place-sample') {
+    return '已正交，进入放样';
+  }
+  if (previousView === 'place-sample' && nextView === 'live-use') {
+    return '样品已进入光路，开始同步观察';
+  }
+  if (previousView === 'live-use' && nextView === 'result-summary') {
+    return '本轮观察完成';
+  }
+  return null;
 }
 
 function PolariscopeInstrumentLocator({
@@ -1477,7 +1566,7 @@ function PolariscopeInstrumentLocator({
         </span>
       </div>
 
-      <div ref={boxRef} className="relative mt-3 h-36 overflow-hidden rounded-lg border border-white/70 bg-white/65">
+      <div ref={boxRef} className="relative mt-3 h-40 overflow-hidden rounded-lg border border-white/70 bg-white/65">
         <img
           ref={imgRef}
           data-testid="polariscope-instrument-locator-image"
@@ -1487,9 +1576,15 @@ function PolariscopeInstrumentLocator({
           draggable={false}
         />
         <div
-          className="pointer-events-none absolute flex -translate-x-1/2 -translate-y-1/2 items-center justify-center"
+          key={activePart}
+          data-testid="polariscope-locator-target"
+          className="pointer-events-none absolute flex -translate-x-1/2 -translate-y-1/2 animate-scale-in items-center justify-center"
           style={{ left: targetX, top: targetY }}
         >
+          <span
+            className="absolute h-9 w-9 animate-pulse-ring rounded-full border-2"
+            style={{ borderColor: themeHex }}
+          />
           <span
             className="absolute h-9 w-9 rounded-full border-2 bg-white/5"
             style={{
@@ -1520,7 +1615,9 @@ function IntegratedLiveUseControl({
   brightness,
   observed,
   onStageAngleChange,
+  response,
   rotation,
+  sampleShape,
   setAutoRotating,
   themeHex,
 }: {
@@ -1528,19 +1625,43 @@ function IntegratedLiveUseControl({
   brightness: number;
   observed: Set<'bright' | 'dark'>;
   onStageAngleChange: (angle: number) => void;
+  response: PolariscopeLearningResponse | undefined;
   rotation: number;
+  sampleShape: PolariscopeSampleShape;
   setAutoRotating: Dispatch<SetStateAction<boolean>>;
   themeHex: string;
 }) {
   const [stageDragging, setStageDragging] = useState(false);
-  const observedLabel =
-    observed.has('bright') && observed.has('dark')
-      ? '已见亮位 / 暗位'
-      : observed.has('bright')
-        ? '已见亮位，继续旋转找暗位'
-        : observed.has('dark')
-          ? '已见暗位，继续旋转找亮位'
-          : '继续旋转，观察明暗变化';
+  const [observationCue, setObservationCue] = useState<'bright' | 'dark' | null>(null);
+  const cueTimeoutRef = useRef<number | null>(null);
+  const previousObservedRef = useRef({ bright: observed.has('bright'), dark: observed.has('dark') });
+  const observedLabel = getLearningProgressLabel(response, observed);
+  const phenomenonState = brightness > 0.5 || activeCanvasView === 'parallel' ? 'bright' : 'dark';
+  const phenomenonLabels = getLearningPhenomenonLabels(response);
+
+  useEffect(() => {
+    const nextObserved = { bright: observed.has('bright'), dark: observed.has('dark') };
+    const nextCue =
+      nextObserved.bright && !previousObservedRef.current.bright
+        ? 'bright'
+        : nextObserved.dark && !previousObservedRef.current.dark
+          ? 'dark'
+          : null;
+    previousObservedRef.current = nextObserved;
+    if (!nextCue) return;
+    if (cueTimeoutRef.current != null) window.clearTimeout(cueTimeoutRef.current);
+    setObservationCue(nextCue);
+    cueTimeoutRef.current = window.setTimeout(() => {
+      setObservationCue(null);
+      cueTimeoutRef.current = null;
+    }, 2200);
+  }, [observed]);
+
+  useEffect(() => (
+    () => {
+      if (cueTimeoutRef.current != null) window.clearTimeout(cueTimeoutRef.current);
+    }
+  ), []);
 
   return (
     <div className="flex w-[min(62vh,84vw,34rem)] flex-col items-center gap-3 xl:w-[min(70vh,44vw,36rem)]">
@@ -1576,7 +1697,7 @@ function IntegratedLiveUseControl({
         <div className="pointer-events-none absolute inset-[10%] rounded-full border-[24px] border-[#0b0c0e] bg-black shadow-[0_0_0_1px_rgba(255,255,255,0.16),inset_0_0_34px_rgba(255,255,255,0.08)]">
           <div
             data-testid="polariscope-live-observation"
-            data-sample-shape="faceted-rectangle"
+            data-sample-shape={sampleShape}
             data-stage-angle={Math.round(rotation)}
             aria-label="偏光镜实时观察视域"
             className="absolute inset-[8%] flex items-center justify-center"
@@ -1586,7 +1707,7 @@ function IntegratedLiveUseControl({
               brightness={brightness}
               rotation={rotation}
               sampleOn
-              sampleShape="faceted-rectangle"
+              sampleShape={sampleShape}
               fill
               showLabel={false}
               showRotationScale={false}
@@ -1595,14 +1716,33 @@ function IntegratedLiveUseControl({
         </div>
       </div>
 
+      <div className="flex min-h-8 items-center justify-center">
+        {observationCue && (
+          <div
+            key={observationCue}
+            data-testid="polariscope-first-observation-cue"
+            className={clsx(
+              'animate-scale-in rounded-full border px-3 py-1 text-xs font-semibold shadow-card backdrop-blur',
+              observationCue === 'bright'
+                ? 'border-amber-200 bg-amber-50/95 text-amber-800'
+                : 'border-slate-200 bg-slate-950/90 text-white',
+            )}
+          >
+            {observationCue === 'bright'
+              ? phenomenonLabels.brightCue
+              : phenomenonLabels.darkCue}
+          </div>
+        )}
+      </div>
+
       <div
         data-testid="polariscope-live-progress"
         className="rounded-full border border-line bg-white/92 px-4 py-2 text-center text-xs font-semibold text-ink shadow-card backdrop-blur"
       >
         <span>{observedLabel}</span>
         <span className="mx-2 text-ink-4">|</span>
-        <span style={{ color: brightness > 0.5 || activeCanvasView === 'parallel' ? '#b45309' : themeHex }}>
-          {brightness > 0.5 || activeCanvasView === 'parallel' ? '亮位' : '暗位'}
+        <span style={{ color: phenomenonState === 'bright' ? '#b45309' : themeHex }}>
+          {phenomenonState === 'bright' ? phenomenonLabels.bright : phenomenonLabels.dark}
         </span>
       </div>
     </div>
@@ -1749,6 +1889,47 @@ function MetricPill({
   );
 }
 
+function PhenomenonStatusPill({
+  brightLabel = '亮位',
+  darkLabel = '暗位',
+  phenomenon,
+  themeHex,
+}: {
+  brightLabel?: string;
+  darkLabel?: string;
+  phenomenon: 'bright' | 'dark';
+  themeHex: string;
+}) {
+  const bright = phenomenon === 'bright';
+  return (
+    <div
+      data-testid="polariscope-phenomenon-status"
+      data-phenomenon={phenomenon}
+      className={clsx(
+        'rounded-lg border px-3 py-2 transition-colors',
+        bright
+          ? 'border-amber-200 bg-amber-50 text-amber-800'
+          : 'border-slate-200 bg-slate-50 text-ink',
+      )}
+    >
+      <div className="font-mono text-[9px] uppercase tracking-widest opacity-60">现象</div>
+      <div className="mt-1 flex min-h-5 items-center gap-2 text-sm font-semibold">
+        <span
+          key={`${phenomenon}-dot`}
+          className={clsx(
+            'h-2 w-2 rounded-full animate-scale-in',
+            bright ? 'bg-amber-400 shadow-[0_0_14px_rgba(245,158,11,0.75)]' : 'bg-slate-900',
+          )}
+          style={bright ? undefined : { backgroundColor: themeHex }}
+        />
+        <span key={phenomenon} className="animate-fade-in">
+          {bright ? brightLabel : darkLabel}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 function getLearningViewLabel(view: LearningView): string {
   switch (view) {
     case 'overview':
@@ -1765,9 +1946,7 @@ function getLearningViewLabel(view: LearningView): string {
 }
 
 function isUpperPolarCrossed(angle: number): boolean {
-  const normalized = ((angle % 360) + 360) % 360;
-  const distanceTo90 = Math.min(Math.abs(normalized - 90), Math.abs(normalized - 450));
-  return distanceTo90 <= 18;
+  return computeUpperPolarTransmission(angle) <= 0.05;
 }
 
 function computeUpperPolarTransmission(angle: number): number {
@@ -1780,6 +1959,64 @@ function getUpperPolarBrightnessLabel(brightness: number): string {
   if (brightness <= 0.05) return '接近全暗';
   if (brightness > 0.5) return '透光';
   return '过渡变暗';
+}
+
+function getPolariscopeSampleShape(sample: SampleDef | undefined): PolariscopeSampleShape {
+  if (!sample) return 'faceted-rectangle';
+  if (
+    sample.refractometerShape === 'cabochon' ||
+    sample.category === '玉石' ||
+    sample.characteristics.opticalCharacter === 'aggregate'
+  ) {
+    return 'cabochon-oval';
+  }
+  if (sample.refractometerShape === 'faceted') return 'faceted-rectangle';
+  return 'round';
+}
+
+function getPolariscopeLearningResponse(sample: SampleDef | undefined): PolariscopeLearningResponse | undefined {
+  if (!sample) return undefined;
+  if (sample.characteristics.transparency === '不透明') return 'opaque-not-applicable';
+  if (sample.characteristics.opticalCharacter === 'isotropic') return 'isotropic-all-dark';
+  if (sample.characteristics.opticalCharacter === 'aggregate') return 'aggregate-continuous-bright';
+  return 'anisotropic-four-bright-dark';
+}
+
+function getLearningPhenomenonLabels(response: PolariscopeLearningResponse | undefined): {
+  bright: string;
+  dark: string;
+  brightCue: string;
+  darkCue: string;
+} {
+  if (response === 'aggregate-continuous-bright') {
+    return { bright: '持续亮', dark: '暗位', brightCue: '已见持续亮', darkCue: '已见暗位' };
+  }
+  if (response === 'isotropic-all-dark') {
+    return { bright: '亮位', dark: '持续全暗', brightCue: '已见亮位', darkCue: '已确认持续全暗' };
+  }
+  if (response === 'opaque-not-applicable') {
+    return { bright: '亮位', dark: '不适用', brightCue: '已见亮位', darkCue: '无有效透射响应' };
+  }
+  return { bright: '亮位', dark: '暗位', brightCue: '已见亮位', darkCue: '已见暗位' };
+}
+
+function getLearningProgressLabel(
+  response: PolariscopeLearningResponse | undefined,
+  observed: Set<'bright' | 'dark'>,
+): string {
+  if (response === 'opaque-not-applicable') {
+    return '标准透射偏光镜不适用，无有效透射响应';
+  }
+  if (response === 'aggregate-continuous-bright') {
+    return '样品持续透亮，旋转时保持亮反应';
+  }
+  if (response === 'isotropic-all-dark') {
+    return observed.has('dark') ? '样品持续全暗，旋转时无亮位' : '开始旋转，确认是否持续全暗';
+  }
+  if (observed.has('bright') && observed.has('dark')) return '已见亮位 / 暗位';
+  if (observed.has('bright')) return '已见亮位，继续旋转找暗位';
+  if (observed.has('dark')) return '已见暗位，继续旋转找亮位';
+  return '继续旋转，观察明暗变化';
 }
 
 function normalizeAngle(angle: number): number {
@@ -1801,6 +2038,7 @@ function sampleSweepAngles(from: number, to: number): number[] {
 
 // ── 观察解析文字 ──────────────────────────────────────────────
 function renderOpticalHint(
+  response: PolariscopeLearningResponse | undefined,
   optical: OpticalCharacter | undefined,
   brightness: number,
   polarPosition: 'crossed' | 'parallel',
@@ -1816,11 +2054,18 @@ function renderOpticalHint(
   }
   if (!optical) return <p>放置样品并旋转，观察视场明暗变化。</p>;
 
-  if (optical === 'isotropic') {
-    return <p>转动载物台 360°，视场始终保持全暗——这是<strong>均质体</strong>的典型特征。等轴晶系宝石（如石榴石、尖晶石）及非晶质体（玻璃、琥珀）均呈此特征。</p>;
+  if (response === 'opaque-not-applicable') {
+    return (
+      <p>
+        该样品为<strong>不透明样品</strong>，<strong>标准透射偏光镜不适用</strong>：光线无法有效穿过样品，因此不会得到可靠的四明四暗、持续亮或全暗透射响应。此时应记录为无有效透射响应，并改用反射光观察或其他检测方法。
+      </p>
+    );
   }
-  if (optical === 'aggregate') {
-    return <p>视场呈全亮状态——这是<strong>多晶质集合体</strong>的典型特征。由于光线经过大量细小晶粒，偏振态被打乱，无法被上偏光片消光。翡翠、软玉等均属此类。</p>;
+  if (response === 'isotropic-all-dark') {
+    return <p>转动载物台 360°，样品与背景始终保持全暗、无亮位——这是<strong>均质体</strong>的典型特征。等轴晶系宝石（如石榴石、尖晶石）及非晶质体（玻璃、琥珀、欧泊）均可呈此特征。</p>;
+  }
+  if (response === 'aggregate-continuous-bright') {
+    return <p>样品区域持续透亮、旋转时保持亮反应——这是<strong>多晶质集合体</strong>的典型特征。正交背景仍保持暗场；由于光线经过大量细小晶粒，偏振态被打乱，样品响应无法被上偏光片完全消光。翡翠、软玉等均属此类。</p>;
   }
   if (optical === 'uniaxial-positive' || optical === 'uniaxial-negative') {
     return (
@@ -1828,7 +2073,7 @@ function renderOpticalHint(
         旋转 360° 出现<strong>四明四暗</strong>，说明样品为非均质体。当前样品为<strong>一轴晶（{optical === 'uniaxial-positive' ? '+' : '−'}）</strong>。
         在正交偏光下找到干涉色最强的位置，加装锥光干涉球可观察到黑十字干涉图（标准牛眼图），进一步确认轴性。
         {brightness < 0.15 && ' · 当前处于消光位（暗位），旋转约 45° 可到达最亮位。'}
-        {brightness > 0.85 && ' · 当前处于最亮位（45° 位），继续旋转约 45° 将到达下一个消光位。'}
+        {brightness > 0.85 && ' · 当前样品处于最亮位（45° 位），继续旋转约 45° 将到达下一个消光位。'}
       </p>
     );
   }
@@ -1840,7 +2085,7 @@ function renderOpticalHint(
       </p>
     );
   }
-  return <p>旋转载物台，观察视场明暗交替规律，记录四明四暗、全暗或全亮现象后进行光性判定。</p>;
+  return <p>旋转载物台，观察样品区域的明暗响应规律，记录四明四暗、全暗或样品持续亮现象后进行光性判定。</p>;
 }
 
 // ── 子组件 ────────────────────────────────────────────────────

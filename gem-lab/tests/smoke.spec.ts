@@ -152,6 +152,7 @@ test('polariscope learning mode uses a live use state with direct stage rotation
 
   await page.getByTestId('polariscope-start-learning').click();
   await expect(page.getByTestId('polariscope-align-upper-state')).toBeVisible();
+  await expect(page.getByTestId('polariscope-transition-cue')).toContainText('开始调整上偏光片');
   await expect(page.getByTestId('polariscope-instrument-locator')).toBeVisible();
   await expect(page.getByTestId('polariscope-instrument-locator')).toHaveAttribute('data-active-part', 'upper-polar');
   await expect(page.getByTestId('polariscope-instrument-locator')).toContainText('正在调整：上偏光片');
@@ -177,6 +178,7 @@ test('polariscope learning mode uses a live use state with direct stage rotation
   await expect(page.getByTestId('polariscope-confirm-upper-polar')).toBeEnabled();
   await page.getByTestId('polariscope-confirm-upper-polar').click();
   await expect(page.getByTestId('polariscope-place-sample-state')).toBeVisible();
+  await expect(page.getByTestId('polariscope-transition-cue')).toContainText('已正交，进入放样');
   await expect(page.getByTestId('polariscope-instrument-locator')).toBeVisible();
   await expect(page.getByTestId('polariscope-instrument-locator')).toHaveAttribute('data-active-part', 'sample-gap');
   await expect(page.getByTestId('polariscope-instrument-locator')).toContainText('放置样品：载物台中心');
@@ -184,6 +186,8 @@ test('polariscope learning mode uses a live use state with direct stage rotation
 
   await page.getByTestId('polariscope-place-sample').click();
   await expect(page.getByTestId('polariscope-live-use-state')).toBeVisible();
+  await expect(page.getByTestId('polariscope-transition-cue')).toContainText('样品已进入光路');
+  await expect(page.getByTestId('polariscope-phenomenon-status')).toHaveAttribute('data-phenomenon', 'dark');
   await expect(page.getByTestId('polariscope-instrument-locator')).toBeVisible();
   await expect(page.getByTestId('polariscope-instrument-locator')).toHaveAttribute('data-active-part', 'stage');
   await expect(page.getByTestId('polariscope-instrument-locator')).toContainText('正在旋转：载物台');
@@ -222,6 +226,9 @@ test('polariscope learning mode uses a live use state with direct stage rotation
   );
   await page.mouse.up();
   await expect(page.getByTestId('polariscope-live-observation')).toHaveAttribute('data-stage-angle', /2[3-6]/);
+  await expect(page.getByTestId('polariscope-phenomenon-status')).toHaveAttribute('data-phenomenon', 'bright');
+  await expect(page.getByTestId('polariscope-phenomenon-status')).toContainText('亮位');
+  await expect(page.getByTestId('polariscope-first-observation-cue')).toContainText('已见亮位');
   const locatorImageMiddleBrightnessBox = await page.getByTestId('polariscope-instrument-locator-image').boundingBox();
   expect(locatorImageMiddleBrightnessBox).not.toBeNull();
   expect(Math.abs(locatorImageMiddleBrightnessBox!.y - locatorImageInitialBox!.y)).toBeLessThan(1);
@@ -242,8 +249,184 @@ test('polariscope learning mode uses a live use state with direct stage rotation
 async function expectPolariscopeLocatorImageFrameClean(page: Page) {
   const locatorImageFrame = page.getByTestId('polariscope-instrument-locator-image').locator('xpath=..');
   await expect(locatorImageFrame.locator('svg')).toHaveCount(0);
+  const locatorImageBox = await page.getByTestId('polariscope-instrument-locator-image').boundingBox();
+  expect(locatorImageBox).not.toBeNull();
+  expect(locatorImageBox!.height).toBeGreaterThanOrEqual(158);
   await expect(locatorImageFrame).not.toContainText('拖动这里');
   await expect(locatorImageFrame).not.toContainText('样品进入');
   await expect(locatorImageFrame).not.toContainText('同步旋转');
   await expect(locatorImageFrame).not.toContainText('使上下偏光片');
+}
+
+test('polariscope upper polar can confirm at repeated crossed dark positions', async ({ page }) => {
+  await page.goto('/demo/polariscope');
+
+  await page.getByTestId('polariscope-start-learning').click();
+  await expect(page.getByTestId('polariscope-align-upper-state')).toBeVisible();
+
+  const upperRing = page.getByTestId('polariscope-upper-ring-control');
+  const upperBox = await upperRing.boundingBox();
+  expect(upperBox).not.toBeNull();
+
+  await page.mouse.move(upperBox!.x + upperBox!.width / 2, upperBox!.y + 8);
+  await page.mouse.down();
+  await page.mouse.move(upperBox!.x + 12, upperBox!.y + upperBox!.height / 2, { steps: 10 });
+  await page.mouse.up();
+
+  await expect(page.getByTestId('polariscope-upper-brightness-state')).toContainText('接近全暗');
+  await expect(page.getByTestId('polariscope-confirm-upper-polar')).toBeEnabled();
+  await page.getByTestId('polariscope-confirm-upper-polar').click();
+  await expect(page.getByTestId('polariscope-place-sample-state')).toBeVisible();
+});
+
+test('polariscope uses oval cabochon view for jade aggregate samples', async ({ page }) => {
+  await enterPolariscopeLiveUse(page, 'jadeite');
+
+  await expect(page.getByTestId('polariscope-live-use-state')).toBeVisible();
+  await expect(page.getByTestId('polariscope-live-observation')).toHaveAttribute(
+    'data-sample-shape',
+    'cabochon-oval',
+  );
+  await expect(page.getByTestId('polariscope-phenomenon-status')).toHaveAttribute('data-phenomenon', 'bright');
+  await expect(page.getByTestId('polariscope-phenomenon-status')).toContainText('持续亮');
+  await expect(page.getByTestId('polariscope-live-progress')).toContainText('样品持续透亮');
+  await expect(page.getByTestId('polariscope-live-hint')).toContainText('样品区域持续透亮');
+  await expect(page.getByTestId('polariscope-live-hint')).not.toContainText('视场呈全亮状态');
+  await expectAggregateSampleResponseToReadBright(page);
+});
+
+test('polariscope learning mode treats opaque samples as transmitted-light not applicable', async ({ page }) => {
+  await enterPolariscopeLiveUse(page, 'pearl');
+
+  await expect(page.getByTestId('polariscope-live-observation')).toHaveAttribute(
+    'data-sample-shape',
+    'cabochon-oval',
+  );
+  await expect(page.getByTestId('polariscope-phenomenon-status')).toHaveAttribute('data-phenomenon', 'dark');
+  await expect(page.getByTestId('polariscope-phenomenon-status')).toContainText('不适用');
+  await expect(page.getByTestId('polariscope-live-progress')).toContainText('无有效透射响应');
+  await expect(page.getByTestId('polariscope-live-progress')).not.toContainText('持续透亮');
+  await expect(page.getByTestId('polariscope-live-hint')).toContainText('标准透射偏光镜不适用');
+  await expect(page.getByTestId('polariscope-live-hint')).not.toContainText('样品区域持续透亮');
+  await expect(page.getByRole('button', { name: '完成本轮观察' })).toBeEnabled();
+});
+
+test('polariscope learning mode explains isotropic samples as continuously dark', async ({ page }) => {
+  await enterPolariscopeLiveUse(page, 'garnet', 90);
+
+  await expect(page.getByTestId('polariscope-live-observation')).toHaveAttribute(
+    'data-sample-shape',
+    'faceted-rectangle',
+  );
+  await expect(page.getByTestId('polariscope-phenomenon-status')).toHaveAttribute('data-phenomenon', 'dark');
+  await expect(page.getByTestId('polariscope-phenomenon-status')).toContainText('持续全暗');
+  await expect(page.getByTestId('polariscope-live-progress')).toContainText('无亮位');
+  await expect(page.getByTestId('polariscope-live-progress')).not.toContainText('继续旋转找亮位');
+  await expect(page.getByTestId('polariscope-live-hint')).toContainText('始终保持全暗');
+  await expect(page.getByRole('button', { name: '完成本轮观察' })).toBeEnabled();
+});
+
+test('polariscope learning mode maps cabochon samples to oval silhouettes', async ({ page }) => {
+  await enterPolariscopeLiveUse(page, 'moonstone', 45);
+
+  await expect(page.getByTestId('polariscope-live-observation')).toHaveAttribute(
+    'data-sample-shape',
+    'cabochon-oval',
+  );
+  await expect(page.getByTestId('polariscope-phenomenon-status')).toHaveAttribute('data-phenomenon', 'bright');
+  await expect(page.getByTestId('polariscope-phenomenon-status')).toContainText('亮位');
+
+  await enterPolariscopeLiveUse(page, 'opal', 90);
+
+  await expect(page.getByTestId('polariscope-live-observation')).toHaveAttribute(
+    'data-sample-shape',
+    'cabochon-oval',
+  );
+  await expect(page.getByTestId('polariscope-phenomenon-status')).toHaveAttribute('data-phenomenon', 'dark');
+  await expect(page.getByTestId('polariscope-phenomenon-status')).not.toContainText('持续亮');
+});
+
+async function enterPolariscopeLiveUse(page: Page, sampleId: string, stageAngle = 45) {
+  await page.goto('/demo/polariscope');
+  await page.locator('select').selectOption(sampleId);
+  await page.getByTestId('polariscope-start-learning').click();
+
+  const upperRing = page.getByTestId('polariscope-upper-ring-control');
+  const upperBox = await upperRing.boundingBox();
+  expect(upperBox).not.toBeNull();
+
+  await page.mouse.move(upperBox!.x + upperBox!.width / 2, upperBox!.y + 8);
+  await page.mouse.down();
+  await page.mouse.move(upperBox!.x + upperBox!.width - 12, upperBox!.y + upperBox!.height / 2, { steps: 8 });
+  await page.mouse.up();
+  await page.getByTestId('polariscope-confirm-upper-polar').click();
+  await page.getByTestId('polariscope-place-sample').click();
+
+  await expect(page.getByTestId('polariscope-live-use-state')).toBeVisible();
+
+  const stageRing = page.getByTestId('polariscope-stage-ring-control');
+  const stageBox = await stageRing.boundingBox();
+  expect(stageBox).not.toBeNull();
+  const stageCenter = {
+    x: stageBox!.x + stageBox!.width / 2,
+    y: stageBox!.y + stageBox!.height / 2,
+  };
+  const stageDragRadius = stageBox!.width * 0.42;
+  await page.mouse.move(stageCenter.x, stageCenter.y - stageDragRadius);
+  await page.mouse.down();
+  await page.mouse.move(
+    stageCenter.x + Math.sin((stageAngle * Math.PI) / 180) * stageDragRadius,
+    stageCenter.y - Math.cos((stageAngle * Math.PI) / 180) * stageDragRadius,
+    { steps: 8 },
+  );
+  await page.mouse.up();
+}
+
+async function expectAggregateSampleResponseToReadBright(page: Page) {
+  const metrics = await page.evaluate(() => {
+    const canvas = document.querySelector('[data-testid="polariscope-live-observation"] canvas');
+    if (!(canvas instanceof HTMLCanvasElement)) return null;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    const { width, height } = canvas;
+    const pixels = ctx.getImageData(0, 0, width, height).data;
+    const sample = { green: 0, luminance: 0, count: 0 };
+    const background = { green: 0, luminance: 0, count: 0 };
+
+    for (let y = 0; y < height; y += 2) {
+      for (let x = 0; x < width; x += 2) {
+        const nx = (x - width / 2) / (width / 2);
+        const ny = (y - height / 2) / (height / 2);
+        const distance = Math.sqrt(nx * nx + ny * ny);
+        const i = (y * width + x) * 4;
+        const r = pixels[i];
+        const g = pixels[i + 1];
+        const b = pixels[i + 2];
+        const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        const bucket =
+          Math.abs(nx) < 0.22 && Math.abs(ny) < 0.16
+            ? sample
+            : distance > 0.46 && distance < 0.56
+              ? background
+              : null;
+        if (!bucket) continue;
+        bucket.green += g;
+        bucket.luminance += luminance;
+        bucket.count += 1;
+      }
+    }
+
+    return {
+      sampleGreen: sample.green / sample.count,
+      sampleLuminance: sample.luminance / sample.count,
+      backgroundLuminance: background.luminance / background.count,
+      deltaLuminance: sample.luminance / sample.count - background.luminance / background.count,
+    };
+  });
+
+  expect(metrics).not.toBeNull();
+  expect(metrics!.sampleLuminance).toBeGreaterThan(85);
+  expect(metrics!.sampleGreen).toBeGreaterThan(105);
+  expect(metrics!.deltaLuminance).toBeGreaterThan(60);
 }

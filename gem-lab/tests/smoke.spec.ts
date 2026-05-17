@@ -145,28 +145,48 @@ test('polariscope can submit opaque samples as not applicable in detection mode'
   await expect(page.getByTestId('polariscope-detection-recorded')).toBeVisible();
 });
 
-test('polariscope detection mode carries spatial locator through setup and rotation', async ({ page }) => {
+test('polariscope detection mode uses the main instrument image as a single active guide', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto('/demo/polariscope?sample=amethyst&mode=detection');
 
   await expect(page.getByTestId('unknown-sample-label').first()).toBeVisible();
   await expect(page.getByText('紫水晶')).toHaveCount(0);
   await expect(page.getByTestId('polariscope-detection-spatial-guide')).toHaveCount(0);
+  await expect(page.getByTestId('polariscope-instrument-locator')).toHaveCount(0);
+  await expect(page.getByTestId('polariscope-detection-main-guide')).toHaveAttribute('data-active-step', 'power');
+  await expect(page.getByTestId('polariscope-detection-main-guide')).toContainText('点击右侧 LED 开关');
+  await expect(page.getByTestId('polariscope-detection-guide-arrow-cue')).toHaveAttribute('data-arrow-count', '3');
 
   await page.getByRole('button', { name: 'LED 开关' }).click();
-  await expect(page.getByTestId('polariscope-detection-spatial-guide')).toBeVisible();
-  await expect(page.getByTestId('polariscope-instrument-locator')).toHaveAttribute('data-active-part', 'upper-polar');
-  await expect(page.getByTestId('polariscope-instrument-locator')).toContainText('正在调整：上偏光片');
-  await expect(page.getByTestId('polariscope-locator-arrow-cue')).toHaveAttribute('data-arrow-count', '3');
+  await expect(page.getByTestId('polariscope-detection-spatial-guide')).toHaveCount(0);
+  await expect(page.getByTestId('polariscope-instrument-locator')).toHaveCount(0);
+  await expect(page.getByTestId('polariscope-detection-main-guide')).toHaveAttribute('data-active-step', 'crossed');
+  await expect(page.getByTestId('polariscope-detection-main-guide')).toContainText('旋转上偏光片至正交');
+  await expect(page.getByTestId('polariscope-detection-upper-calibration')).toBeVisible();
+  await expect(page.getByTestId('polariscope-confirm-detection-upper-polar')).toBeDisabled();
+  await expect(page.getByTestId('polariscope-detection-quick-crossed')).toBeVisible();
 
-  await page.getByRole('button', { name: /上偏光片/ }).click();
-  await expect(page.getByTestId('polariscope-instrument-locator')).toHaveAttribute('data-active-part', 'sample-gap');
-  await expect(page.getByTestId('polariscope-instrument-locator')).toContainText('放置样品：载物台中心');
+  const upperRing = page.getByTestId('polariscope-detection-upper-ring-control');
+  const upperBox = await upperRing.boundingBox();
+  expect(upperBox).not.toBeNull();
+  const upperCenter = {
+    x: upperBox!.x + upperBox!.width / 2,
+    y: upperBox!.y + upperBox!.height / 2,
+  };
+  const upperRadius = upperBox!.width * 0.42;
+  await page.mouse.move(upperCenter.x, upperCenter.y - upperRadius);
+  await page.mouse.down();
+  await page.mouse.move(upperCenter.x + upperRadius, upperCenter.y, { steps: 8 });
+  await page.mouse.up();
+  await expect(page.getByTestId('polariscope-confirm-detection-upper-polar')).toBeEnabled();
+  await page.getByTestId('polariscope-confirm-detection-upper-polar').click();
+  await expect(page.getByTestId('polariscope-detection-main-guide')).toHaveAttribute('data-active-step', 'place');
+  await expect(page.getByTestId('polariscope-detection-main-guide')).toContainText('将未知样品放入光路');
 
   await page.getByRole('button', { name: '载物台' }).click();
-  await expect(page.getByTestId('polariscope-instrument-locator')).toHaveAttribute('data-active-part', 'stage');
-  await expect(page.getByTestId('polariscope-instrument-locator')).toContainText('正在旋转：载物台');
+  await expect(page.getByTestId('polariscope-detection-main-guide')).toHaveAttribute('data-active-step', 'rotate');
+  await expect(page.getByTestId('polariscope-detection-main-guide')).toContainText('旋转载物台观察明暗');
   await expect(page.getByTestId('polariscope-detection-sample-transfer-cue')).toBeVisible();
-  await expect(page.getByTestId('polariscope-detection-sample-transfer-cue')).toContainText('未知样品');
   await expect(page.getByTestId('polariscope-save')).toBeDisabled();
   await expect(page.getByTestId('polariscope-detection-direct-stage-control')).toBeVisible();
   await expect(page.getByTestId('polariscope-detection-direct-stage-control')).toHaveAttribute(
@@ -195,12 +215,31 @@ test('polariscope detection mode carries spatial locator through setup and rotat
   await expect
     .poll(() => page.getByTestId('polariscope-detection-direct-stage-control').getAttribute('data-stage-angle'))
     .not.toBe(initialStageAngle);
+  await expect(page.getByTestId('polariscope-detection-main-guide')).toHaveAttribute('data-active-step', 'record');
+  await expect(page.getByTestId('polariscope-detection-main-guide')).toContainText('在右侧记录观察结果');
   await expect(page.getByTestId('polariscope-save')).toBeDisabled();
+  const saveBoxBeforeRecord = await page.getByTestId('polariscope-save').boundingBox();
+  expect(saveBoxBeforeRecord).not.toBeNull();
+  expect(saveBoxBeforeRecord!.y + saveBoxBeforeRecord!.height).toBeLessThanOrEqual(720);
   await page.getByRole('checkbox', { name: '四明四暗（非均质体）' }).check();
   await page.getByRole('combobox').selectOption('anisotropic');
   await expect(page.getByTestId('polariscope-save')).toBeEnabled();
   await expect(page.getByText('紫水晶')).toHaveCount(0);
   await expect(page.getByText('拖动')).toHaveCount(0);
+  await expect(page.getByTestId('polariscope-instrument-locator')).toHaveCount(0);
+});
+
+test('polariscope detection mode keeps a secondary quick upper polar calibration path', async ({ page }) => {
+  await page.goto('/demo/polariscope?sample=amethyst&mode=detection');
+
+  await page.getByRole('button', { name: 'LED 开关' }).click();
+  await expect(page.getByTestId('polariscope-detection-upper-calibration')).toBeVisible();
+  await page.getByTestId('polariscope-detection-quick-crossed').click();
+
+  await expect(page.getByTestId('polariscope-detection-main-guide')).toHaveAttribute('data-active-step', 'place');
+  await expect(page.getByTestId('polariscope-detection-main-guide')).toContainText('将未知样品放入光路');
+  await expect(page.getByTestId('polariscope-detection-spatial-guide')).toHaveCount(0);
+  await expect(page.getByTestId('polariscope-instrument-locator')).toHaveCount(0);
 });
 
 test('polariscope learning mode uses a live use state with direct stage rotation', async ({ page }) => {

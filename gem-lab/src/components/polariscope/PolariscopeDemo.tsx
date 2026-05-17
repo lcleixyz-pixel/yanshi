@@ -39,6 +39,7 @@ type LearningFocusTransition =
   | 'place-sample-to-live-use'
   | 'live-use-to-result-summary';
 type LearningFocusTarget = 'upper-polar' | 'sample-gap' | 'live-observation' | 'result-summary';
+type DetectionGuideStep = StepId;
 type LearningTransitionCue = {
   focusLabel: string;
   key: string;
@@ -63,6 +64,38 @@ const STEP_META: Record<StepId, { iconId: string; title: string; tip: string }> 
     tip: '沿载物台外缘旋转，记录明暗交替次数',
   },
   record: { iconId: 'record', title: '记录现象与判定结果', tip: '在右侧面板填写' },
+};
+
+const DETECTION_GUIDE_META: Record<DetectionGuideStep, {
+  label: string;
+  side: 'left' | 'right' | 'top' | 'bottom';
+  target: { x: number; y: number };
+}> = {
+  power: {
+    label: '点击右侧 LED 开关',
+    side: 'left',
+    target: { x: 0.82, y: 0.72 },
+  },
+  crossed: {
+    label: '旋转上偏光片至正交',
+    side: 'right',
+    target: { x: 0.62, y: 0.13 },
+  },
+  place: {
+    label: '将未知样品放入光路',
+    side: 'right',
+    target: { x: 0.59, y: 0.34 },
+  },
+  rotate: {
+    label: '旋转载物台观察明暗',
+    side: 'left',
+    target: { x: 0.52, y: 0.38 },
+  },
+  record: {
+    label: '在右侧记录观察结果',
+    side: 'right',
+    target: { x: 0.91, y: 0.52 },
+  },
 };
 
 /**
@@ -323,18 +356,19 @@ export default function PolariscopeDemo({
     current: id === currentStep,
   }));
 
-  const tip = currentStep ? STEP_META[currentStep].tip : '✓ 全部步骤已完成';
-
   // 热点点击
   const handleHotpoint = (id: 'power' | 'upper' | 'stage') => {
     if (id === 'power') {
       if (state.power) {
         setState(INITIAL_STATE);
+        setUpperPolarAngle(0);
         resetObservationState();
       } else {
+        setUpperPolarAngle(0);
         setState((s) => ({ ...s, power: true, recorded: false }));
       }
     } else if (id === 'upper' && state.power) {
+      if (mode === 'detection') return;
       const nextPolarPosition = state.polarPosition === 'crossed' ? 'parallel' : 'crossed';
       resetObservationState();
       setState((s) => ({
@@ -344,7 +378,7 @@ export default function PolariscopeDemo({
         rotated: false,
         recorded: false,
       }));
-    } else if (id === 'stage' && state.power) {
+    } else if (id === 'stage' && state.power && state.crossed) {
       if (!state.sampleOn) {
         resetObservationState();
         setState((s) => ({ ...s, sampleOn: true, rotated: false, recorded: false }));
@@ -401,15 +435,10 @@ export default function PolariscopeDemo({
     state.sampleOn,
   );
   const upperCrossedReady = isUpperPolarCrossed(upperPolarAngle);
+  const upperPolarBrightness = computeUpperPolarTransmission(upperPolarAngle);
+  const upperPolarBrightnessLabel = getUpperPolarBrightnessLabel(upperPolarBrightness);
   const learningSampleShape = getPolariscopeSampleShape(sample);
-  const detectionLocatorPart: PolariscopeLocatorPart | null =
-    mode === 'detection' && state.power
-      ? !state.crossed
-        ? 'upper-polar'
-        : !state.sampleOn || opaqueForStandardPolariscope
-          ? 'sample-gap'
-          : 'stage'
-      : null;
+  const detectionGuideStep = computeDetectionGuideStep(state, opaqueForStandardPolariscope);
 
   const beginLearningOperation = () => {
     setState((s) => ({
@@ -439,6 +468,25 @@ export default function PolariscopeDemo({
       recorded: false,
     }));
     setLearningView('place-sample');
+  };
+
+  const commitDetectionUpperPolarAngle = (angle: number) => {
+    if (!isUpperPolarCrossed(angle)) return;
+    resetObservationState();
+    setUpperPolarAngle(((angle % 360) + 360) % 360);
+    setState((s) => ({
+      ...s,
+      power: true,
+      polarPosition: 'crossed',
+      crossed: true,
+      sampleOn: false,
+      rotated: false,
+      recorded: false,
+    }));
+  };
+
+  const quickCrossDetectionUpperPolar = () => {
+    commitDetectionUpperPolarAngle(90);
   };
 
   const placeLearningSample = () => {
@@ -626,21 +674,6 @@ export default function PolariscopeDemo({
                   className="h-full w-full"
                   hotspotLayerClassName="z-[28]"
                 >
-                  {state.power && (
-                    <PolarUpperPolarHints
-                      x={POLAR_LAYOUT.hotpoint.upper.x}
-                      y={POLAR_LAYOUT.hotpoint.upper.y}
-                      title={
-                        state.polarPosition === 'crossed' ? '上偏光片（正交）' : '上偏光片（平行）'
-                      }
-                      sub={
-                        state.polarPosition === 'crossed'
-                          ? '已旋至与下偏光片正交 · 点击切回平行'
-                          : '绕竖轴旋转环至正交 · 点击模拟一步到位'
-                      }
-                      isDone={state.polarPosition === 'crossed'}
-                    />
-                  )}
                   <span
                     className={clsx(
                       'absolute bottom-[26%] right-[18%] h-3 w-3 rounded-full',
@@ -658,25 +691,22 @@ export default function PolariscopeDemo({
                     themeHex={instrument.themeHex}
                     status={state.power ? 'done' : currentStep === 'power' ? 'active' : 'disabled'}
                     onClick={() => handleHotpoint('power')}
+                    showLabel={false}
                   />
                   <HotPoint
                     x={POLAR_LAYOUT.hotpoint.upper.x}
                     y={POLAR_LAYOUT.hotpoint.upper.y}
-                    label={
-                      state.polarPosition === 'crossed'
-                        ? '上偏光片（正交），已旋至与下偏光片正交，点击切回平行'
-                        : '上偏光片（平行），绕竖轴旋转环至正交，点击模拟一步到位'
-                    }
+                    label={state.crossed ? '上偏光片（已正交）' : '上偏光片'}
                     showLabel={false}
-                    themeHex={state.polarPosition === 'crossed' ? instrument.themeHex : '#d97706'}
+                    themeHex={state.crossed ? instrument.themeHex : '#d97706'}
                     status={
                       !state.power
                         ? 'disabled'
                         : state.crossed
                           ? 'done'
-                          : currentStep === 'crossed'
+                          : detectionGuideStep === 'crossed'
                             ? 'active'
-                            : 'active'
+                            : 'disabled'
                     }
                     onClick={() => handleHotpoint('upper')}
                   />
@@ -687,32 +717,41 @@ export default function PolariscopeDemo({
                     sub={state.sampleOn ? '点击取下样品' : '点击放置样品'}
                     side={POLAR_LAYOUT.hotpoint.stage.side}
                     themeHex={instrument.themeHex}
-                    status={state.sampleOn ? 'done' : currentStep === 'place' ? 'active' : 'disabled'}
+                    status={
+                      state.rotated
+                        ? 'done'
+                        : detectionGuideStep === 'place' || detectionGuideStep === 'rotate'
+                          ? 'active'
+                          : state.sampleOn
+                            ? 'done'
+                            : 'disabled'
+                    }
                     onClick={() => handleHotpoint('stage')}
+                    showLabel={false}
+                  />
+                  <DetectionMainInstrumentGuide
+                    activeStep={detectionGuideStep}
+                    state={state}
+                    themeHex={instrument.themeHex}
                   />
                   {mode === 'detection' && state.sampleOn && (
                     <div
                       data-testid="polariscope-detection-sample-transfer-cue"
-                      className="absolute z-[3] flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 animate-sample-transfer items-center justify-center rounded-full border border-slate-200 bg-white/80 text-center text-[10px] font-semibold leading-tight text-slate-700 shadow-card ring-1 ring-white/80 motion-reduce:animate-none"
+                      aria-label="未知样品已放置"
+                      className="absolute z-[3] flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 animate-sample-transfer items-center justify-center rounded-full border border-white/80 bg-white/70 shadow-card ring-1 ring-white/80 motion-reduce:animate-none"
                       style={{
                         left: `${POLAR_LAYOUT.hotpoint.stage.x * 100}%`,
                         top: `${POLAR_LAYOUT.hotpoint.stage.y * 100}%`,
                       }}
                     >
-                      未知样品
+                      <span className="sr-only">未知样品已放置</span>
+                      <span className="h-5 w-7 rounded-[48%] border border-violet-200/80 bg-gradient-to-br from-violet-100/90 via-white/80 to-cyan-100/70 shadow-inner" />
                     </div>
                   )}
                 </ObjectFitHotspotFrame>
               </div>
             </div>
           </div>
-
-          {/* 底部提示 */}
-          {tip && (
-            <div className="absolute bottom-3 left-1/2 z-20 max-w-[min(96%,28rem)] -translate-x-1/2 rounded-full border border-line-2 bg-white/90 px-3 py-1.5 text-center text-xs text-ink-2 shadow-card backdrop-blur">
-              <span className="mr-1">💡</span>{tip}
-            </div>
-          )}
 
           {/* 光源状态角标 */}
           <div className="absolute bottom-3 left-3 rounded-lg border border-line bg-white/85 px-3 py-2 text-xs shadow-card backdrop-blur">
@@ -787,7 +826,18 @@ export default function PolariscopeDemo({
               </div>
 
               <div className="flex min-h-0 flex-1 items-center justify-center">
-                {state.sampleOn && state.power && state.crossed ? (
+                {state.power && !state.crossed ? (
+                  <DetectionUpperPolarCalibration
+                    angle={upperPolarAngle}
+                    brightness={upperPolarBrightness}
+                    brightnessLabel={upperPolarBrightnessLabel}
+                    crossedReady={upperCrossedReady}
+                    onAngleChange={setUpperPolarAngle}
+                    onConfirm={() => commitDetectionUpperPolarAngle(upperPolarAngle)}
+                    onQuickCross={quickCrossDetectionUpperPolar}
+                    themeHex={instrument.themeHex}
+                  />
+                ) : state.sampleOn && state.power && state.crossed ? (
                   <div
                     data-testid="polariscope-detection-direct-stage-control"
                     data-sample-shape={learningSampleShape}
@@ -845,16 +895,6 @@ export default function PolariscopeDemo({
           <aside className="flex min-h-0 flex-[2] flex-col bg-white">
             <div className="scrollbar-thin min-h-0 flex-1 overflow-y-auto px-3 py-3 text-ink">
               <div className="flex min-h-0 flex-col gap-2">
-                {detectionLocatorPart && (
-                  <div data-testid="polariscope-detection-spatial-guide">
-                    <PolariscopeInstrumentLocator
-                      activePart={detectionLocatorPart}
-                      compact
-                      instrumentImage={instrument.productImage}
-                      themeHex={instrument.themeHex}
-                    />
-                  </div>
-                )}
                 <div className="rounded-lg border border-line bg-white p-2 shadow-soft">
                   <div className="mb-2 text-xs font-semibold text-ink">📝 数据记录</div>
 
@@ -2343,49 +2383,255 @@ function renderOpticalHint(
 
 // ── 子组件 ────────────────────────────────────────────────────
 
-/** 上偏光片：标题在热点正上方，说明在热点右侧（避免与左上角模式/步骤卡叠在同一象限） */
-function PolarUpperPolarHints({
-  x,
-  y,
-  title,
-  sub,
-  isDone,
+function DetectionMainInstrumentGuide({
+  activeStep,
+  state,
+  themeHex,
 }: {
-  x: number;
-  y: number;
-  title: string;
-  sub: string;
-  isDone: boolean;
+  activeStep: DetectionGuideStep;
+  state: DemoState;
+  themeHex: string;
+}) {
+  const meta = DETECTION_GUIDE_META[activeStep];
+  const sideOffset = activeStep === 'crossed' ? 7 : 8;
+  const calloutStyle = getDetectionGuideCalloutStyle(meta.target, meta.side, sideOffset);
+
+  return (
+    <div
+      key={activeStep}
+      data-testid="polariscope-detection-main-guide"
+      data-active-step={activeStep}
+      className="pointer-events-none absolute inset-0 z-[36]"
+    >
+      <div
+        className="absolute -translate-x-1/2 -translate-y-1/2"
+        style={{ left: `${meta.target.x * 100}%`, top: `${meta.target.y * 100}%` }}
+      >
+        <div
+          className="absolute -inset-5 animate-target-breathe rounded-full border-2 motion-reduce:animate-none"
+          style={{
+            borderColor: themeHex,
+            boxShadow: `0 0 0 10px ${themeHex}18, 0 0 32px ${themeHex}30`,
+          }}
+        />
+        <div
+          className="h-9 w-9 rounded-full border-2 border-white bg-white/[0.86] shadow-card ring-2"
+          style={{ color: themeHex, boxShadow: `0 0 0 2px ${themeHex}` }}
+        >
+          <span
+            className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full"
+            style={{ backgroundColor: themeHex }}
+          />
+        </div>
+      </div>
+
+      <div
+        data-testid="polariscope-detection-guide-arrow-cue"
+        data-arrow-count="3"
+        className="absolute flex items-center gap-1"
+        style={getDetectionGuideArrowStyle(meta.target, meta.side)}
+      >
+        {Array.from({ length: 3 }).map((_, index) => (
+          <span
+            key={index}
+            className="h-2.5 w-2.5 animate-locator-arrow-cue border-b-2 border-r-2 motion-reduce:animate-none"
+            style={{
+              borderColor: themeHex,
+              animationDelay: `${index * 120}ms`,
+              transform: getDetectionGuideArrowRotation(meta.side),
+            }}
+          />
+        ))}
+      </div>
+
+      <div
+        className={clsx(
+          'absolute w-max min-w-[8.5rem] max-w-[13rem] rounded-xl border bg-white/95 px-3 py-2 text-xs font-semibold leading-snug text-ink shadow-lift backdrop-blur',
+          state.power && activeStep === 'power' && 'border-emerald-200 bg-emerald-50/95 text-emerald-900',
+        )}
+        style={{
+          ...calloutStyle,
+          borderColor: activeStep === 'power' && state.power ? '#bbf7d0' : `${themeHex}55`,
+        }}
+      >
+        <span className="block font-mono text-[9px] uppercase tracking-[0.22em] text-ink-4">当前操作</span>
+        <span>{meta.label}</span>
+      </div>
+    </div>
+  );
+}
+
+function getDetectionGuideCalloutStyle(
+  target: { x: number; y: number },
+  side: 'left' | 'right' | 'top' | 'bottom',
+  offset: number,
+): CSSProperties {
+  const left = target.x * 100;
+  const top = target.y * 100;
+  if (side === 'left') {
+    return {
+      left: `${Math.max(4, left - offset)}%`,
+      top: `${top}%`,
+      transform: 'translate(-100%, -50%)',
+    };
+  }
+  if (side === 'right') {
+    return {
+      left: `${Math.min(96, left + offset)}%`,
+      top: `${top}%`,
+      transform: 'translateY(-50%)',
+    };
+  }
+  if (side === 'top') {
+    return {
+      left: `${left}%`,
+      top: `${Math.max(5, top - offset)}%`,
+      transform: 'translate(-50%, -100%)',
+    };
+  }
+  return {
+    left: `${left}%`,
+    top: `${Math.min(95, top + offset)}%`,
+    transform: 'translateX(-50%)',
+  };
+}
+
+function getDetectionGuideArrowStyle(
+  target: { x: number; y: number },
+  side: 'left' | 'right' | 'top' | 'bottom',
+): CSSProperties {
+  const left = target.x * 100;
+  const top = target.y * 100;
+  if (side === 'left') {
+    return {
+      left: `${Math.max(8, left - 4)}%`,
+      top: `${top}%`,
+      transform: 'translate(-100%, -50%)',
+    };
+  }
+  if (side === 'right') {
+    return {
+      left: `${Math.min(92, left + 4)}%`,
+      top: `${top}%`,
+      transform: 'translateY(-50%)',
+    };
+  }
+  if (side === 'top') {
+    return {
+      left: `${left}%`,
+      top: `${Math.max(7, top - 4)}%`,
+      transform: 'translate(-50%, -100%)',
+    };
+  }
+  return {
+    left: `${left}%`,
+    top: `${Math.min(93, top + 4)}%`,
+    transform: 'translateX(-50%)',
+  };
+}
+
+function getDetectionGuideArrowRotation(side: 'left' | 'right' | 'top' | 'bottom') {
+  if (side === 'left') return 'rotate(-45deg)';
+  if (side === 'right') return 'rotate(135deg)';
+  if (side === 'top') return 'rotate(45deg)';
+  return 'rotate(-135deg)';
+}
+
+function DetectionUpperPolarCalibration({
+  angle,
+  brightness,
+  brightnessLabel,
+  crossedReady,
+  onAngleChange,
+  onConfirm,
+  onQuickCross,
+  themeHex,
+}: {
+  angle: number;
+  brightness: number;
+  brightnessLabel: string;
+  crossedReady: boolean;
+  onAngleChange: (angle: number) => void;
+  onConfirm: () => void;
+  onQuickCross: () => void;
+  themeHex: string;
 }) {
   return (
-    <>
-      <div
-        className={clsx(
-          'pointer-events-none absolute z-[34] rounded-lg border px-2.5 py-1 text-center text-[11px] font-semibold leading-tight shadow-card whitespace-nowrap',
-          isDone ? 'border-emerald-200 bg-emerald-50 text-emerald-900' : 'border-line-2 bg-white text-ink',
-        )}
-        style={{
-          left: `${x * 100}%`,
-          top: `${Math.max(6, y * 100 - 7)}%`,
-          transform: 'translate(-50%, -100%)',
-        }}
-      >
-        {title}
+    <div
+      data-testid="polariscope-detection-upper-calibration"
+      className="flex min-h-0 w-full items-center justify-center"
+    >
+      <div className="grid w-full max-w-[28rem] grid-cols-[minmax(8.5rem,0.85fr)_minmax(11rem,1fr)] items-center gap-3">
+        <div className="relative aspect-square min-w-0 rounded-full bg-slate-950 p-2 shadow-[0_18px_42px_rgba(15,23,42,0.22)]">
+          <AngleRingControl
+            angle={angle}
+            dataTestId="polariscope-detection-upper-ring-control"
+            onAngleChange={onAngleChange}
+            className="absolute inset-0 rounded-full cursor-grab active:cursor-grabbing"
+          >
+            <div className="absolute inset-[6%] rounded-full border border-amber-200/40 bg-black shadow-inner">
+              <ObservationCanvas
+                view="upper-polar-calibration"
+                brightness={brightness}
+                rotation={angle}
+                sampleOn={false}
+                fill
+                showLabel={false}
+                showRotationScale={false}
+              />
+            </div>
+            <div
+              className="absolute left-1/2 top-1/2 h-[46%] w-1 origin-bottom rounded-full bg-amber-300/85 shadow-[0_0_14px_rgba(251,191,36,0.45)]"
+              style={{
+                transform: `translate(-50%, -100%) rotate(${angle}deg)`,
+                transformOrigin: '50% 100%',
+              }}
+            />
+          </AngleRingControl>
+        </div>
+
+        <div className="rounded-xl border border-amber-200 bg-white/95 p-3 shadow-soft">
+          <div className="font-mono text-[9px] uppercase tracking-[0.24em] text-ink-4">
+            Upper Polarizer
+          </div>
+          <div className="mt-1 text-sm font-bold text-ink">手动旋转上偏光片</div>
+          <p className="mt-1 text-[11px] leading-relaxed text-ink-2">
+            观察圆形视域整体由亮转暗。接近全暗时，说明上下偏光片已正交，可以确认进入放样。
+          </p>
+          <div
+            data-testid="polariscope-detection-upper-brightness-state"
+            className={clsx(
+              'mt-2 rounded-lg border px-2 py-1.5 text-[11px] font-semibold',
+              crossedReady
+                ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                : 'border-amber-200 bg-amber-50 text-amber-800',
+            )}
+          >
+            {brightnessLabel} · {Math.round(angle)}°
+          </div>
+          <div className="mt-2 grid grid-cols-[1fr_auto] gap-2">
+            <button
+              type="button"
+              data-testid="polariscope-confirm-detection-upper-polar"
+              onClick={onConfirm}
+              disabled={!crossedReady}
+              className="btn-primary px-3 py-1.5 text-xs disabled:cursor-not-allowed disabled:opacity-45"
+              style={{ background: crossedReady ? themeHex : '#94a3b8' }}
+            >
+              确认正交
+            </button>
+            <button
+              type="button"
+              data-testid="polariscope-detection-quick-crossed"
+              onClick={onQuickCross}
+              className="rounded-lg border border-line-2 bg-white px-2 py-1.5 text-[11px] font-semibold text-ink-3 hover:bg-slate-50"
+            >
+              快速校准
+            </button>
+          </div>
+        </div>
       </div>
-      <div
-        className={clsx(
-          'pointer-events-none absolute z-[34] w-[clamp(10.5rem,18vw,14rem)] rounded-lg border px-2 py-1 text-[10px] leading-snug shadow-card whitespace-normal break-keep',
-          isDone ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-line-2 bg-white text-ink-2',
-        )}
-        style={{
-          left: `${Math.min(86, x * 100 + 10)}%`,
-          top: `${y * 100}%`,
-          transform: 'translateY(-50%)',
-        }}
-      >
-        {sub}
-      </div>
-    </>
+    </div>
   );
 }
 
@@ -2506,6 +2752,14 @@ function computeCurrentStep(s: DemoState): StepId | null {
   if (!s.rotated) return 'rotate';
   if (!s.recorded) return 'record';
   return null;
+}
+
+function computeDetectionGuideStep(s: DemoState, opaqueForStandardPolariscope: boolean): DetectionGuideStep {
+  if (!s.power) return 'power';
+  if (!s.crossed) return 'crossed';
+  if (!s.sampleOn) return 'place';
+  if (!opaqueForStandardPolariscope && !s.rotated) return 'rotate';
+  return 'record';
 }
 
 function isStepDone(id: StepId, s: DemoState): boolean {

@@ -403,6 +403,14 @@ export default function PolariscopeDemo({
   );
   const upperCrossedReady = isUpperPolarCrossed(upperPolarAngle);
   const learningSampleShape = getPolariscopeSampleShape(sample);
+  const detectionLocatorPart: PolariscopeLocatorPart | null =
+    mode === 'detection' && state.power
+      ? !state.crossed
+        ? 'upper-polar'
+        : !state.sampleOn || opaqueForStandardPolariscope
+          ? 'sample-gap'
+          : 'stage'
+      : null;
 
   const beginLearningOperation = () => {
     setState((s) => ({
@@ -683,6 +691,18 @@ export default function PolariscopeDemo({
                     status={state.sampleOn ? 'done' : currentStep === 'place' ? 'active' : 'disabled'}
                     onClick={() => handleHotpoint('stage')}
                   />
+                  {mode === 'detection' && state.sampleOn && (
+                    <div
+                      data-testid="polariscope-detection-sample-transfer-cue"
+                      className="absolute z-[3] flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 animate-sample-transfer items-center justify-center rounded-full border border-slate-200 bg-white/80 text-center text-[10px] font-semibold leading-tight text-slate-700 shadow-card ring-1 ring-white/80 motion-reduce:animate-none"
+                      style={{
+                        left: `${POLAR_LAYOUT.hotpoint.stage.x * 100}%`,
+                        top: `${POLAR_LAYOUT.hotpoint.stage.y * 100}%`,
+                      }}
+                    >
+                      未知样品
+                    </div>
+                  )}
                 </ObjectFitHotspotFrame>
               </div>
             </div>
@@ -831,6 +851,16 @@ export default function PolariscopeDemo({
           <aside className="flex min-h-0 flex-[2] flex-col bg-white">
             <div className="scrollbar-thin min-h-0 flex-1 overflow-y-auto px-3 py-3 text-ink">
               <div className="flex min-h-0 flex-col gap-2">
+                {detectionLocatorPart && (
+                  <div data-testid="polariscope-detection-spatial-guide">
+                    <PolariscopeInstrumentLocator
+                      activePart={detectionLocatorPart}
+                      compact
+                      instrumentImage={instrument.productImage}
+                      themeHex={instrument.themeHex}
+                    />
+                  </div>
+                )}
                 <div className="rounded-lg border border-line bg-white p-2 shadow-soft">
                   <div className="mb-2 text-xs font-semibold text-ink">📝 数据记录</div>
 
@@ -1635,10 +1665,12 @@ function PolariscopeFocusTransitionOverlay({
 
 function PolariscopeInstrumentLocator({
   activePart,
+  compact = false,
   instrumentImage,
   themeHex,
 }: {
   activePart: PolariscopeLocatorPart;
+  compact?: boolean;
   instrumentImage: string;
   themeHex: string;
 }) {
@@ -1724,7 +1756,10 @@ function PolariscopeInstrumentLocator({
       data-active-part={activePart}
       data-target-x={target.x}
       data-target-y={target.y}
-      className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-[linear-gradient(180deg,#f8fafc_0%,#eef3f8_100%)] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]"
+      className={clsx(
+        'mt-3 overflow-hidden rounded-xl border border-slate-200 bg-[linear-gradient(180deg,#f8fafc_0%,#eef3f8_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]',
+        compact ? 'p-2' : 'p-3',
+      )}
     >
       <div className="flex items-center justify-between gap-3">
         <div>
@@ -1741,7 +1776,13 @@ function PolariscopeInstrumentLocator({
         </span>
       </div>
 
-      <div ref={boxRef} className="relative mt-3 h-40 overflow-hidden rounded-lg border border-white/70 bg-white/65">
+      <div
+        ref={boxRef}
+        className={clsx(
+          'relative overflow-hidden rounded-lg border border-white/70 bg-white/65',
+          compact ? 'mt-2 h-28' : 'mt-3 h-40',
+        )}
+      >
         <img
           ref={imgRef}
           data-testid="polariscope-instrument-locator-image"
@@ -1793,7 +1834,12 @@ function PolariscopeInstrumentLocator({
         </div>
       </div>
 
-      <div className="mt-2 flex min-h-10 items-start gap-2 rounded-lg border border-white/80 bg-white/80 px-3 py-2 text-[11px] leading-snug text-ink-3">
+      <div
+        className={clsx(
+          'mt-2 flex items-start gap-2 rounded-lg border border-white/80 bg-white/80 leading-snug text-ink-3',
+          compact ? 'min-h-8 px-2 py-1.5 text-[10px]' : 'min-h-10 px-3 py-2 text-[11px]',
+        )}
+      >
         <span className="mt-1 h-2 w-2 flex-none rounded-full" style={{ backgroundColor: themeHex }} />
         <span>
           <span className="font-semibold text-ink">空间提示：</span>

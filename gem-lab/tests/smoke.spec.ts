@@ -145,6 +145,33 @@ test('polariscope can submit opaque samples as not applicable in detection mode'
   await expect(page.getByTestId('polariscope-detection-recorded')).toBeVisible();
 });
 
+test('polariscope detection mode carries spatial locator through setup and rotation', async ({ page }) => {
+  await page.goto('/demo/polariscope?sample=amethyst&mode=detection');
+
+  await expect(page.getByTestId('unknown-sample-label').first()).toBeVisible();
+  await expect(page.getByText('紫水晶')).toHaveCount(0);
+  await expect(page.getByTestId('polariscope-detection-spatial-guide')).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'LED 开关' }).click();
+  await expect(page.getByTestId('polariscope-detection-spatial-guide')).toBeVisible();
+  await expect(page.getByTestId('polariscope-instrument-locator')).toHaveAttribute('data-active-part', 'upper-polar');
+  await expect(page.getByTestId('polariscope-instrument-locator')).toContainText('正在调整：上偏光片');
+  await expect(page.getByTestId('polariscope-locator-arrow-cue')).toHaveAttribute('data-arrow-count', '3');
+
+  await page.getByRole('button', { name: /上偏光片/ }).click();
+  await expect(page.getByTestId('polariscope-instrument-locator')).toHaveAttribute('data-active-part', 'sample-gap');
+  await expect(page.getByTestId('polariscope-instrument-locator')).toContainText('放置样品：载物台中心');
+
+  await page.getByRole('button', { name: '载物台' }).click();
+  await expect(page.getByTestId('polariscope-instrument-locator')).toHaveAttribute('data-active-part', 'stage');
+  await expect(page.getByTestId('polariscope-instrument-locator')).toContainText('正在旋转：载物台');
+  await expect(page.getByTestId('polariscope-detection-sample-transfer-cue')).toBeVisible();
+  await expect(page.getByTestId('polariscope-detection-sample-transfer-cue')).toContainText('未知样品');
+  await expect(page.getByTestId('polariscope-save')).toBeDisabled();
+  await expect(page.getByText('紫水晶')).toHaveCount(0);
+  await expect(page.getByText('拖动')).toHaveCount(0);
+});
+
 test('polariscope learning mode uses a live use state with direct stage rotation', async ({ page }) => {
   await page.goto('/demo/polariscope');
 

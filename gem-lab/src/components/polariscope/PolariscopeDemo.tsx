@@ -5,6 +5,7 @@ import {
   useRef,
   useState,
   type Dispatch,
+  type CSSProperties,
   type ReactNode,
   type SetStateAction,
 } from 'react';
@@ -33,6 +34,19 @@ type PolariscopeLearningResponse =
   | 'aggregate-continuous-bright'
   | 'opaque-not-applicable';
 type PolariscopeLocatorPart = 'upper-polar' | 'sample-gap' | 'stage';
+type LearningFocusTransition =
+  | 'overview-to-align-upper-polar'
+  | 'align-upper-polar-to-place-sample'
+  | 'place-sample-to-live-use'
+  | 'live-use-to-result-summary';
+type LearningFocusTarget = 'upper-polar' | 'sample-gap' | 'live-observation' | 'result-summary';
+type LearningTransitionCue = {
+  focusLabel: string;
+  key: string;
+  label: string;
+  target: LearningFocusTarget;
+  transition: LearningFocusTransition;
+};
 type StepId = 'power' | 'crossed' | 'place' | 'rotate' | 'record';
 const STEP_ORDER: StepId[] = ['power', 'crossed', 'place', 'rotate', 'record'];
 
@@ -47,7 +61,7 @@ const STEP_META: Record<StepId, { iconId: string; title: string; tip: string }> 
   rotate: {
     iconId: 'rotate',
     title: '旋转载物台 360°，观察明暗变化',
-    tip: '拖动旋转旋钮，记录明暗交替次数',
+    tip: '沿载物台外缘旋转，记录明暗交替次数',
   },
   record: { iconId: 'record', title: '记录现象与判定结果', tip: '在右侧面板填写' },
 };
@@ -70,7 +84,7 @@ const POLAR_LOCATOR_TARGETS: Record<PolariscopeLocatorPart, { x: number; y: numb
 };
 
 /**
- * 载物台「自动旋转」速度（仅影响「▶ 自动旋转」按钮，不影响手动拖动旋钮）。
+ * 载物台「自动旋转」速度（仅影响「▶ 自动旋转」按钮，不影响手动旋转载物台）。
  * 每毫秒增加的 rotation01 增量 = STAGE_AUTO_ROTATE_DEG_PER_MS / 360。
  * 调慢：减小 STAGE_AUTO_ROTATE_DEG_PER_MS；调快：增大该值（原约 0.06）。
  */
@@ -434,6 +448,10 @@ export default function PolariscopeDemo({
       recorded: false,
     }));
     setPreviewSampleId(null);
+  };
+
+  const startLearningStageRotation = () => {
+    if (!state.sampleOn) return;
     setLearningView('live-use');
   };
 
@@ -500,7 +518,9 @@ export default function PolariscopeDemo({
         rotation={rotation}
         sample={sample}
         sampleShape={learningSampleShape}
+        samplePlaced={state.sampleOn}
         sampleLabel={sampleLabel}
+        startLearningStageRotation={startLearningStageRotation}
         setAutoRotating={setAutoRotating}
         setLearningSampleId={setLearningSampleId}
         setMode={setMode}
@@ -679,7 +699,7 @@ export default function PolariscopeDemo({
                   }}
                   onReady={markRotationReady}
                   label="旋转载物台"
-                  hint="拖动旋钮旋转样品"
+                  hint="旋转旋钮带动样品"
                   ready={knobReady}
                   size={110}
                   themeHex={instrument.themeHex}
@@ -930,7 +950,9 @@ interface PolariscopeLearningExperienceProps {
   rotation: number;
   sample: SampleDef | undefined;
   sampleShape: PolariscopeSampleShape;
+  samplePlaced: boolean;
   sampleLabel: string | undefined;
+  startLearningStageRotation: () => void;
   setAutoRotating: Dispatch<SetStateAction<boolean>>;
   setLearningSampleId: Dispatch<SetStateAction<string>>;
   setMode: Dispatch<SetStateAction<DemoMode>>;
@@ -964,7 +986,9 @@ function PolariscopeLearningExperience({
   rotation,
   sample,
   sampleShape,
+  samplePlaced,
   sampleLabel,
+  startLearningStageRotation,
   setAutoRotating,
   setLearningSampleId,
   setMode,
@@ -1126,6 +1150,13 @@ function PolariscopeLearningExperience({
             </div>
           )}
 
+          {transitionCue && transitionCue.transition !== 'live-use-to-result-summary' && (
+            <PolariscopeFocusTransitionOverlay
+              cue={transitionCue}
+              themeHex={instrument.themeHex}
+            />
+          )}
+
           {learningView === 'overview' && (
             <section
               data-testid="polariscope-overview-state"
@@ -1220,7 +1251,7 @@ function PolariscopeLearningExperience({
 
               <div className="self-start rounded-lg border border-line bg-white/92 p-4 shadow-card backdrop-blur">
                 <div className="font-mono text-[10px] uppercase tracking-widest text-ink-4">上偏光片</div>
-                <h2 className="mt-1 text-lg font-semibold text-ink">拖动刻度环至 90° 正交位</h2>
+                <h2 className="mt-1 text-lg font-semibold text-ink">旋转刻度环至 90° 正交位</h2>
                 <div className="mt-4 grid grid-cols-2 gap-2">
                   <MetricPill label="当前角度" value={`${Math.round(upperPolarAngle)}°`} />
                   <MetricPill
@@ -1243,7 +1274,7 @@ function PolariscopeLearningExperience({
                   {crossedReady ? '正交位已对准' : '继续调至 90°'}
                 </div>
                 <p className="mt-4 text-xs leading-relaxed text-ink-2">
-                  上偏光片位于视线最上层。拖动刻度环时，中央校准视域会随上下偏光片夹角连续变亮或变暗；到达正交范围后仍可继续微调。
+                  上偏光片位于视线最上层。旋转刻度环时，中央校准视域会随上下偏光片夹角连续变亮或变暗；到达正交范围后仍可继续微调。
                 </p>
                 <button
                   type="button"
@@ -1275,17 +1306,44 @@ function PolariscopeLearningExperience({
                     x={POLAR_LAYOUT.hotpoint.stage.x}
                     y={POLAR_LAYOUT.hotpoint.stage.y}
                     label="载物台"
-                    sub="点击放置样品"
+                    sub={samplePlaced ? '点击开始旋转观察' : '点击放置样品'}
                     side={POLAR_LAYOUT.hotpoint.stage.side}
                     themeHex={instrument.themeHex}
                     status="active"
-                    onClick={placeLearningSample}
+                    onClick={samplePlaced ? startLearningStageRotation : placeLearningSample}
                   />
+                  {samplePlaced && (
+                    <button
+                      type="button"
+                      data-testid="polariscope-stage-start-rotation"
+                      aria-label="点击载物台开始旋转观察"
+                      onClick={startLearningStageRotation}
+                      className="absolute z-[3] -translate-x-1/2 -translate-y-1/2 rounded-full border border-violet-200 bg-white/85 px-3 py-1.5 text-xs font-semibold text-violet-800 shadow-card transition hover:bg-violet-50"
+                      style={{
+                        left: `${POLAR_LAYOUT.hotpoint.stage.x * 100}%`,
+                        top: `${(POLAR_LAYOUT.hotpoint.stage.y + 0.13) * 100}%`,
+                      }}
+                    >
+                      点击载物台开始旋转观察
+                    </button>
+                  )}
+                  {samplePlaced && sample && (
+                    <img
+                      data-testid="polariscope-sample-transfer-cue"
+                      src={sample.image}
+                      alt=""
+                      aria-hidden="true"
+                      className="absolute left-[52%] top-[40%] z-[3] h-16 w-16 animate-sample-transfer rounded-full bg-white/70 object-contain p-1 shadow-card ring-1 ring-white/70 motion-reduce:animate-none"
+                      draggable={false}
+                    />
+                  )}
                 </ObjectFitHotspotFrame>
               </div>
               <div className="rounded-lg border border-line bg-white/92 p-4 shadow-card backdrop-blur">
                 <div className="font-mono text-[10px] uppercase tracking-widest text-ink-4">放样</div>
-                <h2 className="mt-1 text-lg font-semibold text-ink">样品进入上下偏光片之间</h2>
+                <h2 className="mt-1 text-lg font-semibold text-ink">
+                  {samplePlaced ? '样品已进入光路' : '样品进入上下偏光片之间'}
+                </h2>
                 {sample && (
                   <img
                     src={sample.image}
@@ -1299,14 +1357,22 @@ function PolariscopeLearningExperience({
                   instrumentImage={instrument.productImage}
                   themeHex={instrument.themeHex}
                 />
+                {samplePlaced && (
+                  <div className="mt-3 rounded-lg border border-violet-100 bg-violet-50 px-3 py-2 text-[11px] font-medium text-violet-900">
+                    样品已放入上偏光片与载物台之间。下一步请点击载物台开始旋转观察。
+                  </div>
+                )}
                 <button
                   type="button"
                   data-testid="polariscope-place-sample"
-                  onClick={placeLearningSample}
-                  className="btn-primary mt-4 w-full py-2 text-sm"
-                  style={{ background: instrument.themeHex }}
+                  onClick={samplePlaced ? startLearningStageRotation : placeLearningSample}
+                  className={clsx(
+                    'btn-primary mt-4 w-full py-2 text-sm',
+                    samplePlaced && 'bg-slate-900',
+                  )}
+                  style={samplePlaced ? undefined : { background: instrument.themeHex }}
                 >
-                  放置样品
+                  {samplePlaced ? '点击载物台，进入同步观察' : '放置样品'}
                 </button>
               </div>
             </section>
@@ -1356,7 +1422,7 @@ function PolariscopeLearningExperience({
                   </div>
                   <div className="mt-1 flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-amber-500" />
-                    手：拖动视域外围或样品区域旋转载物台
+                    手：沿视域外围或样品区域旋转载物台
                   </div>
                 </div>
                 <div
@@ -1389,7 +1455,7 @@ function PolariscopeLearningExperience({
                 </div>
                 <h2 className="mt-4 text-xl font-semibold text-ink">偏光镜同步观察已完成</h2>
                 <p className="mt-3 text-sm leading-relaxed text-ink-2">
-                  这一轮里你先调正上偏光片，再把样品放入光路，最后通过拖动下层载物台外缘同步观察中央视域的明暗变化。
+                  这一轮里你先调正上偏光片，再把样品放入光路，最后通过旋转下层载物台外缘同步观察中央视域的明暗变化。
                 </p>
                 {sample && (
                   <div className="mt-4 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800 ring-1 ring-emerald-200">
@@ -1416,21 +1482,21 @@ function PolariscopeLearningExperience({
 function useLearningTransitionCue(learningView: LearningView) {
   const previousViewRef = useRef<LearningView>(learningView);
   const timeoutRef = useRef<number | null>(null);
-  const [cue, setCue] = useState<{ key: string; label: string } | null>(null);
+  const [cue, setCue] = useState<LearningTransitionCue | null>(null);
 
   useEffect(() => {
     const previousView = previousViewRef.current;
     if (previousView === learningView) return;
     previousViewRef.current = learningView;
 
-    const label = getLearningTransitionCue(previousView, learningView);
-    if (!label) return;
+    const nextCue = getLearningTransitionCue(previousView, learningView);
+    if (!nextCue) return;
     if (timeoutRef.current != null) window.clearTimeout(timeoutRef.current);
-    setCue({ key: `${previousView}-${learningView}-${Date.now()}`, label });
+    setCue({ ...nextCue, key: `${previousView}-${learningView}-${Date.now()}` });
     timeoutRef.current = window.setTimeout(() => {
       setCue(null);
       timeoutRef.current = null;
-    }, 2400);
+    }, 1800);
   }, [learningView]);
 
   useEffect(() => (
@@ -1442,20 +1508,129 @@ function useLearningTransitionCue(learningView: LearningView) {
   return cue;
 }
 
-function getLearningTransitionCue(previousView: LearningView, nextView: LearningView): string | null {
+function getLearningTransitionCue(
+  previousView: LearningView,
+  nextView: LearningView,
+): Omit<LearningTransitionCue, 'key'> | null {
   if (previousView === 'overview' && nextView === 'align-upper-polar') {
-    return '电源已开启，开始调整上偏光片';
+    return {
+      focusLabel: '视线移至上偏光片操作区',
+      label: '电源已开启，开始调整上偏光片',
+      target: 'upper-polar',
+      transition: 'overview-to-align-upper-polar',
+    };
   }
   if (previousView === 'align-upper-polar' && nextView === 'place-sample') {
-    return '已正交，进入放样';
+    return {
+      focusLabel: '视线沿光路落到放样位置',
+      label: '已正交，进入放样',
+      target: 'sample-gap',
+      transition: 'align-upper-polar-to-place-sample',
+    };
   }
   if (previousView === 'place-sample' && nextView === 'live-use') {
-    return '样品已进入光路，开始同步观察';
+    return {
+      focusLabel: '视线切换到上层圆形观察视域',
+      label: '样品已进入光路，开始同步观察',
+      target: 'live-observation',
+      transition: 'place-sample-to-live-use',
+    };
   }
   if (previousView === 'live-use' && nextView === 'result-summary') {
-    return '本轮观察完成';
+    return {
+      focusLabel: '视线回到观察结论',
+      label: '本轮观察完成',
+      target: 'result-summary',
+      transition: 'live-use-to-result-summary',
+    };
   }
   return null;
+}
+
+const POLAR_FOCUS_TARGET_FRAMES: Record<LearningFocusTarget, CSSProperties> = {
+  'upper-polar': {
+    borderRadius: '9999px',
+    height: '82%',
+    left: '8%',
+    top: '7%',
+    width: '84%',
+  },
+  'sample-gap': {
+    borderRadius: '9999px',
+    height: '58%',
+    left: '12%',
+    top: '15%',
+    width: '76%',
+  },
+  'live-observation': {
+    borderRadius: '9999px',
+    height: '84%',
+    left: '5%',
+    top: '7%',
+    width: '90%',
+  },
+  'result-summary': {
+    borderRadius: '1.5rem',
+    height: '56%',
+    left: '24%',
+    top: '20%',
+    width: '52%',
+  },
+};
+
+function PolariscopeFocusTransitionOverlay({
+  cue,
+  themeHex,
+}: {
+  cue: LearningTransitionCue;
+  themeHex: string;
+}) {
+  const frameStyle = POLAR_FOCUS_TARGET_FRAMES[cue.target];
+  const isIrisTransition = cue.transition === 'place-sample-to-live-use';
+
+  return (
+    <div
+      key={`focus-${cue.key}`}
+      data-testid="polariscope-focus-transition"
+      data-focus-transition={cue.transition}
+      data-focus-target={cue.target}
+      aria-label={cue.focusLabel}
+      aria-live="polite"
+      className="pointer-events-none absolute inset-y-0 left-0 z-10 w-full overflow-hidden xl:w-[calc(100%-24.5rem)]"
+    >
+      <div
+        className="absolute inset-0 animate-fade-in backdrop-blur-[1px] motion-reduce:animate-none"
+        style={{
+          background:
+            'linear-gradient(90deg, rgba(15,23,42,0.07) 0%, rgba(15,23,42,0.055) 74%, rgba(15,23,42,0) 100%)',
+        }}
+      />
+      <div
+        className="absolute animate-focus-zoom border bg-white/[0.025] motion-reduce:animate-none"
+        style={{
+          ...frameStyle,
+          borderColor: `${themeHex}99`,
+          boxShadow: `0 0 0 5px ${themeHex}0f, 0 18px 54px rgba(15,23,42,0.14)`,
+        }}
+      >
+        <span
+          className="absolute inset-[-6%] animate-target-breathe rounded-[inherit] border border-white/45 motion-reduce:animate-none"
+          style={{ boxShadow: `0 0 18px ${themeHex}30` }}
+        />
+      </div>
+      {isIrisTransition && (
+        <span
+          className="absolute animate-focus-iris rounded-full border motion-reduce:animate-none"
+          style={{
+            ...POLAR_FOCUS_TARGET_FRAMES['live-observation'],
+            borderColor: `${themeHex}78`,
+            boxShadow: `inset 0 0 20px ${themeHex}16, 0 0 24px ${themeHex}22`,
+          }}
+        />
+      )}
+      <span className="sr-only">{cue.focusLabel}</span>
+    </div>
+  );
 }
 
 function PolariscopeInstrumentLocator({
@@ -1484,7 +1659,7 @@ function PolariscopeInstrumentLocator({
   > = {
     'upper-polar': {
       badge: '调整这里',
-      hint: '拖动这里，使上下偏光片进入正交',
+      hint: '旋转这里，使上下偏光片进入正交',
       label: '正在调整：上偏光片',
       tone: 'dark',
     },
@@ -1496,7 +1671,7 @@ function PolariscopeInstrumentLocator({
     },
     stage: {
       badge: '旋转这里',
-      hint: '拖动这里，样品随载物台同步旋转',
+      hint: '旋转这里，样品随载物台同步旋转',
       label: '正在旋转：载物台',
       tone: 'warm',
     },
@@ -1596,6 +1771,25 @@ function PolariscopeInstrumentLocator({
             className="relative h-2.5 w-2.5 rounded-full border-2 border-white shadow-card"
             style={{ backgroundColor: themeHex }}
           />
+        </div>
+        <div
+          key={`arrow-${activePart}`}
+          data-testid="polariscope-locator-arrow-cue"
+          data-arrow-count="3"
+          className="pointer-events-none absolute flex -translate-y-1/2 items-center gap-1"
+          style={{ left: targetX + 22, top: targetY }}
+          aria-hidden="true"
+        >
+          {[0, 1, 2].map((index) => (
+            <span
+              key={index}
+              className="h-2.5 w-2.5 rotate-[135deg] animate-locator-arrow-cue border-b-2 border-r-2 motion-reduce:animate-none"
+              style={{
+                animationDelay: `${index * 120}ms`,
+                borderColor: themeHex,
+              }}
+            />
+          ))}
         </div>
       </div>
 

@@ -87,6 +87,12 @@ const config: Config = {
         'arrow-slide': 'arrowSlide 1.6s ease-in-out infinite',
         float: 'float 4s ease-in-out infinite',
         shimmer: 'shimmer 1.6s linear infinite',
+        'focus-zoom': 'focusZoom 1.05s cubic-bezier(.22,1,.36,1) both',
+        'focus-iris': 'focusIris 1.2s cubic-bezier(.22,1,.36,1) both',
+        'locator-arrow-cue': 'locatorArrowCue 0.72s ease-out 3 both',
+        'sightline-draw': 'sightlineDraw 0.9s ease-out both',
+        'sample-transfer': 'sampleTransfer 1.15s cubic-bezier(.22,1,.36,1) both',
+        'target-breathe': 'targetBreathe 1.25s ease-in-out both',
       },
       keyframes: {
         fadeIn: {
@@ -153,6 +159,35 @@ const config: Config = {
         arrowSlide: {
           '0%, 100%': { transform: 'translateX(0)' },
           '50%': { transform: 'translateX(6px)' },
+        },
+        focusZoom: {
+          '0%': { opacity: '0', transform: 'scale(0.9)' },
+          '52%': { opacity: '0.78', transform: 'scale(1.018)' },
+          '100%': { opacity: '0.68', transform: 'scale(1)' },
+        },
+        focusIris: {
+          '0%': { opacity: '0', transform: 'scale(0.28)' },
+          '58%': { opacity: '0.72', transform: 'scale(1.025)' },
+          '100%': { opacity: '0.4', transform: 'scale(1)' },
+        },
+        locatorArrowCue: {
+          '0%': { opacity: '0', transform: 'translateX(10px) rotate(135deg)' },
+          '42%': { opacity: '0.95', transform: 'translateX(0) rotate(135deg)' },
+          '100%': { opacity: '0', transform: 'translateX(-8px) rotate(135deg)' },
+        },
+        sightlineDraw: {
+          '0%': { opacity: '0', transform: 'scaleY(0)' },
+          '35%': { opacity: '1', transform: 'scaleY(0.42)' },
+          '100%': { opacity: '0.78', transform: 'scaleY(1)' },
+        },
+        sampleTransfer: {
+          '0%': { opacity: '0', transform: 'translate(175%, -112%) scale(0.64)' },
+          '38%': { opacity: '0.86', transform: 'translate(70%, -70%) scale(0.76)' },
+          '100%': { opacity: '0.82', transform: 'translate(-50%, -50%) scale(0.5)' },
+        },
+        targetBreathe: {
+          '0%, 100%': { opacity: '0.34', transform: 'scale(1)' },
+          '50%': { opacity: '0.62', transform: 'scale(1.026)' },
         },
       },
       borderRadius: {

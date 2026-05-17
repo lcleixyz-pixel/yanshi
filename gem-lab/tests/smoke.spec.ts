@@ -153,11 +153,27 @@ test('polariscope learning mode uses a live use state with direct stage rotation
   await page.getByTestId('polariscope-start-learning').click();
   await expect(page.getByTestId('polariscope-align-upper-state')).toBeVisible();
   await expect(page.getByTestId('polariscope-transition-cue')).toContainText('开始调整上偏光片');
+  await expect(page.getByTestId('polariscope-focus-transition')).toBeVisible();
+  await expect(page.getByTestId('polariscope-focus-transition')).toHaveAttribute(
+    'data-focus-transition',
+    'overview-to-align-upper-polar',
+  );
+  await expect(page.getByTestId('polariscope-focus-transition')).toHaveAttribute(
+    'data-focus-target',
+    'upper-polar',
+  );
+  await expect(page.getByTestId('polariscope-focus-transition')).toHaveAttribute(
+    'aria-label',
+    '视线移至上偏光片操作区',
+  );
   await expect(page.getByTestId('polariscope-instrument-locator')).toBeVisible();
   await expect(page.getByTestId('polariscope-instrument-locator')).toHaveAttribute('data-active-part', 'upper-polar');
   await expect(page.getByTestId('polariscope-instrument-locator')).toContainText('正在调整：上偏光片');
+  await expect(page.getByTestId('polariscope-locator-arrow-cue')).toHaveAttribute('data-arrow-count', '3');
+  await expectPolariscopeFocusTransitionStageScoped(page);
   await expectPolariscopeLocatorImageFrameClean(page);
   await expect(page.getByTestId('polariscope-upper-alignment-observation')).toContainText('校准观察视域');
+  await expect(page.getByTestId('polariscope-align-upper-state')).not.toContainText('拖动');
   await expect(page.getByTestId('polariscope-upper-brightness-state')).toContainText('透光');
   await expect(page.getByTestId('polariscope-confirm-upper-polar')).toBeDisabled();
 
@@ -179,18 +195,56 @@ test('polariscope learning mode uses a live use state with direct stage rotation
   await page.getByTestId('polariscope-confirm-upper-polar').click();
   await expect(page.getByTestId('polariscope-place-sample-state')).toBeVisible();
   await expect(page.getByTestId('polariscope-transition-cue')).toContainText('已正交，进入放样');
+  await expect(page.getByTestId('polariscope-focus-transition')).toBeVisible();
+  await expect(page.getByTestId('polariscope-focus-transition')).toHaveAttribute(
+    'data-focus-transition',
+    'align-upper-polar-to-place-sample',
+  );
+  await expect(page.getByTestId('polariscope-focus-transition')).toHaveAttribute(
+    'data-focus-target',
+    'sample-gap',
+  );
+  await expect(page.getByTestId('polariscope-focus-transition')).toHaveAttribute(
+    'aria-label',
+    '视线沿光路落到放样位置',
+  );
   await expect(page.getByTestId('polariscope-instrument-locator')).toBeVisible();
   await expect(page.getByTestId('polariscope-instrument-locator')).toHaveAttribute('data-active-part', 'sample-gap');
   await expect(page.getByTestId('polariscope-instrument-locator')).toContainText('放置样品：载物台中心');
+  await expect(page.getByTestId('polariscope-locator-arrow-cue')).toHaveAttribute('data-arrow-count', '3');
+  await expectPolariscopeFocusTransitionStageScoped(page);
   await expectPolariscopeLocatorImageFrameClean(page);
 
   await page.getByTestId('polariscope-place-sample').click();
+  await expect(page.getByTestId('polariscope-place-sample-state')).toBeVisible();
+  await expect(page.getByTestId('polariscope-place-sample-state')).toContainText('样品已进入光路');
+  await expect(page.getByTestId('polariscope-place-sample-state')).toContainText('点击载物台开始旋转观察');
+  await expect(page.getByTestId('polariscope-sample-transfer-cue')).toBeVisible();
+  await expect(page.getByTestId('polariscope-live-use-state')).toHaveCount(0);
+
+  await page.getByTestId('polariscope-stage-start-rotation').click();
   await expect(page.getByTestId('polariscope-live-use-state')).toBeVisible();
   await expect(page.getByTestId('polariscope-transition-cue')).toContainText('样品已进入光路');
+  await expect(page.getByTestId('polariscope-focus-transition')).toBeVisible();
+  await expect(page.getByTestId('polariscope-focus-transition')).toHaveAttribute(
+    'data-focus-transition',
+    'place-sample-to-live-use',
+  );
+  await expect(page.getByTestId('polariscope-focus-transition')).toHaveAttribute(
+    'data-focus-target',
+    'live-observation',
+  );
+  await expect(page.getByTestId('polariscope-focus-transition')).toHaveAttribute(
+    'aria-label',
+    '视线切换到上层圆形观察视域',
+  );
+  await expect(page.getByTestId('polariscope-sample-transfer-cue')).toHaveCount(0);
   await expect(page.getByTestId('polariscope-phenomenon-status')).toHaveAttribute('data-phenomenon', 'dark');
   await expect(page.getByTestId('polariscope-instrument-locator')).toBeVisible();
   await expect(page.getByTestId('polariscope-instrument-locator')).toHaveAttribute('data-active-part', 'stage');
   await expect(page.getByTestId('polariscope-instrument-locator')).toContainText('正在旋转：载物台');
+  await expect(page.getByTestId('polariscope-locator-arrow-cue')).toHaveAttribute('data-arrow-count', '3');
+  await expectPolariscopeFocusTransitionStageScoped(page);
   await expectPolariscopeLocatorImageFrameClean(page);
   await expect(page.getByTestId('polariscope-instrument-locator-image')).toHaveAttribute(
     'src',
@@ -205,6 +259,7 @@ test('polariscope learning mode uses a live use state with direct stage rotation
   );
   await expect(page.getByTestId('polariscope-live-observation')).not.toContainText('°');
   await expect(page.getByTestId('polariscope-live-observation')).not.toContainText('同步观察');
+  await expect(page.getByTestId('polariscope-live-use-state')).not.toContainText('拖动');
 
   const stageRing = page.getByTestId('polariscope-stage-ring-control');
   const stageBox = await stageRing.boundingBox();
@@ -244,6 +299,9 @@ test('polariscope learning mode uses a live use state with direct stage rotation
     .poll(() => page.getByTestId('polariscope-live-observation').getAttribute('data-stage-angle'))
     .not.toBe(initialStageAngle);
   await expect(page.getByTestId('polariscope-live-progress')).toContainText(/已见|继续旋转/);
+  await page.getByRole('button', { name: '完成本轮观察' }).click();
+  await expect(page.getByTestId('polariscope-result-summary-state')).toBeVisible();
+  await expect(page.getByTestId('polariscope-focus-transition')).toHaveCount(0);
 });
 
 async function expectPolariscopeLocatorImageFrameClean(page: Page) {
@@ -256,6 +314,14 @@ async function expectPolariscopeLocatorImageFrameClean(page: Page) {
   await expect(locatorImageFrame).not.toContainText('样品进入');
   await expect(locatorImageFrame).not.toContainText('同步旋转');
   await expect(locatorImageFrame).not.toContainText('使上下偏光片');
+}
+
+async function expectPolariscopeFocusTransitionStageScoped(page: Page) {
+  const focusBox = await page.getByTestId('polariscope-focus-transition').boundingBox();
+  const locatorBox = await page.getByTestId('polariscope-instrument-locator').boundingBox();
+  expect(focusBox).not.toBeNull();
+  expect(locatorBox).not.toBeNull();
+  expect(focusBox!.x + focusBox!.width).toBeLessThan(locatorBox!.x - 8);
 }
 
 test('polariscope upper polar can confirm at repeated crossed dark positions', async ({ page }) => {
@@ -361,6 +427,7 @@ async function enterPolariscopeLiveUse(page: Page, sampleId: string, stageAngle 
   await page.mouse.up();
   await page.getByTestId('polariscope-confirm-upper-polar').click();
   await page.getByTestId('polariscope-place-sample').click();
+  await page.getByTestId('polariscope-stage-start-rotation').click();
 
   await expect(page.getByTestId('polariscope-live-use-state')).toBeVisible();
 

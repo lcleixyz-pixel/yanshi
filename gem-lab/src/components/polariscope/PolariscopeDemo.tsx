@@ -1,4 +1,13 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import HotPoint from '@/components/demo/HotPoint';
 import ObjectFitHotspotFrame from '@/components/demo/ObjectFitHotspotFrame';
@@ -11,11 +20,13 @@ import { INSTRUMENTS } from '@/data/instruments';
 import { SAMPLES, SAMPLES_BY_ID } from '@/data/samples';
 import { useDetection } from '@/store/detectionStore';
 import { useProgress } from '@/store/progressStore';
-import type { OpticalCharacter } from '@/data/types';
+import type { InstrumentDef, OpticalCharacter, SampleDef } from '@/data/types';
 import { OPTICAL_LABEL } from '@/utils/format';
 import clsx from '@/utils/clsx';
 
 type DemoMode = 'learning' | 'detection';
+type LearningView = 'overview' | 'align-upper-polar' | 'place-sample' | 'live-use' | 'result-summary';
+type PolariscopeLocatorPart = 'upper-polar' | 'sample-gap' | 'stage';
 type StepId = 'power' | 'crossed' | 'place' | 'rotate' | 'record';
 const STEP_ORDER: StepId[] = ['power', 'crossed', 'place', 'rotate', 'record'];
 
@@ -23,8 +34,8 @@ const STEP_META: Record<StepId, { iconId: string; title: string; tip: string }> 
   power: { iconId: 'power-on', title: '打开 LED 光源', tip: '点击仪器右侧的 LED 开关' },
   crossed: {
     iconId: 'rotate',
-    title: '将上偏光片调至正交（视域全黑）',
-    tip: '绕竖轴旋转上偏光片环，使与下偏光片振动方向垂直——此处点击一次模拟「已旋至正交」',
+    title: '将上偏光片调至正交（机械校准）',
+    tip: '绕竖轴旋转上偏光片环，使它与下偏光片振动方向垂直；确认后再进入放样',
   },
   place: { iconId: 'place-sample', title: '放置样品', tip: '点击载物台中央放置样品' },
   rotate: {
@@ -46,6 +57,12 @@ const POLAR_LAYOUT = {
   },
 } as const;
 
+const POLAR_LOCATOR_TARGETS: Record<PolariscopeLocatorPart, { x: number; y: number }> = {
+  'upper-polar': { x: 0.59, y: 0.15 },
+  'sample-gap': { x: 0.59, y: 0.34 },
+  stage: { x: 0.59, y: 0.50 },
+};
+
 /**
  * 载物台「自动旋转」速度（仅影响「▶ 自动旋转」按钮，不影响手动拖动旋钮）。
  * 每毫秒增加的 rotation01 增量 = STAGE_AUTO_ROTATE_DEG_PER_MS / 360。
@@ -66,6 +83,8 @@ const OBS_LAYOUT = {
   minSize: 210,
   maxSize: 520,
 } as const;
+
+const UPPER_POLAR_TOP_IMAGE = '/assets/observations/polariscope/upper-polar.png';
 
 interface DemoState {
   power: boolean;
@@ -101,6 +120,8 @@ export default function PolariscopeDemo({
 
   const [mode, setMode] = useState<DemoMode>(embedded ? 'detection' : 'learning');
   const [state, setState] = useState<DemoState>(INITIAL_STATE);
+  const [learningView, setLearningView] = useState<LearningView>('overview');
+  const [upperPolarAngle, setUpperPolarAngle] = useState(0);
   const [rotation01, setRotation01] = useState(0); // RotationKnob 0–1
   const [autoRotating, setAutoRotating] = useState(false);
 
@@ -110,6 +131,8 @@ export default function PolariscopeDemo({
   // 旋转观察完成标记（需经历亮 + 暗各至少一次）
   const [observed, setObserved] = useState<Set<'bright' | 'dark'>>(new Set());
   const [knobReady, setKnobReady] = useState(false);
+  const lastLearningStageAngle = useRef(0);
+  const learningStageSweep = useRef(0);
 
   // 样品
   const [learningSampleId, setLearningSampleId] = useState('amethyst');
@@ -241,6 +264,8 @@ export default function PolariscopeDemo({
     setAutoRotating(false);
     setObserved(new Set());
     setKnobReady(false);
+    lastLearningStageAngle.current = 0;
+    learningStageSweep.current = 0;
     setUserJudgement('');
     setUserPhenomena({ fourBright: false, allDark: false, allBright: false });
   };
@@ -312,6 +337,8 @@ export default function PolariscopeDemo({
 
   const handleReset = () => {
     setState(INITIAL_STATE);
+    setLearningView('overview');
+    setUpperPolarAngle(0);
     resetObservationState();
   };
 
@@ -344,6 +371,130 @@ export default function PolariscopeDemo({
 
   // 当前光性文字标注
   const opticalHint = renderOpticalHint(optical, brightness, state.polarPosition, state.sampleOn);
+  const upperCrossedReady = isUpperPolarCrossed(upperPolarAngle);
+
+  const beginLearningOperation = () => {
+    setState((s) => ({
+      ...s,
+      power: true,
+      polarPosition: 'parallel',
+      crossed: false,
+      sampleOn: false,
+      rotated: false,
+      recorded: false,
+    }));
+    resetObservationState();
+    setUpperPolarAngle(0);
+    setLearningView('align-upper-polar');
+  };
+
+  const commitUpperPolarAngle = (angle: number) => {
+    if (!isUpperPolarCrossed(angle)) return;
+    setUpperPolarAngle(90);
+    resetObservationState();
+    setState((s) => ({
+      ...s,
+      power: true,
+      polarPosition: 'crossed',
+      crossed: true,
+      sampleOn: false,
+      rotated: false,
+      recorded: false,
+    }));
+    setLearningView('place-sample');
+  };
+
+  const placeLearningSample = () => {
+    resetObservationState();
+    lastLearningStageAngle.current = 0;
+    learningStageSweep.current = 0;
+    setState((s) => ({
+      ...s,
+      power: true,
+      polarPosition: 'crossed',
+      crossed: true,
+      sampleOn: true,
+      rotated: false,
+      recorded: false,
+    }));
+    setPreviewSampleId(null);
+    setLearningView('live-use');
+  };
+
+  const updateLearningStageAngle = (angle: number) => {
+    const previous = lastLearningStageAngle.current;
+    const delta = signedAngleDelta(previous, angle);
+    lastLearningStageAngle.current = angle;
+    learningStageSweep.current += Math.abs(delta);
+    setRotation01(angle / 360);
+
+    const sweepAngles = sampleSweepAngles(previous, angle);
+    setObserved((current) => {
+      const next = new Set(current);
+      for (const sweepAngle of sweepAngles) {
+        const phenomenon = computePhenomenonBrightness(
+          sweepAngle,
+          effectiveOptical,
+          state.polarPosition,
+        );
+        if (phenomenon.brightness > 0.5) next.add('bright');
+        else next.add('dark');
+      }
+      return next.size === current.size ? current : next;
+    });
+
+    if (learningStageSweep.current >= 90) {
+      setKnobReady(true);
+      setState((s) => (
+        s.power && s.crossed && s.sampleOn
+          ? { ...s, rotated: true, recorded: false }
+          : s
+      ));
+    }
+  };
+
+  const finishLearningRun = () => {
+    if (!canSave) return;
+    handleSave();
+    setLearningView('result-summary');
+  };
+
+  if (mode === 'learning') {
+    return (
+      <PolariscopeLearningExperience
+        activeCanvasView={activeCanvasView}
+        autoRotating={autoRotating}
+        beginLearningOperation={beginLearningOperation}
+        brightness={brightness}
+        canSave={canSave}
+        embedded={embedded}
+        finishLearningRun={finishLearningRun}
+        handleReset={handleReset}
+        instrument={instrument}
+        learningSampleId={learningSampleId}
+        learningView={learningView}
+        mode={mode}
+        navigateHome={() => navigate('/')}
+        observed={observed}
+        onStageAngleChange={updateLearningStageAngle}
+        optical={optical}
+        opticalHint={opticalHint}
+        placeLearningSample={placeLearningSample}
+        progress={progress}
+        rotation={rotation}
+        sample={sample}
+        sampleLabel={sampleLabel}
+        setAutoRotating={setAutoRotating}
+        setLearningSampleId={setLearningSampleId}
+        setMode={setMode}
+        setUpperPolarAngle={setUpperPolarAngle}
+        stepsData={stepsData}
+        upperPolarAngle={upperPolarAngle}
+        commitUpperPolarAngle={commitUpperPolarAngle}
+        crossedReady={upperCrossedReady}
+      />
+    );
+  }
 
   return (
     <div className="flex h-screen flex-col bg-lab-ink text-white">
@@ -363,10 +514,8 @@ export default function PolariscopeDemo({
           </Link>
           <span className="text-white/30">|</span>
           <span className="font-display text-base font-semibold">{instrument.name}互动演示</span>
-          <span className="font-display text-base text-white/70">
-            - {mode === 'learning' ? '学习模式' : '检测模式'}
-          </span>
-          {mode === 'detection' && sample && (
+          <span className="font-display text-base text-white/70">- 检测模式</span>
+          {sample && (
             <span
               className="rounded-full border border-white/15 bg-white/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-cyan-100"
               data-testid="unknown-sample-label"
@@ -391,14 +540,14 @@ export default function PolariscopeDemo({
           <div className="absolute left-3 top-3 z-20 w-[min(95%,24rem)] rounded-xl border border-line bg-white/90 p-2 shadow-card backdrop-blur">
             <div className="grid grid-cols-2 gap-1">
               <ModeBtn
-                active={mode === 'learning'}
+                active={false}
                 themeHex={instrument.themeHex}
                 onClick={() => setMode('learning')}
                 icon="📖"
                 label="学习模式"
               />
               <ModeBtn
-                active={mode === 'detection'}
+                active
                 themeHex={instrument.themeHex}
                 onClick={() => !embedded && setMode('detection')}
                 icon={embedded ? '🔒' : '🎯'}
@@ -422,27 +571,6 @@ export default function PolariscopeDemo({
               <StepGuide steps={stepsData} themeHex={instrument.themeHex} variant="inline" />
             </div>
           </div>
-
-          {/* 右上：演示样品切换（学习模式） */}
-          {!embedded && mode === 'learning' && (
-            <div className="absolute right-3 top-3 z-20 flex items-center gap-2 rounded-lg border border-line bg-white/85 px-3 py-2 shadow-card backdrop-blur">
-              <span className="font-mono text-[10px] uppercase tracking-widest text-ink-4">演示样品</span>
-              <select
-                value={learningSampleId}
-                onChange={(e) => {
-                  const nextId = e.target.value;
-                  setLearningSampleId(nextId);
-                  setPreviewSampleId(nextId);
-                  handleReset();
-                }}
-                className="rounded border border-line-2 bg-white px-2 py-1 text-xs"
-              >
-                {SAMPLES.map((s) => (
-                  <option key={s.id} value={s.id}>{s.name}</option>
-                ))}
-              </select>
-            </div>
-          )}
 
           {/* 左栏主区：仪器加宽约 68%，略向右（ml）；右侧 pr 固定预留旋钮位，避免跳动 */}
           <div className="flex h-full min-h-0 w-full flex-col pt-14 md:pt-[4.75rem]">
@@ -736,19 +864,14 @@ export default function PolariscopeDemo({
                       className="btn-primary flex-1 text-xs"
                       style={{ background: instrument.themeHex }}
                     >
-                      💾 {mode === 'detection' ? '提交检测结果' : '保存数据'}
+                      💾 提交检测结果
                     </button>
                     <button type="button" onClick={handleReset} className="btn-ghost px-3 text-xs">
                       ↺ 重置
                     </button>
                   </div>
 
-                  {state.recorded && mode === 'learning' && (
-                    <div className="mt-2 rounded-lg bg-emerald-50 px-2.5 py-1.5 text-[11px] text-emerald-700 ring-1 ring-emerald-200">
-                      ✓ 已完成观察。{sample && `本样品光性：${OPTICAL_LABEL[sample.characteristics.opticalCharacter]}`}
-                    </div>
-                  )}
-                  {state.recorded && mode === 'detection' && (
+                  {state.recorded && (
                     <div
                       className="mt-2 rounded-lg bg-emerald-50 px-2.5 py-1.5 text-[11px] text-emerald-700 ring-1 ring-emerald-200"
                       data-testid="polariscope-detection-recorded"
@@ -757,18 +880,6 @@ export default function PolariscopeDemo({
                     </div>
                   )}
                 </div>
-
-                {/* 学习模式：观察解析 */}
-                {mode === 'learning' && state.sampleOn && sample && (
-                  <div className="rounded-lg border border-amber-200 bg-amber-50 p-2 text-[10px] leading-relaxed text-amber-800">
-                    <div className="mb-1 font-semibold">观察解析</div>
-                    {opaqueForStandardPolariscope ? (
-                      <p>
-                        当前样品为<strong>不透明</strong>材料，标准偏光镜透射光性判定不适用。应改用折射仪点测、分光镜反射法或其他仪器交叉验证；不要把全暗或全亮直接记录为光性结论。
-                      </p>
-                    ) : opticalHint}
-                  </div>
-                )}
               </div>
             </div>
           </aside>
@@ -778,13 +889,923 @@ export default function PolariscopeDemo({
   );
 }
 
+interface PolariscopeLearningExperienceProps {
+  activeCanvasView: ReturnType<typeof computePhenomenonBrightness>['view'] | 'off' | 'crossed-dark' | 'parallel';
+  autoRotating: boolean;
+  beginLearningOperation: () => void;
+  brightness: number;
+  canSave: boolean;
+  crossedReady: boolean;
+  embedded: boolean;
+  finishLearningRun: () => void;
+  handleReset: () => void;
+  instrument: InstrumentDef;
+  learningSampleId: string;
+  learningView: LearningView;
+  mode: DemoMode;
+  navigateHome: () => void;
+  observed: Set<'bright' | 'dark'>;
+  onStageAngleChange: (angle: number) => void;
+  optical: OpticalCharacter | undefined;
+  opticalHint: ReactNode;
+  placeLearningSample: () => void;
+  progress: number;
+  rotation: number;
+  sample: SampleDef | undefined;
+  sampleLabel: string | undefined;
+  setAutoRotating: Dispatch<SetStateAction<boolean>>;
+  setLearningSampleId: Dispatch<SetStateAction<string>>;
+  setMode: Dispatch<SetStateAction<DemoMode>>;
+  setUpperPolarAngle: Dispatch<SetStateAction<number>>;
+  stepsData: DemoStep[];
+  upperPolarAngle: number;
+  commitUpperPolarAngle: (angle: number) => void;
+}
+
+function PolariscopeLearningExperience({
+  activeCanvasView,
+  autoRotating,
+  beginLearningOperation,
+  brightness,
+  canSave,
+  crossedReady,
+  embedded,
+  finishLearningRun,
+  handleReset,
+  instrument,
+  learningSampleId,
+  learningView,
+  mode,
+  navigateHome,
+  observed,
+  onStageAngleChange,
+  optical,
+  opticalHint,
+  placeLearningSample,
+  progress,
+  rotation,
+  sample,
+  sampleLabel,
+  setAutoRotating,
+  setLearningSampleId,
+  setMode,
+  setUpperPolarAngle,
+  stepsData,
+  upperPolarAngle,
+  commitUpperPolarAngle,
+}: PolariscopeLearningExperienceProps) {
+  const viewLabel = getLearningViewLabel(learningView);
+  const upperPolarBrightness = computeUpperPolarTransmission(upperPolarAngle);
+  const upperPolarBrightnessLabel = getUpperPolarBrightnessLabel(upperPolarBrightness);
+
+  return (
+    <div className="flex h-screen flex-col bg-[#111827] text-white">
+      <header
+        className="flex h-12 shrink-0 items-center justify-between border-b border-white/10 px-5"
+        style={{
+          background: `linear-gradient(90deg, ${instrument.themeHex}30 0%, rgba(15,37,69,0.88) 60%)`,
+        }}
+      >
+        <div className="flex min-w-0 items-center gap-3">
+          <Link
+            to={`/knowledge/${instrument.id}`}
+            className="font-mono text-[10px] uppercase tracking-[0.3em] text-slate-300 hover:text-lab-cyan"
+          >
+            ← 知识库
+          </Link>
+          <span className="text-white/30">|</span>
+          <span className="font-display text-base font-semibold">{instrument.name}互动演示</span>
+          <span className="font-display text-base text-white/70">- 学习模式</span>
+          <span className="hidden rounded-full border border-white/15 bg-white/10 px-2 py-0.5 text-[10px] text-cyan-100 md:inline">
+            {viewLabel}
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={navigateHome}
+          className="rounded border border-white/15 bg-white/5 px-3 py-1 text-xs text-slate-300 hover:bg-white/10"
+        >
+          ✕ 退出
+        </button>
+      </header>
+
+      <div className="grid min-h-0 flex-1 grid-rows-[auto,1fr] bg-[#f3f6f8] text-ink lg:grid-cols-[minmax(14rem,18rem),1fr] lg:grid-rows-1">
+        <aside className="flex max-h-[38dvh] min-h-0 flex-col overflow-y-auto border-b border-slate-200 bg-white/95 p-3 shadow-[0_10px_40px_rgba(15,23,42,0.08)] lg:max-h-none lg:border-b-0 lg:border-r lg:shadow-[10px_0_40px_rgba(15,23,42,0.08)]">
+          <div className="grid grid-cols-2 gap-1">
+            <ModeBtn
+              active={mode === 'learning'}
+              themeHex={instrument.themeHex}
+              onClick={() => setMode('learning')}
+              icon="📖"
+              label="学习模式"
+            />
+            <ModeBtn
+              active={mode === 'detection'}
+              themeHex={instrument.themeHex}
+              onClick={() => !embedded && setMode('detection')}
+              icon={embedded ? '🔒' : '🎯'}
+              label="检测模式"
+              disabled={embedded}
+            />
+          </div>
+
+          <div className="mt-3 rounded-lg border border-line bg-white px-3 py-2">
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-[10px] uppercase tracking-widest text-ink-4">Progress</span>
+              <span className="font-mono text-[11px] tabular-nums text-ink-2">{Math.round(progress)}%</span>
+            </div>
+            <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-200">
+              <div
+                className="h-full rounded-full transition-all"
+                style={{ width: `${progress}%`, background: instrument.themeHex }}
+              />
+            </div>
+          </div>
+
+          <div className="mt-3">
+            <StepGuide steps={stepsData} themeHex={instrument.themeHex} variant="inline" />
+          </div>
+
+          <div className="mt-3 rounded-lg border border-line bg-slate-50 p-2">
+            <div className="font-mono text-[10px] uppercase tracking-widest text-ink-4">演示样品</div>
+            <select
+              value={learningSampleId}
+              onChange={(e) => {
+                setLearningSampleId(e.target.value);
+                handleReset();
+              }}
+              className="mt-1 w-full rounded border border-line-2 bg-white px-2 py-1 text-xs"
+            >
+              {SAMPLES.map((s) => (
+                <option key={s.id} value={s.id}>{s.name}</option>
+              ))}
+            </select>
+            {sample && (
+              <div className="mt-2 flex items-center gap-2 rounded-md bg-white p-2 ring-1 ring-line">
+                <img
+                  src={sample.image}
+                  alt={sample.name}
+                  className="h-12 w-12 rounded bg-brand-50/40 object-contain p-1"
+                  draggable={false}
+                />
+                <div className="min-w-0">
+                  <div className="truncate text-xs font-semibold text-ink">{sampleLabel}</div>
+                  <div className="mt-0.5 text-[10px] text-ink-3">
+                    {OPTICAL_LABEL[sample.characteristics.opticalCharacter]}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-auto flex gap-2 pt-3">
+            <button type="button" onClick={handleReset} className="btn-ghost flex-1 text-xs">
+              ↺ 重置
+            </button>
+            {learningView === 'live-use' && (
+              <button
+                type="button"
+                onClick={() => setAutoRotating((v) => !v)}
+                className={clsx(
+                  'flex-1 rounded px-2 py-1 text-xs font-medium ring-1 transition',
+                  autoRotating
+                    ? 'bg-violet-600 text-white ring-violet-600'
+                    : 'bg-white text-ink-2 ring-line-2 hover:bg-violet-50',
+                )}
+              >
+                {autoRotating ? '停止自动' : '自动旋转'}
+              </button>
+            )}
+          </div>
+        </aside>
+
+        <main className="relative min-h-0 overflow-y-auto bg-[radial-gradient(circle_at_50%_20%,#ffffff_0%,#f1f5f9_42%,#d9e2ec_100%)] lg:overflow-hidden">
+          <div className="absolute left-5 top-5 z-20 rounded-lg border border-white/70 bg-white/90 px-3 py-2 shadow-card backdrop-blur">
+            <div className="font-mono text-[10px] uppercase tracking-widest text-ink-4">当前状态</div>
+            <div className="mt-0.5 text-sm font-semibold text-ink">{viewLabel}</div>
+          </div>
+
+          {learningView === 'overview' && (
+            <section
+              data-testid="polariscope-overview-state"
+              className="flex h-full min-h-0 flex-col items-center justify-center px-8 py-8"
+            >
+              <div className="relative aspect-square w-[min(62vh,84vw,34rem)] lg:w-[min(66vh,48vw,34rem)]">
+                <ObjectFitHotspotFrame src={instrument.productImage} alt={instrument.name} className="h-full w-full">
+                  <HotPoint
+                    x={POLAR_LAYOUT.hotpoint.power.x}
+                    y={POLAR_LAYOUT.hotpoint.power.y}
+                    label="LED 光源"
+                    sub="提供自下而上的透射光"
+                    side={POLAR_LAYOUT.hotpoint.power.side}
+                    themeHex={instrument.themeHex}
+                    status="active"
+                  />
+                  <HotPoint
+                    x={POLAR_LAYOUT.hotpoint.upper.x}
+                    y={POLAR_LAYOUT.hotpoint.upper.y}
+                    label="上偏光片"
+                    sub="先旋至正交"
+                    side={POLAR_LAYOUT.hotpoint.upper.side}
+                    themeHex={instrument.themeHex}
+                    status="active"
+                  />
+                  <HotPoint
+                    x={POLAR_LAYOUT.hotpoint.stage.x}
+                    y={POLAR_LAYOUT.hotpoint.stage.y}
+                    label="载物台"
+                    sub="放样后边转边看"
+                    side={POLAR_LAYOUT.hotpoint.stage.side}
+                    themeHex={instrument.themeHex}
+                    status="active"
+                  />
+                </ObjectFitHotspotFrame>
+              </div>
+              <button
+                type="button"
+                data-testid="polariscope-start-learning"
+                onClick={beginLearningOperation}
+                className="btn-primary mt-5 px-7 py-2 text-sm"
+                style={{ background: instrument.themeHex }}
+              >
+                开始操作
+              </button>
+            </section>
+          )}
+
+          {learningView === 'align-upper-polar' && (
+            <section
+              data-testid="polariscope-align-upper-state"
+              className="grid min-h-full grid-cols-1 items-center gap-6 px-5 py-8 xl:grid-cols-[1fr,minmax(16rem,22rem)] xl:gap-8 xl:px-8"
+            >
+              <div className="flex min-h-0 items-center justify-center">
+                  <div className="relative flex aspect-square w-[min(64vh,84vw,42rem)] items-center justify-center">
+                  <div className="absolute inset-[8%] rounded-full bg-[#171717] shadow-[inset_0_0_60px_rgba(255,255,255,0.08),0_24px_80px_rgba(15,23,42,0.25)]" />
+                  <AngleRingControl
+                    angle={upperPolarAngle}
+                    dataTestId="polariscope-upper-ring-control"
+                    onAngleChange={setUpperPolarAngle}
+                    className="absolute inset-[2%] rounded-full"
+                  >
+                    <img
+                      src={UPPER_POLAR_TOP_IMAGE}
+                      alt="上偏光片俯视图"
+                      className="h-full w-full select-none rounded-full object-contain"
+                      style={{ transform: `rotate(${upperPolarAngle}deg)` }}
+                      draggable={false}
+                    />
+                  </AngleRingControl>
+                  <div
+                    data-testid="polariscope-upper-alignment-observation"
+                    className="pointer-events-none absolute inset-[16%] overflow-hidden rounded-full border-4 border-black bg-[#0a0a0a] shadow-[inset_0_0_35px_rgba(255,255,255,0.12)]"
+                  >
+                    <span className="sr-only">校准观察视域</span>
+                    <ObservationCanvas
+                      view="upper-polar-calibration"
+                      brightness={upperPolarBrightness}
+                      rotation={upperPolarAngle}
+                      sampleOn={false}
+                      fill
+                      showLabel={false}
+                    />
+                    <div className="absolute inset-x-0 top-4 flex justify-center">
+                      <span className="rounded-full border border-white/20 bg-black/45 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
+                        校准观察视域
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="self-start rounded-lg border border-line bg-white/92 p-4 shadow-card backdrop-blur">
+                <div className="font-mono text-[10px] uppercase tracking-widest text-ink-4">上偏光片</div>
+                <h2 className="mt-1 text-lg font-semibold text-ink">拖动刻度环至 90° 正交位</h2>
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  <MetricPill label="当前角度" value={`${Math.round(upperPolarAngle)}°`} />
+                  <MetricPill
+                    label="视域反馈"
+                    value={upperPolarBrightnessLabel}
+                    tone={crossedReady ? 'good' : 'warn'}
+                  />
+                </div>
+                <PolariscopeInstrumentLocator
+                  activePart="upper-polar"
+                  instrumentImage={instrument.productImage}
+                  themeHex={instrument.themeHex}
+                />
+                <div
+                  data-testid="polariscope-upper-brightness-state"
+                  className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] leading-relaxed text-ink-2"
+                >
+                  视域反馈：{upperPolarBrightnessLabel}
+                  <span className="mx-1 text-ink-4">|</span>
+                  {crossedReady ? '正交位已对准' : '继续调至 90°'}
+                </div>
+                <p className="mt-4 text-xs leading-relaxed text-ink-2">
+                  上偏光片位于视线最上层。拖动刻度环时，中央校准视域会随上下偏光片夹角连续变亮或变暗；到达正交范围后仍可继续微调。
+                </p>
+                <button
+                  type="button"
+                  data-testid="polariscope-confirm-upper-polar"
+                  onClick={() => commitUpperPolarAngle(upperPolarAngle)}
+                  disabled={!crossedReady}
+                  className="btn-primary mt-4 w-full py-2 text-sm disabled:cursor-not-allowed disabled:opacity-45"
+                  style={{ background: instrument.themeHex }}
+                >
+                  确认正交，进入放样
+                </button>
+                {crossedReady && (
+                  <p className="mt-2 text-center text-[11px] text-emerald-700">
+                    已到可用范围，仍可继续微调；点击确认后再进入放样。
+                  </p>
+                )}
+              </div>
+            </section>
+          )}
+
+          {learningView === 'place-sample' && (
+            <section
+              data-testid="polariscope-place-sample-state"
+              className="grid min-h-full grid-cols-1 items-center gap-6 px-5 py-8 xl:grid-cols-[1fr,minmax(16rem,22rem)] xl:gap-8 xl:px-8"
+            >
+              <div className="relative mx-auto aspect-square w-[min(62vh,84vw,40rem)]">
+                <ObjectFitHotspotFrame src={instrument.productImage} alt={instrument.name} className="h-full w-full">
+                  <HotPoint
+                    x={POLAR_LAYOUT.hotpoint.stage.x}
+                    y={POLAR_LAYOUT.hotpoint.stage.y}
+                    label="载物台"
+                    sub="点击放置样品"
+                    side={POLAR_LAYOUT.hotpoint.stage.side}
+                    themeHex={instrument.themeHex}
+                    status="active"
+                    onClick={placeLearningSample}
+                  />
+                </ObjectFitHotspotFrame>
+              </div>
+              <div className="rounded-lg border border-line bg-white/92 p-4 shadow-card backdrop-blur">
+                <div className="font-mono text-[10px] uppercase tracking-widest text-ink-4">放样</div>
+                <h2 className="mt-1 text-lg font-semibold text-ink">样品进入上下偏光片之间</h2>
+                {sample && (
+                  <img
+                    src={sample.image}
+                    alt={sample.name}
+                    className="mt-4 h-28 w-28 rounded-lg bg-brand-50/40 object-contain p-2 ring-1 ring-line"
+                    draggable={false}
+                  />
+                )}
+                <PolariscopeInstrumentLocator
+                  activePart="sample-gap"
+                  instrumentImage={instrument.productImage}
+                  themeHex={instrument.themeHex}
+                />
+                <button
+                  type="button"
+                  data-testid="polariscope-place-sample"
+                  onClick={placeLearningSample}
+                  className="btn-primary mt-4 w-full py-2 text-sm"
+                  style={{ background: instrument.themeHex }}
+                >
+                  放置样品
+                </button>
+              </div>
+            </section>
+          )}
+
+          {learningView === 'live-use' && (
+            <section
+              data-testid="polariscope-live-use-state"
+              className="grid min-h-full grid-cols-1 items-center gap-6 px-5 py-8 xl:grid-cols-[1fr,minmax(16rem,23rem)] xl:gap-8 xl:px-8"
+            >
+              <div className="flex items-center justify-center">
+                <IntegratedLiveUseControl
+                  activeCanvasView={activeCanvasView}
+                  brightness={brightness}
+                  observed={observed}
+                  onStageAngleChange={onStageAngleChange}
+                  rotation={rotation}
+                  setAutoRotating={setAutoRotating}
+                  themeHex={instrument.themeHex}
+                />
+              </div>
+
+              <div className="self-start rounded-lg border border-line bg-white/92 p-4 shadow-card backdrop-blur">
+                <div className="font-mono text-[10px] uppercase tracking-widest text-ink-4">同步使用</div>
+                <h2 className="mt-1 text-lg font-semibold text-ink">边旋转载物台，边看样品视域</h2>
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  <MetricPill label="载物台角度" value={`${Math.round(rotation)}°`} />
+                  <MetricPill
+                    label="现象"
+                    value={brightness > 0.5 || activeCanvasView === 'parallel' ? '亮位' : '暗位'}
+                    tone={brightness > 0.5 || activeCanvasView === 'parallel' ? 'warn' : 'neutral'}
+                  />
+                </div>
+                <PolariscopeInstrumentLocator
+                  activePart="stage"
+                  instrumentImage={instrument.productImage}
+                  themeHex={instrument.themeHex}
+                />
+                <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] leading-relaxed text-ink-2">
+                  <div className="font-semibold text-ink">操作关系</div>
+                  <div className="mt-1 flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-slate-900" />
+                    眼睛：只看圆形观察视域
+                  </div>
+                  <div className="mt-1 flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-amber-500" />
+                    手：拖动视域外围或样品区域旋转载物台
+                  </div>
+                </div>
+                <div
+                  data-testid="polariscope-live-hint"
+                  className="mt-4 min-h-[7.25rem] rounded-lg border border-amber-200 bg-amber-50 p-3 text-[11px] leading-relaxed text-amber-900"
+                >
+                  {opticalHint}
+                </div>
+                <button
+                  type="button"
+                  onClick={finishLearningRun}
+                  disabled={!canSave}
+                  className="btn-primary mt-4 w-full py-2 text-sm disabled:cursor-not-allowed disabled:opacity-45"
+                  style={{ background: instrument.themeHex }}
+                >
+                  完成本轮观察
+                </button>
+              </div>
+            </section>
+          )}
+
+          {learningView === 'result-summary' && (
+            <section
+              data-testid="polariscope-result-summary-state"
+              className="flex h-full min-h-0 items-center justify-center px-8 py-8"
+            >
+              <div className="w-full max-w-xl rounded-lg border border-line bg-white p-6 text-center shadow-card">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-2xl text-emerald-700 ring-1 ring-emerald-200">
+                  ✓
+                </div>
+                <h2 className="mt-4 text-xl font-semibold text-ink">偏光镜同步观察已完成</h2>
+                <p className="mt-3 text-sm leading-relaxed text-ink-2">
+                  这一轮里你先调正上偏光片，再把样品放入光路，最后通过拖动下层载物台外缘同步观察中央视域的明暗变化。
+                </p>
+                {sample && (
+                  <div className="mt-4 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800 ring-1 ring-emerald-200">
+                    本样品光性：{OPTICAL_LABEL[sample.characteristics.opticalCharacter]}
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="btn-primary mt-5 px-6 py-2 text-sm"
+                  style={{ background: instrument.themeHex }}
+                >
+                  再练一次
+                </button>
+              </div>
+            </section>
+          )}
+        </main>
+      </div>
+    </div>
+  );
+}
+
+function PolariscopeInstrumentLocator({
+  activePart,
+  instrumentImage,
+  themeHex,
+}: {
+  activePart: PolariscopeLocatorPart;
+  instrumentImage: string;
+  themeHex: string;
+}) {
+  const boxRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const [fit, setFit] = useState({
+    boxHeight: 0,
+    boxWidth: 0,
+    height: 0,
+    left: 0,
+    top: 0,
+    width: 0,
+  });
+  const target = POLAR_LOCATOR_TARGETS[activePart];
+  const activeMeta: Record<
+    PolariscopeLocatorPart,
+    { badge: string; label: string; tone: 'dark' | 'warm'; hint: string }
+  > = {
+    'upper-polar': {
+      badge: '调整这里',
+      hint: '拖动这里，使上下偏光片进入正交',
+      label: '正在调整：上偏光片',
+      tone: 'dark',
+    },
+    'sample-gap': {
+      badge: '放在这里',
+      hint: '样品进入上偏光片与载物台之间',
+      label: '放置样品：载物台中心',
+      tone: 'warm',
+    },
+    stage: {
+      badge: '旋转这里',
+      hint: '拖动这里，样品随载物台同步旋转',
+      label: '正在旋转：载物台',
+      tone: 'warm',
+    },
+  };
+  const meta = activeMeta[activePart];
+
+  const updateFit = useCallback(() => {
+    const box = boxRef.current;
+    const img = imgRef.current;
+    if (!box || !img?.naturalWidth) return;
+
+    const boxWidth = box.clientWidth;
+    const boxHeight = box.clientHeight;
+    if (boxWidth < 1 || boxHeight < 1) return;
+
+    const scale = Math.min(boxWidth / img.naturalWidth, boxHeight / img.naturalHeight);
+    const width = img.naturalWidth * scale;
+    const height = img.naturalHeight * scale;
+    setFit({
+      boxHeight,
+      boxWidth,
+      height,
+      left: (boxWidth - width) / 2,
+      top: (boxHeight - height) / 2,
+      width,
+    });
+  }, []);
+
+  useLayoutEffect(() => {
+    const box = boxRef.current;
+    const img = imgRef.current;
+    if (!box) return;
+
+    const ro = new ResizeObserver(updateFit);
+    ro.observe(box);
+    img?.addEventListener('load', updateFit);
+    updateFit();
+    return () => {
+      ro.disconnect();
+      img?.removeEventListener('load', updateFit);
+    };
+  }, [instrumentImage, updateFit]);
+
+  const targetX = fit.boxWidth > 0 ? fit.left + target.x * fit.width : 0;
+  const targetY = fit.boxHeight > 0 ? fit.top + target.y * fit.height : 0;
+
+  return (
+    <div
+      data-testid="polariscope-instrument-locator"
+      data-active-part={activePart}
+      data-target-x={target.x}
+      data-target-y={target.y}
+      className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-[linear-gradient(180deg,#f8fafc_0%,#eef3f8_100%)] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]"
+    >
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <div className="font-mono text-[9px] uppercase tracking-widest text-ink-4">当前操作部件</div>
+          <div className="mt-1 text-xs font-semibold text-ink">{meta.label}</div>
+        </div>
+        <span
+          className={clsx(
+            'rounded-full px-2 py-1 text-[10px] font-semibold',
+            meta.tone === 'warm' ? 'bg-amber-100 text-amber-800' : 'bg-slate-900 text-white',
+          )}
+        >
+          {meta.badge}
+        </span>
+      </div>
+
+      <div ref={boxRef} className="relative mt-3 h-36 overflow-hidden rounded-lg border border-white/70 bg-white/65">
+        <img
+          ref={imgRef}
+          data-testid="polariscope-instrument-locator-image"
+          src={instrumentImage}
+          alt="偏光镜仪器定位图"
+          className="h-full w-full object-contain"
+          draggable={false}
+        />
+        <div
+          className="pointer-events-none absolute flex -translate-x-1/2 -translate-y-1/2 items-center justify-center"
+          style={{ left: targetX, top: targetY }}
+        >
+          <span
+            className="absolute h-9 w-9 rounded-full border-2 bg-white/5"
+            style={{
+              borderColor: themeHex,
+              boxShadow: `0 0 0 5px ${themeHex}24, 0 0 18px ${themeHex}66`,
+            }}
+          />
+          <span
+            className="relative h-2.5 w-2.5 rounded-full border-2 border-white shadow-card"
+            style={{ backgroundColor: themeHex }}
+          />
+        </div>
+      </div>
+
+      <div className="mt-2 flex min-h-10 items-start gap-2 rounded-lg border border-white/80 bg-white/80 px-3 py-2 text-[11px] leading-snug text-ink-3">
+        <span className="mt-1 h-2 w-2 flex-none rounded-full" style={{ backgroundColor: themeHex }} />
+        <span>
+          <span className="font-semibold text-ink">空间提示：</span>
+          <span style={{ color: themeHex }}>{meta.hint}</span>
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function IntegratedLiveUseControl({
+  activeCanvasView,
+  brightness,
+  observed,
+  onStageAngleChange,
+  rotation,
+  setAutoRotating,
+  themeHex,
+}: {
+  activeCanvasView: ReturnType<typeof computePhenomenonBrightness>['view'] | 'off' | 'crossed-dark' | 'parallel';
+  brightness: number;
+  observed: Set<'bright' | 'dark'>;
+  onStageAngleChange: (angle: number) => void;
+  rotation: number;
+  setAutoRotating: Dispatch<SetStateAction<boolean>>;
+  themeHex: string;
+}) {
+  const [stageDragging, setStageDragging] = useState(false);
+  const observedLabel =
+    observed.has('bright') && observed.has('dark')
+      ? '已见亮位 / 暗位'
+      : observed.has('bright')
+        ? '已见亮位，继续旋转找暗位'
+        : observed.has('dark')
+          ? '已见暗位，继续旋转找亮位'
+          : '继续旋转，观察明暗变化';
+
+  return (
+    <div className="flex w-[min(62vh,84vw,34rem)] flex-col items-center gap-3 xl:w-[min(70vh,44vw,36rem)]">
+      <div className="relative aspect-square w-full">
+        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,#3a3228_0%,#161514_58%,#070707_100%)] shadow-[0_30px_100px_rgba(15,23,42,0.32)]" />
+        <AngleRingControl
+          angle={rotation}
+          dataTestId="polariscope-stage-ring-control"
+          onAngleChange={(angle) => {
+            setAutoRotating(false);
+            onStageAngleChange(angle);
+          }}
+          onDragStart={() => setStageDragging(true)}
+          onDragEnd={() => setStageDragging(false)}
+          className="absolute inset-[0.5%] rounded-full cursor-grab active:cursor-grabbing"
+        >
+          <div
+            className={clsx(
+              'absolute inset-0 rounded-full border border-white/10 bg-[radial-gradient(circle,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.02)_42%,rgba(0,0,0,0)_56%,rgba(0,0,0,0.24)_100%)] transition',
+              stageDragging && 'shadow-[0_0_0_9px_rgba(245,158,11,0.16),inset_0_0_0_1px_rgba(255,255,255,0.16)]',
+            )}
+            aria-hidden="true"
+          />
+          <div
+            className={clsx(
+              'absolute inset-[11%] rounded-full border border-white/10 bg-[radial-gradient(circle,rgba(255,255,255,0.05)_0%,rgba(255,255,255,0.015)_38%,rgba(0,0,0,0)_64%)] transition-opacity',
+              stageDragging ? 'opacity-100' : 'opacity-60',
+            )}
+            aria-hidden="true"
+          />
+        </AngleRingControl>
+
+        <div className="pointer-events-none absolute inset-[10%] rounded-full border-[24px] border-[#0b0c0e] bg-black shadow-[0_0_0_1px_rgba(255,255,255,0.16),inset_0_0_34px_rgba(255,255,255,0.08)]">
+          <div
+            data-testid="polariscope-live-observation"
+            data-sample-shape="faceted-rectangle"
+            data-stage-angle={Math.round(rotation)}
+            aria-label="偏光镜实时观察视域"
+            className="absolute inset-[8%] flex items-center justify-center"
+          >
+            <ObservationCanvas
+              view={activeCanvasView}
+              brightness={brightness}
+              rotation={rotation}
+              sampleOn
+              sampleShape="faceted-rectangle"
+              fill
+              showLabel={false}
+              showRotationScale={false}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div
+        data-testid="polariscope-live-progress"
+        className="rounded-full border border-line bg-white/92 px-4 py-2 text-center text-xs font-semibold text-ink shadow-card backdrop-blur"
+      >
+        <span>{observedLabel}</span>
+        <span className="mx-2 text-ink-4">|</span>
+        <span style={{ color: brightness > 0.5 || activeCanvasView === 'parallel' ? '#b45309' : themeHex }}>
+          {brightness > 0.5 || activeCanvasView === 'parallel' ? '亮位' : '暗位'}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function AngleRingControl({
+  angle,
+  children,
+  className,
+  dataTestId,
+  onDragEnd,
+  onDragStart,
+  onAngleChange,
+  onRelease,
+}: {
+  angle: number;
+  children: ReactNode;
+  className?: string;
+  dataTestId: string;
+  onDragEnd?: () => void;
+  onDragStart?: () => void;
+  onAngleChange: (angle: number) => void;
+  onRelease?: (angle: number) => void;
+}) {
+  const ringRef = useRef<HTMLDivElement>(null);
+  const dragging = useRef(false);
+  const latestAngle = useRef(angle);
+  const onAngleChangeRef = useRef(onAngleChange);
+  const onDragEndRef = useRef(onDragEnd);
+  const onDragStartRef = useRef(onDragStart);
+  const onReleaseRef = useRef(onRelease);
+
+  useEffect(() => {
+    latestAngle.current = angle;
+  }, [angle]);
+
+  useEffect(() => {
+    onAngleChangeRef.current = onAngleChange;
+    onDragEndRef.current = onDragEnd;
+    onDragStartRef.current = onDragStart;
+    onReleaseRef.current = onRelease;
+  }, [onAngleChange, onDragEnd, onDragStart, onRelease]);
+
+  const readAngle = useCallback((clientX: number, clientY: number) => {
+    const rect = ringRef.current?.getBoundingClientRect();
+    if (!rect) return latestAngle.current;
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = clientX - cx;
+    const dy = clientY - cy;
+    if (Math.abs(dx) < 2 && Math.abs(dy) < 2) return latestAngle.current;
+    return (Math.atan2(dy, dx) * 180) / Math.PI + 90 < 0
+      ? (Math.atan2(dy, dx) * 180) / Math.PI + 450
+      : (Math.atan2(dy, dx) * 180) / Math.PI + 90;
+  }, []);
+
+  const handlePointerMove = useCallback(
+    (event: PointerEvent) => {
+      if (!dragging.current) return;
+      const next = Math.round(readAngle(event.clientX, event.clientY)) % 360;
+      latestAngle.current = next;
+      onAngleChangeRef.current(next);
+    },
+    [readAngle],
+  );
+
+  const handleMouseMove = useCallback(
+    (event: MouseEvent) => {
+      if (!dragging.current) return;
+      const next = Math.round(readAngle(event.clientX, event.clientY)) % 360;
+      latestAngle.current = next;
+      onAngleChangeRef.current(next);
+    },
+    [readAngle],
+  );
+
+  const endDrag = useCallback(() => {
+    if (!dragging.current) return;
+    dragging.current = false;
+    window.removeEventListener('pointermove', handlePointerMove);
+    window.removeEventListener('mousemove', handleMouseMove);
+    window.removeEventListener('pointerup', endDrag);
+    window.removeEventListener('mouseup', endDrag);
+    onDragEndRef.current?.();
+    onReleaseRef.current?.(latestAngle.current);
+  }, [handleMouseMove, handlePointerMove]);
+
+  useEffect(() => {
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('pointerup', endDrag);
+      window.removeEventListener('mouseup', endDrag);
+    };
+  }, [endDrag, handleMouseMove, handlePointerMove]);
+
+  return (
+    <div
+      ref={ringRef}
+      data-testid={dataTestId}
+      className={clsx('touch-none select-none cursor-grab active:cursor-grabbing', className)}
+      onPointerDown={(event) => {
+        event.preventDefault();
+        dragging.current = true;
+        onDragStartRef.current?.();
+        const next = Math.round(readAngle(event.clientX, event.clientY)) % 360;
+        latestAngle.current = next;
+        onAngleChangeRef.current(next);
+        window.addEventListener('pointermove', handlePointerMove);
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('pointerup', endDrag);
+        window.addEventListener('mouseup', endDrag);
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function MetricPill({
+  label,
+  value,
+  tone = 'neutral',
+}: {
+  label: string;
+  value: string;
+  tone?: 'neutral' | 'good' | 'warn';
+}) {
+  return (
+    <div
+      className={clsx(
+        'rounded-lg border px-3 py-2',
+        tone === 'good'
+          ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+          : tone === 'warn'
+            ? 'border-amber-200 bg-amber-50 text-amber-800'
+            : 'border-slate-200 bg-slate-50 text-ink',
+      )}
+    >
+      <div className="font-mono text-[9px] uppercase tracking-widest opacity-60">{label}</div>
+      <div className="mt-1 text-sm font-semibold">{value}</div>
+    </div>
+  );
+}
+
+function getLearningViewLabel(view: LearningView): string {
+  switch (view) {
+    case 'overview':
+      return '总览态';
+    case 'align-upper-polar':
+      return '上偏光片操作位';
+    case 'place-sample':
+      return '放样状态';
+    case 'live-use':
+      return '同步使用状态';
+    case 'result-summary':
+      return '结果反馈';
+  }
+}
+
+function isUpperPolarCrossed(angle: number): boolean {
+  const normalized = ((angle % 360) + 360) % 360;
+  const distanceTo90 = Math.min(Math.abs(normalized - 90), Math.abs(normalized - 450));
+  return distanceTo90 <= 18;
+}
+
+function computeUpperPolarTransmission(angle: number): number {
+  const normalized = ((angle % 180) + 180) % 180;
+  const cosTheta = Math.cos((normalized * Math.PI) / 180);
+  return cosTheta * cosTheta;
+}
+
+function getUpperPolarBrightnessLabel(brightness: number): string {
+  if (brightness <= 0.05) return '接近全暗';
+  if (brightness > 0.5) return '透光';
+  return '过渡变暗';
+}
+
+function normalizeAngle(angle: number): number {
+  return ((angle % 360) + 360) % 360;
+}
+
+function signedAngleDelta(from: number, to: number): number {
+  const delta = normalizeAngle(to) - normalizeAngle(from);
+  if (delta > 180) return delta - 360;
+  if (delta < -180) return delta + 360;
+  return delta;
+}
+
+function sampleSweepAngles(from: number, to: number): number[] {
+  const delta = signedAngleDelta(from, to);
+  const steps = Math.max(1, Math.ceil(Math.abs(delta) / 15));
+  return Array.from({ length: steps }, (_, i) => normalizeAngle(from + (delta * (i + 1)) / steps));
+}
+
 // ── 观察解析文字 ──────────────────────────────────────────────
 function renderOpticalHint(
   optical: OpticalCharacter | undefined,
   brightness: number,
   polarPosition: 'crossed' | 'parallel',
   sampleOn: boolean,
-): React.ReactNode {
+): ReactNode {
   if (!sampleOn) return <p>放置样品后即可在正交偏光下观察明暗变化。</p>;
   if (polarPosition === 'parallel') {
     return (

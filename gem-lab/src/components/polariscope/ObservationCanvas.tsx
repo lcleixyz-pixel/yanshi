@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, type ReactNode } from 'react';
+import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import clsx from '@/utils/clsx';
 import type { OpticalCharacter } from '@/data/types';
 
@@ -6,7 +6,9 @@ export type PolariscopeCanvasView =
   | 'off'
   | 'crossed-dark'
   | 'crossed-sample'
-  | 'parallel';
+  | 'parallel'
+  | 'upper-polar-calibration';
+type PolariscopeSampleShape = 'round' | 'faceted-rectangle';
 
 /**
  * 根据旋转角度 + 样品光性 + 偏光位置计算当前现象。
@@ -57,9 +59,11 @@ function drawPolariscopeCanvas(
     brightness: number;
     rotation: number;
     sampleOn: boolean;
+    sampleShape: PolariscopeSampleShape;
+    showRotationScale: boolean;
   },
 ) {
-  const { view, brightness, rotation, sampleOn } = params;
+  const { view, brightness, rotation, sampleOn, sampleShape, showRotationScale } = params;
   const cx = w / 2;
   const cy = w / 2;
   const r = w / 2 - 2 * dpr;
@@ -96,6 +100,19 @@ function drawPolariscopeCanvas(
     ambientGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
     ctx.fillStyle = ambientGrad;
     ctx.fillRect(cx - r, cy - r, 2 * r, 2 * r);
+  } else if (view === 'upper-polar-calibration') {
+    // 上偏光片校准：无样品，视域亮度由上下偏光片夹角连续控制。
+    const alpha = Math.max(0, Math.min(1, brightness));
+    ctx.fillStyle = FIELD_BG_BASE;
+    ctx.fillRect(cx - r, cy - r, 2 * r, 2 * r);
+
+    const brightGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+    brightGrad.addColorStop(0, `rgba(255, 251, 230, ${0.18 + 0.82 * alpha})`);
+    brightGrad.addColorStop(0.5, `rgba(254, 243, 199, ${0.10 + 0.72 * alpha})`);
+    brightGrad.addColorStop(0.85, `rgba(253, 230, 138, ${0.06 + 0.52 * alpha})`);
+    brightGrad.addColorStop(1, `rgba(212, 160, 23, ${0.03 + 0.34 * alpha})`);
+    ctx.fillStyle = brightGrad;
+    ctx.fillRect(cx - r, cy - r, 2 * r, 2 * r);
   } else if (view === 'parallel') {
     // 平行偏光：底光全透，明亮暖白色
     const brightGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
@@ -108,7 +125,7 @@ function drawPolariscopeCanvas(
 
     // 样品色（偏光片平行时样品透射光）
     if (sampleOn) {
-      drawSampleOverlay(ctx, cx, cy, r, 1.0);
+      drawSampleOverlay(ctx, cx, cy, r, 1.0, rotation, sampleShape);
     }
   } else if (view === 'crossed-sample') {
     // 正交偏光 + 样品：亮度由 brightness 控制
@@ -117,7 +134,7 @@ function drawPolariscopeCanvas(
     ctx.fillRect(cx - r, cy - r, 2 * r, 2 * r);
 
     if (sampleOn) {
-      drawSampleOverlay(ctx, cx, cy, r, brightness);
+      drawSampleOverlay(ctx, cx, cy, r, brightness, rotation, sampleShape);
     } else {
       // 无样品：暗场 + 微弱漏光
       const ambientGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
@@ -130,7 +147,7 @@ function drawPolariscopeCanvas(
   }
 
   // ── 载物台旋转刻度环 ──
-  if (sampleOn) {
+  if (sampleOn && showRotationScale) {
     drawRotationScale(ctx, cx, cy, r, rotation, dpr);
   }
 
@@ -147,7 +164,14 @@ function drawSampleOverlay(
   cy: number,
   r: number,
   brightness: number,
+  rotation: number,
+  sampleShape: PolariscopeSampleShape,
 ) {
+  if (sampleShape === 'faceted-rectangle') {
+    drawFacetedRectangleSample(ctx, cx, cy, r, brightness, rotation);
+    return;
+  }
+
   // 样品区域（约占视场 40%）
   const sampleR = r * 0.42;
   // 视觉平滑：避免 brightness 在阈值附近发生“分支跳变”
@@ -190,6 +214,112 @@ function drawSampleOverlay(
     ctx.arc(cx, cy, sampleR * 0.7, 0, Math.PI * 2);
     ctx.fill();
   }
+}
+
+function traceEmeraldCutPath(ctx: CanvasRenderingContext2D, width: number, height: number, corner: number) {
+  const hw = width / 2;
+  const hh = height / 2;
+
+  ctx.beginPath();
+  ctx.moveTo(-hw + corner, -hh);
+  ctx.lineTo(hw - corner, -hh);
+  ctx.lineTo(hw, -hh + corner);
+  ctx.lineTo(hw, hh - corner);
+  ctx.lineTo(hw - corner, hh);
+  ctx.lineTo(-hw + corner, hh);
+  ctx.lineTo(-hw, hh - corner);
+  ctx.lineTo(-hw, -hh + corner);
+  ctx.closePath();
+}
+
+function strokeFacetLine(
+  ctx: CanvasRenderingContext2D,
+  fromX: number,
+  fromY: number,
+  toX: number,
+  toY: number,
+) {
+  ctx.moveTo(fromX, fromY);
+  ctx.lineTo(toX, toY);
+}
+
+function drawFacetedRectangleSample(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  r: number,
+  brightness: number,
+  rotation: number,
+) {
+  const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
+  const alpha = clamp01(Math.pow(brightness, 0.9));
+  const brightMix = alpha * alpha * (3 - 2 * alpha);
+  const width = r * 0.82;
+  const height = r * 0.42;
+  const corner = height * 0.24;
+  const tableWidth = width * 0.58;
+  const tableHeight = height * 0.46;
+  const tableCorner = tableHeight * 0.28;
+
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate((rotation * Math.PI) / 180);
+
+  traceEmeraldCutPath(ctx, width, height, corner);
+  ctx.save();
+  ctx.clip();
+
+  const darkBase = ctx.createLinearGradient(-width / 2, -height / 2, width / 2, height / 2);
+  darkBase.addColorStop(0, `rgba(18, 14, 24, ${0.94 - 0.42 * alpha})`);
+  darkBase.addColorStop(0.48, `rgba(30, 20, 34, ${0.90 - 0.36 * alpha})`);
+  darkBase.addColorStop(1, `rgba(9, 8, 14, ${0.82 - 0.28 * alpha})`);
+  ctx.fillStyle = darkBase;
+  ctx.fillRect(-width / 2, -height / 2, width, height);
+
+  const brightLayer = ctx.createLinearGradient(-width / 2, 0, width / 2, 0);
+  brightLayer.addColorStop(0, `rgba(100, 190, 255, ${0.04 + 0.34 * brightMix})`);
+  brightLayer.addColorStop(0.42, `rgba(255, 236, 164, ${0.05 + 0.78 * brightMix})`);
+  brightLayer.addColorStop(0.62, `rgba(255, 160, 214, ${0.03 + 0.42 * brightMix})`);
+  brightLayer.addColorStop(1, `rgba(111, 213, 195, ${0.03 + 0.30 * brightMix})`);
+  ctx.fillStyle = brightLayer;
+  ctx.fillRect(-width / 2, -height / 2, width, height);
+
+  const facetAlpha = 0.07 + 0.28 * brightMix;
+  ctx.strokeStyle = `rgba(255,255,255,${facetAlpha})`;
+  ctx.lineWidth = Math.max(1, r * 0.006);
+  ctx.beginPath();
+
+  // Step-cut facet seams: connect corresponding outer and inner octagon corners.
+  // Avoid decorative cross-lines through the table; the center should read as one clean facet.
+  strokeFacetLine(ctx, -width / 2 + corner, -height / 2, -tableWidth / 2 + tableCorner, -tableHeight / 2);
+  strokeFacetLine(ctx, width / 2 - corner, -height / 2, tableWidth / 2 - tableCorner, -tableHeight / 2);
+  strokeFacetLine(ctx, width / 2, -height / 2 + corner, tableWidth / 2, -tableHeight / 2 + tableCorner);
+  strokeFacetLine(ctx, width / 2, height / 2 - corner, tableWidth / 2, tableHeight / 2 - tableCorner);
+  strokeFacetLine(ctx, width / 2 - corner, height / 2, tableWidth / 2 - tableCorner, tableHeight / 2);
+  strokeFacetLine(ctx, -width / 2 + corner, height / 2, -tableWidth / 2 + tableCorner, tableHeight / 2);
+  strokeFacetLine(ctx, -width / 2, height / 2 - corner, -tableWidth / 2, tableHeight / 2 - tableCorner);
+  strokeFacetLine(ctx, -width / 2, -height / 2 + corner, -tableWidth / 2, -tableHeight / 2 + tableCorner);
+
+  const stepInset = height * 0.13;
+  strokeFacetLine(ctx, -width / 2 + corner * 1.35, -height / 2 + stepInset, width / 2 - corner * 1.35, -height / 2 + stepInset);
+  strokeFacetLine(ctx, -width / 2 + corner * 1.35, height / 2 - stepInset, width / 2 - corner * 1.35, height / 2 - stepInset);
+  strokeFacetLine(ctx, -width / 2 + stepInset, -height / 2 + corner * 1.25, -width / 2 + stepInset, height / 2 - corner * 1.25);
+  strokeFacetLine(ctx, width / 2 - stepInset, -height / 2 + corner * 1.25, width / 2 - stepInset, height / 2 - corner * 1.25);
+  ctx.stroke();
+
+  ctx.restore();
+
+  traceEmeraldCutPath(ctx, width, height, corner);
+  ctx.strokeStyle = `rgba(255,255,255,${0.16 + 0.30 * brightMix})`;
+  ctx.lineWidth = Math.max(1.5, r * 0.01);
+  ctx.stroke();
+
+  traceEmeraldCutPath(ctx, tableWidth, tableHeight, tableCorner);
+  ctx.strokeStyle = `rgba(255,255,255,${0.13 + 0.24 * brightMix})`;
+  ctx.lineWidth = Math.max(1, r * 0.006);
+  ctx.stroke();
+
+  ctx.restore();
 }
 
 /**
@@ -254,20 +384,49 @@ export default function ObservationCanvas({
   brightness,
   rotation,
   sampleOn,
+  sampleShape = 'round',
   size = 280,
+  fill = false,
+  showLabel = true,
+  showRotationScale = true,
   children,
 }: {
   view: PolariscopeCanvasView;
   brightness: number;
   rotation: number;
   sampleOn: boolean;
+  sampleShape?: PolariscopeSampleShape;
   size?: number;
+  /** 填满父级正方形/圆形区域，适合嵌入拟真仪器内环 */
+  fill?: boolean;
+  showLabel?: boolean;
+  showRotationScale?: boolean;
   /** 叠在圆形观察区内的浮层（如观察姿势示意），建议 pointer-events-none */
   children?: ReactNode;
 }) {
+  const hostRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1;
-  const pixelSize = Math.round(size * dpr);
+  const [measuredSize, setMeasuredSize] = useState(size);
+  const effectiveSize = fill ? measuredSize : size;
+  const pixelSize = Math.round(effectiveSize * dpr);
+
+  useLayoutEffect(() => {
+    if (!fill) {
+      setMeasuredSize(size);
+      return;
+    }
+    const el = hostRef.current;
+    if (!el) return;
+    const updateSize = () => {
+      const next = Math.floor(Math.min(el.clientWidth, el.clientHeight));
+      if (next > 0) setMeasuredSize(next);
+    };
+    updateSize();
+    const ro = new ResizeObserver(updateSize);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [fill, size]);
 
   useLayoutEffect(() => {
     const canvas = canvasRef.current;
@@ -280,16 +439,22 @@ export default function ObservationCanvas({
       brightness,
       rotation,
       sampleOn,
+      sampleShape,
+      showRotationScale,
     });
-  }, [view, brightness, rotation, sampleOn, pixelSize, dpr]);
+  }, [view, brightness, rotation, sampleOn, sampleShape, showRotationScale, pixelSize, dpr]);
 
   const info = computePhenomenonLabel(view, brightness, rotation);
 
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div ref={hostRef} className={fill ? 'h-full w-full' : 'flex flex-col items-center gap-2'}>
       <div
         className="relative overflow-hidden rounded-full border-4 border-[#1a1a1a] shadow-card"
-        style={{ width: size, height: size, background: '#0a0a0a' }}
+        style={{
+          width: fill ? '100%' : size,
+          height: fill ? '100%' : size,
+          background: '#0a0a0a',
+        }}
       >
         {view === 'off' ? (
           <div className="relative z-[1] flex h-full w-full flex-col items-center justify-center gap-1.5 text-center">
@@ -307,7 +472,10 @@ export default function ObservationCanvas({
             width={pixelSize}
             height={pixelSize}
             className="absolute inset-0 z-0 h-full w-full"
-            style={{ width: size, height: size }}
+            style={{
+              width: fill ? '100%' : size,
+              height: fill ? '100%' : size,
+            }}
           />
         )}
         {children != null && (
@@ -317,18 +485,20 @@ export default function ObservationCanvas({
         )}
       </div>
 
-      <div
-        className={clsx(
-          'rounded-full px-3 py-0.5 text-[11px] font-mono uppercase tracking-widest',
-          brightness > 0.5 || view === 'parallel'
-            ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-200'
-            : view === 'off'
-              ? 'bg-slate-100 text-slate-500'
-              : 'bg-slate-100 text-slate-600 ring-1 ring-slate-200',
-        )}
-      >
-        {info.label} · {rotation.toFixed(0)}°
-      </div>
+      {showLabel && (
+        <div
+          className={clsx(
+            'rounded-full px-3 py-0.5 text-[11px] font-mono uppercase tracking-widest',
+            brightness > 0.5 || view === 'parallel'
+              ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-200'
+              : view === 'off'
+                ? 'bg-slate-100 text-slate-500'
+                : 'bg-slate-100 text-slate-600 ring-1 ring-slate-200',
+          )}
+        >
+          {info.label} · {rotation.toFixed(0)}°
+        </div>
+      )}
     </div>
   );
 }
@@ -340,10 +510,15 @@ function computePhenomenonLabel(
 ): { label: string } {
   if (view === 'off') return { label: 'POWER OFF' };
   if (view === 'crossed-dark') return { label: '正交暗场' };
+  if (view === 'upper-polar-calibration') {
+    if (brightness <= 0.05) return { label: '校准视域接近全暗' };
+    if (brightness > 0.5) return { label: '校准视域透光' };
+    return { label: '校准视域过渡' };
+  }
   if (view === 'parallel') return { label: '平行偏光（全亮）' };
 
-  if (brightness >= 0.99) return { label: '全亮（集合体）' };
-  if (brightness <= 0.01) return { label: '全暗（均质体）' };
+  if (brightness >= 0.99) return { label: '亮位 / 全亮' };
+  if (brightness <= 0.01) return { label: '暗位 / 全暗' };
   if (brightness > 0.5) return { label: '明位' };
   return { label: '暗位' };
 }

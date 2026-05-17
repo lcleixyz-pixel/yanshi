@@ -169,6 +169,8 @@ test('polariscope detection mode uses the main instrument image as a single acti
   const upperRing = page.getByTestId('polariscope-detection-upper-ring-control');
   const upperBox = await upperRing.boundingBox();
   expect(upperBox).not.toBeNull();
+  expect(upperBox!.width).toBeGreaterThanOrEqual(260);
+  expect(upperBox!.height).toBeGreaterThanOrEqual(260);
   const upperCenter = {
     x: upperBox!.x + upperBox!.width / 2,
     y: upperBox!.y + upperBox!.height / 2,

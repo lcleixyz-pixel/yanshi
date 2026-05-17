@@ -2559,49 +2559,57 @@ function DetectionUpperPolarCalibration({
   return (
     <div
       data-testid="polariscope-detection-upper-calibration"
-      className="flex min-h-0 w-full items-center justify-center"
+      className="flex min-h-0 w-full flex-col items-center justify-center gap-1 overflow-hidden"
     >
-      <div className="grid w-full max-w-[28rem] grid-cols-[minmax(8.5rem,0.85fr)_minmax(11rem,1fr)] items-center gap-3">
-        <div className="relative aspect-square min-w-0 rounded-full bg-slate-950 p-2 shadow-[0_18px_42px_rgba(15,23,42,0.22)]">
-          <AngleRingControl
-            angle={angle}
-            dataTestId="polariscope-detection-upper-ring-control"
-            onAngleChange={onAngleChange}
-            className="absolute inset-0 rounded-full cursor-grab active:cursor-grabbing"
-          >
-            <div className="absolute inset-[6%] rounded-full border border-amber-200/40 bg-black shadow-inner">
-              <ObservationCanvas
-                view="upper-polar-calibration"
-                brightness={brightness}
-                rotation={angle}
-                sampleOn={false}
-                fill
-                showLabel={false}
-                showRotationScale={false}
-              />
-            </div>
-            <div
-              className="absolute left-1/2 top-1/2 h-[46%] w-1 origin-bottom rounded-full bg-amber-300/85 shadow-[0_0_14px_rgba(251,191,36,0.45)]"
-              style={{
-                transform: `translate(-50%, -100%) rotate(${angle}deg)`,
-                transformOrigin: '50% 100%',
-              }}
+      <div className="relative aspect-square w-[16.25rem] rounded-full bg-slate-950 p-2.5 shadow-[0_24px_60px_rgba(15,23,42,0.24)]">
+        <AngleRingControl
+          angle={angle}
+          dataTestId="polariscope-detection-upper-ring-control"
+          onAngleChange={onAngleChange}
+          className="absolute inset-0 rounded-full cursor-grab active:cursor-grabbing"
+        >
+          <div className="absolute inset-[3%] rounded-full border border-amber-200/45 bg-black shadow-inner">
+            <ObservationCanvas
+              view="upper-polar-calibration"
+              brightness={brightness}
+              rotation={angle}
+              sampleOn={false}
+              fill
+              showLabel={false}
+              showRotationScale={false}
             />
-          </AngleRingControl>
-        </div>
-
-        <div className="rounded-xl border border-amber-200 bg-white/95 p-3 shadow-soft">
-          <div className="font-mono text-[9px] uppercase tracking-[0.24em] text-ink-4">
-            Upper Polarizer
           </div>
-          <div className="mt-1 text-sm font-bold text-ink">手动旋转上偏光片</div>
-          <p className="mt-1 text-[11px] leading-relaxed text-ink-2">
-            观察圆形视域整体由亮转暗。接近全暗时，说明上下偏光片已正交，可以确认进入放样。
-          </p>
+          <div
+            className="absolute inset-[7%] rounded-full border-[10px] border-slate-950/70 shadow-[inset_0_0_0_1px_rgba(251,191,36,0.18)]"
+            aria-hidden="true"
+          />
+          <div
+            className="absolute left-1/2 top-1/2 h-[43%] w-1.5 origin-bottom rounded-full bg-amber-300/90 shadow-[0_0_18px_rgba(251,191,36,0.52)]"
+            style={{
+              transform: `translate(-50%, -100%) rotate(${angle}deg)`,
+              transformOrigin: '50% 100%',
+            }}
+            aria-hidden="true"
+          />
+          <div
+            className="absolute left-1/2 top-[8%] h-4 w-4 -translate-x-1/2 rounded-full border border-amber-100 bg-amber-300 shadow-[0_0_18px_rgba(251,191,36,0.65)]"
+            aria-hidden="true"
+          />
+        </AngleRingControl>
+      </div>
+
+      <div className="w-full max-w-[28rem] rounded-xl border border-amber-200 bg-white/95 p-2 shadow-soft">
+        <div className="flex items-center justify-between gap-2">
+          <div className="min-w-0">
+            <div className="font-mono text-[9px] uppercase tracking-[0.24em] text-ink-4">
+              Upper Polarizer
+            </div>
+            <div className="mt-0.5 text-sm font-bold text-ink">手动旋转上偏光片</div>
+          </div>
           <div
             data-testid="polariscope-detection-upper-brightness-state"
             className={clsx(
-              'mt-2 rounded-lg border px-2 py-1.5 text-[11px] font-semibold',
+              'shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-semibold tabular-nums',
               crossedReady
                 ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
                 : 'border-amber-200 bg-amber-50 text-amber-800',
@@ -2609,7 +2617,12 @@ function DetectionUpperPolarCalibration({
           >
             {brightnessLabel} · {Math.round(angle)}°
           </div>
-          <div className="mt-2 grid grid-cols-[1fr_auto] gap-2">
+        </div>
+        <div className="mt-1 flex items-center justify-between gap-2">
+          <p className="min-w-0 truncate text-[10px] leading-snug text-ink-2">
+            旋转圆环，观察视域由亮转暗，接近全暗即可确认。
+          </p>
+          <div className="flex shrink-0 items-center gap-1.5">
             <button
               type="button"
               data-testid="polariscope-confirm-detection-upper-polar"

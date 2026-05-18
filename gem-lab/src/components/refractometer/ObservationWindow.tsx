@@ -472,6 +472,7 @@ export default function ObservationWindow({
   facetPol01 = 0.5,
   usePolarizer = false,
   showReading = false,
+  hideChrome = false,
 }: {
   view: RefractometerView;
   sample?: SampleDef;
@@ -484,6 +485,8 @@ export default function ObservationWindow({
   usePolarizer?: boolean;
   /** 操作门槛满足后才揭晓读数 */
   showReading?: boolean;
+  /** 嵌入实物目镜环时只保留干净读数视野，避免状态胶囊外溢。 */
+  hideChrome?: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1;
@@ -624,43 +627,47 @@ export default function ObservationWindow({
         </div>
       </div>
 
-      <div className={clsx(
-        'whitespace-nowrap rounded bg-black/70 px-2.5 py-1 font-mono text-xs font-bold text-amber-300',
-        !(
-          ((view === 'single' || view === 'double') && facetReading && showReading) ||
-          (view === 'over-range' && showReading) ||
-          (view === 'spot' && bisected && sampleBoundsRi != null)
-        ) && 'invisible',
-      )}>
-        {((view === 'single' || view === 'double') && facetReading && showReading)
-          ? <>{facetReading}<span className="ml-1 text-[9px] text-amber-300/70">nD</span></>
-          : view === 'over-range' && showReading
-            ? <>&gt; 1.780<span className="ml-1 text-[9px] text-amber-300/70">nD</span></>
-            : view === 'spot' && bisected && sampleBoundsRi != null
-              ? <span data-testid="refractometer-spot-reading">{sampleBoundsRi.toFixed(2)}<span className="ml-1 text-[9px] text-amber-300/70">nD</span></span>
-              : <>&nbsp;</>
-        }
-      </div>
+      {!hideChrome && (
+        <>
+          <div className={clsx(
+            'whitespace-nowrap rounded bg-black/70 px-2.5 py-1 font-mono text-xs font-bold text-amber-300',
+            !(
+              ((view === 'single' || view === 'double') && facetReading && showReading) ||
+              (view === 'over-range' && showReading) ||
+              (view === 'spot' && bisected && sampleBoundsRi != null)
+            ) && 'invisible',
+          )}>
+            {((view === 'single' || view === 'double') && facetReading && showReading)
+              ? <>{facetReading}<span className="ml-1 text-[9px] text-amber-300/70">nD</span></>
+              : view === 'over-range' && showReading
+                ? <>&gt; 1.780<span className="ml-1 text-[9px] text-amber-300/70">nD</span></>
+                : view === 'spot' && bisected && sampleBoundsRi != null
+                  ? <span data-testid="refractometer-spot-reading">{sampleBoundsRi.toFixed(2)}<span className="ml-1 text-[9px] text-amber-300/70">nD</span></span>
+                  : <>&nbsp;</>
+            }
+          </div>
 
-      <div
-        className={clsx(
-          'rounded-full px-2.5 py-0.5 text-[10px] font-mono uppercase tracking-widest',
-          view === 'off'
-            ? 'bg-slate-100 text-slate-500'
-            : 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
-        )}
-      >
-        {view === 'off' ? 'POWER OFF' : `OBSERVING · ${view.toUpperCase()}`}
-      </div>
+          <div
+            className={clsx(
+              'rounded-full px-2.5 py-0.5 text-[10px] font-mono uppercase tracking-widest',
+              view === 'off'
+                ? 'bg-slate-100 text-slate-500'
+                : 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
+            )}
+          >
+            {view === 'off' ? 'POWER OFF' : `OBSERVING · ${view.toUpperCase()}`}
+          </div>
 
-      <p
-        className={clsx(
-          'min-h-[15px] text-center text-[10px] font-medium transition-opacity',
-          view === 'spot' && bisected ? 'text-emerald-600 opacity-100' : 'opacity-0',
-        )}
-      >
-        明暗各半 — 可读两位小数
-      </p>
+          <p
+            className={clsx(
+              'min-h-[15px] text-center text-[10px] font-medium transition-opacity',
+              view === 'spot' && bisected ? 'text-emerald-600 opacity-100' : 'opacity-0',
+            )}
+          >
+            明暗各半 — 可读两位小数
+          </p>
+        </>
+      )}
     </div>
   );
 }

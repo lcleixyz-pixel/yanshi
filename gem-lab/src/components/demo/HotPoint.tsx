@@ -11,6 +11,7 @@ export default function HotPoint({
   themeHex = '#e8a93a',
   onClick,
   showLabel = true,
+  emphasis = 'normal',
 }: {
   /** 0-1 相对于父容器 */
   x: number;
@@ -23,9 +24,12 @@ export default function HotPoint({
   onClick?: () => void;
   /** 为 false 时仅渲染热点圆点（说明由外部绝对定位自行排版） */
   showLabel?: boolean;
+  /** quiet 用于检测模式中保留可点热区，但避免和当前主动引导抢视觉焦点 */
+  emphasis?: 'normal' | 'quiet';
 }) {
   const isDone = status === 'done';
   const isDisabled = status === 'disabled';
+  const isQuiet = emphasis === 'quiet' && !isDone && !isDisabled;
 
   const labelOffsets: Record<typeof side, string> = {
     right: 'left-12 top-1/2 -translate-y-1/2',
@@ -47,14 +51,18 @@ export default function HotPoint({
           'relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-white outline-none',
           'shadow-card transition-transform',
           !isDisabled && 'hover:scale-110 active:scale-95',
+          isQuiet && 'opacity-70 shadow-none',
         )}
         style={{
           background: isDone
             ? 'radial-gradient(circle, #34d399 0%, #059669 100%)'
             : isDisabled
               ? '#cbd5e1'
-              : `radial-gradient(circle, ${shade(themeHex, 0.25)} 0%, ${themeHex} 100%)`,
+              : isQuiet
+                ? '#f8fafc'
+                : `radial-gradient(circle, ${shade(themeHex, 0.25)} 0%, ${themeHex} 100%)`,
           color: '#fff',
+          boxShadow: isQuiet ? `0 0 0 1px ${themeHex}55` : undefined,
         }}
         aria-label={label}
       >
@@ -64,12 +72,17 @@ export default function HotPoint({
           <span className="h-2.5 w-2.5 rounded-full bg-white/50" />
         ) : (
           <>
-            <span className="h-2.5 w-2.5 rounded-full bg-white" />
-            {/* 脉动环 */}
             <span
-              className="pointer-events-none absolute inset-[-6px] animate-pulse-ring rounded-full border-2"
-              style={{ borderColor: themeHex }}
+              className="h-2.5 w-2.5 rounded-full"
+              style={{ backgroundColor: isQuiet ? themeHex : '#fff' }}
             />
+            {/* 脉动环 */}
+            {!isQuiet && (
+              <span
+                className="pointer-events-none absolute inset-[-6px] animate-pulse-ring rounded-full border-2"
+                style={{ borderColor: themeHex }}
+              />
+            )}
           </>
         )}
       </button>

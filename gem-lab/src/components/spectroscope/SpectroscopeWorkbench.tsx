@@ -1,8 +1,10 @@
 import HotPoint from '@/components/demo/HotPoint';
 import type { SpectroscopeMethod } from '@/store/detectionStore';
 import clsx from '@/utils/clsx';
+import type { CSSProperties } from 'react';
 
 export type SpectroscopeHotpoint = 'light' | 'sample' | 'eyepiece' | 'slit' | 'focus';
+export type SpectroscopeGuideStep = 'power' | 'place' | 'pick-method' | 'align' | 'tune' | 'observe' | 'record';
 
 type WorkbenchPoint = { x: number; y: number };
 
@@ -39,6 +41,7 @@ export default function SpectroscopeWorkbench({
   slitOk,
   focusOk,
   currentStep,
+  guideStep,
   lightSourceLabel,
   validLightSource,
   themeHex,
@@ -54,12 +57,14 @@ export default function SpectroscopeWorkbench({
   slitOk: boolean;
   focusOk: boolean;
   currentStep: string | null;
+  guideStep?: SpectroscopeGuideStep | null;
   lightSourceLabel: string;
   validLightSource: boolean;
   themeHex: string;
   onHotpoint: (id: SpectroscopeHotpoint) => void;
 }) {
   const scene = getScene(method, angleDeg);
+  const guideMeta = guideStep ? getSpectroscopeGuideMeta(guideStep, scene) : null;
 
   return (
     <div className="relative h-full min-h-[360px] overflow-hidden rounded-2xl border border-line bg-gradient-to-br from-white via-[#f7fbff] to-[#eef5fb] shadow-soft">
@@ -148,7 +153,7 @@ export default function SpectroscopeWorkbench({
         side="top"
         themeHex={themeHex}
         status={power ? 'done' : currentStep === 'power' ? 'active' : 'disabled'}
-        showLabel={currentStep === 'power'}
+        showLabel={!guideStep && currentStep === 'power'}
         onClick={() => onHotpoint('light')}
       />
       <HotPoint
@@ -165,7 +170,7 @@ export default function SpectroscopeWorkbench({
         side="left"
         themeHex={themeHex}
         status={!power ? 'disabled' : sampleOn && method ? 'done' : sampleOn || currentStep === 'place' ? 'active' : 'disabled'}
-        showLabel={currentStep === 'place' || currentStep === 'pick-method'}
+        showLabel={!guideStep && (currentStep === 'place' || currentStep === 'pick-method')}
         onClick={() => onHotpoint('sample')}
       />
       <HotPoint
@@ -176,7 +181,7 @@ export default function SpectroscopeWorkbench({
         side="left"
         themeHex={themeHex}
         status={spectrumReady ? 'done' : 'disabled'}
-        showLabel={currentStep === 'observe'}
+        showLabel={!guideStep && currentStep === 'observe'}
         onClick={() => onHotpoint('eyepiece')}
       />
       <HotPoint
@@ -188,6 +193,7 @@ export default function SpectroscopeWorkbench({
         themeHex={themeHex}
         status={slitOk && aligned ? 'done' : aligned ? 'active' : 'disabled'}
         showLabel={false}
+        emphasis={guideStep === 'tune' ? 'quiet' : 'normal'}
         onClick={() => onHotpoint('slit')}
       />
       <HotPoint
@@ -199,8 +205,19 @@ export default function SpectroscopeWorkbench({
         themeHex={themeHex}
         status={focusOk && aligned ? 'done' : aligned ? 'active' : 'disabled'}
         showLabel={false}
+        emphasis={guideStep === 'tune' ? 'quiet' : 'normal'}
         onClick={() => onHotpoint('focus')}
       />
+
+      {guideMeta && (
+        <SpectroscopeDetectionMainGuide
+          activeStep={guideStep!}
+          label={guideMeta.label}
+          target={guideMeta.target}
+          side={guideMeta.side}
+          themeHex={themeHex}
+        />
+      )}
     </div>
   );
 }
@@ -230,6 +247,179 @@ function getScene(method: SpectroscopeMethod | null, angleDeg: number): Workbenc
     raySample,
     rayReceive,
   });
+}
+
+function getSpectroscopeGuideMeta(
+  step: SpectroscopeGuideStep,
+  scene: WorkbenchScene,
+): {
+  label: string;
+  target: WorkbenchPoint;
+  side: 'left' | 'right' | 'top' | 'bottom';
+} {
+  switch (step) {
+    case 'power':
+      return {
+        label: '开启光纤灯冷光源',
+        target: { x: scene.light.x / 900, y: scene.light.y / 560 },
+        side: 'top',
+      };
+    case 'place':
+      return {
+        label: '将未知样品放入光路',
+        target: { x: scene.sample.x / 900, y: scene.sample.y / 560 },
+        side: 'left',
+      };
+    case 'pick-method':
+      return {
+        label: '选择照明方法',
+        target: { x: scene.sample.x / 900, y: scene.sample.y / 560 },
+        side: 'left',
+      };
+    case 'align':
+      return {
+        label: '对准入射与观察光路',
+        target: { x: scene.raySample.x / 900, y: scene.raySample.y / 560 },
+        side: 'bottom',
+      };
+    case 'tune':
+      return {
+        label: '调节狭缝与焦距',
+        target: { x: 0.59, y: 0.52 },
+        side: 'bottom',
+      };
+    case 'observe':
+      return {
+        label: '在光谱条标记吸收线',
+        target: { x: 0.80, y: 0.33 },
+        side: 'left',
+      };
+    case 'record':
+      return {
+        label: '在右侧提交光谱记录',
+        target: { x: 0.85, y: 0.74 },
+        side: 'right',
+      };
+  }
+}
+
+function SpectroscopeDetectionMainGuide({
+  activeStep,
+  label,
+  target,
+  side,
+  themeHex,
+}: {
+  activeStep: SpectroscopeGuideStep;
+  label: string;
+  target: WorkbenchPoint;
+  side: 'left' | 'right' | 'top' | 'bottom';
+  themeHex: string;
+}) {
+  return (
+    <div
+      key={activeStep}
+      data-testid="spectroscope-detection-main-guide"
+      data-active-step={activeStep}
+      className="pointer-events-none absolute inset-0 z-[36]"
+    >
+      <div
+        className="absolute -translate-x-1/2 -translate-y-1/2"
+        style={{ left: `${target.x * 100}%`, top: `${target.y * 100}%` }}
+      >
+        <div
+          className="absolute -inset-5 animate-target-breathe rounded-full border-2 motion-reduce:animate-none"
+          style={{
+            borderColor: themeHex,
+            boxShadow: `0 0 0 10px ${themeHex}18, 0 0 32px ${themeHex}30`,
+          }}
+        />
+        <div
+          className="relative h-9 w-9 rounded-full border-2 border-white bg-white/[0.88] shadow-card ring-2"
+          style={{ color: themeHex, boxShadow: `0 0 0 2px ${themeHex}` }}
+        >
+          <span
+            className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full"
+            style={{ backgroundColor: themeHex }}
+          />
+        </div>
+      </div>
+
+      <div
+        data-testid="spectroscope-detection-guide-arrow-cue"
+        data-arrow-count="3"
+        className="absolute flex items-center gap-1"
+        style={getGuideArrowStyle(target, side)}
+      >
+        {Array.from({ length: 3 }).map((_, index) => (
+          <span
+            key={index}
+            className="h-2.5 w-2.5 animate-locator-arrow-cue border-b-2 border-r-2 motion-reduce:animate-none"
+            style={{
+              borderColor: themeHex,
+              animationDelay: `${index * 120}ms`,
+              transform: getGuideArrowRotation(side),
+            }}
+          />
+        ))}
+      </div>
+
+      <div
+        className="absolute w-max min-w-[8.5rem] max-w-[13rem] rounded-xl border bg-white/95 px-3 py-2 text-xs font-semibold leading-snug text-ink shadow-lift backdrop-blur"
+        style={{
+          ...getGuideCalloutStyle(target, side, activeStep === 'record' ? 5 : 8),
+          borderColor: `${themeHex}55`,
+        }}
+      >
+        <span className="block font-mono text-[9px] uppercase tracking-[0.22em] text-ink-4">当前操作</span>
+        <span>{label}</span>
+      </div>
+    </div>
+  );
+}
+
+function getGuideCalloutStyle(
+  target: WorkbenchPoint,
+  side: 'left' | 'right' | 'top' | 'bottom',
+  offset: number,
+): CSSProperties {
+  const left = target.x * 100;
+  const top = target.y * 100;
+  if (side === 'left') {
+    return { left: `${Math.max(4, left - offset)}%`, top: `${top}%`, transform: 'translate(-100%, -50%)' };
+  }
+  if (side === 'right') {
+    return { left: `${Math.min(96, left + offset)}%`, top: `${top}%`, transform: 'translateY(-50%)' };
+  }
+  if (side === 'top') {
+    return { left: `${left}%`, top: `${Math.max(5, top - offset)}%`, transform: 'translate(-50%, -100%)' };
+  }
+  return { left: `${left}%`, top: `${Math.min(95, top + offset)}%`, transform: 'translateX(-50%)' };
+}
+
+function getGuideArrowStyle(
+  target: WorkbenchPoint,
+  side: 'left' | 'right' | 'top' | 'bottom',
+): CSSProperties {
+  const left = target.x * 100;
+  const top = target.y * 100;
+  if (side === 'left') {
+    return { left: `${Math.max(8, left - 4)}%`, top: `${top}%`, transform: 'translate(-100%, -50%)' };
+  }
+  if (side === 'right') {
+    return { left: `${Math.min(92, left + 4)}%`, top: `${top}%`, transform: 'translateY(-50%)' };
+  }
+  if (side === 'top') {
+    return { left: `${left}%`, top: `${Math.max(7, top - 4)}%`, transform: 'translate(-50%, -100%)' };
+  }
+  return { left: `${left}%`, top: `${Math.min(93, top + 4)}%`, transform: 'translateX(-50%)' };
+}
+
+function getGuideArrowRotation(side: 'left' | 'right' | 'top' | 'bottom') {
+  if (side === 'left') return 'rotate(-45deg)';
+  if (side === 'right') return 'rotate(135deg)';
+  if (side === 'top') return 'rotate(45deg)';
+  return 'rotate(-135deg)';
 }
 
 function makeScene({

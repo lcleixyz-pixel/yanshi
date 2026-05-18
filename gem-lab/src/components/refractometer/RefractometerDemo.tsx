@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import HotPoint from '@/components/demo/HotPoint';
 import ObjectFitHotspotFrame from '@/components/demo/ObjectFitHotspotFrame';
@@ -25,6 +25,8 @@ import RotationKnob from './RotationKnob';
 type DemoMode = 'learning' | 'detection';
 type StepId = 'power' | 'oil' | 'sample' | 'observe' | 'record';
 const STEP_ORDER: StepId[] = ['power', 'oil', 'sample', 'observe', 'record'];
+const EYEPIECE_RING_IMAGE = '/assets/observations/refractometer/eyepiece-rotating-ring.png';
+const ROTATION_READY_THRESHOLD = 0.18;
 
 const STEP_META: Record<StepId, { iconId: string; title: string; tip: string }> = {
   power: { iconId: 'power-on', title: '打开光源', tip: '点击仪器右侧的电源开关' },
@@ -48,6 +50,43 @@ const REFRACT_LAYOUT = {
     observe: { x: 0.16, y: 0.60, side: 'left' as const },
   },
 } as const;
+
+type RefractometerGuideStep = StepId;
+
+const REFRACT_DETECTION_GUIDE_META: Record<
+  RefractometerGuideStep,
+  {
+    label: string;
+    target: { x: number; y: number };
+    side: 'left' | 'right' | 'top' | 'bottom';
+  }
+> = {
+  power: {
+    label: '点击右侧电源开关',
+    target: { x: 0.73, y: 0.72 },
+    side: 'top',
+  },
+  oil: {
+    label: '滴加折射油到棱镜台',
+    target: { x: 0.90, y: 0.58 },
+    side: 'left',
+  },
+  sample: {
+    label: '将未知样品放上测台',
+    target: { x: 0.56, y: 0.45 },
+    side: 'right',
+  },
+  observe: {
+    label: '从目镜观察明暗边界',
+    target: { x: 0.25, y: 0.64 },
+    side: 'right',
+  },
+  record: {
+    label: '在右侧记录折射率',
+    target: { x: 0.88, y: 0.40 },
+    side: 'left',
+  },
+};
 
 interface DemoState {
   power: boolean;
@@ -140,6 +179,30 @@ export default function RefractometerDemo({
 
   const showSampleKnob = method === 'facet' && state.sampleOn && showSampleSliderPanel;
   const showPolarizerKnob = method === 'facet' && state.observed && aniso && usePolarizer && view !== 'over-range' && showPolarizerSliderPanel;
+  const showDetectionFacetControls =
+    mode === 'detection' && state.observed && method === 'facet' && (showSampleKnob || showPolarizerKnob);
+  const facetControlGuideTarget =
+    showDetectionFacetControls && !facetRecordUnlocked
+      ? !facetSampleReady
+        ? 'sample-stage'
+        : aniso && usePolarizer && showPolarizerKnob && !facetPolReady
+          ? 'eyepiece-polarizer'
+          : null
+      : null;
+  const showRecordGuide =
+    mode === 'detection' &&
+    state.observed &&
+    (method !== 'facet' || facetRecordUnlocked || isOverOilSample);
+  const handleFacetSampleAngleChange = useCallback((angle: number) => {
+    const next = normalizeAngle01(angle);
+    setFacetSample01(next);
+    if (Math.abs(next - 0.5) > ROTATION_READY_THRESHOLD) setFacetSampleReady(true);
+  }, []);
+  const handleFacetPolarizerAngleChange = useCallback((angle: number) => {
+    const next = normalizeAngle01(angle);
+    setFacetPol01(next);
+    if (Math.abs(next - 0.5) > ROTATION_READY_THRESHOLD) setFacetPolReady(true);
+  }, []);
 
   useEffect(() => {
     if (!qaReady || !sample) return;
@@ -175,9 +238,9 @@ export default function RefractometerDemo({
     method === 'facet' &&
     !facetRecordUnlocked
       ? !facetSampleReady
-        ? '请先在「观察窗口」下拖动「旋转样品」滑条，体会在测台上多方向进光、边界相对标尺的变化，再保存数据'
+        ? '请先在「观察窗口」下旋转「测台 / 样品」，体会多方向进光、边界相对标尺的变化，再保存数据'
         : aniso && usePolarizer
-          ? '请再拖动「旋转偏光片」，使两条阴影边界交替更清晰，再保存数据'
+          ? '请再旋转「目镜外偏光片」，使两条阴影边界交替更清晰，再保存数据'
           : STEP_META.record.tip
       : currentStep
         ? STEP_META[currentStep].tip
@@ -294,14 +357,20 @@ export default function RefractometerDemo({
       if (w < 48) return;
       const vh = typeof window !== 'undefined' ? window.innerHeight : 900;
       const maxByViewport = Math.floor(vh * 0.62);
-      const maxByPanelH = h > 64 ? Math.floor(h * 0.64) : maxByViewport;
+      const maxByPanelH = h > 64 ? Math.floor(h * (showDetectionFacetControls ? 0.44 : 0.64)) : maxByViewport;
       const hardMax = 720;
       const s = Math.min(hardMax, w * 0.92, maxByViewport, maxByPanelH);
-      setObsSize(Math.round(Math.max(280, s)));
+      setObsSize(Math.round(Math.max(showDetectionFacetControls ? 200 : 280, s)));
     });
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [showDetectionFacetControls]);
+  const facetEyepieceSize = showDetectionFacetControls
+    ? Math.min(286, Math.max(270, Math.round(obsSize * 1.22)))
+    : obsSize;
+  const facetObservationSize = showDetectionFacetControls
+    ? Math.round(facetEyepieceSize * 0.72)
+    : obsSize;
 
   return (
     <div className="flex h-screen flex-col bg-lab-ink text-white">
@@ -424,6 +493,7 @@ export default function RefractometerDemo({
                   themeHex={instrument.themeHex}
                   status={state.power ? 'done' : currentStep === 'power' ? 'active' : 'disabled'}
                   onClick={() => handleHotpoint('power')}
+                  showLabel={mode === 'learning'}
                 />
                 <HotPoint
                   x={REFRACT_LAYOUT.hotpoint.oil.x}
@@ -434,6 +504,7 @@ export default function RefractometerDemo({
                   themeHex={instrument.themeHex}
                   status={state.oil ? 'done' : currentStep === 'oil' ? 'active' : 'disabled'}
                   onClick={() => handleHotpoint('oil')}
+                  showLabel={mode === 'learning'}
                 />
                 <HotPoint
                   x={REFRACT_LAYOUT.hotpoint.sample.x}
@@ -444,6 +515,7 @@ export default function RefractometerDemo({
                   themeHex={instrument.themeHex}
                   status={state.sampleOn ? 'done' : currentStep === 'sample' ? 'active' : 'disabled'}
                   onClick={() => handleHotpoint('sample')}
+                  showLabel={mode === 'learning'}
                 />
                 <HotPoint
                   x={REFRACT_LAYOUT.hotpoint.observe.x}
@@ -454,12 +526,23 @@ export default function RefractometerDemo({
                   themeHex={instrument.themeHex}
                   status={state.observed ? 'done' : currentStep === 'observe' ? 'active' : 'disabled'}
                   onClick={() => handleHotpoint('observe')}
+                  showLabel={mode === 'learning'}
                 />
+                {mode === 'detection' && currentStep && currentStep !== 'record' && (
+                  <RefractometerDetectionMainGuide
+                    activeStep={currentStep}
+                    state={state}
+                    themeHex={instrument.themeHex}
+                  />
+                )}
               </ObjectFitHotspotFrame>
             </div>
 
-            {(showSampleKnob || showPolarizerKnob) && (
-              <div className="flex shrink-0 flex-col items-center gap-3">
+            {mode === 'learning' && (showSampleKnob || showPolarizerKnob) && (
+              <div
+                className="flex shrink-0 flex-col items-center gap-3"
+                data-testid="refractometer-floating-rotation-controls"
+              >
                 {showSampleKnob && (
                   <div className="rounded-xl border border-line bg-white/95 p-3 shadow-card backdrop-blur">
                     <RotationKnob
@@ -470,7 +553,7 @@ export default function RefractometerDemo({
                       }}
                       onReady={() => setFacetSampleReady(true)}
                       label="旋转样品（测台）"
-                      hint="拖动旋钮旋转样品"
+                      hint="旋转控制盘，改变测台方向"
                       ready={facetSampleReady}
                       size={110}
                       themeHex={instrument.themeHex}
@@ -487,7 +570,7 @@ export default function RefractometerDemo({
                       }}
                       onReady={() => setFacetPolReady(true)}
                       label="旋转偏光片（目镜外）"
-                      hint="拖动旋钮调节偏光角度"
+                      hint="旋转控制盘，调节偏光角度"
                       ready={facetPolReady}
                       size={110}
                       themeHex={instrument.themeHex}
@@ -513,7 +596,7 @@ export default function RefractometerDemo({
             </div>
           </div>
 
-          {tip && (
+          {tip && mode === 'learning' && (
             <div className="absolute bottom-3 left-1/2 z-20 max-w-[min(96%,28rem)] -translate-x-1/2 rounded-full border border-line-2 bg-white/90 px-3 py-1.5 text-center text-xs text-ink-2 shadow-card backdrop-blur">
               <span className="mr-1">💡</span>
               {tip}
@@ -666,7 +749,7 @@ export default function RefractometerDemo({
         <section className="flex min-h-0 flex-[2] flex-col border-l border-line-2/80">
           <section
             ref={obsZoneRef}
-            className="flex min-h-0 flex-[3] flex-col border-b border-line-2/80 bg-gradient-to-b from-[#fff9d5] to-[#fff3a6] px-3 py-3 text-ink"
+            className="relative flex min-h-0 flex-[3] flex-col overflow-hidden border-b border-line-2/80 bg-gradient-to-b from-[#fff9d5] to-[#fff3a6] px-3 py-3 text-ink"
           >
             <div className="mx-auto flex w-full min-w-0 max-w-4xl flex-1 flex-col items-stretch gap-1.5">
                 <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 px-0.5 text-xs font-semibold text-ink">
@@ -692,7 +775,7 @@ export default function RefractometerDemo({
                 </p>
               )}
 
-              <div className="flex items-center justify-center gap-3">
+              <div className={clsx('flex items-center justify-center gap-3', showDetectionFacetControls && 'min-h-0 flex-1')}>
                 {view === 'spot' && state.observed && (
                   <div
                     className="flex w-14 shrink-0 items-center justify-center rounded-xl bg-white/35 px-2 py-3 shadow-soft backdrop-blur-[1px]"
@@ -711,19 +794,87 @@ export default function RefractometerDemo({
                     />
                   </div>
                 )}
-                <ObservationWindow
-                  view={view}
-                  sample={sample}
-                  size={obsSize}
-                  spotSlider={spotSlider}
-                  facetSample01={facetSample01}
-                  facetPol01={facetPol01}
-                  usePolarizer={usePolarizer}
-                  showReading={method === 'facet' ? facetRecordUnlocked : (view === 'spot' ? true : state.observed)}
-                />
+                {showDetectionFacetControls ? (
+                  <div
+                    data-testid="refractometer-facet-control-deck"
+                    className="relative flex w-full max-w-[30rem] flex-wrap items-center justify-center gap-2 rounded-2xl border border-amber-200 bg-white/82 p-2 shadow-soft backdrop-blur"
+                  >
+                    {facetControlGuideTarget && (
+                      <RefractometerFacetControlGuide
+                        activeTarget={facetControlGuideTarget}
+                        themeHex={instrument.themeHex}
+                      />
+                    )}
+                    <div className="w-[18.75rem] shrink-0 rounded-2xl border border-line bg-white/90 px-2 py-1.5">
+                      {showPolarizerKnob ? (
+                        <EyepiecePolarizerObservation
+                          angle={facetPol01 * 360}
+                          onAngleChange={handleFacetPolarizerAngleChange}
+                          activeGuide={facetControlGuideTarget === 'eyepiece-polarizer'}
+                          ready={facetPolReady}
+                          ringSize={facetEyepieceSize}
+                          observationSize={facetObservationSize}
+                          themeHex={instrument.themeHex}
+                        >
+                          <ObservationWindow
+                            view={view}
+                            sample={sample}
+                            size={facetObservationSize}
+                            spotSlider={spotSlider}
+                            facetSample01={facetSample01}
+                            facetPol01={facetPol01}
+                            usePolarizer={usePolarizer}
+                            showReading={facetRecordUnlocked}
+                            hideChrome
+                          />
+                        </EyepiecePolarizerObservation>
+                      ) : (
+                        <div className="flex flex-col items-center gap-1.5">
+                          <ObservationWindow
+                            view={view}
+                            sample={sample}
+                            size={facetObservationSize}
+                            spotSlider={spotSlider}
+                            facetSample01={facetSample01}
+                            facetPol01={facetPol01}
+                            usePolarizer={usePolarizer}
+                            showReading={facetRecordUnlocked}
+                            hideChrome
+                          />
+                          <p className="text-center text-[10px] leading-snug text-ink-3">
+                            本样品无需偏光片辅助，重点旋转样品观察边界。
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                    {showSampleKnob && (
+                      <SampleStageRotationControl
+                        angle={facetSample01 * 360}
+                        onAngleChange={handleFacetSampleAngleChange}
+                        activeGuide={facetControlGuideTarget === 'sample-stage'}
+                        ready={facetSampleReady}
+                        themeHex={instrument.themeHex}
+                      />
+                    )}
+                    <p className="basis-full rounded-lg border border-amber-100 bg-amber-50 px-2 py-0.5 text-center text-[10px] leading-relaxed text-amber-900">
+                      外圈对应目镜偏光片，旁侧模型对应测台/样品；旋转时中央读数视野保持固定。
+                    </p>
+                  </div>
+                ) : (
+                  <ObservationWindow
+                    view={view}
+                    sample={sample}
+                    size={obsSize}
+                    spotSlider={spotSlider}
+                    facetSample01={facetSample01}
+                    facetPol01={facetPol01}
+                    usePolarizer={usePolarizer}
+                    showReading={method === 'facet' ? facetRecordUnlocked : (view === 'spot' ? true : state.observed)}
+                  />
+                )}
               </div>
 
-              {state.observed && (
+              {state.observed && mode === 'learning' && (
                 <details className="group mt-0.5 rounded-xl border-2 border-amber-300/80 bg-gradient-to-b from-amber-50 to-amber-50/50 ring-1 ring-amber-200/50 open:pb-2">
                   <summary className="cursor-pointer list-none px-2 py-1.5 text-[11px] font-bold text-amber-950 [&::-webkit-details-marker]:hidden">
                     {method === 'facet' ? '刻面法' : '点测法（远视法）'}
@@ -754,8 +905,14 @@ export default function RefractometerDemo({
           <aside className="flex min-h-0 flex-[2] bg-[#0c1d3a] text-ink">
             <div className="scrollbar-thin min-h-0 flex-1 overflow-y-auto bg-white px-2 py-2 text-ink">
               <div className="flex min-h-0 flex-col gap-1.5 text-ink">
-                <div className="rounded-lg border border-line bg-white p-2 shadow-soft">
+                <div
+                  className="rounded-lg border border-line bg-white p-2 shadow-soft"
+                  data-testid="refractometer-record-panel"
+                >
                   <div className="mb-1 text-xs font-semibold text-ink">📝 数据记录</div>
+                  {showRecordGuide && (
+                    <RefractometerRecordGuide themeHex={instrument.themeHex} />
+                  )}
                   {mode === 'detection' && state.observed ? (
                     isOverOilSample ? (
                       <div
@@ -906,6 +1063,438 @@ function renderHint(sample: SampleDef, view: RefractometerView, method: 'facet' 
 }
 
 // ----- 子组件 -----
+type FacetControlGuideTarget = 'sample-stage' | 'eyepiece-polarizer';
+
+function GuideArrowCue({
+  direction,
+  themeHex,
+}: {
+  direction: 'left' | 'right' | 'down';
+  themeHex: string;
+}) {
+  const rotation =
+    direction === 'left'
+      ? 'rotate(135deg)'
+      : direction === 'right'
+        ? 'rotate(-45deg)'
+        : 'rotate(45deg)';
+
+  return (
+    <span className="flex items-center gap-0.5" aria-hidden="true">
+      {Array.from({ length: 3 }).map((_, index) => (
+        <span
+          key={index}
+          className="h-2 w-2 animate-locator-arrow-cue border-b-2 border-r-2 motion-reduce:animate-none"
+          style={{
+            borderColor: themeHex,
+            animationDelay: `${index * 120}ms`,
+            transform: rotation,
+          }}
+        />
+      ))}
+    </span>
+  );
+}
+
+function RefractometerFacetControlGuide({
+  activeTarget,
+  themeHex,
+}: {
+  activeTarget: FacetControlGuideTarget;
+  themeHex: string;
+}) {
+  const isSampleStage = activeTarget === 'sample-stage';
+
+  return (
+    <div
+      data-testid="refractometer-facet-control-guide"
+      data-active-target={activeTarget}
+      className={clsx(
+        'pointer-events-none absolute z-40 flex items-center gap-1.5 rounded-full border bg-white/95 px-2.5 py-1 text-[10px] font-semibold text-ink shadow-lift backdrop-blur',
+        isSampleStage ? 'right-3 top-3' : 'left-4 top-12',
+      )}
+      style={{ borderColor: `${themeHex}66` }}
+    >
+      {!isSampleStage && <GuideArrowCue direction="left" themeHex={themeHex} />}
+      <span>{isSampleStage ? '旋转样品/测台' : '旋转目镜外偏光片'}</span>
+      {isSampleStage && <GuideArrowCue direction="right" themeHex={themeHex} />}
+    </div>
+  );
+}
+
+function RefractometerRecordGuide({ themeHex }: { themeHex: string }) {
+  return (
+    <div
+      data-testid="refractometer-record-guide"
+      className="mb-1 flex items-center justify-between gap-2 rounded-md border bg-amber-50 px-2 py-1 text-[10px] font-semibold leading-snug text-amber-900"
+      style={{ borderColor: `${themeHex}55` }}
+    >
+      <span>在这里记录并提交</span>
+      <GuideArrowCue direction="down" themeHex={themeHex} />
+    </div>
+  );
+}
+
+function EyepiecePolarizerObservation({
+  activeGuide,
+  angle,
+  children,
+  observationSize,
+  onAngleChange,
+  ready,
+  ringSize,
+  themeHex,
+}: {
+  activeGuide?: boolean;
+  angle: number;
+  children: ReactNode;
+  observationSize: number;
+  onAngleChange: (angle: number) => void;
+  ready: boolean;
+  ringSize: number;
+  themeHex: string;
+}) {
+  const inset = Math.max(0, (ringSize - observationSize) / 2);
+
+  return (
+    <div
+      className={clsx(
+        'flex flex-col items-center gap-1 rounded-2xl transition-shadow',
+        activeGuide && 'ring-2 ring-amber-300 ring-offset-2 ring-offset-white',
+      )}
+    >
+      <div className="flex w-full items-center justify-between gap-2 px-1">
+        <div>
+          <div className="font-mono text-[9px] uppercase tracking-[0.22em] text-ink-4">Eyepiece Polarizer</div>
+          <div className="text-xs font-bold text-ink">旋转目镜外偏光片</div>
+        </div>
+        <span
+          className={clsx(
+            'rounded-full border px-2 py-0.5 text-[10px] font-semibold',
+            ready ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-amber-50 text-amber-800',
+          )}
+        >
+          {ready ? '已旋转' : '旋转外圈'}
+        </span>
+      </div>
+
+      <AngleDragControl
+        angle={angle}
+        ariaLabel="旋转目镜外偏光片"
+        dataTestId="refractometer-eyepiece-polarizer-ring"
+        onAngleChange={onAngleChange}
+        className="relative mx-auto aspect-square rounded-full"
+        style={{ width: ringSize, height: ringSize }}
+      >
+        <img
+          data-testid="refractometer-eyepiece-ring-image"
+          src={EYEPIECE_RING_IMAGE}
+          alt=""
+          className="pointer-events-none absolute inset-0 h-full w-full select-none object-contain drop-shadow-[0_16px_28px_rgba(15,23,42,0.24)]"
+          draggable={false}
+          style={{ transform: `rotate(${angle}deg)` }}
+        />
+        <div
+          className="absolute rounded-full bg-[#0d0b09] shadow-[0_0_0_3px_rgba(255,255,255,0.88)]"
+          style={{ inset }}
+          onPointerDown={(event) => event.stopPropagation()}
+        >
+          {children}
+        </div>
+        <div
+          className="pointer-events-none absolute left-1/2 top-[6%] h-3 w-3 -translate-x-1/2 rounded-full border border-white/70 shadow-[0_0_16px_rgba(255,255,255,0.5)]"
+          style={{ backgroundColor: ready ? '#16a34a' : themeHex }}
+          aria-hidden="true"
+        />
+      </AngleDragControl>
+    </div>
+  );
+}
+
+function SampleStageRotationControl({
+  activeGuide,
+  angle,
+  onAngleChange,
+  ready,
+  themeHex,
+}: {
+  activeGuide?: boolean;
+  angle: number;
+  onAngleChange: (angle: number) => void;
+  ready: boolean;
+  themeHex: string;
+}) {
+  return (
+    <div
+      className={clsx(
+        'w-36 shrink-0 rounded-2xl border border-line bg-white/95 p-2 shadow-soft transition-shadow',
+        activeGuide && 'ring-2 ring-amber-300 ring-offset-2 ring-offset-white',
+      )}
+    >
+      <div className="mb-1 flex items-center justify-between gap-2">
+        <div>
+          <div className="font-mono text-[9px] uppercase tracking-[0.22em] text-ink-4">Sample Stage</div>
+          <div className="text-xs font-bold text-ink">旋转样品</div>
+        </div>
+        <span
+          className={clsx(
+            'rounded-full border px-2 py-0.5 text-[10px] font-semibold',
+            ready ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-amber-50 text-amber-800',
+          )}
+        >
+          {ready ? '已旋转' : '旋转样品'}
+        </span>
+      </div>
+
+      <AngleDragControl
+        angle={angle}
+        ariaLabel="旋转测台样品"
+        dataTestId="refractometer-sample-stage-control"
+        onAngleChange={onAngleChange}
+        className="relative mx-auto h-24 w-32 overflow-hidden rounded-xl border border-amber-100 bg-gradient-to-b from-amber-50 to-slate-100 shadow-inner"
+        style={{ touchAction: 'none' }}
+      >
+        <svg className="absolute inset-0 h-full w-full" viewBox="0 0 160 128" aria-hidden="true">
+          <defs>
+            <linearGradient id="refractPrismTop" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#f8fafc" />
+              <stop offset="1" stopColor="#cbd5e1" />
+            </linearGradient>
+            <radialGradient id="refractOilDrop" cx="0.5" cy="0.45" r="0.55">
+              <stop offset="0" stopColor="#fff7cc" stopOpacity="0.95" />
+              <stop offset="1" stopColor="#f59e0b" stopOpacity="0.28" />
+            </radialGradient>
+          </defs>
+          <ellipse cx="80" cy="100" rx="56" ry="11" fill="#0f172a" opacity="0.18" />
+          <path d="M30 64 L130 64 L112 96 L48 96 Z" fill="url(#refractPrismTop)" stroke="#94a3b8" strokeWidth="1.5" />
+          <path d="M48 96 L112 96 L100 111 L60 111 Z" fill="#94a3b8" opacity="0.45" />
+          <ellipse cx="80" cy="72" rx="27" ry="12" fill="url(#refractOilDrop)" />
+          <path d="M42 64 C58 55 102 55 118 64" fill="none" stroke="#f59e0b" strokeOpacity="0.35" strokeWidth="2" />
+        </svg>
+        <div
+          className="absolute left-1/2 top-[42%] h-14 w-[4.6rem] -translate-x-1/2 -translate-y-1/2 rounded-[16px] border border-amber-200/80 bg-gradient-to-br from-[#fef3c7] via-[#f59e0b] to-[#92400e] shadow-[0_8px_18px_rgba(146,64,14,0.28)]"
+          style={{ transform: `translate(-50%, -50%) rotate(${angle}deg)` }}
+          aria-hidden="true"
+        >
+          <div className="absolute inset-[14%] rounded-[11px] border border-white/45" />
+          <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-white/35" />
+          <div className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-white/30" />
+        </div>
+      </AngleDragControl>
+      <p className="mt-1 text-center text-[10px] leading-snug text-ink-3">
+        样品方向改变，目镜边界随之移动。
+      </p>
+    </div>
+  );
+}
+
+function AngleDragControl({
+  angle,
+  ariaLabel,
+  children,
+  className,
+  dataTestId,
+  onAngleChange,
+  style,
+}: {
+  angle: number;
+  ariaLabel: string;
+  children: ReactNode;
+  className?: string;
+  dataTestId: string;
+  onAngleChange: (angle: number) => void;
+  style?: CSSProperties;
+}) {
+  const controlRef = useRef<HTMLDivElement>(null);
+  const dragging = useRef(false);
+  const latestAngle = useRef(angle);
+  const onAngleChangeRef = useRef(onAngleChange);
+
+  useEffect(() => {
+    latestAngle.current = angle;
+    onAngleChangeRef.current = onAngleChange;
+  }, [angle, onAngleChange]);
+
+  const readAngle = useCallback((clientX: number, clientY: number) => {
+    const rect = controlRef.current?.getBoundingClientRect();
+    if (!rect) return latestAngle.current;
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = clientX - cx;
+    const dy = clientY - cy;
+    if (Math.abs(dx) < 2 && Math.abs(dy) < 2) return latestAngle.current;
+    return (((Math.atan2(dy, dx) * 180) / Math.PI + 90) + 360) % 360;
+  }, []);
+
+  const handlePointerMove = useCallback((event: PointerEvent) => {
+    if (!dragging.current) return;
+    const next = Math.round(readAngle(event.clientX, event.clientY)) % 360;
+    latestAngle.current = next;
+    onAngleChangeRef.current(next);
+  }, [readAngle]);
+
+  const endDrag = useCallback(() => {
+    if (!dragging.current) return;
+    dragging.current = false;
+    window.removeEventListener('pointermove', handlePointerMove);
+    window.removeEventListener('pointerup', endDrag);
+  }, [handlePointerMove]);
+
+  useEffect(() => (
+    () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', endDrag);
+    }
+  ), [endDrag, handlePointerMove]);
+
+  return (
+    <div
+      ref={controlRef}
+      aria-label={ariaLabel}
+      data-angle={Math.round(angle)}
+      data-testid={dataTestId}
+      role="slider"
+      aria-valuemin={0}
+      aria-valuemax={359}
+      aria-valuenow={Math.round(angle)}
+      className={clsx('touch-none select-none cursor-grab active:cursor-grabbing', className)}
+      style={style}
+      onPointerDown={(event) => {
+        event.preventDefault();
+        dragging.current = true;
+        const next = Math.round(readAngle(event.clientX, event.clientY)) % 360;
+        latestAngle.current = next;
+        onAngleChangeRef.current(next);
+        window.addEventListener('pointermove', handlePointerMove);
+        window.addEventListener('pointerup', endDrag);
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function RefractometerDetectionMainGuide({
+  activeStep,
+  state,
+  themeHex,
+}: {
+  activeStep: RefractometerGuideStep;
+  state: DemoState;
+  themeHex: string;
+}) {
+  const meta = REFRACT_DETECTION_GUIDE_META[activeStep];
+
+  return (
+    <div
+      key={activeStep}
+      data-testid="refractometer-detection-main-guide"
+      data-active-step={activeStep}
+      className="pointer-events-none absolute inset-0 z-[36]"
+    >
+      <div
+        className="absolute -translate-x-1/2 -translate-y-1/2"
+        style={{ left: `${meta.target.x * 100}%`, top: `${meta.target.y * 100}%` }}
+      >
+        <div
+          className="absolute -inset-5 animate-target-breathe rounded-full border-2 motion-reduce:animate-none"
+          style={{
+            borderColor: themeHex,
+            boxShadow: `0 0 0 10px ${themeHex}18, 0 0 32px ${themeHex}30`,
+          }}
+        />
+        <div
+          className="relative h-9 w-9 rounded-full border-2 border-white bg-white/[0.86] shadow-card ring-2"
+          style={{ color: themeHex, boxShadow: `0 0 0 2px ${themeHex}` }}
+        >
+          <span
+            className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full"
+            style={{ backgroundColor: themeHex }}
+          />
+        </div>
+      </div>
+
+      <div
+        data-testid="refractometer-detection-guide-arrow-cue"
+        data-arrow-count="3"
+        className="absolute flex items-center gap-1"
+        style={getRefractGuideArrowStyle(meta.target, meta.side)}
+      >
+        {Array.from({ length: 3 }).map((_, index) => (
+          <span
+            key={index}
+            className="h-2.5 w-2.5 animate-locator-arrow-cue border-b-2 border-r-2 motion-reduce:animate-none"
+            style={{
+              borderColor: themeHex,
+              animationDelay: `${index * 120}ms`,
+              transform: getRefractGuideArrowRotation(meta.side),
+            }}
+          />
+        ))}
+      </div>
+
+      <div
+        data-testid="refractometer-detection-guide-callout"
+        className={clsx(
+          'absolute w-max min-w-[8.5rem] max-w-[13rem] rounded-xl border bg-white/95 px-3 py-2 text-xs font-semibold leading-snug text-ink shadow-lift backdrop-blur',
+          state.power && activeStep === 'power' && 'border-emerald-200 bg-emerald-50/95 text-emerald-900',
+        )}
+        style={{
+          ...getRefractGuideCalloutStyle(meta.target, meta.side, activeStep === 'record' ? 5 : 8),
+          borderColor: activeStep === 'power' && state.power ? '#bbf7d0' : `${themeHex}55`,
+        }}
+      >
+        <span className="block font-mono text-[9px] uppercase tracking-[0.22em] text-ink-4">当前操作</span>
+        <span>{meta.label}</span>
+      </div>
+    </div>
+  );
+}
+
+function getRefractGuideCalloutStyle(
+  target: { x: number; y: number },
+  side: 'left' | 'right' | 'top' | 'bottom',
+  offset: number,
+): CSSProperties {
+  const left = target.x * 100;
+  const top = target.y * 100;
+  if (side === 'left') {
+    return { left: `${Math.max(4, left - offset)}%`, top: `${top}%`, transform: 'translate(-100%, -50%)' };
+  }
+  if (side === 'right') {
+    return { left: `${Math.min(96, left + offset)}%`, top: `${top}%`, transform: 'translateY(-50%)' };
+  }
+  if (side === 'top') {
+    return { left: `${left}%`, top: `${Math.max(5, top - offset)}%`, transform: 'translate(-50%, -100%)' };
+  }
+  return { left: `${left}%`, top: `${Math.min(95, top + offset)}%`, transform: 'translateX(-50%)' };
+}
+
+function getRefractGuideArrowStyle(
+  target: { x: number; y: number },
+  side: 'left' | 'right' | 'top' | 'bottom',
+): CSSProperties {
+  const left = target.x * 100;
+  const top = target.y * 100;
+  if (side === 'left') {
+    return { left: `${Math.max(8, left - 4)}%`, top: `${top}%`, transform: 'translate(-100%, -50%)' };
+  }
+  if (side === 'right') {
+    return { left: `${Math.min(92, left + 4)}%`, top: `${top}%`, transform: 'translateY(-50%)' };
+  }
+  if (side === 'top') {
+    return { left: `${left}%`, top: `${Math.max(7, top - 4)}%`, transform: 'translate(-50%, -100%)' };
+  }
+  return { left: `${left}%`, top: `${Math.min(93, top + 4)}%`, transform: 'translateX(-50%)' };
+}
+
+function getRefractGuideArrowRotation(side: 'left' | 'right' | 'top' | 'bottom') {
+  if (side === 'left') return 'rotate(-45deg)';
+  if (side === 'right') return 'rotate(135deg)';
+  if (side === 'top') return 'rotate(45deg)';
+  return 'rotate(-135deg)';
+}
+
 function ModeBtn({
   active,
   themeHex,
@@ -1084,6 +1673,10 @@ function isStepDone(id: StepId, s: DemoState): boolean {
     case 'record':
       return s.recorded;
   }
+}
+
+function normalizeAngle01(angle: number): number {
+  return (((angle % 360) + 360) % 360) / 360;
 }
 
 function computeView(

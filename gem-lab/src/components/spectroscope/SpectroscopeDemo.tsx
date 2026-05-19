@@ -492,8 +492,9 @@ export default function SpectroscopeDemo({
               spectrumReady={spectrumReady}
               slitOk={slitOk}
               focusOk={focusOk}
-              currentStep={workbenchGuideStep}
+              currentStep={currentStep}
               guideStep={workbenchGuideStep}
+              showHotpointLabels={mode === 'learning'}
               lightSourceLabel={lightSourceLabel}
               validLightSource={validLightSource}
               themeHex={instrument.themeHex}
@@ -507,10 +508,20 @@ export default function SpectroscopeDemo({
               <div className="w-full max-w-[820px] rounded-2xl border border-line bg-white p-4 shadow-card">
                 <div className="mb-1 text-sm font-semibold text-ink">选择照明方法</div>
                 <p className="mb-3 text-xs leading-relaxed text-ink-3">
-                  根据样品的<strong>透明度</strong>、<strong>颜色深浅</strong>、<strong>颗粒大小</strong>选择。
-                  当前样品「<strong>{sampleLabel}</strong>」（{sample.characteristics.transparency}，{sample.characteristics.color}），
-                  系统推荐 <strong>{methodLabel(recommendedMethod)}</strong>——{methodReasonForSample(sample, recommendedMethod)}。
-                  错配方法会显示「慎用」并使光谱质量明显下降。
+                  {mode === 'detection' ? (
+                    <>
+                      当前样品「<strong>{sampleLabel}</strong>」的具体属性已隐藏。系统推荐{' '}
+                      <strong>{methodLabel(recommendedMethod)}</strong>——{methodReasonForDetection(recommendedMethod)}。
+                      错配方法会显示「慎用」并使光谱质量明显下降。
+                    </>
+                  ) : (
+                    <>
+                      根据样品的<strong>透明度</strong>、<strong>颜色深浅</strong>、<strong>颗粒大小</strong>选择。
+                      当前样品「<strong>{sampleLabel}</strong>」（{sample.characteristics.transparency}，{sample.characteristics.color}），
+                      系统推荐 <strong>{methodLabel(recommendedMethod)}</strong>——{methodReasonForSample(sample, recommendedMethod)}。
+                      错配方法会显示「慎用」并使光谱质量明显下降。
+                    </>
+                  )}
                 </p>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                   <MethodCard
@@ -520,7 +531,7 @@ export default function SpectroscopeDemo({
                     title="透射光法"
                     desc="光从下方穿透样品 → 进入分光镜物镜"
                     suit="透明—半透明、颜色较深、颗粒较大"
-                    typicalSamples="红宝石、祖母绿、橄榄石、紫水晶"
+                    typicalSamples={mode === 'learning' ? '红宝石、祖母绿、橄榄石、紫水晶' : undefined}
                     onClick={() => handlePickMethod('transmission')}
                     sketch={
                       <SpectroscopeIllumination method="transmission" angleDeg={0} lightOn sampleOn />
@@ -533,7 +544,7 @@ export default function SpectroscopeDemo({
                     title="内反射光法"
                     desc="台面向下 + ≈ 45° 入射，亭部内反射"
                     suit="颜色较浅、颗粒较小的透明刻面"
-                    typicalSamples="浅色蓝宝、海蓝宝、变石、浅色碧玺"
+                    typicalSamples={mode === 'learning' ? '浅色蓝宝、海蓝宝、变石、浅色碧玺' : undefined}
                     onClick={() => handlePickMethod('internal-reflection')}
                     sketch={
                       <SpectroscopeIllumination method="internal-reflection" angleDeg={45} lightOn sampleOn />
@@ -546,7 +557,7 @@ export default function SpectroscopeDemo({
                     title="表面反射法"
                     desc="斜射 + 表面镜面反射进入分光镜"
                     suit="不透明 / 透明度差的玉石类"
-                    typicalSamples="翡翠、绿松石、孔雀石、青金石"
+                    typicalSamples={mode === 'learning' ? '翡翠、绿松石、孔雀石、青金石' : undefined}
                     onClick={() => handlePickMethod('surface-reflection')}
                     sketch={
                       <SpectroscopeIllumination method="surface-reflection" angleDeg={40} lightOn sampleOn />
@@ -679,6 +690,7 @@ export default function SpectroscopeDemo({
                   showFeatureDescriptions={mode === 'learning'}
                   height={obsHeight}
                   interactive={spectrumReady}
+                  locked={!spectrumReady}
                 />
                 {mode === 'detection' && currentStep === 'observe' && (
                   <SpectroscopeRightSideGuide
@@ -686,6 +698,7 @@ export default function SpectroscopeDemo({
                     testId="spectroscope-spectrum-guide"
                     themeHex={instrument.themeHex}
                     tone="dark"
+                    placement="spectrum-edge"
                   />
                 )}
               </div>
@@ -746,6 +759,7 @@ export default function SpectroscopeDemo({
                   focusCue={opticsFocusCue}
                   tuneScore={tuneScore}
                   themeHex={instrument.themeHex}
+                  guideActive={mode === 'detection' && currentStep === 'tune'}
                 />
               )}
 
@@ -945,6 +959,17 @@ function methodReasonForSample(sample: SampleDef, m: SpectroscopeMethod): string
   }
 }
 
+function methodReasonForDetection(m: SpectroscopeMethod): string {
+  switch (m) {
+    case 'transmission':
+      return '优先获得完整、清晰的透射吸收特征';
+    case 'internal-reflection':
+      return '用于增强弱吸收特征，使浅色或小颗粒样品更容易读谱';
+    case 'surface-reflection':
+      return '用于透射响应不足时，通过抛光面反射收集可读光谱';
+  }
+}
+
 function methodLabel(m: SpectroscopeMethod): string {
   switch (m) {
     case 'transmission': return '透射光法';
@@ -1089,12 +1114,19 @@ function SpectroscopeRightSideGuide({
   testId,
   themeHex,
   tone = 'light',
+  placement = 'center',
 }: {
   label: string;
   testId: string;
   themeHex: string;
   tone?: 'light' | 'dark';
+  placement?: 'center' | 'spectrum-edge';
 }) {
+  const calloutClass =
+    placement === 'spectrum-edge'
+      ? 'absolute left-1/2 top-[calc(100%+0.35rem)] w-max max-w-[16rem] -translate-x-1/2 rounded-xl border px-3 py-2 text-xs font-semibold shadow-lift backdrop-blur'
+      : 'absolute left-1/2 top-8 w-max max-w-[16rem] -translate-x-1/2 rounded-xl border px-3 py-2 text-xs font-semibold shadow-lift backdrop-blur';
+
   return (
     <div
       data-testid={testId}
@@ -1116,8 +1148,9 @@ function SpectroscopeRightSideGuide({
         ))}
       </div>
       <div
+        data-testid={`${testId}-callout`}
         className={clsx(
-          'absolute left-1/2 top-8 w-max max-w-[16rem] -translate-x-1/2 rounded-xl border px-3 py-2 text-xs font-semibold shadow-lift backdrop-blur',
+          calloutClass,
           tone === 'dark'
             ? 'border-cyan-200/40 bg-slate-950/86 text-cyan-50'
             : 'border-cyan-200 bg-white/95 text-ink',
@@ -1147,6 +1180,7 @@ function OpticsControlPanel({
   focusCue,
   tuneScore,
   themeHex,
+  guideActive = false,
 }: {
   method: SpectroscopeMethod;
   angleNeeded: boolean;
@@ -1164,18 +1198,27 @@ function OpticsControlPanel({
   focusCue: OpticsFocusCue;
   tuneScore: number;
   themeHex: string;
+  guideActive?: boolean;
 }) {
   return (
     <div
       data-testid="spectroscope-optics-control-panel"
       data-focus-cue={focusCue ?? 'none'}
+      data-guide-state={guideActive ? 'active' : 'idle'}
       className={clsx(
-        'min-w-[260px] rounded-xl border bg-white p-3 text-ink shadow-soft transition',
+        'relative min-w-[260px] rounded-xl border bg-white p-3 text-ink shadow-soft transition',
         focusCue
           ? 'border-cyan-400 ring-4 ring-cyan-200/70'
-          : 'border-cyan-200',
+          : guideActive
+            ? 'border-cyan-300 ring-4 ring-cyan-200/45'
+            : 'border-cyan-200',
       )}
     >
+      {guideActive && (
+        <div className="pointer-events-none absolute -top-3 right-3 rounded-full border border-cyan-200 bg-cyan-50 px-2.5 py-1 text-[10px] font-semibold text-cyan-700 shadow-card">
+          当前操作：调节狭缝与焦距
+        </div>
+      )}
       <div className="mb-2 flex items-center justify-between gap-2">
         <div>
           <div className="text-xs font-semibold text-ink">{methodLabel(method)}调节</div>
@@ -1407,7 +1450,7 @@ function MethodCard({
   title: string;
   desc: string;
   suit: string;
-  typicalSamples: string;
+  typicalSamples?: string;
   sketch: React.ReactNode;
   onClick: () => void;
 }) {
@@ -1444,7 +1487,7 @@ function MethodCard({
       <div className="text-[11px] leading-snug text-ink-3">{desc}</div>
       <div className="text-[10px] leading-snug text-ink-4">
         <div>适用：{suit}</div>
-        <div className="mt-0.5">典型：{typicalSamples}</div>
+        {typicalSamples && <div className="mt-0.5">典型：{typicalSamples}</div>}
       </div>
     </button>
   );

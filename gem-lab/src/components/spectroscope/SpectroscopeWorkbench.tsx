@@ -42,6 +42,7 @@ export default function SpectroscopeWorkbench({
   focusOk,
   currentStep,
   guideStep,
+  showHotpointLabels = true,
   lightSourceLabel,
   validLightSource,
   themeHex,
@@ -58,6 +59,7 @@ export default function SpectroscopeWorkbench({
   focusOk: boolean;
   currentStep: string | null;
   guideStep?: SpectroscopeGuideStep | null;
+  showHotpointLabels?: boolean;
   lightSourceLabel: string;
   validLightSource: boolean;
   themeHex: string;
@@ -153,7 +155,7 @@ export default function SpectroscopeWorkbench({
         side="top"
         themeHex={themeHex}
         status={power ? 'done' : currentStep === 'power' ? 'active' : 'disabled'}
-        showLabel={!guideStep && currentStep === 'power'}
+        showLabel={showHotpointLabels && !guideStep && currentStep === 'power'}
         onClick={() => onHotpoint('light')}
       />
       <HotPoint
@@ -170,7 +172,7 @@ export default function SpectroscopeWorkbench({
         side="left"
         themeHex={themeHex}
         status={!power ? 'disabled' : sampleOn && method ? 'done' : sampleOn || currentStep === 'place' ? 'active' : 'disabled'}
-        showLabel={!guideStep && (currentStep === 'place' || currentStep === 'pick-method')}
+        showLabel={showHotpointLabels && !guideStep && (currentStep === 'place' || currentStep === 'pick-method')}
         onClick={() => onHotpoint('sample')}
       />
       <HotPoint
@@ -181,7 +183,7 @@ export default function SpectroscopeWorkbench({
         side="left"
         themeHex={themeHex}
         status={spectrumReady ? 'done' : 'disabled'}
-        showLabel={!guideStep && currentStep === 'observe'}
+        showLabel={showHotpointLabels && !guideStep && currentStep === 'observe'}
         onClick={() => onHotpoint('eyepiece')}
       />
       <HotPoint

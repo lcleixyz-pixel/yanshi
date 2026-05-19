@@ -20,7 +20,6 @@ import { useDetection } from '@/store/detectionStore';
 import { useProgress } from '@/store/progressStore';
 import clsx from '@/utils/clsx';
 import './spotSlider.css';
-import RotationKnob from './RotationKnob';
 
 type DemoMode = 'learning' | 'detection';
 type StepId = 'power' | 'oil' | 'sample' | 'observe' | 'record';
@@ -44,10 +43,10 @@ const STEP_META: Record<StepId, { iconId: string; title: string; tip: string }> 
  */
 const REFRACT_LAYOUT = {
   hotpoint: {
-    power: { x: 0.66, y: 0.72, side: 'bottom' as const },
+    power: { x: 0.73, y: 0.72, side: 'bottom' as const },
     oil: { x: 0.90, y: 0.58, side: 'left' as const },
     sample: { x: 0.56, y: 0.45, side: 'right' as const },
-    observe: { x: 0.16, y: 0.60, side: 'left' as const },
+    observe: { x: 0.25, y: 0.64, side: 'right' as const },
   },
 } as const;
 
@@ -179,10 +178,10 @@ export default function RefractometerDemo({
 
   const showSampleKnob = method === 'facet' && state.sampleOn && showSampleSliderPanel;
   const showPolarizerKnob = method === 'facet' && state.observed && aniso && usePolarizer && view !== 'over-range' && showPolarizerSliderPanel;
-  const showDetectionFacetControls =
-    mode === 'detection' && state.observed && method === 'facet' && (showSampleKnob || showPolarizerKnob);
+  const showIntegratedFacetControls =
+    method === 'facet' && state.sampleOn && (showSampleKnob || showPolarizerKnob);
   const facetControlGuideTarget =
-    showDetectionFacetControls && !facetRecordUnlocked
+    showIntegratedFacetControls && !facetRecordUnlocked
       ? !facetSampleReady
         ? 'sample-stage'
         : aniso && usePolarizer && showPolarizerKnob && !facetPolReady
@@ -357,18 +356,18 @@ export default function RefractometerDemo({
       if (w < 48) return;
       const vh = typeof window !== 'undefined' ? window.innerHeight : 900;
       const maxByViewport = Math.floor(vh * 0.62);
-      const maxByPanelH = h > 64 ? Math.floor(h * (showDetectionFacetControls ? 0.44 : 0.64)) : maxByViewport;
+      const maxByPanelH = h > 64 ? Math.floor(h * (showIntegratedFacetControls ? 0.44 : 0.64)) : maxByViewport;
       const hardMax = 720;
       const s = Math.min(hardMax, w * 0.92, maxByViewport, maxByPanelH);
-      setObsSize(Math.round(Math.max(showDetectionFacetControls ? 200 : 280, s)));
+      setObsSize(Math.round(Math.max(showIntegratedFacetControls ? 200 : 280, s)));
     });
     ro.observe(el);
     return () => ro.disconnect();
-  }, [showDetectionFacetControls]);
-  const facetEyepieceSize = showDetectionFacetControls
+  }, [showIntegratedFacetControls]);
+  const facetEyepieceSize = showIntegratedFacetControls
     ? Math.min(286, Math.max(270, Math.round(obsSize * 1.22)))
     : obsSize;
-  const facetObservationSize = showDetectionFacetControls
+  const facetObservationSize = showIntegratedFacetControls
     ? Math.round(facetEyepieceSize * 0.72)
     : obsSize;
 
@@ -538,47 +537,6 @@ export default function RefractometerDemo({
               </ObjectFitHotspotFrame>
             </div>
 
-            {mode === 'learning' && (showSampleKnob || showPolarizerKnob) && (
-              <div
-                className="flex shrink-0 flex-col items-center gap-3"
-                data-testid="refractometer-floating-rotation-controls"
-              >
-                {showSampleKnob && (
-                  <div className="rounded-xl border border-line bg-white/95 p-3 shadow-card backdrop-blur">
-                    <RotationKnob
-                      value={facetSample01}
-                      onChange={(v) => {
-                        setFacetSample01(v);
-                        if (Math.abs(v - 0.5) > 0.18) setFacetSampleReady(true);
-                      }}
-                      onReady={() => setFacetSampleReady(true)}
-                      label="旋转样品（测台）"
-                      hint="旋转控制盘，改变测台方向"
-                      ready={facetSampleReady}
-                      size={110}
-                      themeHex={instrument.themeHex}
-                    />
-                  </div>
-                )}
-                {showPolarizerKnob && (
-                  <div className="rounded-xl border border-line bg-white/95 p-3 shadow-card backdrop-blur">
-                    <RotationKnob
-                      value={facetPol01}
-                      onChange={(v) => {
-                        setFacetPol01(v);
-                        if (Math.abs(v - 0.5) > 0.18) setFacetPolReady(true);
-                      }}
-                      onReady={() => setFacetPolReady(true)}
-                      label="旋转偏光片（目镜外）"
-                      hint="旋转控制盘，调节偏光角度"
-                      ready={facetPolReady}
-                      size={110}
-                      themeHex={instrument.themeHex}
-                    />
-                  </div>
-                )}
-              </div>
-            )}
           </div>
 
           <div className="absolute bottom-3 left-3 rounded-lg border border-line bg-white/85 px-3 py-2 text-xs shadow-card backdrop-blur">
@@ -775,7 +733,7 @@ export default function RefractometerDemo({
                 </p>
               )}
 
-              <div className={clsx('flex items-center justify-center gap-3', showDetectionFacetControls && 'min-h-0 flex-1')}>
+              <div className={clsx('flex items-center justify-center gap-3', showIntegratedFacetControls && 'min-h-0 flex-1')}>
                 {view === 'spot' && state.observed && (
                   <div
                     className="flex w-14 shrink-0 items-center justify-center rounded-xl bg-white/35 px-2 py-3 shadow-soft backdrop-blur-[1px]"
@@ -794,7 +752,7 @@ export default function RefractometerDemo({
                     />
                   </div>
                 )}
-                {showDetectionFacetControls ? (
+                {showIntegratedFacetControls ? (
                   <div
                     data-testid="refractometer-facet-control-deck"
                     className="relative flex w-full max-w-[30rem] flex-wrap items-center justify-center gap-2 rounded-2xl border border-amber-200 bg-white/82 p-2 shadow-soft backdrop-blur"

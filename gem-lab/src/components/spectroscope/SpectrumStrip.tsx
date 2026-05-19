@@ -29,6 +29,7 @@ export default function SpectrumStrip({
   showFeatureDescriptions = true,
   height = 80,
   interactive = true,
+  locked = false,
 }: {
   features?: AbsorptionFeature[];
   userMarks?: number[];
@@ -46,9 +47,11 @@ export default function SpectrumStrip({
   showFeatureDescriptions?: boolean;
   height?: number;
   interactive?: boolean;
+  locked?: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [hoverWL, setHoverWL] = useState<number | null>(null);
+  const isInteractive = interactive && !locked;
 
   // 综合模糊
   const focusBlur = Math.abs(focus - 0.5) * 6;
@@ -79,14 +82,14 @@ export default function SpectrumStrip({
   };
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!interactive || !onAddMark) return;
+    if (!isInteractive || !onAddMark) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const xRatio = (e.clientX - rect.left) / rect.width;
     onAddMark(xToWL(xRatio));
   };
 
   const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!interactive) return;
+    if (!isInteractive) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const xRatio = (e.clientX - rect.left) / rect.width;
     setHoverWL(xToWL(xRatio));
@@ -103,12 +106,17 @@ export default function SpectrumStrip({
   const spectrumGradient = `linear-gradient(to right, ${stops.join(', ')})`;
 
   return (
-    <div className="select-none">
+    <div
+      className="select-none"
+      data-testid="spectroscope-spectrum-strip"
+      data-spectrum-state={locked ? 'locked' : 'ready'}
+    >
       <div
         ref={containerRef}
+        data-testid="spectroscope-spectrum-visual"
         className={clsx(
           'relative w-full overflow-hidden rounded-lg ring-1 ring-line-2',
-          interactive && 'cursor-crosshair',
+          isInteractive && 'cursor-crosshair',
         )}
         style={{ height }}
         onClick={handleClick}
@@ -125,7 +133,7 @@ export default function SpectrumStrip({
         />
 
         {/* 吸收特征 */}
-        {showFeatures &&
+        {!locked && showFeatures &&
           features.map((f, i) => {
             const xCenter = wlToX(f.wavelength) * 100;
             // band 宽度按棱镜映射换算
@@ -157,7 +165,7 @@ export default function SpectrumStrip({
           })}
 
         {/* 用户标记 */}
-        {userMarks.map((wl, i) => (
+        {!locked && userMarks.map((wl, i) => (
           <div
             key={i}
             className="absolute top-0 h-full"
@@ -176,7 +184,7 @@ export default function SpectrumStrip({
         ))}
 
         {/* 悬浮光标 */}
-        {hoverWL !== null && (
+        {!locked && hoverWL !== null && (
           <div
             className="pointer-events-none absolute top-0 h-full w-px bg-white/60"
             style={{ left: `${wlToX(hoverWL) * 100}%` }}

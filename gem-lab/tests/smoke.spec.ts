@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import path from 'node:path';
+import { getFacetPolarizerMaskAlpha } from '../src/components/refractometer/ObservationWindow';
 
 const progressStorage = {
   state: {
@@ -106,12 +107,40 @@ test('detection-mode instrument demos hide the real unknown sample name', async 
 });
 
 test('spectroscope can save a no-absorption observation', async ({ page }) => {
-  await page.goto('/demo/spectroscope?sample=agate&mode=detection&qa=ready');
+  await page.goto('/demo/spectroscope?sample=agate&mode=detection&qa=ready', { waitUntil: 'commit' });
+  await expect(page.getByTestId('spectroscope-no-absorption')).toBeVisible();
 
   await page.getByTestId('spectroscope-no-absorption').click();
 
   await expect(page.getByTestId('spectroscope-save')).toBeEnabled();
   await expect(page.getByTestId('spectroscope-no-absorption-summary')).toBeVisible();
+});
+
+test('spectroscope learning mode keeps instrument hotspots operable', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto('/demo/spectroscope', { waitUntil: 'commit' });
+
+  await expect(page.getByRole('button', { name: '光纤灯（关闭）' })).toBeEnabled();
+  await page.getByRole('button', { name: '光纤灯（关闭）' }).click();
+  await expect(page.getByRole('button', { name: '光纤灯（已开启）' })).toBeEnabled();
+
+  await expect(page.getByRole('button', { name: /样品 \/ 背景板/ })).toBeEnabled();
+  await page.getByRole('button', { name: /样品 \/ 背景板/ }).click();
+  await expect(page.getByText('选择照明方法').first()).toBeVisible();
+});
+
+test('spectroscope locks the spectrum strip until observation is ready', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto('/demo/spectroscope');
+
+  await expect(page.getByTestId('spectroscope-spectrum-strip')).toHaveAttribute('data-spectrum-state', 'locked');
+  await expect(page.getByTestId('spectroscope-spectrum-strip')).not.toContainText('光谱未就绪');
+  await expect(page.getByTestId('spectroscope-spectrum-visual')).not.toHaveClass(/cursor-crosshair/);
+  await expect(page.getByTestId('spectroscope-save')).toBeDisabled();
+
+  await page.goto('/demo/spectroscope?sample=ruby&mode=detection&qa=ready', { waitUntil: 'commit' });
+  await expect(page.getByTestId('spectroscope-spectrum-strip')).toHaveAttribute('data-spectrum-state', 'ready');
+  await expect(page.getByTestId('spectroscope-spectrum-visual')).toHaveClass(/cursor-crosshair/);
 });
 
 test('refractometer spot reading uses the same two-decimal value across boundary and record data', async ({ page }) => {
@@ -223,6 +252,56 @@ test('refractometer detection mode uses one main instrument guide and integrated
   expect(saveBox!.y + saveBox!.height).toBeLessThanOrEqual(720);
 });
 
+test('refractometer learning mode shares calibrated hotspots and integrated facet controls', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto('/demo/refractometer');
+
+  const powerBox = await page.getByRole('button', { name: '开关' }).boundingBox();
+  expect(powerBox).not.toBeNull();
+  expect(powerBox!.x + powerBox!.width / 2).toBeGreaterThan(515);
+
+  const observeBox = await page.getByRole('button', { name: '观察读数' }).boundingBox();
+  expect(observeBox).not.toBeNull();
+  const observeCx = observeBox!.x + observeBox!.width / 2;
+  const observeCy = observeBox!.y + observeBox!.height / 2;
+  expect(observeCx).toBeGreaterThanOrEqual(210);
+  expect(observeCx).toBeLessThanOrEqual(240);
+  expect(observeCy).toBeGreaterThanOrEqual(455);
+  expect(observeCy).toBeLessThanOrEqual(490);
+
+  await page.getByRole('button', { name: '开关' }).click();
+  await page.getByRole('button', { name: '滴折射油' }).click();
+  await page.getByRole('button', { name: '放置样品' }).click();
+  await page.getByRole('button', { name: /刻面法 平整刻面/ }).click();
+
+  await expect(page.getByTestId('refractometer-facet-control-deck')).toBeVisible();
+  await expect(page.getByTestId('refractometer-facet-control-guide')).toHaveAttribute('data-active-target', 'sample-stage');
+  await expect(page.getByTestId('refractometer-sample-stage-control')).toBeVisible();
+  await expect(page.getByTestId('refractometer-floating-rotation-controls')).toHaveCount(0);
+
+  await page.getByRole('button', { name: '观察读数' }).click();
+  await page.getByRole('button', { name: /推荐 使用偏光片/ }).click();
+
+  await expect(page.getByTestId('refractometer-facet-control-deck')).toBeVisible();
+  await expect(page.getByTestId('refractometer-facet-control-guide')).toHaveAttribute('data-active-target', 'sample-stage');
+  await expect(page.getByTestId('refractometer-eyepiece-polarizer-ring')).toBeVisible();
+  await expect(page.getByTestId('refractometer-eyepiece-ring-image')).toBeVisible();
+  await expect(page.getByTestId('refractometer-sample-stage-control')).toBeVisible();
+  await expect(page.getByTestId('refractometer-floating-rotation-controls')).toHaveCount(0);
+
+  const sampleStageBox = await page.getByTestId('refractometer-sample-stage-control').boundingBox();
+  expect(sampleStageBox).not.toBeNull();
+  await page.mouse.move(sampleStageBox!.x + sampleStageBox!.width / 2, sampleStageBox!.y + 8);
+  await page.mouse.down();
+  await page.mouse.move(
+    sampleStageBox!.x + sampleStageBox!.width - 10,
+    sampleStageBox!.y + sampleStageBox!.height / 2,
+    { steps: 8 },
+  );
+  await page.mouse.up();
+  await expect(page.getByTestId('refractometer-facet-control-guide')).toHaveAttribute('data-active-target', 'eyepiece-polarizer');
+});
+
 test('refractometer eyepiece ring asset keeps a large transparent reading aperture', async () => {
   const sharp = (await import('sharp')).default;
   const imagePath = path.join(
@@ -267,6 +346,21 @@ test('refractometer eyepiece ring asset keeps a large transparent reading apertu
   expect(clearHoleRatio).toBeLessThanOrEqual(0.76);
 });
 
+test('refractometer eyepiece polarizer shadow uses a continuous 180-degree curve', () => {
+  const alpha0 = getFacetPolarizerMaskAlpha(0);
+  const alpha90 = getFacetPolarizerMaskAlpha(0.25);
+  const alpha180 = getFacetPolarizerMaskAlpha(0.5);
+  const alpha270 = getFacetPolarizerMaskAlpha(0.75);
+  const alpha359 = getFacetPolarizerMaskAlpha(359 / 360);
+  const alpha360 = getFacetPolarizerMaskAlpha(1);
+
+  expect(alpha0).toBeCloseTo(alpha180, 5);
+  expect(alpha0).toBeCloseTo(alpha360, 5);
+  expect(alpha90).toBeCloseTo(alpha270, 5);
+  expect(alpha90).toBeGreaterThan(alpha0 + 0.3);
+  expect(Math.abs(alpha359 - alpha360)).toBeLessThan(0.01);
+});
+
 test('spectroscope detection mode uses one workbench guide and focuses the tuning panel', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto('/demo/spectroscope?sample=ruby&mode=detection');
@@ -284,10 +378,15 @@ test('spectroscope detection mode uses one workbench guide and focuses the tunin
   await page.getByRole('button', { name: /样品 \/ 背景板/ }).click();
   await expect(page.getByTestId('spectroscope-detection-main-guide')).toHaveAttribute('data-active-step', 'pick-method');
   await expect(page.getByTestId('spectroscope-detection-main-guide')).toContainText('选择照明方法');
+  await expect(page.getByText('未知样品')).toHaveCount(2);
+  await expect(page.getByText('红宝石')).toHaveCount(0);
+  await expect(page.getByText('红色')).toHaveCount(0);
+  await expect(page.getByText('透明-半透明')).toHaveCount(0);
   await page.getByRole('button', { name: /透射光法 光从下方/ }).click();
 
   await expect(page.getByTestId('spectroscope-detection-main-guide')).toHaveAttribute('data-active-step', 'tune');
   await expect(page.getByTestId('spectroscope-detection-main-guide')).toContainText('调节狭缝与焦距');
+  await expect(page.getByTestId('spectroscope-optics-control-panel')).toHaveAttribute('data-guide-state', 'active');
 
   await page.getByRole('button', { name: /狭缝/ }).click();
   await expect(page.getByTestId('spectroscope-optics-control-panel')).toHaveAttribute('data-focus-cue', 'slit');
@@ -302,9 +401,17 @@ test('spectroscope detection mode uses one workbench guide and focuses the tunin
   await page.goto('/demo/spectroscope?sample=ruby&mode=detection&qa=ready');
   await expect(page.getByTestId('spectroscope-detection-main-guide')).toHaveCount(0);
   await expect(page.getByTestId('spectroscope-spectrum-guide')).toBeVisible();
-  const spectrumGuideBox = await page.getByTestId('spectroscope-spectrum-guide').boundingBox();
-  expect(spectrumGuideBox).not.toBeNull();
-  await page.mouse.click(spectrumGuideBox!.x + spectrumGuideBox!.width * 0.2, spectrumGuideBox!.y + spectrumGuideBox!.height / 2);
+  const spectrumBodyBox = await page.getByTestId('spectroscope-spectrum-visual').boundingBox();
+  const spectrumCalloutBox = await page.getByTestId('spectroscope-spectrum-guide-callout').boundingBox();
+  expect(spectrumBodyBox).not.toBeNull();
+  expect(spectrumCalloutBox).not.toBeNull();
+  const calloutOverlapsSpectrum =
+    spectrumCalloutBox!.x < spectrumBodyBox!.x + spectrumBodyBox!.width &&
+    spectrumCalloutBox!.x + spectrumCalloutBox!.width > spectrumBodyBox!.x &&
+    spectrumCalloutBox!.y < spectrumBodyBox!.y + spectrumBodyBox!.height &&
+    spectrumCalloutBox!.y + spectrumCalloutBox!.height > spectrumBodyBox!.y;
+  expect(calloutOverlapsSpectrum).toBe(false);
+  await page.mouse.click(spectrumBodyBox!.x + spectrumBodyBox!.width * 0.2, spectrumBodyBox!.y + spectrumBodyBox!.height / 2);
   await expect(page.getByTestId('spectroscope-record-guide')).toBeVisible();
   await expect(page.getByTestId('spectroscope-save')).toBeEnabled();
 });

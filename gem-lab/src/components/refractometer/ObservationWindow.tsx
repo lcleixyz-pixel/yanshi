@@ -90,6 +90,13 @@ const GEM_HI_CFG_BASE = {
   edgeWidthRatio: GEM_HI_EDGE_WIDTH_RATIO,
 } as const;
 
+export function getFacetPolarizerMaskAlpha(pol01: number): number {
+  const normalized = ((pol01 % 1) + 1) % 1;
+  // 目镜外偏光片旋转 180° 后光强重复；sin² 曲线避免 360° 边界的锯齿跳变。
+  const curve01 = Math.sin(normalized * Math.PI * 2) ** 2;
+  return GEM_HI_MASK_ALPHA_MIN + (GEM_HI_MASK_ALPHA_MAX - GEM_HI_MASK_ALPHA_MIN) * curve01;
+}
+
 function drawCanvas(
   ctx: CanvasRenderingContext2D,
   w: number,
@@ -428,7 +435,7 @@ function drawFacetCanvas(
       drawMaskAbove(boundaries.yLo, GEM_SINGLE_CFG);
     } else {
       const hiMaskAlpha = usePolarizer
-        ? GEM_HI_MASK_ALPHA_MIN + (GEM_HI_MASK_ALPHA_MAX - GEM_HI_MASK_ALPHA_MIN) * pol01
+        ? getFacetPolarizerMaskAlpha(pol01)
         : GEM_HI_MASK_ALPHA;
       drawMaskAbove(boundaries.yLo, GEM_LO_CFG);
       drawMaskAbove(boundaries.yHi, {

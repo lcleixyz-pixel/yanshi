@@ -1,0 +1,76 @@
+{
+  "instrument": "通用宝石折射仪教学候选",
+  "dimensionsCalibrated": false,
+  "manufacturerReplica": false,
+  "teachingOpticsSimulated": false,
+  "internalOpticsIllustrative": true,
+  "opticalSimulation": false,
+  "referenceSources": [
+    {
+      "url": "https://shop.gem-a.com/product/gem-a-refractometer/",
+      "title": "Gem-A official refractometer product and detachable polarizer description"
+    },
+    {
+      "url": "https://shop.gem-a.com/wp-content/uploads/2018/05/ref0006_1new.jpg",
+      "title": "Primary exterior view"
+    },
+    {
+      "url": "https://shop.gem-a.com/wp-content/uploads/2018/05/ref0006_anew.jpg",
+      "title": "Secondary exterior view"
+    },
+    {
+      "url": "https://kruess-shop.de/en/methods/refractometry-determine-optical-characteristics-of-gemstones/",
+      "title": "Optical principles, not shape reference"
+    }
+  ],
+  "referenceLicense": "Manufacturer images publicly accessible, not found under open license. Originals remain assets-source only. Upload authorized by user for this task; manufacturer endorsement not claimed.",
+  "imagePixelsEmbeddedInWebAsset": false,
+  "brandingReproduced": false,
+  "sourceCandidate": {
+    "present": true,
+    "file": "assets-source/refractometer/tripo-trials/2026-10-07/candidate.glb",
+    "geometryRetained": false,
+    "decision": "Rule surfaces rebuilt from official image constraints; raw candidate retained separately for comparison, not authoritative internal geometry.",
+    "sha256": "0851c6495bc66e9cd90163b90c36e94eecf28d66567e0a6292cc2ccb44ba7f8a",
+    "bytes": 60056824,
+    "generation": {
+      "instrument": "refractometer",
+      "state": "downloaded",
+      "model": "H3.1",
+      "quality": "highest",
+      "privacy": "private",
+      "generateParts": false,
+      "eightK": false,
+      "quote": 55,
+      "balanceBefore": 6090,
+      "taskId": "0975d454-e1f2-4050-a584-8729ffe41ba5",
+      "actualCost": 55,
+      "input": "gem-lab/assets-source/refractometer/references/gem-a-ref0006-front.jpg",
+      "balanceAfter": 6035,
+      "submittedAt": "2026-10-07T07:26:54.760942+00:00",
+      "candidate": "gem-lab/assets-source/refractometer/tripo-trials/2026-10-07/candidate.glb",
+      "bytes": 60056824,
+      "sha256": "0851c6495bc66e9cd90163b90c36e94eecf28d66567e0a6292cc2ccb44ba7f8a",
+      "textureResolution": "4k"
+    },
+    "review": "Four-angle Tripo inspection: consistent box/eyepiece/cover silhouette; fused parts, opaque optics and distorted manufacturer lettering removed during reconstruction."
+  },
+  "reconstruction": "Photograph-constrained parametric hollow shell, fitted true stage opening, half-cylinder glass teaching prism, concave hinged cover, lathed hollow eyepiece and removable polarizer with physical knurl geometry.",
+  "internalAssumptions": [
+    "Semicylindrical prism selected for cutaway teaching; exact Gem-A internal geometry unverified.",
+    "Internal scale and reflector are schematic, uncalibrated and not suitable for RI measurement.",
+    "Back incident-light port position is inferred because the reference photos do not show the back.",
+    "Focus travel and cover stop angles are teaching limits rather than measured mechanics."
+  ],
+  "materials": {
+    "Cycles": "Same PBR base with fine procedural microfinish",
+    "web": "PBR metal/roughness and KHR_materials_transmission/ior, full geometry; procedural microfinish not baked into basecolor"
+  },
+  "generationRecord": "Tripo task and credit record stored with original candidate and in project production log.",
+  "script": "tools/3d-assets/build_refractometer.py",
+  "userReviewRequired": [
+    "Black box-form proportions and neutral no-brand appearance",
+    "Cover concavity and closure clearance",
+    "Internal prism/scale/reflector and rear light port schematic positions"
+  ]
+}

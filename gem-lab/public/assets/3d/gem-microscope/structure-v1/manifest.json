@@ -1,0 +1,429 @@
+{
+  "id": "gem-microscope-structure-v1",
+  "version": "structure-1",
+  "model": "model.glb",
+  "units": "uncalibrated teaching model units",
+  "dimensionsCalibrated": false,
+  "teachingOpticsSimulated": false,
+  "parts": [
+    {
+      "id": "base",
+      "label": "底座",
+      "node": "GemMicroscope_base",
+      "pivot": [
+        0,
+        0.25,
+        0
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0,
+        -0.2,
+        0
+      ],
+      "hotspot": [
+        0,
+        0.25,
+        0
+      ]
+    },
+    {
+      "id": "arm",
+      "label": "镜臂与调焦架",
+      "node": "GemMicroscope_arm",
+      "pivot": [
+        0,
+        2.35,
+        -0.67
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        -0.55
+      ],
+      "hotspot": [
+        0,
+        2.35,
+        -0.67
+      ],
+      "note": "公开外观比例重建；倾斜轴及内部齿条不作实测复原。"
+    },
+    {
+      "id": "stage",
+      "label": "悬台",
+      "node": "GemMicroscope_stage",
+      "pivot": [
+        0,
+        1.54,
+        0.13
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        0.4
+      ],
+      "hotspot": [
+        0,
+        1.54,
+        0.13
+      ]
+    },
+    {
+      "id": "darkfield",
+      "label": "暗域照明器与底光",
+      "node": "GemMicroscope_darkfield",
+      "pivot": [
+        0,
+        1.26,
+        0.23
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0,
+        -0.35,
+        0
+      ],
+      "hotspot": [
+        0,
+        1.26,
+        0.23
+      ],
+      "note": "底光与暗域配置有公开来源；内置光阑、反光腔和遮光体是功能位置教学示意。"
+    },
+    {
+      "id": "iris",
+      "label": "光阑叶片（固定开度示意）",
+      "node": "GemMicroscope_iris",
+      "pivot": [
+        0,
+        1.65,
+        0.23
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0,
+        0.26,
+        0
+      ],
+      "hotspot": [
+        0,
+        1.65,
+        0.23
+      ],
+      "note": "八片叶片保持固定示意开度；不能整体旋转叶片来声称改变孔径。叶片数与驱动连杆未核实。"
+    },
+    {
+      "id": "irisControl",
+      "label": "光阑操纵环（未关联开度）",
+      "node": "GemMicroscope_irisControl",
+      "pivot": [
+        0,
+        1.65,
+        0.23
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": true,
+      "explodeOffset": [
+        0,
+        0.34,
+        0
+      ],
+      "hotspot": [
+        0,
+        1.65,
+        0.23
+      ],
+      "note": "仅操纵环和手柄可转动；本模型没有叶片开合联动，旋转此节点不会改变孔径。"
+    },
+    {
+      "id": "gemClamp",
+      "label": "宝石夹",
+      "node": "GemMicroscope_gemClamp",
+      "pivot": [
+        -0.32,
+        1.87,
+        0.2
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        -0.5,
+        0.22,
+        0.25
+      ],
+      "hotspot": [
+        -0.32,
+        1.87,
+        0.2
+      ],
+      "note": "可见细夹构型重建；未提供真实关节行程。"
+    },
+    {
+      "id": "zoomBody",
+      "label": "体视变倍光学体",
+      "node": "GemMicroscope_zoomBody",
+      "pivot": [
+        0,
+        3.78,
+        0.14
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0,
+        0.3,
+        0.3
+      ],
+      "hotspot": [
+        0,
+        3.78,
+        0.14
+      ],
+      "note": "外壳与物镜外观示意；内部双光路和变倍凸轮未复原。",
+      "translationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "translationRangeVerified": false
+    },
+    {
+      "id": "focusKnob",
+      "label": "调焦旋钮",
+      "node": "GemMicroscope_focusKnob",
+      "pivot": [
+        0,
+        3.59,
+        -0.69
+      ],
+      "rotationAxisLocal": [
+        1,
+        0,
+        0
+      ],
+      "rotatable": true,
+      "explodeOffset": [
+        0.55,
+        0,
+        0
+      ],
+      "hotspot": [
+        0,
+        3.59,
+        -0.69
+      ],
+      "note": "绕 X 轴旋转；头部平移行程仅可由应用另设教学约定。"
+    },
+    {
+      "id": "zoomKnob",
+      "label": "变倍旋钮",
+      "node": "GemMicroscope_zoomKnob",
+      "pivot": [
+        0,
+        3.7,
+        0.09
+      ],
+      "rotationAxisLocal": [
+        1,
+        0,
+        0
+      ],
+      "rotatable": true,
+      "explodeOffset": [
+        0.57,
+        0.05,
+        0.1
+      ],
+      "hotspot": [
+        0,
+        3.7,
+        0.09
+      ],
+      "note": "旋钮轴有外观依据；不赋予未经验证的倍率公式。"
+    },
+    {
+      "id": "eyepieceLeft",
+      "label": "左目镜",
+      "node": "GemMicroscope_eyepieceLeft",
+      "pivot": [
+        -0.265,
+        4.450428,
+        -0.396377
+      ],
+      "rotationAxisLocal": [
+        0.0,
+        0.750714,
+        -0.660628
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        -0.38,
+        0.3,
+        0.2
+      ],
+      "hotspot": [
+        -0.265,
+        4.450428,
+        -0.396377
+      ]
+    },
+    {
+      "id": "eyepieceRight",
+      "label": "右目镜",
+      "node": "GemMicroscope_eyepieceRight",
+      "pivot": [
+        0.265,
+        4.450428,
+        -0.396377
+      ],
+      "rotationAxisLocal": [
+        0.0,
+        0.750714,
+        -0.660628
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.38,
+        0.3,
+        0.2
+      ],
+      "hotspot": [
+        0.265,
+        4.450428,
+        -0.396377
+      ]
+    },
+    {
+      "id": "photoTube",
+      "label": "摄影口",
+      "node": "GemMicroscope_photoTube",
+      "pivot": [
+        0,
+        4.47,
+        0.32
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.4,
+        0.4,
+        -0.3
+      ],
+      "hotspot": [
+        0,
+        4.47,
+        0.32
+      ],
+      "note": "参考实物可见附件；不把它当作第三个目镜。"
+    },
+    {
+      "id": "topLight",
+      "label": "鹅颈顶灯",
+      "node": "GemMicroscope_topLight",
+      "pivot": [
+        -0.77,
+        2.64,
+        0.37
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        -0.55,
+        0.25,
+        0.25
+      ],
+      "hotspot": [
+        -0.77,
+        2.64,
+        0.37
+      ],
+      "note": "柔性鹅颈以固定曲线表示，不设置虚假的单一刚体转轴。"
+    },
+    {
+      "id": "lightGuide",
+      "label": "细鹅颈光导",
+      "node": "GemMicroscope_lightGuide",
+      "pivot": [
+        0.63,
+        2.04,
+        0.03
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.5,
+        0.18,
+        -0.0
+      ],
+      "hotspot": [
+        0.63,
+        2.04,
+        0.03
+      ]
+    }
+  ],
+  "coordinates": "glTF right-handed: X right, Y up, Z toward front",
+  "construction": "Reference-constrained parametric reconstruction, with candidate used for appearance review; no calibrated optics or manufacturer CAD.",
+  "sourceCandidate": "assets-source/gem-microscope/tripo-trials/2026-10-07/candidate.glb",
+  "irisMechanics": {
+    "fixedBladePartId": "iris",
+    "rotatingControlPartId": "irisControl",
+    "controlAngleChangesAperture": false,
+    "bladeLinkageModeled": false,
+    "note": "操纵环的旋转只表达其操作轴；实际开孔变化必须另建可验证叶片联动，不能转动整个叶片组冒充。"
+  },
+  "sourceSha256": "fbb352d1a771a5e049e63e0f587e3dfe8445efd1d4d8cf0d114de756f2b8fce0",
+  "sha256": "939669f42e4c9e734ee298b182f056200d86bf0b07eb1bf07c9cfe35f1974ec6",
+  "byteLength": 1621208
+}

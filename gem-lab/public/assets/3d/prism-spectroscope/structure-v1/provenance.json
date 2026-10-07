@@ -1,0 +1,142 @@
+{
+  "instrument": "prism-spectroscope",
+  "createdAt": "2026-10-07",
+  "dimensionsCalibrated": false,
+  "referenceManifest": "assets-source/prism-spectroscope/references/sources.json",
+  "references": [
+    {
+      "id": "user-product",
+      "title": "用户提供的分光镜产品图",
+      "url": null,
+      "author_or_manufacturer": "原作者/厂家未注明",
+      "retrieved_at": "2026-10-07",
+      "kind": "user-provided-reference",
+      "license_or_usage": "原页面未提供开放复用许可；作为用户已授权的内部参考与 Tripo 输入保存。不得把该原图/PDF或含其像素的对照图放入 public/、docs/ 或提交仓库；不宣称取得厂商授权。",
+      "classification": "与教材可调棱镜式照片相近，无法确认具体型号或内部色散元件；不得单独作为分类证据",
+      "local_file": "user-product-unclassified.png",
+      "sha256": "3e198324a7c5cf2ba72cc3c016a3bfd5a264a69d1b1baad133e509c8f466476d",
+      "bytes": 177692
+    },
+    {
+      "id": "user-pdf",
+      "title": "第二节 分光镜",
+      "url": null,
+      "author_or_manufacturer": "用户提供；作者/出版信息未注明",
+      "retrieved_at": "2026-10-07",
+      "kind": "user-provided-teaching-material",
+      "license_or_usage": "原页面未提供开放复用许可；作为用户已授权的内部参考与 Tripo 输入保存。不得把该原图/PDF或含其像素的对照图放入 public/、docs/ 或提交仓库；不宣称取得厂商授权。",
+      "relevant_pages": [
+        1,
+        8
+      ],
+      "derived_files": [
+        "user-pdf-page-1.png",
+        "user-pdf-page-8.png"
+      ],
+      "local_file": "user-spectroscope.pdf",
+      "sha256": "f1dd05ff1ada4f8f46a4d49ae0956ac30980ff8a18bc488f98bf9aecbe04e7f8",
+      "bytes": 1132910
+    },
+    {
+      "id": "gem-a-prism",
+      "title": "Gem-A Prism Spectroscope, SPE0013",
+      "url": "https://shop.gem-a.com/product/gem-a-prism-spectroscope/",
+      "author_or_manufacturer": "Gem-A Instruments / Gemmological Instruments Ltd.",
+      "retrieved_at": "2026-10-07",
+      "kind": "manufacturer-product-page",
+      "license_or_usage": "原页面未提供开放复用许可；作为用户已授权的内部参考与 Tripo 输入保存。不得把该原图/PDF或含其像素的对照图放入 public/、docs/ 或提交仓库；不宣称取得厂商授权。",
+      "image_url": "https://shop.gem-a.com/wp-content/uploads/2018/06/spe0013_-_2.png",
+      "evidence": "官方命名为棱镜式，说明棱镜组色散及可调焦；外部照片为黑色长筒、两端环、侧面银色钮",
+      "local_file": "gem-a-prism-product.png",
+      "sha256": "10da4d501e339a9e0877fe46d12b715a27f18abf359859b0052426a3447990b0",
+      "bytes": 173575
+    },
+    {
+      "id": "gem-a-cross-sections",
+      "title": "Gems & Jewellery Summer 2017, p.6 Gemmological Instruments",
+      "url": "https://gem-a.com/wp-content/uploads/2017/04/GJ-26-2-2017.pdf",
+      "author_or_manufacturer": "Gem-A；文字 Samantha Lloyd；产品图署名 Henry Mesa",
+      "retrieved_at": "2026-10-07",
+      "kind": "primary-education-publication",
+      "license_or_usage": "原页面未提供开放复用许可；作为用户已授权的内部参考与 Tripo 输入保存。不得把该原图/PDF或含其像素的对照图放入 public/、docs/ 或提交仓库；不宣称取得厂商授权。",
+      "relevant_pages": [
+        6
+      ],
+      "derived_files": [
+        "gem-a-cross-sections-page-6.png"
+      ],
+      "evidence": "对比棱镜式与光栅式剖面；标出 Light slit、Lens、Prism train、Focusing tube、Diffraction grating、Eye piece",
+      "local_file": "gem-a-GJ-26-2-2017.pdf",
+      "sha256": "019947f0596be138ff355f8344a7e96e14b883fc13510197594fab2fcfdeb04e",
+      "bytes": 4101110
+    },
+    {
+      "id": "euromex-specification",
+      "title": "Spectrometers (handheld), SP.5150",
+      "url": "https://www.euromex.com/en/products/branches/other-optical-instruments/spectrometers-handheld/",
+      "author_or_manufacturer": "Euromex",
+      "retrieved_at": "2026-10-07",
+      "kind": "manufacturer-product-page",
+      "license_or_usage": "原页面未提供开放复用许可；作为用户已授权的内部参考与 Tripo 输入保存。不得把该原图/PDF或含其像素的对照图放入 public/、docs/ 或提交仓库；不宣称取得厂商授权。",
+      "evidence": "厂家列明 SP.5150 为直视型、可调目镜、0–1 mm 可调狭缝；这是同类机构参考，不把此型号参数认作 Gem-A 产品或本资产实测值"
+    }
+  ],
+  "originalCandidate": {
+    "path": "assets-source/prism-spectroscope/tripo-trials/2026-10-07/candidate.glb",
+    "sha256": "9b0d9c40ac53cf6f903e04271f4198af6002bcc606e8f66cb0ebd5406fdd0a42",
+    "preservedUnmodified": true
+  },
+  "reconstruction": {
+    "script": "tools/3d-assets/blender/build_spectroscopes.py",
+    "blenderVersion": "5.2.2 LTS",
+    "method": "Reference constrained parametric reconstruction of manufactured surfaces. Raw Tripo candidate retained as comparison; geometric retention assessed separately.",
+    "geometrySource": "Original parametric mesh authored in Blender; not a textured reproduction of source photographs.",
+    "retainedCandidateGeometry": [],
+    "retentionDecision": "No original candidate triangles retained: continuous lathed hardware is rebuilt to remove warped shells, false interior closures and generated lettering. Original candidate and its inspection are retained for comparison."
+  },
+  "tripo": {
+    "instrument": "prism-spectroscope",
+    "state": "downloaded",
+    "model": "H3.1",
+    "quality": "highest",
+    "privacy": "private",
+    "generateParts": false,
+    "eightK": false,
+    "quote": 55,
+    "balanceBefore": 6035,
+    "taskId": "c588ceaf-7245-401a-a06b-7a4eeb683673",
+    "actualCost": 55,
+    "input": "gem-lab/assets-source/prism-spectroscope/references/gem-a-prism-product.png",
+    "balanceAfter": 5980,
+    "submittedAt": "2026-10-07T07:28:01.416527+00:00",
+    "candidate": "gem-lab/assets-source/prism-spectroscope/tripo-trials/2026-10-07/candidate.glb",
+    "bytes": 63507748,
+    "sha256": "9b0d9c40ac53cf6f903e04271f4198af6002bcc606e8f66cb0ebd5406fdd0a42",
+    "textureResolution": "4k"
+  },
+  "licenseBoundary": "Published reference photographs have no verified open licence. Originals and side-by-side comparisons remain only in ignored assets-source. Public assets contain independently authored geometry/materials with no logo. Manufacturer endorsement, measured dimensions and optical calibration are not claimed.",
+  "reviewRequired": [
+    "Proportions and side-control appearance",
+    "Illustrative internal optics and supports",
+    "No physical specimen or optical calibration performed"
+  ],
+  "candidateInspection": {
+    "candidateSha256": "9b0d9c40ac53cf6f903e04271f4198af6002bcc606e8f66cb0ebd5406fdd0a42",
+    "meshCount": 1,
+    "vertices": 1026110,
+    "triangles": 1975935,
+    "principalExtentsRaw": [
+      0.2728566432085687,
+      0.9800290990327943,
+      0.2346732372177999
+    ],
+    "lengthDiameterRatio": 3.59173625940883,
+    "materialNames": [
+      "Dots Stroke",
+      "Material",
+      "tripo_material_3e67970f-053a-44a3-a363-097b23c1eb25"
+    ],
+    "note": "PCA normalization only for this review render; input untouched. Candidate topology is not evidence of true hidden structure.",
+    "inputUnchanged": true
+  }
+}

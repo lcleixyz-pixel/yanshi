@@ -1,0 +1,282 @@
+{
+  "id": "grating-spectroscope-structure-v1",
+  "version": "structure-1",
+  "model": "model.glb",
+  "sha256": "d0878e3c827af16899c57410873f729157a6ccc07b94ae3c977e79ca0e969196",
+  "byteLength": 1224808,
+  "units": "meters",
+  "dimensionsCalibrated": false,
+  "teachingOpticsSimulated": false,
+  "internalOpticsIllustrative": true,
+  "opticalSimulation": false,
+  "opticalAxisLocal": [
+    0,
+    0,
+    1
+  ],
+  "entryDirection": "-Z",
+  "observationDirection": "+Z",
+  "parts": [
+    {
+      "id": "barrel",
+      "label": "消光主镜筒",
+      "node": "GratingSpectroscope_barrel",
+      "pivot": [
+        0,
+        0,
+        0
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        0
+      ],
+      "hotspot": [
+        0,
+        0.0119,
+        0
+      ]
+    },
+    {
+      "id": "slitHousing",
+      "label": "入光端与狭缝座",
+      "node": "GratingSpectroscope_slitHousing",
+      "pivot": [
+        0,
+        0,
+        -0.0385
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        -0.018
+      ],
+      "hotspot": [
+        0,
+        0,
+        -0.0415
+      ]
+    },
+    {
+      "id": "slitLeft",
+      "label": "左狭缝片（固定）",
+      "node": "GratingSpectroscope_slitLeft",
+      "pivot": [
+        -0.004,
+        0,
+        -0.0335
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        -0.018,
+        0,
+        -0.012
+      ],
+      "hotspot": [
+        -0.004,
+        0,
+        -0.0335
+      ],
+      "motionEvidence": "GIA SKU 735032 has a fixed slit; no adjustment mechanism added."
+    },
+    {
+      "id": "slitRight",
+      "label": "右狭缝片（固定）",
+      "node": "GratingSpectroscope_slitRight",
+      "pivot": [
+        0.004,
+        0,
+        -0.0335
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0.018,
+        0,
+        -0.012
+      ],
+      "hotspot": [
+        0.004,
+        0,
+        -0.0335
+      ],
+      "motionEvidence": "GIA SKU 735032 has a fixed slit; no adjustment mechanism added."
+    },
+    {
+      "id": "collimator",
+      "label": "准直透镜（结构示意）",
+      "node": "GratingSpectroscope_collimator",
+      "pivot": [
+        0,
+        0,
+        -0.023500000000000004
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0.017,
+        -0.009
+      ],
+      "hotspot": [
+        0,
+        0,
+        -0.023500000000000004
+      ]
+    },
+    {
+      "id": "grating",
+      "label": "透射光栅（刻线放大示意）",
+      "node": "GratingSpectroscope_grating",
+      "pivot": [
+        0,
+        0,
+        0.004
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0.024,
+        0
+      ],
+      "hotspot": [
+        0,
+        0,
+        0.004
+      ],
+      "illustrative": true,
+      "opticalSimulation": false
+    },
+    {
+      "id": "gratingFrame",
+      "label": "光栅固定框（夹持示意）",
+      "node": "GratingSpectroscope_gratingFrame",
+      "pivot": [
+        0,
+        0,
+        0.004
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        -0.022,
+        0
+      ],
+      "hotspot": [
+        0,
+        0,
+        0.004
+      ],
+      "illustrative": true
+    },
+    {
+      "id": "eyepiece",
+      "label": "固定观察端与目口",
+      "node": "GratingSpectroscope_eyepiece",
+      "pivot": [
+        0,
+        0,
+        0.037500000000000006
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        0.027
+      ],
+      "hotspot": [
+        0,
+        0,
+        0.037500000000000006
+      ],
+      "motionEvidence": "Fixed focus confirmed by GIA; no focus tube, knob or active control."
+    },
+    {
+      "id": "baffles",
+      "label": "镜筒内消光环（示意）",
+      "node": "GratingSpectroscope_baffles",
+      "pivot": [
+        0,
+        0,
+        0.02
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0.023,
+        0,
+        0
+      ],
+      "hotspot": [
+        0,
+        0,
+        0.02
+      ],
+      "illustrative": true
+    }
+  ],
+  "createdAt": "2026-10-07",
+  "constructionNotes": [
+    "Exterior scale is illustrative, inferred from published photographs.",
+    "Hidden optics, supports and distances are teaching diagrams, not verified internal metrology.",
+    "No brand names/logos or source image pixels are embedded.",
+    "Explode offsets are explanatory separation, not mechanical freedoms."
+  ],
+  "boundsNominalMeters": {
+    "length": 0.083,
+    "diameter": 0.0238
+  }
+}

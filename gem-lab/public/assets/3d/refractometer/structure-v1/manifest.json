@@ -1,0 +1,327 @@
+{
+  "id": "refractometer-structure-v1",
+  "version": "structure-1",
+  "model": "model.glb",
+  "sha256": "3a339920141367d42ebae4177a08dac350891ed595e32e2414eac70f9cf80ae6",
+  "byteLength": 2300432,
+  "units": "meter",
+  "dimensionsCalibrated": false,
+  "teachingOpticsSimulated": false,
+  "internalOpticsIllustrative": true,
+  "opticalSimulation": false,
+  "parts": [
+    {
+      "id": "body",
+      "label": "机身外壳",
+      "node": "Refractometer_body",
+      "pivot": [
+        0,
+        0,
+        0
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        -0.115,
+        0,
+        0
+      ],
+      "hotspot": [
+        0.036,
+        0.034,
+        0
+      ],
+      "evidenceNote": "轮廓由 Gem-A 官方两视角约束，尺寸为教学设计值；未复刻品牌标识。"
+    },
+    {
+      "id": "metal_stage",
+      "label": "金属测台",
+      "node": "Refractometer_metal_stage",
+      "pivot": [
+        0,
+        0.0624,
+        -0.02
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0,
+        0.075,
+        0
+      ],
+      "hotspot": [
+        0.025,
+        0.064,
+        -0.007
+      ],
+      "evidenceNote": "固定金属台；中央为真实通孔，玻璃顶面与测面齐平。"
+    },
+    {
+      "id": "test_prism",
+      "label": "高折射率玻璃测台棱镜",
+      "node": "Refractometer_test_prism",
+      "pivot": [
+        0,
+        0.06355,
+        -0.016
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.07,
+        0.08,
+        0
+      ],
+      "hotspot": [
+        0,
+        0.0636,
+        -0.016
+      ],
+      "evidenceNote": "可见矩形测面有照片依据；曲面采用半圆柱教学示意，Gem-A 具体内部形状未经证实。"
+    },
+    {
+      "id": "cover",
+      "label": "后铰遮光盖",
+      "node": "Refractometer_cover",
+      "pivot": [
+        0.0,
+        0.064,
+        -0.083
+      ],
+      "rotationAxisLocal": [
+        1,
+        0,
+        0
+      ],
+      "rotatable": true,
+      "explodeOffset": [
+        0,
+        0.035,
+        -0.065
+      ],
+      "hotspot": [
+        0.031,
+        0.127,
+        -0.103
+      ],
+      "evidenceNote": "后部横向铰轴有两视角依据；默认开角102°，0°为闭盖。限位为教学值。",
+      "defaultAngleDegrees": 102,
+      "angleLimitsDegrees": [
+        0,
+        110
+      ],
+      "angleConvention": "rotation about glTF local +X = negative opening angle; zero closes cover"
+    },
+    {
+      "id": "eyepiece",
+      "label": "目镜与调焦套筒",
+      "node": "Refractometer_eyepiece",
+      "pivot": [
+        0.0,
+        0.048,
+        0.073
+      ],
+      "rotationAxisLocal": [
+        0.0,
+        0.8987941,
+        0.4383711
+      ],
+      "rotatable": true,
+      "explodeOffset": [
+        0.0,
+        0.0719035,
+        0.0350697
+      ],
+      "hotspot": [
+        0.0,
+        0.0704699,
+        0.0839593
+      ],
+      "evidenceNote": "外形依据照片；轴向调焦行程及螺距未核定，演示平移上限2 mm。",
+      "translationAxisLocal": [
+        0.0,
+        0.8987941,
+        0.4383711
+      ],
+      "translationRangeMeters": [
+        0,
+        0.002
+      ]
+    },
+    {
+      "id": "polarizer",
+      "label": "可拆旋转偏光片",
+      "node": "Refractometer_polarizer",
+      "pivot": [
+        0.0,
+        0.0758626,
+        0.0865895
+      ],
+      "rotationAxisLocal": [
+        0.0,
+        0.8987941,
+        0.4383711
+      ],
+      "rotatable": true,
+      "explodeOffset": [
+        0.0,
+        0.1168432,
+        0.0569882
+      ],
+      "hotspot": [
+        0.0,
+        0.083053,
+        0.0900965
+      ],
+      "evidenceNote": "可拆偏光片由官方产品说明证实；无固定方位光学标定。",
+      "detachmentAxis": [
+        0.0,
+        0.8987941,
+        0.4383711
+      ]
+    },
+    {
+      "id": "internal_scale",
+      "label": "内部标尺位置示意",
+      "node": "Refractometer_internal_scale",
+      "pivot": [
+        0,
+        0.028,
+        0.026
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.085,
+        0.055,
+        0.02
+      ],
+      "hotspot": [
+        0,
+        0.031,
+        0.026
+      ],
+      "evidenceNote": "位于棱镜到折返反射镜的光路区；位置/角度及刻线为教学示意，不是可用于读数的校准标尺。"
+    },
+    {
+      "id": "reflector",
+      "label": "内部折返反射镜示意",
+      "node": "Refractometer_reflector",
+      "pivot": [
+        0,
+        0.024,
+        0.055
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        -0.075,
+        0.038,
+        0.025
+      ],
+      "hotspot": [
+        0,
+        0.027,
+        0.055
+      ],
+      "evidenceNote": "反射镜承担折返光路的原理有教材依据；倾角及曲率未经厂家核实。"
+    },
+    {
+      "id": "light_port",
+      "label": "后部进光口与单色滤光片示意",
+      "node": "Refractometer_light_port",
+      "pivot": [
+        0,
+        0.034,
+        -0.091
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        -0.072
+      ],
+      "hotspot": [
+        0,
+        0.034,
+        -0.094
+      ],
+      "evidenceNote": "内置单色滤光片有官方说明；此参考未展示背面，后部小型入光口位置属于教学补足。"
+    }
+  ],
+  "coordinateSystem": "glTF right-handed Y-up. X width, -Z rearward. Native Blender points converted (x,y,z)->(x,z,-y).",
+  "nominalDimensions": {
+    "bodyWidthMeters": 0.073,
+    "bodyLengthMeters": 0.195,
+    "bodyHeightMeters": 0.0555,
+    "note": "Teaching design proportions, not measured manufacturer dimensions."
+  },
+  "boundsNative": {
+    "min": [
+      -0.037300001829862595,
+      -0.11348716914653778,
+      0.0015000002458691597
+    ],
+    "max": [
+      0.037300001829862595,
+      0.13991793990135193,
+      0.18611963093280792
+    ]
+  },
+  "opticalBehavior": "Static geometry for structural teaching; no calibrated critical-angle simulation or real RI readout.",
+  "sourceCandidate": {
+    "present": true,
+    "file": "assets-source/refractometer/tripo-trials/2026-10-07/candidate.glb",
+    "geometryRetained": false,
+    "decision": "Rule surfaces rebuilt from official image constraints; raw candidate retained separately for comparison, not authoritative internal geometry.",
+    "sha256": "0851c6495bc66e9cd90163b90c36e94eecf28d66567e0a6292cc2ccb44ba7f8a",
+    "bytes": 60056824,
+    "generation": {
+      "instrument": "refractometer",
+      "state": "downloaded",
+      "model": "H3.1",
+      "quality": "highest",
+      "privacy": "private",
+      "generateParts": false,
+      "eightK": false,
+      "quote": 55,
+      "balanceBefore": 6090,
+      "taskId": "0975d454-e1f2-4050-a584-8729ffe41ba5",
+      "actualCost": 55,
+      "input": "gem-lab/assets-source/refractometer/references/gem-a-ref0006-front.jpg",
+      "balanceAfter": 6035,
+      "submittedAt": "2026-10-07T07:26:54.760942+00:00",
+      "candidate": "gem-lab/assets-source/refractometer/tripo-trials/2026-10-07/candidate.glb",
+      "bytes": 60056824,
+      "sha256": "0851c6495bc66e9cd90163b90c36e94eecf28d66567e0a6292cc2ccb44ba7f8a",
+      "textureResolution": "4k"
+    },
+    "review": "Four-angle Tripo inspection: consistent box/eyepiece/cover silhouette; fused parts, opaque optics and distorted manufacturer lettering removed during reconstruction."
+  },
+  "createdAt": "2026-10-07T07:52:53.492087+00:00"
+}

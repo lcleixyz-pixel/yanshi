@@ -1,0 +1,366 @@
+{
+  "id": "prism-spectroscope-structure-v1",
+  "version": "structure-1",
+  "model": "model.glb",
+  "sha256": "aaca601e609a3b0f53ebec09abde059cb5721caea6509e7c97dc40fc1926cbbc",
+  "byteLength": 1229652,
+  "units": "meters",
+  "dimensionsCalibrated": false,
+  "teachingOpticsSimulated": false,
+  "internalOpticsIllustrative": true,
+  "opticalSimulation": false,
+  "opticalAxisLocal": [
+    0,
+    0,
+    1
+  ],
+  "entryDirection": "-Z",
+  "observationDirection": "+Z",
+  "parts": [
+    {
+      "id": "barrel",
+      "label": "消光主镜筒",
+      "node": "PrismSpectroscope_barrel",
+      "pivot": [
+        0,
+        0,
+        0
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        0
+      ],
+      "hotspot": [
+        0,
+        0.0128,
+        0
+      ]
+    },
+    {
+      "id": "slitHousing",
+      "label": "入光端与狭缝座",
+      "node": "PrismSpectroscope_slitHousing",
+      "pivot": [
+        0,
+        0,
+        -0.06949999999999999
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        -0.018
+      ],
+      "hotspot": [
+        0,
+        0,
+        -0.0725
+      ]
+    },
+    {
+      "id": "slitLeft",
+      "label": "左狭缝片（开合示意）",
+      "node": "PrismSpectroscope_slitLeft",
+      "pivot": [
+        -0.004,
+        0,
+        -0.0645
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": true,
+      "explodeOffset": [
+        -0.018,
+        0,
+        -0.012
+      ],
+      "hotspot": [
+        -0.004,
+        0,
+        -0.0645
+      ],
+      "translationAxisLocal": [
+        -1,
+        0,
+        0
+      ],
+      "translationRange": [
+        0,
+        0.00065
+      ],
+      "motionEvidence": "Opening is a teaching mechanism only; selected product linkage/scale is unverified."
+    },
+    {
+      "id": "slitRight",
+      "label": "右狭缝片（开合示意）",
+      "node": "PrismSpectroscope_slitRight",
+      "pivot": [
+        0.004,
+        0,
+        -0.0645
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": true,
+      "explodeOffset": [
+        0.018,
+        0,
+        -0.012
+      ],
+      "hotspot": [
+        0.004,
+        0,
+        -0.0645
+      ],
+      "translationAxisLocal": [
+        1,
+        0,
+        0
+      ],
+      "translationRange": [
+        0,
+        0.00065
+      ],
+      "motionEvidence": "Opening is a teaching mechanism only; selected product linkage/scale is unverified."
+    },
+    {
+      "id": "collimator",
+      "label": "准直透镜（结构示意）",
+      "node": "PrismSpectroscope_collimator",
+      "pivot": [
+        0,
+        0,
+        -0.05449999999999999
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0.017,
+        -0.009
+      ],
+      "hotspot": [
+        0,
+        0,
+        -0.05449999999999999
+      ]
+    },
+    {
+      "id": "prismTrain",
+      "label": "直视棱镜组（数量与排布示意）",
+      "node": "PrismSpectroscope_prismTrain",
+      "pivot": [
+        0,
+        0,
+        -0.011
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0.026,
+        0
+      ],
+      "hotspot": [
+        0,
+        0,
+        -0.011
+      ],
+      "illustrative": true,
+      "opticalSimulation": false
+    },
+    {
+      "id": "prismCarrier",
+      "label": "棱镜夹持架（结构示意）",
+      "node": "PrismSpectroscope_prismCarrier",
+      "pivot": [
+        0,
+        0,
+        -0.011
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        -0.024,
+        0
+      ],
+      "hotspot": [
+        0,
+        0,
+        -0.011
+      ],
+      "illustrative": true
+    },
+    {
+      "id": "focusTube",
+      "label": "调焦管",
+      "node": "PrismSpectroscope_focusTube",
+      "pivot": [
+        0,
+        0,
+        0.0465
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": true,
+      "explodeOffset": [
+        0,
+        0,
+        0.025
+      ],
+      "hotspot": [
+        0,
+        0,
+        0.0465
+      ],
+      "translationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "translationRange": [
+        0,
+        0.012
+      ],
+      "motionEvidence": "Focus adjustment confirmed by Gem-A; axis and illustrative travel are not measured."
+    },
+    {
+      "id": "eyepiece",
+      "label": "观察端与目口",
+      "node": "PrismSpectroscope_eyepiece",
+      "pivot": [
+        0,
+        0,
+        0.06949999999999999
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        0.047
+      ],
+      "hotspot": [
+        0,
+        0,
+        0.06949999999999999
+      ],
+      "integralWith": "focusTube",
+      "parentPart": "focusTube"
+    },
+    {
+      "id": "sideControl",
+      "label": "侧调节钮（功能对应待核实）",
+      "node": "PrismSpectroscope_sideControl",
+      "pivot": [
+        0.0148,
+        0,
+        0.050499999999999996
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0.016,
+        0,
+        0.012
+      ],
+      "hotspot": [
+        0.0148,
+        0,
+        0.050499999999999996
+      ],
+      "functionUnverified": true
+    },
+    {
+      "id": "baffles",
+      "label": "镜筒内消光环（示意）",
+      "node": "PrismSpectroscope_baffles",
+      "pivot": [
+        0,
+        0,
+        0.023
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0.023,
+        0,
+        0
+      ],
+      "hotspot": [
+        0,
+        0,
+        0.023
+      ],
+      "illustrative": true
+    }
+  ],
+  "createdAt": "2026-10-07",
+  "constructionNotes": [
+    "Exterior scale is illustrative, inferred from published photographs.",
+    "Hidden optics, supports and distances are teaching diagrams, not verified internal metrology.",
+    "No brand names/logos or source image pixels are embedded.",
+    "Explode offsets are explanatory separation, not mechanical freedoms."
+  ],
+  "boundsNominalMeters": {
+    "length": 0.145,
+    "diameter": 0.0256
+  }
+}

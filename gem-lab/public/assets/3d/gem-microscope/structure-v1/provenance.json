@@ -1,0 +1,98 @@
+{
+  "id": "gem-microscope-structure-v1",
+  "date": "2026-10-07",
+  "status": "technical_checks_passed_awaiting_user_appearance_review",
+  "dimensionsCalibrated": false,
+  "manufacturerAuthorizedDigitalTwin": false,
+  "modelSha256": "939669f42e4c9e734ee298b182f056200d86bf0b07eb1bf07c9cfe35f1974ec6",
+  "method": {
+    "cloud": "One unmodified Tripo Studio H3.1 candidate from the manufacturer catalogue photograph; kept in assets-source and as a hidden reference collection in the editable master.",
+    "finalGeometry": "All 85 final manufactured mesh surfaces are a source-constrained parametric reconstruction. No Tripo triangles or source-photo pixels are included in the web GLB. This is not a claim of direct cloud-mesh repair.",
+    "reconstruction": "Elliptical housing lofts, contoured arm and optical head profiles, actual through aperture, closed iris lamellae, separate clamp wires, two oculars, camera port, independent control knobs and two gooseneck lights.",
+    "materials": "Eight authored PBR materials; glass uses glTF transmission/IOR. No photographic highlights or manufacturer branding baked into base color."
+  },
+  "cloudGeneration": {
+    "model": "H3.1",
+    "quality": "highest",
+    "privacy": "private",
+    "generateParts": false,
+    "textureResolution": "4k",
+    "taskId": "90bc057d-ece4-4872-b003-0ee90b415e52",
+    "actualCost": 55,
+    "sha256": "fbb352d1a771a5e049e63e0f587e3dfe8445efd1d4d8cf0d114de756f2b8fce0"
+  },
+  "sources": [
+    {
+      "id": "kruess-ksw6000-page",
+      "url": "https://kruess-shop.de/en/products/gemstone-microscopes/stereo-microscopes/stereo-gemstone-microscope/",
+      "author": "A. KRÜSS Optronic GmbH",
+      "title": "Stereo gemstone microscope, KSW6000",
+      "license": "未发现开放再发布许可；版权归原作者/厂家。"
+    },
+    {
+      "id": "kruess-catalogue-2025",
+      "url": "https://www.kruess.com/wp-content/uploads/wpfd/preview_files/Microscopes-product-catalogue%283de78319f256b3060f1b8e51fd0fe727%29.pdf",
+      "author": "A. KRÜSS Optronic GmbH",
+      "title": "Microscopes product catalogue Version 7.5, copyright 2025",
+      "license": "未发现开放再发布许可；版权归原作者/厂家。"
+    },
+    {
+      "id": "unitron-z645-page",
+      "url": "https://microscopes.unitronusa.com/unitron-microscopes/unitron-stereo-microscopes/series/z645/z645-gemological-zoom-stereo-microscope-on-led-stand.html",
+      "author": "UNITRON",
+      "title": "Z645 Gemological Zoom Stereo Microscope on LED Stand",
+      "license": "未发现开放再发布许可；版权归原作者/厂家。"
+    },
+    {
+      "id": "meiji-iris-crosscheck",
+      "url": "https://meijitechno.com/product/gmz-51bf-df-binocular-stereo-gmz-microscope/",
+      "author": "Meiji Techno America",
+      "title": "GMZ-51 Brightfield/Darkfield Gem Trinocular Zoom Stereo Microscope System",
+      "license": "未发现开放再发布许可；版权归原作者/厂家。"
+    }
+  ],
+  "usageBoundary": [
+    "Source photos/PDFs have no verified open redistribution license. They remain only in assets-source; do not copy to public or docs.",
+    "User authorized this private cloud generation. This provenance does not grant manufacturer image/design rights or independently certify Tripo service licensing.",
+    "Unbranded generic teaching configuration based on public references, not manufacturer CAD or a calibrated digital twin."
+  ],
+  "unverifiedStructure": [
+    "Exact product dimensions, material grades, focus transmission and zoom cams",
+    "Eight-blade iris geometry, central darkfield stop, reflector and light-emitting window are functional-location teaching schematics",
+    "Internal paired stereo optical channels are not reconstructed; the lower glass represents an external protective optical face only",
+    "Rear/base surfaces and simple switch housing are generic reconstructions, not measured product details",
+    "Flexible goosenecks are fixed shaped meshes; no single rigid rotation represents their real deformation"
+  ],
+  "verification": {
+    "glTFValidator": {
+      "errors": 0,
+      "warnings": 0,
+      "infos": 51,
+      "hints": 0,
+      "truncated": false
+    },
+    "nodes": 100,
+    "meshes": 85,
+    "triangles": 87564,
+    "byteLength": 1621208,
+    "closedMeshSurfaces": 85,
+    "missingPartNodesAfterBlenderReimport": [],
+    "sourceCandidateSha256Unchanged": true,
+    "browserAppearanceVerified": false,
+    "userAppearanceAccepted": false,
+    "parts": 15
+  },
+  "rebuildScript": "gem-lab/tools/3d-assets/build_gem_microscope.py",
+  "pending": [
+    "User review of overall silhouette, optical head shoulder and source photograph approximation",
+    "Web viewer material/interaction acceptance after asset integration",
+    "Real instrument dimensions/rotation ranges only if a calibrated representation is later requested"
+  ],
+  "irisMechanics": {
+    "fixedBladePartId": "iris",
+    "rotatingControlPartId": "irisControl",
+    "controlAngleChangesAperture": false,
+    "bladeLinkageModeled": false,
+    "note": "操纵环的旋转只表达其操作轴；实际开孔变化必须另建可验证叶片联动，不能转动整个叶片组冒充。"
+  }
+}

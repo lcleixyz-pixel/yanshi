@@ -1,0 +1,49 @@
+{
+  "verifiedAt": "2026-10-05T09:29:36.124Z",
+  "browser": "Codex In-app Browser",
+  "url": "http://127.0.0.1:5178/assets-source/polariscope/tripo-trials/2026-10-05/A-original/index.html",
+  "asset": "repaired.glb",
+  "sha256": "0d4eb62f630e74915d31524010e51e1ce031c9b50f00314a1195b7c8ce469a7b",
+  "checks": [
+    {
+      "name": "最终模型加载",
+      "pass": true,
+      "parts": 8,
+      "meshes": 29,
+      "triangles": 641461
+    },
+    {
+      "name": "直接点击三维侧面按钮开灯，页面电源控件同步",
+      "pass": true,
+      "screenshot": "browser-switch-on.png"
+    },
+    {
+      "name": "Enter 开灯、Space 关灯",
+      "pass": true
+    },
+    {
+      "name": "查看内部光源，壳体透明并显示外包络",
+      "pass": true,
+      "screenshot": "browser-internal-on.png"
+    },
+    {
+      "name": "聚焦内部光源自动展开内部结构，底座仍在取景中",
+      "pass": true
+    },
+    {
+      "name": "100% 拆解时内源留在底座内，顶孔可见",
+      "pass": true,
+      "screenshot": "browser-exploded-internal.png"
+    },
+    {
+      "name": "完整复位恢复0%拆解、0度角度、断电、关闭透视",
+      "pass": true
+    },
+    {
+      "name": "切换原件禁用新增控件，再切回修整版成功",
+      "pass": true
+    }
+  ],
+  "consoleWarningsAndErrors": [],
+  "scope": "对照页的结构与交互验收；未进行正式应用接入、Safari/Chrome 性能验收、实物尺寸校准或偏振光学仿真。"
+}

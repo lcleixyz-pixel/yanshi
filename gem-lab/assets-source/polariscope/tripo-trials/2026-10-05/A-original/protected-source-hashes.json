@@ -1,0 +1,6 @@
+{
+  "gem-lab/assets-source/polariscope/polariscope-master.blend": "561ee72ee101b51bcb9f63f641e36de64bb9a7a54735676a30e2c08b917ba7bf",
+  "gem-lab/assets-source/polariscope/parameters.json": "2fb2c31d6813ef61db9c4c822b27eca0fb0f356462abbb4d20eaab0a9a236b7a",
+  "gem-lab/public/assets/3d/polariscope/polariscope.glb": "c72a598eddf78efddbd5a1dfb9da1deb82e00cc0aa06fc9df22a8fcdd5373559",
+  "gem-lab/tools/3d-assets/blender/build_polariscope.py": "1864863f2ae0696607966dd0fe28e5997ef6b522f55175e08de8f6b443fdefad"
+}

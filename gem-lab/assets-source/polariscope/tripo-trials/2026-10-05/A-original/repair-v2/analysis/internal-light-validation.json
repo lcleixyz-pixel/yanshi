@@ -1,0 +1,3478 @@
+{
+  "sourceSha256": "0d4eb62f630e74915d31524010e51e1ce031c9b50f00314a1195b7c8ce469a7b",
+  "coordinateSystem": "glTF Y-up; native Blender [x,y,z] maps to [x,z,-y]",
+  "scope": "Exported assembled geometry and metadata only; sampled rays are not a continuous proof or a physical photometric simulation.",
+  "checks": {
+    "manifestHashMatches": true,
+    "eightIndependentParts": true,
+    "manifestPivotsMatch": true,
+    "hasInternalEmitter": true,
+    "lightFullyWithinBase": true,
+    "lightStaysWithBaseWhenExploded": true,
+    "opticalRaysReachEmitter": true,
+    "baseTopApertureOpen": true,
+    "upperOpticalBoreOpen": true,
+    "hollowBaseEvidenced": true,
+    "noOldExternalLightMeshes": true,
+    "exitLipIsNonemissive": true,
+    "powerSwitchTaggedAndNonemissive": true,
+    "powerSwitchStaysWithBaseWhenExploded": true,
+    "visibleEndSwitch": true
+  },
+  "allChecksPassed": true,
+  "meshCount": 29,
+  "triangles": 641461,
+  "parts": [
+    {
+      "id": "base",
+      "independentRoot": true,
+      "pivot": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "manifestPivotDelta": 0.0,
+      "explodeOffset": [
+        0,
+        0,
+        0
+      ],
+      "extras": {
+        "teachingPart": "base",
+        "label": "底座",
+        "dimensionsCalibrated": false,
+        "provenance": "Tripo candidate repair; teaching relationship from existing project reference"
+      }
+    },
+    {
+      "id": "frame",
+      "independentRoot": true,
+      "pivot": [
+        -0.460999995470047,
+        0.41999998688697815,
+        0.0
+      ],
+      "manifestPivotDelta": 1.3113021835042815e-08,
+      "explodeOffset": [
+        -0.23,
+        0,
+        0
+      ],
+      "extras": {
+        "teachingPart": "frame",
+        "label": "折板支架",
+        "dimensionsCalibrated": false,
+        "provenance": "Tripo candidate repair; teaching relationship from existing project reference"
+      }
+    },
+    {
+      "id": "light",
+      "independentRoot": true,
+      "pivot": [
+        0.17800000309944153,
+        0.3499999940395355,
+        0.0
+      ],
+      "manifestPivotDelta": 5.960464455334602e-09,
+      "explodeOffset": [
+        0,
+        0,
+        0
+      ],
+      "extras": {
+        "teachingPart": "light",
+        "label": "底座内部光源",
+        "dimensionsCalibrated": false,
+        "provenance": "Tripo candidate repair; teaching relationship from existing project reference",
+        "installation": "fixed inside base; not an external optical sheet",
+        "evidence": "Location confirmed by user; emitter module form is schematic"
+      }
+    },
+    {
+      "id": "polarizer",
+      "independentRoot": true,
+      "pivot": [
+        0.17800000309944153,
+        0.45500001311302185,
+        0.0
+      ],
+      "manifestPivotDelta": 1.3113021835042815e-08,
+      "explodeOffset": [
+        0,
+        0.2,
+        0
+      ],
+      "extras": {
+        "teachingPart": "polarizer",
+        "label": "下偏光片",
+        "dimensionsCalibrated": false,
+        "provenance": "Tripo candidate repair; teaching relationship from existing project reference"
+      }
+    },
+    {
+      "id": "stage",
+      "independentRoot": true,
+      "pivot": [
+        0.17800000309944153,
+        0.4950000047683716,
+        0.0
+      ],
+      "manifestPivotDelta": 4.768371586472142e-09,
+      "explodeOffset": [
+        0,
+        0.32,
+        0
+      ],
+      "extras": {
+        "teachingPart": "stage",
+        "label": "载物台",
+        "dimensionsCalibrated": false,
+        "provenance": "Tripo candidate repair; teaching relationship from existing project reference"
+      }
+    },
+    {
+      "id": "analyzer",
+      "independentRoot": true,
+      "pivot": [
+        0.17800000309944153,
+        0.9470000267028809,
+        0.0
+      ],
+      "manifestPivotDelta": 2.6702880906448456e-08,
+      "explodeOffset": [
+        0,
+        0.34,
+        0
+      ],
+      "extras": {
+        "teachingPart": "analyzer",
+        "label": "上偏光片",
+        "dimensionsCalibrated": false,
+        "provenance": "Tripo candidate repair; teaching relationship from existing project reference"
+      }
+    },
+    {
+      "id": "conoscope",
+      "independentRoot": true,
+      "pivot": [
+        -0.19740000367164612,
+        0.7272999882698059,
+        0.24899999797344208
+      ],
+      "manifestPivotDelta": 1.1730194038328534e-08,
+      "explodeOffset": [
+        0,
+        0.06,
+        0.24
+      ],
+      "extras": {
+        "teachingPart": "conoscope",
+        "label": "干涉球",
+        "dimensionsCalibrated": false,
+        "provenance": "Tripo candidate repair; teaching relationship from existing project reference"
+      }
+    },
+    {
+      "id": "powerSwitch",
+      "independentRoot": true,
+      "pivot": [
+        0.4779999852180481,
+        0.21899999678134918,
+        0.0
+      ],
+      "manifestPivotDelta": 1.478195188475695e-08,
+      "explodeOffset": [
+        0,
+        0,
+        0
+      ],
+      "extras": {
+        "teachingPart": "powerSwitch",
+        "label": "电源按钮",
+        "dimensionsCalibrated": false,
+        "provenance": "Tripo candidate repair; teaching relationship from existing project reference"
+      }
+    }
+  ],
+  "baseEnvelope": [
+    [
+      -0.474,
+      0.067,
+      -0.314
+    ],
+    [
+      0.468,
+      0.425,
+      0.314
+    ]
+  ],
+  "internalLightMeshes": [
+    {
+      "name": "Internal_light_emitting_surface",
+      "min": [
+        0.03700000047683716,
+        0.37550000404007733,
+        -0.14100000262260437
+      ],
+      "max": [
+        0.3190000057220459,
+        0.37850000406615436,
+        0.14100000262260437
+      ],
+      "material": "Repair_internal_light_emitter",
+      "extras": {
+        "teachingPart": "light",
+        "provenance": "rebuilt analytic geometry",
+        "opticalRole": "emitter",
+        "locationRole": "inside-base"
+      }
+    },
+    {
+      "name": "Internal_light_module_body",
+      "min": [
+        0.02799999713897705,
+        0.32400000654160976,
+        -0.15000000596046448
+      ],
+      "max": [
+        0.328000009059906,
+        0.3740000072866678,
+        0.15000000596046448
+      ],
+      "material": "Repair_satin_black",
+      "extras": {
+        "teachingPart": "light",
+        "provenance": "rebuilt analytic geometry"
+      }
+    },
+    {
+      "name": "Internal_light_module_recess",
+      "min": [
+        0.02799999713897705,
+        0.3739999870304018,
+        -0.15000000596046448
+      ],
+      "max": [
+        0.328000009059906,
+        0.37999998731538653,
+        0.15000000596046448
+      ],
+      "material": "Repair_satin_black",
+      "extras": {
+        "clearAperture": 0.142,
+        "teachingPart": "light",
+        "provenance": "rebuilt analytic geometry"
+      }
+    }
+  ],
+  "emitterMaterials": [
+    {
+      "name": "Internal_light_emitting_surface",
+      "material": "Repair_internal_light_emitter",
+      "effectiveEmission": [
+        2.0999999046325684,
+        1.4489999291896822,
+        0.6719999544620521
+      ]
+    }
+  ],
+  "translucentOptics": [
+    {
+      "name": "Analyzer_independent_glass",
+      "transmission": 0.9800000190734863
+    },
+    {
+      "name": "Conoscope_clear_lens",
+      "transmission": 1
+    },
+    {
+      "name": "Fixed_lower_polarizer_glass",
+      "transmission": 0.9800000190734863
+    },
+    {
+      "name": "Stage_clear_sample_support",
+      "transmission": 1
+    }
+  ],
+  "opticalRayTest": {
+    "probeCount": 97,
+    "failCount": 0,
+    "probes": [
+      {
+        "offsetXZ": [
+          0.0,
+          0.0
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.025,
+          0.0
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.02309698831278217,
+          0.009567085809127246
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.01767766952966369,
+          0.017677669529663688
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.009567085809127247,
+          0.02309698831278217
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          1.5308084989341916e-18,
+          0.025
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.009567085809127244,
+          0.02309698831278217
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.017677669529663688,
+          0.01767766952966369
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.02309698831278217,
+          0.009567085809127247
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.025,
+          3.061616997868383e-18
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.023096988312782174,
+          -0.009567085809127242
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.01767766952966369,
+          -0.017677669529663688
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.00956708580912726,
+          -0.023096988312782164
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -4.592425496802574e-18,
+          -0.025
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.00956708580912725,
+          -0.023096988312782167
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.017677669529663684,
+          -0.01767766952966369
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.023096988312782164,
+          -0.009567085809127261
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.05,
+          0.0
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.04619397662556434,
+          0.01913417161825449
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.03535533905932738,
+          0.035355339059327376
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.019134171618254495,
+          0.04619397662556434
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          3.061616997868383e-18,
+          0.05
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.019134171618254488,
+          0.04619397662556434
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.035355339059327376,
+          0.03535533905932738
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.04619397662556434,
+          0.019134171618254495
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.05,
+          6.123233995736766e-18
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.04619397662556435,
+          -0.019134171618254484
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.03535533905932738,
+          -0.035355339059327376
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.01913417161825452,
+          -0.04619397662556433
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -9.184850993605149e-18,
+          -0.05
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.0191341716182545,
+          -0.046193976625564334
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.03535533905932737,
+          -0.03535533905932738
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.04619397662556433,
+          -0.019134171618254522
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.075,
+          0.0
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.06929096493834651,
+          0.02870125742738173
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.053033008588991064,
+          0.05303300858899106
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.028701257427381735,
+          0.06929096493834651
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          4.592425496802574e-18,
+          0.075
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.028701257427381728,
+          0.06929096493834651
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.05303300858899106,
+          0.053033008588991064
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.06929096493834651,
+          0.028701257427381742
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.075,
+          9.184850993605149e-18
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.06929096493834651,
+          -0.028701257427381725
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.05303300858899108,
+          -0.05303300858899106
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.028701257427381773,
+          -0.06929096493834648
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -1.3777276490407722e-17,
+          -0.075
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.02870125742738175,
+          -0.0692909649383465
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.05303300858899105,
+          -0.05303300858899108
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.06929096493834648,
+          -0.028701257427381777
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.1,
+          0.0
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.09238795325112868,
+          0.03826834323650898
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.07071067811865477,
+          0.07071067811865475
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.03826834323650899,
+          0.09238795325112868
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          6.123233995736766e-18,
+          0.1
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.038268343236508975,
+          0.09238795325112868
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.07071067811865475,
+          0.07071067811865477
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.09238795325112868,
+          0.03826834323650899
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.1,
+          1.2246467991473533e-17
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.0923879532511287,
+          -0.03826834323650897
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.07071067811865477,
+          -0.07071067811865475
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.03826834323650904,
+          -0.09238795325112865
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -1.8369701987210297e-17,
+          -0.1
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.038268343236509,
+          -0.09238795325112867
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.07071067811865474,
+          -0.07071067811865477
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.09238795325112865,
+          -0.038268343236509045
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.125,
+          0.0
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.11548494156391084,
+          0.04783542904563622
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.08838834764831845,
+          0.08838834764831843
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.04783542904563623,
+          0.11548494156391084
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          7.654042494670958e-18,
+          0.125
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.047835429045636216,
+          0.11548494156391084
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.08838834764831843,
+          0.08838834764831845
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.11548494156391084,
+          0.04783542904563624
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.125,
+          1.5308084989341915e-17
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.11548494156391086,
+          -0.04783542904563621
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.08838834764831846,
+          -0.08838834764831843
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.04783542904563629,
+          -0.11548494156391081
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -2.296212748401287e-17,
+          -0.125
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.04783542904563625,
+          -0.11548494156391083
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.08838834764831842,
+          -0.08838834764831846
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.11548494156391081,
+          -0.0478354290456363
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.139,
+          0.0
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.12841925501906887,
+          0.05319299709874748
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.09828784258493012,
+          0.0982878425849301
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.053192997098747495,
+          0.12841925501906887
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          8.511295254074106e-18,
+          0.139
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.053192997098747474,
+          0.12841925501906887
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.0982878425849301,
+          0.09828784258493012
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.12841925501906887,
+          0.0531929970987475
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.139,
+          1.7022590508148212e-17
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.1284192550190689,
+          -0.05319299709874747
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.09828784258493013,
+          -0.0982878425849301
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.053192997098747564,
+          -0.12841925501906884
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -2.5533885762222316e-17,
+          -0.139
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.053192997098747516,
+          -0.12841925501906884
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.09828784258493009,
+          -0.09828784258493013
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.12841925501906884,
+          -0.05319299709874757
+        ],
+        "emitterHits": [
+          {
+            "mesh": "Internal_light_emitting_surface",
+            "positions": [
+              0.3755,
+              0.3785
+            ]
+          }
+        ],
+        "emitterTop": 0.3785,
+        "opaqueHits": []
+      }
+    ]
+  },
+  "baseApertureTest": {
+    "probeCount": 97,
+    "failCount": 0,
+    "probes": [
+      {
+        "offsetXZ": [
+          0.0,
+          0.0
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.04,
+          0.0
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.03695518130045147,
+          0.015307337294603592
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.028284271247461905,
+          0.028284271247461898
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.015307337294603594,
+          0.03695518130045147
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          2.4492935982947064e-18,
+          0.04
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.015307337294603589,
+          0.03695518130045147
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.028284271247461898,
+          0.028284271247461905
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.03695518130045147,
+          0.015307337294603596
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.04,
+          4.898587196589413e-18
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.03695518130045147,
+          -0.015307337294603587
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.02828427124746191,
+          -0.028284271247461898
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.015307337294603613,
+          -0.03695518130045146
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -7.347880794884118e-18,
+          -0.04
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.015307337294603601,
+          -0.036955181300451466
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.028284271247461894,
+          -0.02828427124746191
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.03695518130045146,
+          -0.015307337294603617
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.08,
+          0.0
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.07391036260090295,
+          0.030614674589207184
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.05656854249492381,
+          0.056568542494923796
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.030614674589207188,
+          0.07391036260090295
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          4.898587196589413e-18,
+          0.08
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.030614674589207178,
+          0.07391036260090295
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.056568542494923796,
+          0.05656854249492381
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.07391036260090295,
+          0.03061467458920719
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.08,
+          9.797174393178826e-18
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.07391036260090295,
+          -0.030614674589207174
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.05656854249492382,
+          -0.056568542494923796
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.030614674589207226,
+          -0.07391036260090292
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -1.4695761589768237e-17,
+          -0.08
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.030614674589207202,
+          -0.07391036260090293
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.05656854249492379,
+          -0.05656854249492382
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.07391036260090292,
+          -0.030614674589207233
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.12,
+          0.0
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.1108655439013544,
+          0.04592201188381077
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.08485281374238571,
+          0.0848528137423857
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.04592201188381078,
+          0.1108655439013544
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          7.347880794884118e-18,
+          0.12
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.045922011883810766,
+          0.1108655439013544
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.0848528137423857,
+          0.08485281374238571
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.1108655439013544,
+          0.04592201188381079
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.12,
+          1.4695761589768237e-17
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.11086554390135442,
+          -0.04592201188381076
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.08485281374238572,
+          -0.0848528137423857
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.045922011883810836,
+          -0.11086554390135438
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -2.2043642384652355e-17,
+          -0.12
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.0459220118838108,
+          -0.11086554390135439
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.08485281374238568,
+          -0.08485281374238572
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.11086554390135438,
+          -0.04592201188381084
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.15,
+          0.0
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.13858192987669302,
+          0.05740251485476346
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.10606601717798213,
+          0.10606601717798211
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.05740251485476347,
+          0.13858192987669302
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          9.184850993605149e-18,
+          0.15
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.057402514854763456,
+          0.13858192987669302
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.10606601717798211,
+          0.10606601717798213
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.13858192987669302,
+          0.057402514854763484
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.15,
+          1.8369701987210297e-17
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.13858192987669302,
+          -0.05740251485476345
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.10606601717798216,
+          -0.10606601717798211
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.057402514854763546,
+          -0.13858192987669296
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -2.7554552980815445e-17,
+          -0.15
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.0574025148547635,
+          -0.138581929876693
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.1060660171779821,
+          -0.10606601717798216
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.13858192987669296,
+          -0.05740251485476355
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.158,
+          0.0
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.14597296613678332,
+          0.06046398231368419
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.11172287142747452,
+          0.1117228714274745
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.060463982313684196,
+          0.14597296613678332
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          9.67470971326409e-18,
+          0.158
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.060463982313684175,
+          0.14597296613678332
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.1117228714274745,
+          0.11172287142747452
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.14597296613678332,
+          0.0604639823136842
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.158,
+          1.934941942652818e-17
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.14597296613678332,
+          -0.06046398231368417
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.11172287142747453,
+          -0.1117228714274745
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.06046398231368427,
+          -0.14597296613678326
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -2.902412913979227e-17,
+          -0.158
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.060463982313684224,
+          -0.1459729661367833
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.11172287142747449,
+          -0.11172287142747453
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.14597296613678326,
+          -0.06046398231368428
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.159,
+          0.0
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.1468968456692946,
+          0.06084666574604928
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.11242997820866106,
+          0.11242997820866105
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.060846665746049286,
+          0.1468968456692946
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          9.735942053221458e-18,
+          0.159
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.060846665746049265,
+          0.1468968456692946
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.11242997820866105,
+          0.11242997820866106
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.1468968456692946,
+          0.06084666574604929
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.159,
+          1.9471884106442916e-17
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.14689684566929462,
+          -0.06084666574604926
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.11242997820866109,
+          -0.11242997820866105
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.06084666574604936,
+          -0.14689684566929456
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          -2.920782615966437e-17,
+          -0.159
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.060846665746049314,
+          -0.14689684566929456
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.11242997820866103,
+          -0.11242997820866109
+        ],
+        "opaqueBaseHits": []
+      },
+      {
+        "offsetXZ": [
+          0.14689684566929456,
+          -0.060846665746049376
+        ],
+        "opaqueBaseHits": []
+      }
+    ]
+  },
+  "upperBoreTest": {
+    "probeCount": 97,
+    "failCount": 0,
+    "probes": [
+      {
+        "offsetXZ": [
+          0.0,
+          0.0
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.04,
+          0.0
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.03695518130045147,
+          0.015307337294603592
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.028284271247461905,
+          0.028284271247461898
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.015307337294603594,
+          0.03695518130045147
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          2.4492935982947064e-18,
+          0.04
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.015307337294603589,
+          0.03695518130045147
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.028284271247461898,
+          0.028284271247461905
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.03695518130045147,
+          0.015307337294603596
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.04,
+          4.898587196589413e-18
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.03695518130045147,
+          -0.015307337294603587
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.02828427124746191,
+          -0.028284271247461898
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.015307337294603613,
+          -0.03695518130045146
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -7.347880794884118e-18,
+          -0.04
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.015307337294603601,
+          -0.036955181300451466
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.028284271247461894,
+          -0.02828427124746191
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.03695518130045146,
+          -0.015307337294603617
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.08,
+          0.0
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.07391036260090295,
+          0.030614674589207184
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.05656854249492381,
+          0.056568542494923796
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.030614674589207188,
+          0.07391036260090295
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          4.898587196589413e-18,
+          0.08
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.030614674589207178,
+          0.07391036260090295
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.056568542494923796,
+          0.05656854249492381
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.07391036260090295,
+          0.03061467458920719
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.08,
+          9.797174393178826e-18
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.07391036260090295,
+          -0.030614674589207174
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.05656854249492382,
+          -0.056568542494923796
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.030614674589207226,
+          -0.07391036260090292
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -1.4695761589768237e-17,
+          -0.08
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.030614674589207202,
+          -0.07391036260090293
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.05656854249492379,
+          -0.05656854249492382
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.07391036260090292,
+          -0.030614674589207233
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.12,
+          0.0
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.1108655439013544,
+          0.04592201188381077
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.08485281374238571,
+          0.0848528137423857
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.04592201188381078,
+          0.1108655439013544
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          7.347880794884118e-18,
+          0.12
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.045922011883810766,
+          0.1108655439013544
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.0848528137423857,
+          0.08485281374238571
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.1108655439013544,
+          0.04592201188381079
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.12,
+          1.4695761589768237e-17
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.11086554390135442,
+          -0.04592201188381076
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.08485281374238572,
+          -0.0848528137423857
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.045922011883810836,
+          -0.11086554390135438
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -2.2043642384652355e-17,
+          -0.12
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.0459220118838108,
+          -0.11086554390135439
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.08485281374238568,
+          -0.08485281374238572
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.11086554390135438,
+          -0.04592201188381084
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.15,
+          0.0
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.13858192987669302,
+          0.05740251485476346
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.10606601717798213,
+          0.10606601717798211
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.05740251485476347,
+          0.13858192987669302
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          9.184850993605149e-18,
+          0.15
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.057402514854763456,
+          0.13858192987669302
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.10606601717798211,
+          0.10606601717798213
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.13858192987669302,
+          0.057402514854763484
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.15,
+          1.8369701987210297e-17
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.13858192987669302,
+          -0.05740251485476345
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.10606601717798216,
+          -0.10606601717798211
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.057402514854763546,
+          -0.13858192987669296
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -2.7554552980815445e-17,
+          -0.15
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.0574025148547635,
+          -0.138581929876693
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.1060660171779821,
+          -0.10606601717798216
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.13858192987669296,
+          -0.05740251485476355
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.158,
+          0.0
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.14597296613678332,
+          0.06046398231368419
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.11172287142747452,
+          0.1117228714274745
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.060463982313684196,
+          0.14597296613678332
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          9.67470971326409e-18,
+          0.158
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.060463982313684175,
+          0.14597296613678332
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.1117228714274745,
+          0.11172287142747452
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.14597296613678332,
+          0.0604639823136842
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.158,
+          1.934941942652818e-17
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.14597296613678332,
+          -0.06046398231368417
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.11172287142747453,
+          -0.1117228714274745
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.06046398231368427,
+          -0.14597296613678326
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -2.902412913979227e-17,
+          -0.158
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.060463982313684224,
+          -0.1459729661367833
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.11172287142747449,
+          -0.11172287142747453
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.14597296613678326,
+          -0.06046398231368428
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.159,
+          0.0
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.1468968456692946,
+          0.06084666574604928
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.11242997820866106,
+          0.11242997820866105
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.060846665746049286,
+          0.1468968456692946
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          9.735942053221458e-18,
+          0.159
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.060846665746049265,
+          0.1468968456692946
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.11242997820866105,
+          0.11242997820866106
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.1468968456692946,
+          0.06084666574604929
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.159,
+          1.9471884106442916e-17
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.14689684566929462,
+          -0.06084666574604926
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.11242997820866109,
+          -0.11242997820866105
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -0.06084666574604936,
+          -0.14689684566929456
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          -2.920782615966437e-17,
+          -0.159
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.060846665746049314,
+          -0.14689684566929456
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.11242997820866103,
+          -0.11242997820866109
+        ],
+        "opaqueHits": []
+      },
+      {
+        "offsetXZ": [
+          0.14689684566929456,
+          -0.060846665746049376
+        ],
+        "opaqueHits": []
+      }
+    ]
+  },
+  "hollowBaseCrossSections": [
+    {
+      "pointXZ": [
+        -0.2,
+        0.0
+      ],
+      "intersections": [
+        {
+          "mesh": "Base_clean_powder_coat",
+          "positions": [
+            0.067,
+            0.088,
+            0.40400001,
+            0.42500001
+          ]
+        }
+      ]
+    },
+    {
+      "pointXZ": [
+        0.178,
+        0.0
+      ],
+      "intersections": [
+        {
+          "mesh": "Base_clean_powder_coat",
+          "positions": [
+            0.067,
+            0.088
+          ]
+        }
+      ]
+    },
+    {
+      "pointXZ": [
+        0.178,
+        0.18
+      ],
+      "intersections": [
+        {
+          "mesh": "Base_clean_powder_coat",
+          "positions": [
+            0.067,
+            0.088,
+            0.40400001,
+            0.42500001
+          ]
+        }
+      ]
+    }
+  ],
+  "outletLip": [
+    {
+      "name": "Base_top_open_light_port",
+      "min": [
+        -0.01799999177455902,
+        0.4229999938979745,
+        -0.19599999487400055
+      ],
+      "max": [
+        0.3739999979734421,
+        0.45299999322742224,
+        0.19599999487400055
+      ],
+      "material": "Repair_satin_black",
+      "extras": {
+        "clearAperture": 0.164,
+        "teachingPart": "base",
+        "provenance": "rebuilt analytic geometry"
+      }
+    }
+  ],
+  "powerSwitch": {
+    "part": {
+      "id": "powerSwitch",
+      "independentRoot": true,
+      "pivot": [
+        0.4779999852180481,
+        0.21899999678134918,
+        0.0
+      ],
+      "manifestPivotDelta": 1.478195188475695e-08,
+      "explodeOffset": [
+        0,
+        0,
+        0
+      ],
+      "extras": {
+        "teachingPart": "powerSwitch",
+        "label": "电源按钮",
+        "dimensionsCalibrated": false,
+        "provenance": "Tripo candidate repair; teaching relationship from existing project reference"
+      }
+    },
+    "meshes": [
+      {
+        "name": "Power_symbol_arc",
+        "min": [
+          0.4856500029563904,
+          0.2070000022649765,
+          -0.011996978893876076
+        ],
+        "max": [
+          0.4856500029563904,
+          0.22791773080825806,
+          0.011996978893876076
+        ],
+        "material": "Repair_switch_marking",
+        "extras": {
+          "teachingPart": "powerSwitch",
+          "provenance": "rebuilt analytic geometry",
+          "interactionRole": "power-toggle"
+        }
+      },
+      {
+        "name": "Power_symbol_bar",
+        "min": [
+          0.48550001125840936,
+          0.22300000209361315,
+          -0.0010999999940395355
+        ],
+        "max": [
+          0.4859000112483045,
+          0.23500000219792128,
+          0.0010999999940395355
+        ],
+        "material": "Repair_switch_marking",
+        "extras": {
+          "teachingPart": "powerSwitch",
+          "provenance": "rebuilt analytic geometry",
+          "interactionRole": "power-toggle"
+        }
+      },
+      {
+        "name": "Side_power_switch_button",
+        "min": [
+          0.47449998930096626,
+          0.15949999541044235,
+          -0.02500000037252903
+        ],
+        "max": [
+          0.4854999892413616,
+          0.278499998152256,
+          0.02500000037252903
+        ],
+        "material": "Repair_amber_switch_button",
+        "extras": {
+          "teachingPart": "powerSwitch",
+          "provenance": "rebuilt analytic geometry",
+          "interactionRole": "power-toggle",
+          "functionalIdentity": "power switch confirmed by user"
+        }
+      }
+    ]
+  },
+  "forbiddenExternalMeshes": []
+}

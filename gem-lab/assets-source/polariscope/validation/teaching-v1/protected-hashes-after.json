@@ -1,0 +1,38 @@
+[
+  {
+    "file": "src/components/polariscope/PolariscopeDemo.tsx",
+    "expected": "21b2c95cc2ade5592afc4b4c379016c74795f97bec4bdc062193aa99d87c3075",
+    "actual": "21b2c95cc2ade5592afc4b4c379016c74795f97bec4bdc062193aa99d87c3075",
+    "unchanged": true
+  },
+  {
+    "file": "src/store/progressStore.ts",
+    "expected": "adaa40afea91b8acc195c453af8a6db85ce66fd650182c2a2673750039a5dc03",
+    "actual": "adaa40afea91b8acc195c453af8a6db85ce66fd650182c2a2673750039a5dc03",
+    "unchanged": true
+  },
+  {
+    "file": "src/store/detectionStore.ts",
+    "expected": "a38cf77d238bb4ff914115841fdf6542fee323cf888a81e75b35a8a4271cec0d",
+    "actual": "a38cf77d238bb4ff914115841fdf6542fee323cf888a81e75b35a8a4271cec0d",
+    "unchanged": true
+  },
+  {
+    "file": "src/pages/DetectionWorkflowPage.tsx",
+    "expected": "f9d4d14720423d9fda2cbbda709607c35454c261b12457dc5df5a838dd1a4405",
+    "actual": "f9d4d14720423d9fda2cbbda709607c35454c261b12457dc5df5a838dd1a4405",
+    "unchanged": true
+  },
+  {
+    "file": "public/assets/3d/polariscope/structure-v1/repaired.glb",
+    "expected": "0d4eb62f630e74915d31524010e51e1ce031c9b50f00314a1195b7c8ce469a7b",
+    "actual": "0d4eb62f630e74915d31524010e51e1ce031c9b50f00314a1195b7c8ce469a7b",
+    "unchanged": true
+  },
+  {
+    "file": "public/assets/3d/polariscope/structure-v1/manifest.json",
+    "expected": "d4daac5eb9123219055dd1570eb6982febf35377437c93ada30c1be4c5c0ec52",
+    "actual": "d4daac5eb9123219055dd1570eb6982febf35377437c93ada30c1be4c5c0ec52",
+    "unchanged": true
+  }
+]

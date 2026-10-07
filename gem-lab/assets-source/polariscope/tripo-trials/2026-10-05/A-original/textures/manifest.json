@@ -1,0 +1,29 @@
+{
+  "extraction": "Exact embedded image bytes, no re-encoding",
+  "images": [
+    {
+      "imageIndex": 0,
+      "name": "polariscope-tripo-A-H3.1-original_basecolor.jpg",
+      "file": "textures/texture-00.jpg",
+      "mimeType": "image/jpeg",
+      "sha256": "a4bd43937e118bb6c3fa0d1885df8e15b4d3f4d24625ef8c72c65d8bc8d2ac45",
+      "bytes": 2207568
+    },
+    {
+      "imageIndex": 1,
+      "name": "polariscope-tripo-A-H3.1-original_rm.jpg",
+      "file": "textures/texture-01.jpg",
+      "mimeType": "image/jpeg",
+      "sha256": "c7c953debcb263b1c0ea3f2149a2c46080a183cc38f826de117d052d7c6147a8",
+      "bytes": 1462332
+    },
+    {
+      "imageIndex": 2,
+      "name": "polariscope-tripo-A-H3.1-original_normal.png",
+      "file": "textures/texture-02.png",
+      "mimeType": "image/png",
+      "sha256": "92f2d7e9766a3bc3f40dced90f789ea9ecd953b8f36dad041a803f6ce87d5d74",
+      "bytes": 2221418
+    }
+  ]
+}

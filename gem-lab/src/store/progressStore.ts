@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Difficulty, InstrumentId } from '@/data/types';
+import { addPracticeResult, masteryFromHistory, type SampleMastery } from '@/domain/practice';
 
 export interface DemoProgress {
   instrumentId: InstrumentId;
@@ -17,6 +18,8 @@ export interface DetectionRecord {
   attempts: number;
   score: number;
   completedAt: number;
+  /** 本次命名时选择的主要依据；旧记录可能没有此字段 */
+  evidence?: 'ri' | 'optical' | 'spectrum';
 }
 
 interface ProgressState {
@@ -28,6 +31,8 @@ interface ProgressState {
   completedDemos: DemoProgress[];
   /** 历史检测记录 */
   detectionHistory: DetectionRecord[];
+  /** 不受最近 50 条历史截断影响的每样品练习摘要 */
+  sampleMastery: Record<string, SampleMastery>;
   /** 累计积分 */
   totalPoints: number;
 
@@ -46,6 +51,7 @@ const initial: Omit<
   visitedKnowledgeBases: [],
   completedDemos: [],
   detectionHistory: [],
+  sampleMastery: {},
   totalPoints: 0,
 };
 
@@ -72,13 +78,22 @@ export const useProgress = create<ProgressState>()(
       pushDetection: (r) =>
         set((s) => ({
           detectionHistory: [r, ...s.detectionHistory].slice(0, 50),
+          sampleMastery: addPracticeResult(s.sampleMastery, r),
           totalPoints: s.totalPoints + r.score,
         })),
       reset: () => set({ ...initial }),
     }),
     {
       name: 'gem-lab-progress-v1',
-      version: 1,
+      version: 2,
+      migrate: (persisted, version) => {
+        if (version !== 1 || !persisted || typeof persisted !== 'object') return persisted as ProgressState;
+        const old = persisted as Partial<ProgressState>;
+        return {
+          ...old,
+          sampleMastery: masteryFromHistory(old.detectionHistory ?? []),
+        } as ProgressState;
+      },
     },
   ),
 );

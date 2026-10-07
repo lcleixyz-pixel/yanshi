@@ -6,6 +6,7 @@ const KnowledgeBasePage = lazy(() => import('./pages/KnowledgeBasePage'));
 const InteractiveDemoPage = lazy(() => import('./pages/InteractiveDemoPage'));
 const DetectionWorkflowPage = lazy(() => import('./pages/DetectionWorkflowPage'));
 const NamingAssessmentPage = lazy(() => import('./pages/NamingAssessmentPage'));
+const ProgressPage = lazy(() => import('./pages/ProgressPage'));
 
 function PageFallback() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/demo/:instrumentId" element={<InteractiveDemoPage />} />
         <Route path="/detection" element={<DetectionWorkflowPage />} />
         <Route path="/assessment" element={<NamingAssessmentPage />} />
+        <Route path="/progress" element={<ProgressPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>

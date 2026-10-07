@@ -9,9 +9,11 @@
 - 沉浸式工作台首页，包含折射仪、偏光镜、分光镜和样品盘入口。
 - 三类仪器知识库页面，包含基本介绍、结构讲解、使用方法和交互演示入口。
 - 三类仪器交互演示页面，支持学习模式和检测模式入口。
-- 检测流程页面，支持难度选择、随机抽样、仪器选择、检测记录汇总。
+- 检测流程页面，支持难度选择、复习优先抽样、仪器选择、检测记录汇总。
 - 命名评估页面，根据当前检测会话生成候选答案和反馈。
 - 学习进度持久化，包括知识库访问、演示完成、检测历史和积分。
+- 学习图鉴展示样品掌握度；抽样优先照顾未测与答错样品，同时保留随机探索。
+- 当前检测会话支持刷新后继续；命名评估要求选择主要判断依据，并能打印课堂练习记录。
 
 当前交付边界：
 
@@ -41,14 +43,12 @@ npm 10.9.7
 从仓库根目录安装应用依赖：
 
 ```bash
-cd /Users/lc.leixyz/Desktop/yanshi
 npm run install:lab
 ```
 
 启动开发服务器：
 
 ```bash
-cd /Users/lc.leixyz/Desktop/yanshi
 npm run dev
 ```
 
@@ -61,7 +61,7 @@ http://127.0.0.1:5173/
 如果需要显式指定端口：
 
 ```bash
-cd /Users/lc.leixyz/Desktop/yanshi/gem-lab
+cd gem-lab
 npm run dev -- --host 127.0.0.1 --port 5173
 ```
 
@@ -76,12 +76,13 @@ npm run build         # 生产构建
 npm run preview       # 预览构建产物
 npm run test:smoke    # 运行核心页面烟测
 npm run test:matrix   # 运行 28 样品 x 3 仪器检测矩阵
+npm run test:unit     # 运行抽样、掌握度和计分纯逻辑测试
 ```
 
 应用目录脚本：
 
 ```bash
-cd /Users/lc.leixyz/Desktop/yanshi/gem-lab
+cd gem-lab
 
 npm install
 npm run dev
@@ -89,6 +90,7 @@ npm run build
 npm run preview
 npm run test:smoke
 npm run test:matrix
+npm run test:unit
 npm run prepare-assets
 ```
 
@@ -96,7 +98,7 @@ npm run prepare-assets
 
 - `npm run build` 会执行 TypeScript 项目引用构建和 Vite 生产构建。
 - `npm run preview` 默认使用 Vite preview，端口为 `4173`。
-- `npm run test:smoke` 会通过 Playwright 启动生产预览并检查核心路由是否正常渲染。
+- `npm run test:smoke` 会通过 Playwright 启动生产预览，检查核心路由、会话恢复和练习反馈闭环。
 - `npm run test:matrix` 会遍历 28 个样品和 3 台仪器的检测模式，检查未知样品遮蔽、页面错误和可提交状态；该检查较烟测更慢，适合交付前或交互改动后运行。
 - `npm run prepare-assets` 会把根目录中文素材规范化复制到 `gem-lab/public/assets/`，并切分步骤/状态图标。
 
@@ -132,6 +134,7 @@ yanshi/
 | `/demo/:instrumentId` | 仪器交互演示 |
 | `/detection` | 检测流程 |
 | `/assessment` | 命名评估 |
+| `/progress` | 学习图鉴与最近练习 |
 
 未知路由会重定向到 `/`。
 
@@ -154,6 +157,7 @@ GitHub Actions 会在推送到 `main` 或向 `main` 发起 Pull Request 时运�
 ```bash
 npm ci --prefix gem-lab
 npm run build
+npm run test:unit
 npx playwright install --with-deps chromium
 npm run test:smoke --prefix gem-lab
 ```
@@ -161,7 +165,6 @@ npm run test:smoke --prefix gem-lab
 本地交接或改动后建议至少执行：
 
 ```bash
-cd /Users/lc.leixyz/Desktop/yanshi
 npm run build
 npm run test:smoke
 ```
@@ -169,14 +172,13 @@ npm run test:smoke
 交互逻辑、样品数据或检测流程改动后，建议额外运行：
 
 ```bash
-cd /Users/lc.leixyz/Desktop/yanshi
 npm run test:matrix
 ```
 
 如果本地首次运行烟测时提示缺少浏览器，请执行：
 
 ```bash
-cd /Users/lc.leixyz/Desktop/yanshi/gem-lab
+cd gem-lab
 npx playwright install chromium
 ```
 
@@ -190,10 +192,12 @@ npx playwright install chromium
 - 三个演示页是否能打开，并显示学习模式、检测模式和主要操作控件。
 - 检测流程是否能选择初级难度、抽取未知样品并进入仪器选择。
 - 无检测会话时访问 `/assessment` 是否引导回检测流程。
+- 检测页选择难度、抽样后刷新，是否保留当前会话；“重新开始”是否清空会话。
+- 学习图鉴是否展示样品状态；命名评估是否先选择依据，反馈后是否可打印课堂记录。
 
 ## 已知限制
 
 - 本项目当前只覆盖前端教学演示，没有数据提交、登录、教师端或报表能力。
-- 学习进度保存在浏览器本地持久化存储中，换浏览器或清理站点数据后会丢失。
-- 自动化测试已覆盖核心路由烟测和检测矩阵；完整课堂演示节奏、视觉细节和移动端体验仍需要结合手动浏览器验证。
+- 学习进度保存在当前浏览器的本地存储；当前检测会话保存在标签页会话存储。换浏览器或清理站点数据后，相关记录可能丢失。需要留存单次练习时，可在评估反馈页使用浏览器打印或保存为 PDF。
+- 自动化测试已覆盖纯逻辑、核心页面与检测矩阵；完整课堂演示节奏和不同设备上的触控体验仍需结合实际使用验证。
 - 部分页面面向桌面端体验设计，移动端适配没有作为当前版本的主目标。

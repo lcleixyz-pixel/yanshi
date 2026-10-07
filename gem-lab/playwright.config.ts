@@ -6,6 +6,8 @@ const useLocalChrome =
 
 export default defineConfig({
   testDir: './tests',
+  // tests/unit 是 node:test 单元测试（npm run test:unit），不由 Playwright 收集。
+  testMatch: '**/*.spec.ts',
   timeout: 30_000,
   expect: {
     timeout: 10_000,

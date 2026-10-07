@@ -2,27 +2,40 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from '@/components/shared/Header';
 import Pill from '@/components/shared/Pill';
+import PracticeReport from '@/components/report/PracticeReport';
 import { SAMPLES, SAMPLES_BY_DIFFICULTY, SAMPLES_BY_ID } from '@/data/samples';
+import { computeScore } from '@/domain/assessment';
+import { checkRI, formatRIReference } from '@/domain/refractometerAssessment';
 import { useDetection } from '@/store/detectionStore';
 import { useProgress } from '@/store/progressStore';
 import { formatDR, formatRI, OPTICAL_LABEL } from '@/utils/format';
 import clsx from '@/utils/clsx';
 
-type Stage = 'review' | 'quiz' | 'feedback';
+type Evidence = 'ri' | 'optical' | 'spectrum';
+
+const EVIDENCE: Array<{ id: Evidence; title: string; instrument: 'refractometer' | 'polariscope' | 'spectroscope'; detail: string }> = [
+  { id: 'ri', title: '折射率', instrument: 'refractometer', detail: '比较读数和候选宝石范围' },
+  { id: 'optical', title: '光性现象', instrument: 'polariscope', detail: '辨认均质、非均质或集合体' },
+  { id: 'spectrum', title: '吸收光谱', instrument: 'spectroscope', detail: '寻找具有区分力的吸收特征' },
+];
 
 export default function NamingAssessmentPage() {
   const navigate = useNavigate();
   const session = useDetection();
   const resetSession = useDetection((s) => s.resetSession);
+  const recordAssessment = useDetection((s) => s.recordAssessment);
+  const clearAssessment = useDetection((s) => s.clearAssessment);
   const pushDetection = useProgress((s) => s.pushDetection);
 
-  const [stage, setStage] = useState<Stage>('review');
   const [selected, setSelected] = useState<string | null>(null);
+  const [evidence, setEvidence] = useState<Evidence | null>(null);
   const [confidence, setConfidence] = useState(70);
   const [showHint, setShowHint] = useState(false);
-  const [attempts, setAttempts] = useState(1);
+  const [hintUsed, setHintUsed] = useState(false);
 
   const correctSample = session.sampleId ? SAMPLES_BY_ID[session.sampleId] : null;
+  const assessment = session.assessment;
+  const attempts = assessment?.attemptNumber ?? session.assessmentAttemptCount + 1;
 
   // 没有进行中的检测会话，引导回去
   useEffect(() => {
@@ -50,34 +63,45 @@ export default function NamingAssessmentPage() {
     return all;
   }, [correctSample]);
 
-  const isCorrect = selected !== null && selected === correctSample?.id;
+  const answerId = assessment?.selectedSampleId ?? selected;
+  const isCorrect = answerId !== null && answerId === correctSample?.id;
 
   const handleSubmit = () => {
-    if (!selected || !correctSample || !session.difficulty) return;
-    setStage('feedback');
+    if (!selected || !evidence || !correctSample || !session.difficulty || assessment) return;
     const score = computeScore(
       isCorrect,
       session.difficulty,
       attempts,
       confidence,
-      showHint,
+      hintUsed,
     );
+    const completedAt = Date.now();
+    if (!recordAssessment({
+      selectedSampleId: selected,
+      evidence,
+      confidence,
+      hintUsed,
+      attemptNumber: attempts,
+      score,
+      completedAt,
+    })) return;
     pushDetection({
-      id: `${Date.now()}`,
+      id: `${completedAt}-${correctSample.id}-${attempts}`,
       sampleId: correctSample.id,
       difficulty: session.difficulty,
       userAnswer: SAMPLES_BY_ID[selected]?.name ?? null,
       correct: isCorrect,
       attempts,
       score,
-      completedAt: Date.now(),
+      completedAt,
+      evidence,
     });
   };
 
   const handleRetry = () => {
-    setStage('quiz');
+    clearAssessment();
     setSelected(null);
-    setAttempts((a) => a + 1);
+    setEvidence(null);
   };
 
   const handleNext = () => {
@@ -100,8 +124,21 @@ export default function NamingAssessmentPage() {
     );
   }
 
+  if (session.instrumentsUsed.length < 2 && !assessment) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-brand-50/40 px-4">
+        <div className="max-w-md rounded-2xl bg-white p-8 text-center shadow-card">
+          <div className="text-3xl">🔎</div>
+          <h2 className="mt-2 font-display text-lg font-semibold">检测数据尚不充分</h2>
+          <p className="mt-2 text-sm leading-6 text-ink-3">请先完成至少两项仪器观察，再根据记录进行命名。</p>
+          <Link to="/detection" className="btn-primary mt-5 inline-flex text-xs">返回检测流程</Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-brand-50/40">
+    <div className="assessment-screen min-h-screen bg-brand-50/40">
       <Header
         title="命名评估"
         subtitle="实训系统"
@@ -197,7 +234,7 @@ export default function NamingAssessmentPage() {
         </section>
 
         {/* Stage 2: 命名 */}
-        {stage !== 'feedback' && (
+        {!assessment && (
           <section className="rounded-3xl border border-line bg-white p-6 shadow-soft">
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -208,12 +245,28 @@ export default function NamingAssessmentPage() {
               </div>
               <button
                 type="button"
-                onClick={() => setShowHint(!showHint)}
+                onClick={() => {
+                  setShowHint(!showHint);
+                  setHintUsed(true);
+                }}
                 className="rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100"
               >
                 💡 {showHint ? '隐藏提示' : '查看提示（-2 分）'}
               </button>
             </div>
+
+            <fieldset className="mt-5 rounded-xl border border-brand-200 bg-brand-50/50 p-4">
+              <legend className="px-1 text-sm font-semibold text-brand-800">你命名时最依赖哪一项检测依据？</legend>
+              <p className="mb-3 text-xs text-ink-3">先选依据，再提交判断；仅显示本次已使用的仪器。</p>
+              <div className="grid gap-2 sm:grid-cols-3">
+                {EVIDENCE.filter((item) => session.instrumentsUsed.includes(item.instrument)).map((item) => (
+                  <label key={item.id} className={clsx('flex cursor-pointer gap-2 rounded-lg border p-3 text-left transition-colors', evidence === item.id ? 'border-brand bg-white shadow-soft' : 'border-line bg-white/70 hover:border-brand-300')}>
+                    <input type="radio" name="evidence" value={item.id} checked={evidence === item.id} onChange={() => setEvidence(item.id)} className="mt-0.5 accent-brand" />
+                    <span><strong className="block text-xs text-ink">{item.title}</strong><span className="mt-1 block text-[11px] leading-4 text-ink-3">{item.detail}</span></span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
 
             {showHint && (
               <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50/50 p-3 text-xs text-amber-800">
@@ -249,6 +302,8 @@ export default function NamingAssessmentPage() {
                   <button
                     key={opt.id}
                     type="button"
+                    data-testid="answer-option"
+                    data-sample-id={opt.id}
                     onClick={() => setSelected(opt.id)}
                     className={clsx(
                       'group relative flex items-center gap-3 rounded-xl border-2 p-3 text-left transition-all duration-200',
@@ -341,7 +396,7 @@ export default function NamingAssessmentPage() {
               <button
                 type="button"
                 onClick={handleSubmit}
-                disabled={!selected}
+                disabled={!selected || !evidence}
                 className="btn-primary px-6 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 ✈ 提交答案
@@ -351,7 +406,7 @@ export default function NamingAssessmentPage() {
         )}
 
         {/* Stage 3: 反馈 */}
-        {stage === 'feedback' && correctSample && (
+        {assessment && correctSample && (
           <section
             className={clsx(
               'animate-fade-in-up relative overflow-hidden rounded-3xl border-2 p-6 shadow-card',
@@ -433,8 +488,14 @@ export default function NamingAssessmentPage() {
                   )}
                   style={{ animationDelay: '0.3s' }}
                 >
-                  {isCorrect ? '+' : ''}
-                  {computeScore(isCorrect, session.difficulty!, attempts, confidence, showHint)} 分
+                  {assessment.score > 0 ? '+' : ''}
+                  {assessment.score} 分
+                </div>
+
+                <div className="mt-4 rounded-xl border border-brand-200 bg-white px-4 py-3 text-xs leading-6 text-ink-2">
+                  <strong className="text-brand-800">你的主要判断依据：</strong>{EVIDENCE.find((item) => item.id === assessment.evidence)?.title}
+                  <span className="ml-1 text-ink-3">请对照右侧特征表，复盘这项依据是否足以区分候选宝石。</span>
+                  {assessment.attemptNumber > 1 && <p className="text-amber-700">本次为答案揭晓后的复盘练习，不再计分或提升掌握度。</p>}
                 </div>
 
                 <div className="mt-5">
@@ -480,11 +541,12 @@ export default function NamingAssessmentPage() {
                             ? '> 1.780'
                           : '—'
                       }
-                      standardValue={formatRI(correctSample.characteristics.refractiveIndex)}
+                      standardValue={formatRIReference(correctSample.characteristics.refractiveIndex, session.refractometer.method)}
                       ok={checkRI(
                         session.refractometer.riMin,
                         session.refractometer.riMax,
                         correctSample.characteristics.refractiveIndex,
+                        session.refractometer.method,
                       )}
                       onRetry={() => navigate('/detection')}
                     />
@@ -537,10 +599,10 @@ export default function NamingAssessmentPage() {
                   </tbody>
                 </table>
 
-                {!isCorrect && selected && (
+                {!isCorrect && answerId && (
                   <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
                     <strong>你可能混淆的原因：</strong>
-                    <p className="mt-1">{generateConfusionAnalysis(selected, correctSample.id)}</p>
+                    <p className="mt-1">{generateConfusionAnalysis(answerId, correctSample.id)}</p>
                   </div>
                 )}
               </div>
@@ -550,10 +612,13 @@ export default function NamingAssessmentPage() {
               <Link to="/" className="btn-ghost text-xs">
                 ← 返回工作台
               </Link>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
+                <button type="button" onClick={() => window.print()} className="btn-ghost text-xs">
+                  打印练习记录
+                </button>
                 {!isCorrect && (
                   <button type="button" onClick={handleRetry} className="btn-ghost text-xs">
-                    🔄 重新选择
+                    🔄 原题复盘（不计分）
                   </button>
                 )}
                 <button type="button" onClick={handleNext} className="btn-primary text-xs">
@@ -564,6 +629,7 @@ export default function NamingAssessmentPage() {
           </section>
         )}
       </div>
+      {assessment && correctSample && <PracticeReport session={session} sample={correctSample} attempt={assessment} />}
     </div>
   );
 }
@@ -677,42 +743,6 @@ function formatDuration(start: number | null): string {
   const m = Math.floor(sec / 60);
   const s = sec % 60;
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-}
-
-function computeScore(
-  correct: boolean,
-  difficulty: 'beginner' | 'intermediate' | 'advanced',
-  attempts: number,
-  confidence: number,
-  hintUsed: boolean,
-): number {
-  if (!correct) return 0;
-  const base = { beginner: 10, intermediate: 20, advanced: 30 }[difficulty];
-  const attemptPenalty = (attempts - 1) * 3;
-  const hintPenalty = hintUsed ? 2 : 0;
-  // 置信度奖惩：50% 是基线，越高奖励越多，过低惩罚
-  const confidenceFactor = 1 + (confidence - 50) / 200; // 0.75 ~ 1.25
-  const raw = (base - attemptPenalty - hintPenalty) * confidenceFactor;
-  return Math.max(1, Math.round(raw));
-}
-
-function checkRI(
-  userMin: number | null,
-  userMax: number | null,
-  standard: import('@/data/types').GemCharacteristics['refractiveIndex'],
-): boolean {
-  if (standard === 'over-1.78') return userMin === null;
-  if (typeof standard === 'number' && standard > 1.78) return userMin === null;
-  if (Array.isArray(standard) && Math.max(standard[0], standard[1]) > 1.78) return userMin === null;
-  if (userMin === null) return false;
-  const TOL = 0.005;
-  if (typeof standard === 'number') {
-    return Math.abs(userMin - standard) <= TOL;
-  }
-  const u = userMax ?? userMin;
-  const minOk = Math.abs(userMin - standard[0]) <= TOL;
-  const maxOk = Math.abs(u - standard[1]) <= TOL;
-  return minOk && maxOk;
 }
 
 function checkOptical(

@@ -34,10 +34,11 @@ jobs:
       - name: Run domain unit tests
         run: npm run test:unit
 
+      - name: Test CI completeness checks
+        run: node --test .github/scripts/verify-polariscope-shards.test.mjs
+
       - name: Install Playwright Chromium
-        run: |
-          npx playwright install --with-deps chromium
-          sudo apt-get install --no-install-recommends -y libgl1-mesa-dri libegl-mesa0 libglx-mesa0 mesa-utils
+        run: npx playwright install --with-deps chromium
         working-directory: gem-lab
 
       - name: Run smoke tests
@@ -45,22 +46,122 @@ jobs:
         env:
           PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/smoke/results.json
 
-      - name: Run polariscope browser regression tests
-        # This prefix also includes guided-course and student-mode specifications.
-        run: |
-          xvfb-run --auto-servernum glxinfo -B
-          xvfb-run --auto-servernum npx playwright test polariscope3d --workers=1 --max-failures=3 --output=test-results/polariscope
-        working-directory: gem-lab
-        env:
-          CI_WEBGL_BACKEND: mesa
-          LIBGL_ALWAYS_SOFTWARE: 'true'
-          GALLIUM_DRIVER: llvmpipe
-          PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/polariscope/results.json
+      - name: Save built application for browser shards
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: gem-lab/dist/
+          if-no-files-found: error
+          retention-days: 2
 
       - name: Save browser test evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: browser-test-evidence
-          path: gem-lab/test-results/
+          name: browser-smoke-evidence
+          path: gem-lab/test-results/smoke/
+          retention-days: 14
+
+  polariscope:
+    name: Polariscope shard ${{ matrix.shard }}/3
+    needs: build-and-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+    defaults:
+      run:
+        working-directory: gem-lab
+    env:
+      CI_WEBGL_BACKEND: mesa
+      LIBGL_ALWAYS_SOFTWARE: 'true'
+      GALLIUM_DRIVER: llvmpipe
+      PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/polariscope-${{ matrix.shard }}/results.json
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: gem-lab/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Restore the same production build
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: gem-lab/dist/
+
+      - name: Install Playwright Chromium and Mesa
+        run: |
+          npx playwright install --with-deps chromium
+          sudo apt-get install --no-install-recommends -y libgl1-mesa-dri libegl-mesa0 libglx-mesa0 mesa-utils
+
+      - name: Run polariscope browser regression shard
+        # Keep real GLB loading and the fixture's llvmpipe renderer assertion.
+        # This prefix includes guided-course and student-mode specifications.
+        run: |
+          xvfb-run --auto-servernum glxinfo -B
+          xvfb-run --auto-servernum npx playwright test polariscope3d \
+            --shard=${{ matrix.shard }}/3 --workers=1 --max-failures=3 \
+            --output=test-results/polariscope-${{ matrix.shard }}
+
+      - name: Save shard evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: polariscope-shard-${{ matrix.shard }}
+          path: gem-lab/test-results/polariscope-${{ matrix.shard }}/
+          if-no-files-found: error
+          retention-days: 14
+
+  polariscope-complete:
+    name: Verify all 55 polariscope cases
+    needs: [build-and-smoke, polariscope]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SHARDS_RESULT: ${{ needs.polariscope.result }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: gem-lab/package-lock.json
+      - name: Install dependencies
+        run: npm ci --prefix gem-lab
+
+      - name: Download every shard report
+        uses: actions/download-artifact@v4
+        with:
+          pattern: polariscope-shard-*
+          path: gem-lab/shard-evidence
+          merge-multiple: false
+
+      - name: Collect the complete expected case list
+        working-directory: gem-lab
+        run: npx playwright test polariscope3d --list --reporter=json > expected-polariscope.json
+
+      - name: Verify complete passing results
+        run: |
+          node .github/scripts/verify-polariscope-shards.mjs \
+            --expected gem-lab/expected-polariscope.json \
+            --reports-dir gem-lab/shard-evidence \
+            --output gem-lab/shard-completeness.json
+
+      - name: Save completeness evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: polariscope-completeness
+          path: |
+            gem-lab/expected-polariscope.json
+            gem-lab/shard-completeness.json
           retention-days: 14

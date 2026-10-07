@@ -687,10 +687,12 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
       for (const element of [coachLine.current, coachDot.current]) if (element) element.style.display = coachVisible ? '' : 'none';
       canvas.dataset.viewShift = appliedShift.toFixed(3);
       renderer.render(scene, camera); renderedFrames++;
+      // 资源计数来自刚完成的实际绘制，不等待 FPS 的 30 帧采样窗口。
+      // 低帧率时也应能核对本次访问的 GPU 资源，而不是把缺失读数当成零。
+      canvas.dataset.geometries = String(renderer.info.memory.geometries); canvas.dataset.textures = String(renderer.info.memory.textures);
+      canvas.dataset.calls = String(renderer.info.render.calls); canvas.dataset.triangles = String(renderer.info.render.triangles);
       if (renderedFrames % 30 === 0) {
         const now = performance.now(); canvas.dataset.fps = ((renderedFrames - renderedLast) * 1000 / (now - lastFpsAt)).toFixed(1);
-        canvas.dataset.geometries = String(renderer.info.memory.geometries); canvas.dataset.textures = String(renderer.info.memory.textures);
-        canvas.dataset.calls = String(renderer.info.render.calls); canvas.dataset.triangles = String(renderer.info.render.triangles);
         if (diagnostic.current) diagnostic.current.textContent = `${canvas.dataset.fps} fps · load ${canvas.dataset.loadMs ?? '…'} ms\nCSS viewport ${window.innerWidth} × ${window.innerHeight} · buffer ${canvas.width} × ${canvas.height}\n${current.quality} · ${renderer.info.memory.geometries} geometries / ${renderer.info.memory.textures} textures\npower ${state.power ? 'on' : 'off'} · internal ${effectiveInternal() ? 'on' : 'off'} · explode ${Math.round(explosion * 100)}%\nanalyzer ${state.analyzerAngle}° · stage ${state.stageAngle}° · frame ${renderedFrames}\nlesson ${state.lesson} · step ${state.pathStep} · transmission ${(optics?.relativeTransmission ?? 0).toFixed(4)}\noptics ${optics?.blockedReason ?? 'active'} · beams ${teaching?.diagnostics.beamIntensities ?? 'none'}\npress ${canvas.dataset.lastPointerDown ?? 'none'} · release ${canvas.dataset.lastPointerUp ?? 'none'} · cancel ${canvas.dataset.lastPointerCancel || 'none'}\ndown ${canvas.dataset.pointerDownPosition ?? 'none'}\nmax move ${canvas.dataset.pointerMaxMove ?? 'none'}\nup ${canvas.dataset.pointerUpPosition ?? 'none'}`;
         lastFpsAt = now; renderedLast = renderedFrames;
       }

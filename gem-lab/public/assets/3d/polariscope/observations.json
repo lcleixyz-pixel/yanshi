@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "status": "pending",
+  "metadata": {
+    "description": "尚无经过审核的实物样品观察记录；此文件不含模拟或伪实测数据。",
+    "geometryBasis": "generic teaching design with nominal design dimensions; informed by public optical references",
+    "dimensionsCalibrated": false,
+    "sampleOpticsModeled": false,
+    "lowerPolarizerStageCoupling": {
+      "status": "pending",
+      "value": null,
+      "note": "本通用教学设计选择物台独立旋转、下偏振片方向固定；这是设计选择，不代表特定实物的机械关系。实物联动状态仍未核实。"
+    },
+    "emptyFieldPrinciple": "仅在装配完整、开灯、空载、未隔离零件时使用理想 I/I_parallel = cos²(theta)；theta 为检偏器与固定下偏振片透振方向夹角。",
+    "sampleObservationScope": "公开许可照片与 GIF 可作为独立现象案例，并保留来源及条件缺失说明。可计入实训的样品观察仍须来自审核通过且覆盖完整一周的实测记录；只在记录取向、照明及角度范围内回放，不插值推算样品光学响应。"
+  },
+  "series": []
+}

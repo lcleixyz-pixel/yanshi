@@ -1,0 +1,219 @@
+{
+  "schemaVersion": 1,
+  "collectedOn": "2026-10-05",
+  "scope": "公开许可原件，供通用教学结构与现象案例参考；没有将其批准为本项目实训观察记录。",
+  "licensingNote": "许可来自原始文件页及 Commons API 元数据；逐文件履行署名、许可链接和适用的相同方式共享要求。此登记不是对第三方权利的法律保证。",
+  "sources": [
+    {
+      "id": "rutile-birefringence",
+      "sourceTitle": "Rutile birefringence.gif",
+      "title": "金红石单晶在正交偏光下的变化",
+      "author": "FDominec",
+      "license": "CC BY-SA 3.0",
+      "knownconditions": [
+        "原作者实物摄影；源页说明为约 1 mm 长、0.5 mm 厚的 TiO₂ 单晶。",
+        "源页说明在正交起偏器与检偏器下摄影，并描述偏振片角度为 45°、135°、225°、315° 时透过最强。",
+        "原件为 1136 × 852 像素 GIF；动画不等同于逐帧标定角度记录。"
+      ],
+      "missingconditions": [
+        "可追溯样品编号、完整晶体取向、仪器与照明配置。",
+        "逐帧独立角度与采集时间记录；源页的偏振片角度不能直接映射为本项目物台角。",
+        "覆盖完整一周且带角度时序的记录及本项目教学审核范围。"
+      ],
+      "permittedUse": [
+        "作为独立公开现象案例，说明晶体双折射在正交偏光下可产生透光与颜色变化。",
+        "随展示提供作品名、作者、来源、CC BY-SA 3.0 链接；改编须注明改动并遵守相同方式共享要求。",
+        "不计入实训完成，不用作样品鉴定答案，也不拟造逐帧物台角度。"
+      ],
+      "localPath": "original/rutile-birefringence.gif",
+      "file": "original/rutile-birefringence.gif",
+      "pageURL": "https://commons.wikimedia.org/wiki/File:Rutile_birefringence.gif",
+      "directURL": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Rutile_birefringence.gif",
+      "licenceURL": "https://creativecommons.org/licenses/by-sa/3.0",
+      "sha256": "605a506312f9e9b68a525ea47ba9a05b64f91b193f6d09fdd6b2fdd5f9195815",
+      "sourceSha1": "47df704bc806a88638e788b6598962972c9b355a",
+      "byteLength": 1663506,
+      "downloadedAt": "2026-10-05T05:08:03.820765+00:00",
+      "licenseCheckedOn": "2026-10-05",
+      "downloadStatus": "downloaded",
+      "originalUnmodified": true,
+      "status": "reference-only",
+      "practiceRecordApproved": false,
+      "attribution": "金红石单晶在正交偏光下的变化 — FDominec / Wikimedia Commons / CC BY-SA 3.0；项目保存原件，未作修改。"
+    },
+    {
+      "id": "calcite-polarizing-filter",
+      "sourceTitle": "Calcite and polarizing filter.gif",
+      "title": "旋转偏振滤镜观察方解石",
+      "author": "Aldoaldoz",
+      "license": "CC BY-SA 3.0",
+      "knownconditions": [
+        "原作者实物摄影；源页明确为通过旋转偏振滤镜观察方解石晶体。",
+        "原件为 300 × 258 像素 GIF。",
+        "源页提供 CC BY-SA 3.0 与 GFDL 多许可，本项目选择 CC BY-SA 3.0。"
+      ],
+      "missingconditions": [
+        "样品取向、尺寸、照明光谱与角度标定。",
+        "这不是已标定的宝石样品在两片正交偏光片间转动完整 360° 的记录。"
+      ],
+      "permittedUse": [
+        "作为双影与偏振方向关系的独立案例。",
+        "随展示提供作品名、作者、来源、CC BY-SA 3.0 链接；改编须注明改动并遵守相同方式共享要求。",
+        "不用于代替本项目样品的四明四暗观察或实训判分。"
+      ],
+      "localPath": "original/calcite-polarizing-filter.gif",
+      "file": "original/calcite-polarizing-filter.gif",
+      "pageURL": "https://commons.wikimedia.org/wiki/File:Calcite_and_polarizing_filter.gif",
+      "directURL": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Calcite_and_polarizing_filter.gif",
+      "licenceURL": "https://creativecommons.org/licenses/by-sa/3.0",
+      "sha256": "fe681bdd91ad75b05609077cfbba155f2490a4530b62aea3b1f2b6cf01886449",
+      "sourceSha1": "1b27cf99f13f165f1b30d53214ec5169c14e76f7",
+      "byteLength": 555391,
+      "downloadedAt": "2026-10-05T05:08:05.183564+00:00",
+      "licenseCheckedOn": "2026-10-05",
+      "downloadStatus": "downloaded",
+      "originalUnmodified": true,
+      "status": "reference-only",
+      "practiceRecordApproved": false,
+      "attribution": "旋转偏振滤镜观察方解石 — Aldoaldoz / Wikimedia Commons / CC BY-SA 3.0；项目保存原件，未作修改。"
+    },
+    {
+      "id": "peridot-doubling",
+      "sourceTitle": "Peridot Doubling.jpg",
+      "title": "橄榄石刻面棱重影",
+      "author": "GlobalGemology",
+      "license": "CC BY-SA 4.0",
+      "knownconditions": [
+        "原作者实物照片；源页说明为橄榄石在放大观察下的刻面棱重影。",
+        "原件为 4032 × 3024 像素 JPEG。"
+      ],
+      "missingconditions": [
+        "可追溯样品编号、取向、放大倍率、照明配置。",
+        "没有正交偏光旋转观察的角度或时序记录。"
+      ],
+      "permittedUse": [
+        "作为双折射相关外观现象的照片案例。",
+        "随展示提供作品名、作者、来源、CC BY-SA 4.0 链接；改编须注明改动并遵守相同方式共享要求。",
+        "不标成偏光镜的样品旋转透光记录，不计入实训。"
+      ],
+      "localPath": "original/peridot-doubling.jpg",
+      "file": "original/peridot-doubling.jpg",
+      "pageURL": "https://commons.wikimedia.org/wiki/File:Peridot_Doubling.jpg",
+      "directURL": "https://upload.wikimedia.org/wikipedia/commons/8/86/Peridot_Doubling.jpg",
+      "licenceURL": "https://creativecommons.org/licenses/by-sa/4.0",
+      "sha256": "a140776997f4c4a55dee4fc097e3a2c886f822cf38837e6579b06d798476d7d5",
+      "sourceSha1": "c6fcbdeca9d52364a39d4ccf3b30363f5fa6407c",
+      "byteLength": 1275423,
+      "downloadedAt": "2026-10-05T05:08:06.849863+00:00",
+      "licenseCheckedOn": "2026-10-05",
+      "downloadStatus": "downloaded",
+      "originalUnmodified": true,
+      "status": "reference-only",
+      "practiceRecordApproved": false,
+      "attribution": "橄榄石刻面棱重影 — GlobalGemology / Wikimedia Commons / CC BY-SA 4.0；项目保存原件，未作修改。"
+    },
+    {
+      "id": "isochromatics-polariscope",
+      "sourceTitle": "Isochromatics in polariscope.JPG",
+      "title": "受力梁在偏光镜中的等色线",
+      "author": "Trociny-fotografujo (Commons: Trociny-atakujo)",
+      "license": "CC0",
+      "knownconditions": [
+        "原作者实物照片；原文件页波兰语说明为承受两个集中力的梁在偏光镜中的等色线。",
+        "原件为 2592 × 1936 像素 JPEG；保存当前原始文件字节，不将原作者历史版本调整视为本项目修改。"
+      ],
+      "missingconditions": [
+        "试样材料、载荷数值、尺寸与仪器配置。",
+        "不是宝石异常双折射的可追溯实测样品。"
+      ],
+      "permittedUse": [
+        "作为光弹性及应力相关双折射的概念案例，保留 CC0 声明与来源供追溯。",
+        "不由照片反算应力，不作为宝石异常双折射诊断或实训判分记录。"
+      ],
+      "localPath": "original/isochromatics-polariscope.jpg",
+      "file": "original/isochromatics-polariscope.jpg",
+      "pageURL": "https://commons.wikimedia.org/wiki/File:Isochromatics_in_polariscope.JPG",
+      "directURL": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Isochromatics_in_polariscope.JPG",
+      "licenceURL": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "sha256": "53fa21c648eb78b69ef6d304172a370f9803697130a8545420b4993e0b03be30",
+      "sourceSha1": "d85a7230e8120499e65f56711c34509b1b925343",
+      "byteLength": 2636632,
+      "downloadedAt": "2026-10-05T05:11:03.097967+00:00",
+      "licenseCheckedOn": "2026-10-05",
+      "downloadStatus": "downloaded",
+      "originalUnmodified": true,
+      "status": "reference-only",
+      "practiceRecordApproved": false,
+      "attribution": "受力梁在偏光镜中的等色线 — Trociny-fotografujo (Commons: Trociny-atakujo) / Wikimedia Commons / CC0；项目保存原件，未作修改。"
+    },
+    {
+      "id": "planar-polariscope-zh-hans",
+      "sourceTitle": "Transmission planar Polariscope zh hans.svg",
+      "title": "透射平面偏光镜中文示意图",
+      "author": "Laor; Chinese version uploaded by 老陳",
+      "license": "CC BY-SA 3.0",
+      "knownconditions": [
+        "原文件页作者栏记为 User:Laor，中文版本由老陳上传。",
+        "原件为 1000 × 600 的 SVG 教学示意图，不是实物照片或 CAD。"
+      ],
+      "missingconditions": [
+        "厂家、实物尺寸、装配公差与机械联动资料。",
+        "源页的上游来源链接指向圆偏光镜图；在教材中采用本图前仍须复核本图的光学符号与标注，不据标题自动确认结构。"
+      ],
+      "permittedUse": [
+        "作为有署名的光学元件关系示意参考；公开教学采用前检查图中文字和光学符号。",
+        "随展示提供作品名、作者、来源、CC BY-SA 3.0 链接；翻译、重绘等改编须注明改动并遵守相同方式共享要求。",
+        "不证明模型与某一型号实物等比例或机械结构一致；发布时优先普通图片引用，不内联执行未知 SVG。"
+      ],
+      "localPath": "original/planar-polariscope-zh-hans.svg",
+      "file": "original/planar-polariscope-zh-hans.svg",
+      "pageURL": "https://commons.wikimedia.org/wiki/File:Transmission_planar_Polariscope_zh_hans.svg",
+      "directURL": "https://upload.wikimedia.org/wikipedia/commons/7/77/Transmission_planar_Polariscope_zh_hans.svg",
+      "licenceURL": "https://creativecommons.org/licenses/by-sa/3.0",
+      "sha256": "ad88f73f91c37abcc60cc3ea37211a7dc9606f3dd70d4278a858fd0385e7058b",
+      "sourceSha1": "17aa3e1ddd166e69e78f6fc8b07b9e7777255eaf",
+      "byteLength": 174882,
+      "downloadedAt": "2026-10-05T05:10:50.035673+00:00",
+      "licenseCheckedOn": "2026-10-05",
+      "downloadStatus": "downloaded",
+      "originalUnmodified": true,
+      "status": "reference-only",
+      "practiceRecordApproved": false,
+      "attribution": "透射平面偏光镜中文示意图 — Laor; Chinese version uploaded by 老陳 / Wikimedia Commons / CC BY-SA 3.0；项目保存原件，未作修改。"
+    },
+    {
+      "id": "historical-biot-polariscope",
+      "sourceTitle": "Biot polariscope, E. M. Clarke, London, 1844 - Museu da Ciência da Universidade de Coimbra - University of Coimbra - Coimbra, Portugal - DSC09073.jpg",
+      "title": "1844 年 Biot 偏光镜馆藏照片",
+      "author": "Daderot",
+      "license": "CC0",
+      "knownconditions": [
+        "原作者馆藏实物摄影；文件标题标注 E. M. Clarke、London、1844。",
+        "源页说明为葡萄牙科英布拉大学科学博物馆展品；原件为 3648 × 5472 像素 JPEG。"
+      ],
+      "missingconditions": [
+        "仪器内部结构、尺寸、装配公差与工作状态。",
+        "历史仪器不是当代宝石偏光镜的已核实对应型号。"
+      ],
+      "permittedUse": [
+        "作为光学仪器历史与通用结构外观参考，保留 CC0 声明与来源供追溯。",
+        "不作为当代宝石偏光镜的零件拆装、尺寸或工作性能验收依据。"
+      ],
+      "localPath": "original/historical-biot-polariscope.jpg",
+      "file": "original/historical-biot-polariscope.jpg",
+      "pageURL": "https://commons.wikimedia.org/wiki/File:Biot_polariscope,_E._M._Clarke,_London,_1844_-_Museu_da_Ci%C3%AAncia_da_Universidade_de_Coimbra_-_University_of_Coimbra_-_Coimbra,_Portugal_-_DSC09073.jpg",
+      "directURL": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Biot_polariscope%2C_E._M._Clarke%2C_London%2C_1844_-_Museu_da_Ci%C3%AAncia_da_Universidade_de_Coimbra_-_University_of_Coimbra_-_Coimbra%2C_Portugal_-_DSC09073.jpg",
+      "licenceURL": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "sha256": "f4b2e0674c3faaad6cadc30241648d8683bf68140564ca7b48cca381a20f55d1",
+      "sourceSha1": "d144a123641167f72f1a313db2f21e1601a96d39",
+      "byteLength": 8241917,
+      "downloadedAt": "2026-10-05T05:11:15.851318+00:00",
+      "licenseCheckedOn": "2026-10-05",
+      "downloadStatus": "downloaded",
+      "originalUnmodified": true,
+      "status": "reference-only",
+      "practiceRecordApproved": false,
+      "attribution": "1844 年 Biot 偏光镜馆藏照片 — Daderot / Wikimedia Commons / CC0；项目保存原件，未作修改。"
+    }
+  ]
+}

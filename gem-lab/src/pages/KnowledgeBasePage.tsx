@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import Header from '@/components/shared/Header';
 import Breadcrumb from '@/components/shared/Breadcrumb';
 import SectionNav from '@/components/knowledge/SectionNav';
@@ -19,14 +19,25 @@ const SECTIONS = [
 export default function KnowledgeBasePage() {
   const { instrumentId } = useParams<{ instrumentId: InstrumentId }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const markVisited = useProgress((s) => s.markVisited);
 
   const instrument = instrumentId ? INSTRUMENTS[instrumentId] : null;
 
   useEffect(() => {
     if (instrument) markVisited(instrument.id);
-    window.scrollTo({ top: 0 });
   }, [instrument, markVisited]);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      const section = location.hash ? document.getElementById(location.hash.slice(1)) : null;
+      if (section) {
+        section.scrollIntoView({ block: 'start', behavior: 'instant' });
+        if (section.id === 'structure' || section.id === 'introduction') section.focus({ preventScroll: true });
+      } else window.scrollTo({ top: 0 });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [instrument, location.hash]);
 
   if (!instrument) return <Navigate to="/" replace />;
 
@@ -104,7 +115,7 @@ export default function KnowledgeBasePage() {
 
         <main className="min-w-0 space-y-16">
           {/* Section 1: 基本介绍 */}
-          <section id="introduction" className="scroll-mt-24">
+          <section id="introduction" tabIndex={-1} className="scroll-mt-24 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-brand-500">
             <SectionTitle index={1} title="基本介绍" themeHex={instrument.themeHex} />
 
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
@@ -114,6 +125,7 @@ export default function KnowledgeBasePage() {
                     {p}
                   </p>
                 ))}
+                {instrument.id === 'polariscope' && <Link to="/explore/polariscope?lesson=principle" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand-700" data-testid="polariscope-principle-link">在 3D 仪器上理解偏振原理 →</Link>}
               </Card>
 
               <Card title="主要用途" tone="emerald">
@@ -144,19 +156,32 @@ export default function KnowledgeBasePage() {
           </section>
 
           {/* Section 2: 结构 */}
-          <section id="structure" className="scroll-mt-24">
+          <section id="structure" tabIndex={-1} aria-label="结构讲解" className="scroll-mt-24 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-brand-500">
             <SectionTitle index={2} title="结构讲解" themeHex={instrument.themeHex} />
-            <p className="mb-5 max-w-3xl text-sm leading-relaxed text-ink-3">
-              点击或悬停产品图上的编号热点，查看每个部件的详细说明。
-              {hasExternalComponents
-                ? ' 标记为外接附件的项目不在本体图片上，但会参与实际操作。'
-                : ' 下方列表与图示双向联动。'}
-            </p>
-            <ComponentDiagram
-              productImage={instrument.productImage}
-              components={instrument.components}
-              themeHex={instrument.themeHex}
-            />
+            {instrument.id === 'polariscope' ? <>
+              <div className="mb-6 overflow-hidden rounded-2xl border border-line bg-white">
+                <div className="grid items-center gap-6 p-6 sm:grid-cols-[180px_1fr]">
+                  <Link to="/explore/polariscope?lesson=components" tabIndex={-1} aria-hidden="true"><img src={`${import.meta.env.BASE_URL}assets/3d/polariscope/structure-v1/poster.png`} alt="" className="h-44 w-full rounded-xl bg-brand-50/40 object-contain" loading="lazy" /></Link>
+                  <div>
+                    <h3 className="font-display text-xl font-semibold text-ink">在同一台 3D 仪器上，认识部件、光路与原理</h3>
+                    <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-3">点选部件查看作用，展开结构看清关系，再沿着底座内部光源向上，观察偏振方向与明暗如何改变。</p>
+                    <div className="mt-5 flex flex-wrap gap-3">
+                      <Link to="/explore/polariscope?lesson=components" className="btn-primary text-xs" data-testid="polariscope-explore-link">认识 3D 部件 →</Link>
+                      <Link to="/explore/polariscope?lesson=path" className="btn-ghost text-xs" data-testid="polariscope-path-link">跟随光路 →</Link>
+                      <Link to="/explore/polariscope?lesson=principle" className="btn-ghost text-xs">理解偏振原理 →</Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <details className="rounded-xl border border-line bg-white p-5" data-testid="polariscope-reference-diagram">
+                <summary className="cursor-pointer text-sm font-medium text-ink-2">辅助参考：原仪器图片与部件标注</summary>
+                <p className="mb-5 mt-3 text-xs leading-relaxed text-ink-3">原图和热点保留用于对照。点击或悬停编号，查看原有部件说明。</p>
+                <ComponentDiagram productImage={instrument.productImage} components={instrument.components} themeHex={instrument.themeHex} />
+              </details>
+            </> : <>
+              <p className="mb-5 max-w-3xl text-sm leading-relaxed text-ink-3">点击或悬停产品图上的编号热点，查看每个部件的详细说明。{hasExternalComponents ? ' 标记为外接附件的项目不在本体图片上，但会参与实际操作。' : ' 下方列表与图示双向联动。'}</p>
+              <ComponentDiagram productImage={instrument.productImage} components={instrument.components} themeHex={instrument.themeHex} />
+            </>}
           </section>
 
           {/* Section 3: 使用方法 */}

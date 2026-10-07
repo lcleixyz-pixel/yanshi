@@ -7,6 +7,7 @@ const InteractiveDemoPage = lazy(() => import('./pages/InteractiveDemoPage'));
 const DetectionWorkflowPage = lazy(() => import('./pages/DetectionWorkflowPage'));
 const NamingAssessmentPage = lazy(() => import('./pages/NamingAssessmentPage'));
 const ProgressPage = lazy(() => import('./pages/ProgressPage'));
+const PolariscopeExplorePage = lazy(() => import('./pages/PolariscopeExplorePage'));
 
 function PageFallback() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/knowledge/:instrumentId" element={<KnowledgeBasePage />} />
         <Route path="/demo/:instrumentId" element={<InteractiveDemoPage />} />
+        <Route path="/explore/polariscope" element={<PolariscopeExplorePage />} />
         <Route path="/detection" element={<DetectionWorkflowPage />} />
         <Route path="/assessment" element={<NamingAssessmentPage />} />
         <Route path="/progress" element={<ProgressPage />} />

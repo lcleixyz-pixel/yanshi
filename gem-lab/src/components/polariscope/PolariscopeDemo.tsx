@@ -17,6 +17,7 @@ import ObservationCanvas, {
   computePhenomenonBrightness,
   type PolariscopeSampleShape,
 } from '@/components/polariscope/ObservationCanvas';
+import InterferencePatternView from '@/components/polariscope/InterferencePatternView';
 import { INSTRUMENTS } from '@/data/instruments';
 import { SAMPLES, SAMPLES_BY_ID } from '@/data/samples';
 import { useDetection } from '@/store/detectionStore';
@@ -883,8 +884,8 @@ export default function PolariscopeDemo({
                   </summary>
                   <p className="max-h-24 overflow-y-auto px-2 pb-1 text-[10px] leading-relaxed text-ink-2">
                     将样品置于载物台中央，使光线从下方穿透。单眼俯视目镜，缓慢旋转载物台 360°，观察视场明暗变化次数。
-                    每旋转 90° 经历一次亮暗交替（共四明四暗）通常为非均质体；始终全暗为均质体；样品持续透亮多见于可透光的多晶质集合体。
-                    须从 2–3 个不同方向重复测试，以排除光轴方向导致的全暗假象。
+                    每旋转 90° 经历一次亮暗交替（共四明四暗）通常为非均质体，但均质体的异常双折射（ADR）也可能出现，需做平行复核；始终全暗多为均质体，但须从 2–3 个不同方向重复测试，排除沿光轴放置造成的全暗；样品持续透亮多见于可透光的多晶质集合体。
+                    偏光镜反应只是判断依据之一，需结合折射仪等结果综合鉴定。
                   </p>
                 </details>
               )}
@@ -1504,6 +1505,32 @@ function PolariscopeLearningExperience({
                 >
                   完成本轮观察
                 </button>
+                {sample?.characteristics.opticalCharacter === 'uniaxial-positive' ||
+                  sample?.characteristics.opticalCharacter === 'uniaxial-negative' ||
+                  sample?.characteristics.opticalCharacter === 'biaxial-positive' ||
+                  sample?.characteristics.opticalCharacter === 'biaxial-negative' ? (
+                  <details className="group mt-4 rounded-xl border border-violet-200 bg-violet-50/60 ring-1 ring-violet-100">
+                    <summary className="cursor-pointer list-none px-3 py-2 text-[11px] font-bold text-violet-950 [&::-webkit-details-marker]:hidden">
+                      🔬 高级观察：锥光干涉图（实验性）
+                      <span className="ml-1 font-normal text-violet-500">判定轴性 · 点击展开</span>
+                      <span className="ml-1 text-[9px] text-violet-400 group-open:hidden">▼</span>
+                      <span className="ml-1 hidden text-[9px] text-violet-400 group-open:inline">▲</span>
+                    </summary>
+                    <div className="flex flex-col items-center gap-2 px-3 pb-3">
+                      <p className="text-left text-[10px] leading-relaxed text-violet-900/80">
+                        真实操作：确认非均质体后，加装锥光干涉球，从目镜观察干涉图。
+                        黑十字 → 一轴晶；单/双黑臂 → 二轴晶；牛眼（旋光所致，常见于水晶）。
+                        下图为当前样品的示意仿真（未模拟加球操作，仅供认知建立）。
+                      </p>
+                      <InterferencePatternView
+                        optical={sample?.characteristics.opticalCharacter}
+                        sampleId={sample?.id}
+                        rotation={rotation}
+                        size={220}
+                      />
+                    </div>
+                  </details>
+                ) : null}
               </div>
             </section>
           )}
@@ -2355,7 +2382,7 @@ function renderOpticalHint(
     );
   }
   if (response === 'isotropic-all-dark') {
-    return <p>转动载物台 360°，样品与背景始终保持全暗、无亮位——这是<strong>均质体</strong>的典型特征。等轴晶系宝石（如石榴石、尖晶石）及非晶质体（玻璃、琥珀、欧泊）均可呈此特征。</p>;
+    return <p>转动载物台 360°，样品与背景始终保持全暗、无亮位——这是<strong>均质体</strong>的典型反应。等轴晶系宝石（如石榴石、尖晶石）及非晶质体（玻璃、琥珀、欧泊）均可呈此反应。但这一个方向还不能下结论：非均质体沿光轴放置也会全暗，须换 2–3 个方向复查；部分均质体还会因应变出现异常双折射。</p>;
   }
   if (response === 'aggregate-continuous-bright') {
     return <p>样品区域持续透亮、旋转时保持亮反应——这是<strong>多晶质集合体</strong>的典型特征。正交背景仍保持暗场；由于光线经过大量细小晶粒，偏振态被打乱，样品响应无法被上偏光片完全消光。翡翠、软玉等均属此类。</p>;
@@ -2363,8 +2390,8 @@ function renderOpticalHint(
   if (optical === 'uniaxial-positive' || optical === 'uniaxial-negative') {
     return (
       <p>
-        旋转 360° 出现<strong>四明四暗</strong>，说明样品为非均质体。当前样品为<strong>一轴晶（{optical === 'uniaxial-positive' ? '+' : '−'}）</strong>。
-        在正交偏光下找到干涉色最强的位置，加装锥光干涉球可观察到黑十字干涉图（标准牛眼图），进一步确认轴性。
+        旋转 360° 出现<strong>四明四暗</strong>，通常说明样品为非均质体（异常双折射也可能出现四明四暗，有疑问时做平行复核）。当前样品为<strong>一轴晶（{optical === 'uniaxial-positive' ? '+' : '−'}）</strong>。
+        在正交偏光下找到干涉色最强的位置，加装锥光干涉球，光轴大致直立时可观察到黑十字加同心色环的一轴晶干涉图，进一步确认轴性。（水晶因旋光性，中心可呈彩色圆斑、黑十字不到中心，即「牛眼」；它与普通一轴晶黑十字不是一回事，且受取向、旋向和双晶影响。）
         {brightness < 0.15 && ' · 当前处于消光位（暗位），旋转约 45° 可到达最亮位。'}
         {brightness > 0.85 && ' · 当前样品处于最亮位（45° 位），继续旋转约 45° 将到达下一个消光位。'}
       </p>
@@ -2373,7 +2400,7 @@ function renderOpticalHint(
   if (optical === 'biaxial-positive' || optical === 'biaxial-negative') {
     return (
       <p>
-        旋转 360° 出现<strong>四明四暗</strong>，说明样品为非均质体。当前样品为<strong>二轴晶（{optical === 'biaxial-positive' ? '+' : '−'}）</strong>。
+        旋转 360° 出现<strong>四明四暗</strong>，通常说明样品为非均质体（异常双折射也可能出现四明四暗，有疑问时做平行复核）。当前样品为<strong>二轴晶（{optical === 'biaxial-positive' ? '+' : '−'}）</strong>。
         加装锥光干涉球，寻找干涉图最清晰的位置——二轴晶通常显示双臂或单臂黑带，可区别于一轴晶的黑十字图。
       </p>
     );

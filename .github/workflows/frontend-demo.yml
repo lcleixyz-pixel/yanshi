@@ -39,12 +39,16 @@ jobs:
         working-directory: gem-lab
 
       - name: Run smoke tests
-        run: npm run test:smoke --prefix gem-lab
+        run: npm run test:smoke --prefix gem-lab -- --output=test-results/smoke
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/smoke/results.json
 
       - name: Run polariscope browser regression tests
         # This prefix also includes guided-course and student-mode specifications.
-        run: npx playwright test polariscope3d --workers=1 --max-failures=3
+        run: npx playwright test polariscope3d --workers=1 --max-failures=3 --output=test-results/polariscope
         working-directory: gem-lab
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/polariscope/results.json
 
       - name: Save browser test evidence
         if: always()

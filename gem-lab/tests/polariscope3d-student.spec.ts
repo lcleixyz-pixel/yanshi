@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, polariscopeUrl, type Page } from './fixtures/polariscope';
 
 const scene = (page: Page) => page.getByTestId('polariscope-scene');
 const canvas = (page: Page) => page.getByTestId('polariscope-canvas');
@@ -9,7 +9,7 @@ const card = (page: Page) => page.getByTestId('student-card');
 test.setTimeout(120_000);
 
 async function openStudent(page: Page) {
-  await page.goto('/explore/polariscope');
+  await page.goto(polariscopeUrl('/explore/polariscope'));
   await expect(scene(page)).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
   await page.getByTestId('explore-student-start').click();
   await expect(page).toHaveURL(/mode=student/);
@@ -108,7 +108,7 @@ test('switching to teacher mode restores the side panels and the standard eyepie
 
 test('student mode on a 390 px phone keeps the stacked layout without horizontal overflow', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/explore/polariscope?course=basic&mode=student');
+  await page.goto(polariscopeUrl('/explore/polariscope?course=basic&mode=student'));
   await expect(scene(page)).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
   for (let i = 0; i < 3; i++) await page.getByTestId('course-skip').click();
   await expect(page.getByTestId('student-observe')).toHaveCount(0);

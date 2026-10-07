@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, polariscopeUrl, type Page } from './fixtures/polariscope';
 
 const scene = (page: Page) => page.getByTestId('polariscope-scene');
 const canvas = (page: Page) => page.getByTestId('polariscope-canvas');
@@ -6,13 +6,17 @@ const canvas = (page: Page) => page.getByTestId('polariscope-canvas');
 test.setTimeout(90_000);
 
 async function openLesson(page: Page, lesson: string) {
-  await page.goto(`/explore/polariscope?lesson=${lesson}`);
+  await page.goto(polariscopeUrl(`/explore/polariscope?lesson=${lesson}`));
   await expect(scene(page)).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
   await expect(canvas(page)).toHaveAttribute('data-loaded', 'true');
 }
 
 /** 目镜画布中心区域的平均亮度（0–255）。 */
 async function eyepieceCentreBrightness(page: Page, fraction = .18) {
+  // Wait for the requested optical state to be painted, not a fixed wall-clock delay.
+  await expect.poll(() => page.getByTestId('eyepiece-view').locator('canvas').evaluate(element =>
+    !!element.getAttribute('data-rendered-frame') && element.getAttribute('data-rendered-frame') === element.getAttribute('data-requested-frame'),
+  )).toBe(true);
   return page.getByTestId('eyepiece-view').locator('canvas').evaluate((element: HTMLCanvasElement, f: number) => {
     const context = element.getContext('2d')!, n = element.width, r = Math.max(2, Math.round(n * f)), c = n / 2;
     const data = context.getImageData(c - r, c - r, 2 * r, 2 * r).data;
@@ -84,7 +88,6 @@ test('conoscope lesson keeps one orientation for the ordinary view and the inter
   await openLesson(page, 'conoscope');
   // 默认光轴直立：放球前正光下近于全暗（同一块晶体、同一个方向）。
   await expect(page.getByTestId('conoscope-orientation').getByRole('button', { name: '光轴直立' })).toHaveAttribute('aria-pressed', 'true');
-  await page.waitForTimeout(200);
   expect(await eyepieceCentreBrightness(page)).toBeLessThan(45);
   await page.getByTestId('conoscope-orientation').getByRole('button', { name: '一般方向' }).click();
   await page.getByTestId('conoscope-toggle').click();
@@ -100,13 +103,12 @@ test('sample lesson: singly refractive spinel stays dark while tourmaline blinks
   const samples: number[] = [];
   for (const angle of [0, 15, 30, 45, 60, 75]) {
     await stage.fill(String(angle));
-    await page.waitForTimeout(120);
     samples.push(await eyepieceCentreBrightness(page));
   }
   expect(Math.max(...samples) - Math.min(...samples)).toBeGreaterThan(25);
   await page.getByTestId('explore-sample-spinel').click();
   const dark: number[] = [];
-  for (const angle of [0, 30, 60]) { await stage.fill(String(angle)); await page.waitForTimeout(120); dark.push(await eyepieceCentreBrightness(page)); }
+  for (const angle of [0, 30, 60]) { await stage.fill(String(angle)); dark.push(await eyepieceCentreBrightness(page)); }
   expect(Math.max(...dark)).toBeLessThan(45);
   expect(Math.max(...samples)).toBeGreaterThan(Math.max(...dark) + 25);
 });
@@ -135,7 +137,6 @@ test('conoscope lesson: inserting the sphere animates it over the stone and swit
   await page.getByTestId('explore-sample-citrine').click();
   await page.getByTestId('conoscope-toggle').click();
   await expect(page.getByTestId('eyepiece-view')).toHaveAttribute('data-kind', 'conoscope');
-  await page.waitForTimeout(200);
   expect(await eyepieceCentreBrightness(page, .04)).toBeGreaterThan(uniaxialCentre + 60);
   await page.getByTestId('conoscope-toggle').click();
   await expect(canvas(page)).toHaveAttribute('data-conoscope-progress', '0.000', { timeout: 8_000 });
@@ -223,7 +224,6 @@ test('gemology audit repro: twin figure text follows analyzer, orientation and p
   const panel = page.getByRole('complementary', { name: '干涉图说明与控制' });
   await expect(panel).toContainText('中心消光');
   await expect(panel).not.toContainText('中心是彩色圆斑');
-  await page.waitForTimeout(200);
   expect(await eyepieceCentreBrightness(page, .03)).toBeLessThan(25);
   await page.getByRole('button', { name: '0° 平行', exact: true }).click();
   await expect(panel).toContainText('两片平行时视场中心明亮');

@@ -1,8 +1,9 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, polariscopeUrl, useCiSceneQuality, type Page } from './fixtures/polariscope';
 
 const ROUTE = '/explore/polariscope';
 
 async function waitForScene(page: Page) {
+  await useCiSceneQuality(page);
   await expect(page.getByTestId('polariscope-scene')).toHaveAttribute('data-status', 'ready');
   await expect(page.getByTestId('polariscope-canvas')).toHaveAttribute('data-loaded', 'true');
   await expect.poll(async () => Number(await page.getByTestId('polariscope-canvas').getAttribute('data-frames'))).toBeGreaterThan(5);
@@ -10,10 +11,15 @@ async function waitForScene(page: Page) {
 
 async function stableCamera(page: Page) {
   let previous = '';
+  let previousFrame = -1;
   let unchanged = 0;
   await expect.poll(async () => {
-    const next = await page.getByTestId('polariscope-canvas').getAttribute('data-camera') ?? '';
+    const { next, frame } = await page.getByTestId('polariscope-canvas').evaluate(canvas => ({
+      next: canvas.getAttribute('data-camera') ?? '', frame: Number(canvas.getAttribute('data-frames')),
+    }));
+    if (frame === previousFrame) return unchanged;
     unchanged = next && next === previous ? unchanged + 1 : 0;
+    previousFrame = frame;
     previous = next;
     return unchanged;
   }).toBeGreaterThanOrEqual(3);
@@ -70,7 +76,7 @@ test.describe('native polariscope scene', () => {
 
   test('direct ring drags update the shared angle without moving the camera or the other ring', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
-    await page.goto(ROUTE);
+    await page.goto(polariscopeUrl(ROUTE));
     await waitForScene(page);
     await page.getByTestId('explore-mode-structure').click();
     await stableCamera(page);
@@ -98,7 +104,7 @@ test.describe('native polariscope scene', () => {
 
   test('orbit and zoom change the camera while preserving both mechanical angles', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
-    await page.goto(ROUTE);
+    await page.goto(polariscopeUrl(ROUTE));
     await waitForScene(page);
     await page.getByTestId('explore-mode-structure').click();
     const initialCamera = await stableCamera(page);
@@ -117,7 +123,7 @@ test.describe('native polariscope scene', () => {
 
   test('a direct ring drag preserves the chosen fixed camera view', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
-    await page.goto(ROUTE);
+    await page.goto(polariscopeUrl(ROUTE));
     await waitForScene(page);
     await page.getByTestId('explore-mode-structure').click();
     await page.getByRole('combobox', { name: '观察视角', exact: true }).selectOption('05-analyzer-close');
@@ -135,7 +141,7 @@ test.describe('native polariscope scene', () => {
 
   test('switching to a fixed view clears residual orbit damping without changing mechanical angles', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
-    await page.goto(ROUTE);
+    await page.goto(polariscopeUrl(ROUTE));
     await waitForScene(page);
     const canvas = page.getByTestId('polariscope-canvas');
     const viewSelect = page.getByRole('combobox', { name: '观察视角', exact: true });
@@ -164,7 +170,7 @@ test.describe('native polariscope scene', () => {
 
   test('physical power button toggles the shared switch but an out-and-back camera drag does not', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
-    await page.goto(ROUTE);
+    await page.goto(polariscopeUrl(ROUTE));
     await waitForScene(page);
     await page.getByTestId('explore-part-powerSwitch').click();
     await stableCamera(page);
@@ -191,7 +197,7 @@ test.describe('native polariscope scene', () => {
 
   test('a buttons-zero hover during a physical switch press does not become a held drag', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
-    await page.goto(ROUTE);
+    await page.goto(polariscopeUrl(ROUTE));
     await waitForScene(page);
     await page.getByTestId('explore-part-powerSwitch').click();
     const beforeCamera = await stableCamera(page);
@@ -218,7 +224,7 @@ test.describe('native polariscope scene', () => {
   });
 
   test('internal light and side switch remain at their base positions throughout explode', async ({ page }) => {
-    await page.goto(ROUTE);
+    await page.goto(polariscopeUrl(ROUTE));
     await waitForScene(page);
     const canvas = page.getByTestId('polariscope-canvas');
     await page.getByTestId('explore-part-light').click();
@@ -280,7 +286,7 @@ test.describe('native polariscope scene', () => {
     });
     const errors: string[] = [];
     page.on('pageerror', error => errors.push(error.message));
-    await page.goto(ROUTE);
+    await page.goto(polariscopeUrl(ROUTE));
     const memoryCounts: string[] = [];
     for (let visit = 0; visit < 3; visit++) {
       await waitForScene(page);
@@ -316,7 +322,7 @@ test.describe('native polariscope scene', () => {
 
   test('mobile viewport keeps the live scene, controls and projection exit within the screen', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto(ROUTE);
+    await page.goto(polariscopeUrl(ROUTE));
     await waitForScene(page);
     const canvas = page.getByTestId('polariscope-canvas');
     const bounds = await canvas.boundingBox();

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { renderConoscopicFigure, type CrystalOptics, type Rgb } from '../../domain/polarizedLight';
 import { renderEyepieceField, type SampleFieldMap } from '../../domain/eyepieceField';
 
@@ -26,6 +26,8 @@ export default function EyepieceView({ content, stageDeg, analyzerDeg, active, l
   // 光轴竖直的一轴晶干涉图绕视场中心旋转对称：转动物台画面不变，无需重算（水晶逐波长计算较慢）。
   const stageInvariant = content.kind === 'conoscope' && content.crystal.kind === 'uniaxial' && content.crystal.axis[2] > 0.999999;
   const effectiveStage = stageInvariant ? 0 : stageDeg;
+  const revision = useRef(0);
+  const renderToken = useMemo(() => String(++revision.current), [content, effectiveStage, analyzerDeg, active]);
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
       const canvas = own.current, context = canvas?.getContext('2d');
@@ -35,14 +37,15 @@ export default function EyepieceView({ content, stageDeg, analyzerDeg, active, l
         ? renderEyepieceField(content.map, n, { stageDeg: effectiveStage, analyzerDeg, active, backgroundTransmission: content.backgroundTransmission })
         : renderConoscopicFigure(content.crystal, { stageDeg: effectiveStage, analyzerDeg, thicknessMm: content.thicknessMm, sinThetaMax: content.sinThetaMax ?? 0.42, resolution: n, tint: content.tint, exposure: active ? 1 : 0 });
       context.putImageData(new ImageData(pixels, n, n), 0, 0);
+      canvas.dataset.renderedFrame = renderToken;
       rendered.current?.();
     });
     return () => cancelAnimationFrame(frame);
-  }, [content, effectiveStage, analyzerDeg, active]);
+  }, [content, effectiveStage, analyzerDeg, active, renderToken]);
   return (
     <figure className="pol-eyepiece" data-testid="eyepiece-view" data-kind={content.kind}>
       <div className="pol-eyepiece__ring">
-        <canvas ref={(element) => { own.current = element; onCanvas?.(element); }} width={EYEPIECE_RESOLUTION} height={EYEPIECE_RESOLUTION} role="img" aria-label={label} />
+        <canvas ref={(element) => { own.current = element; onCanvas?.(element); }} data-requested-frame={renderToken} width={EYEPIECE_RESOLUTION} height={EYEPIECE_RESOLUTION} role="img" aria-label={label} />
         <span className="pol-eyepiece__mark pol-eyepiece__mark--p" aria-hidden="true">P</span>
         <span className="pol-eyepiece__mark pol-eyepiece__mark--a" aria-hidden="true" style={{ transform: `rotate(${-analyzerDeg}deg)` }}><i>A</i></span>
       </div>

@@ -12,6 +12,7 @@ jobs:
   build-and-smoke:
     name: Build and smoke test
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       - name: Check out repository
@@ -41,13 +42,14 @@ jobs:
         run: npm run test:smoke --prefix gem-lab
 
       - name: Run polariscope browser regression tests
-        run: npx playwright test tests/polariscope3d.spec.ts tests/polariscope3d-scene.spec.ts tests/polariscope3d-lessons.spec.ts --workers=1
+        # This prefix also includes guided-course and student-mode specifications.
+        run: npx playwright test polariscope3d --workers=1 --max-failures=3
         working-directory: gem-lab
 
-      - name: Save browser failure evidence
-        if: failure()
+      - name: Save browser test evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: browser-failure-evidence
+          name: browser-test-evidence
           path: gem-lab/test-results/
           retention-days: 14

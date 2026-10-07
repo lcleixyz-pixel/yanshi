@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { rotationStepDegrees } from '../domain/animationTiming';
 import Header from '../components/shared/Header';
 import PolariscopeScene, { type SceneCoach } from '../components/polariscope3d/PolariscopeScene';
 import EyepieceView, { EYEPIECE_RESOLUTION, type EyepieceContent } from '../components/polariscope3d/EyepieceView';
@@ -138,7 +139,9 @@ export default function PolariscopeExplorePage() {
   const courseActive = searchParams.get('course') === 'basic';
   const studentMode = courseActive && searchParams.get('mode') === 'student';
   const [state, setState] = useState(() => stateForLesson(requestedLesson));
-  const [quality, setQuality] = useState<'standard' | 'high'>('high');
+  // A shareable low-cost mode for classroom laptops; the default remains high.
+  const qualityPreference = useRef<'standard' | 'high' | null>(searchParams.get('quality') === 'standard' ? 'standard' : searchParams.get('quality') === 'high' ? 'high' : null);
+  const [quality, setQuality] = useState<'standard' | 'high'>(qualityPreference.current ?? 'high');
   const [projection, setProjection] = useState(false);
   const [resetViewKey, setResetViewKey] = useState(0);
   const [sceneStatus, setSceneStatus] = useState<SceneStatus>('loading');
@@ -265,7 +268,9 @@ export default function PolariscopeExplorePage() {
     // 按累计转角精确终止（不逐帧舍入），任何刷新率下都正好转满一周。
     let frame = 0, last = performance.now(), travelled = 0, start: number | null = null;
     const tick = (now: number) => {
-      travelled = Math.min(360, travelled + Math.min(.05, (now - last) / 1000) * 40); last = now;
+      const elapsed = (now - last) / 1000; last = now;
+      if (document.hidden) { frame = requestAnimationFrame(tick); return; }
+      travelled = Math.min(360, travelled + rotationStepDegrees(elapsed));
       setState((previous) => {
         if (start === null) start = previous.stageAngle;
         return { ...previous, stageAngle: travelled >= 360 ? start : (start + travelled) % 360 };
@@ -273,8 +278,10 @@ export default function PolariscopeExplorePage() {
       if (travelled >= 360) { setAutoRotate(false); return; }
       frame = requestAnimationFrame(tick);
     };
+    const resetClock = () => { last = performance.now(); };
+    document.addEventListener('visibilitychange', resetClock);
     frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
+    return () => { cancelAnimationFrame(frame); document.removeEventListener('visibilitychange', resetClock); };
   }, [autoRotate]);
 
   const projectionTitle = state.lesson === 'components' ? selected?.name ?? (state.mode === 'explode' ? '部件与装配关系' : '选择一个部件')
@@ -407,11 +414,11 @@ export default function PolariscopeExplorePage() {
     if (!existingViewport) document.head.appendChild(viewport);
     const mobile = window.matchMedia('(max-width: 680px)');
     let mobileLayout = mobile.matches;
-    setQuality(mobileLayout ? 'standard' : 'high'); setNarrow(mobileLayout);
+    setQuality(qualityPreference.current ?? (mobileLayout ? 'standard' : 'high')); setNarrow(mobileLayout);
     const updateBreakpoint = () => {
       if (mobile.matches === mobileLayout) return;
       mobileLayout = mobile.matches;
-      setQuality(mobileLayout ? 'standard' : 'high'); setNarrow(mobileLayout);
+      setQuality(qualityPreference.current ?? (mobileLayout ? 'standard' : 'high')); setNarrow(mobileLayout);
     };
     mobile.addEventListener('change', updateBreakpoint);
     const frame = window.requestAnimationFrame(updateBreakpoint);
@@ -520,7 +527,7 @@ export default function PolariscopeExplorePage() {
           <div className="pol-explore__viewport-tools"><p>{state.mode === 'structure' && !state.isolatedPart ? (sampleLesson ? '拖动样品或物台环旋转样品 · 拖动空白旋转视角' : '拖动空白旋转视角 · 拖动圆环旋转部件') : '拖动旋转视角 · 滚轮缩放'}</p><div className="pol-explore__view-buttons">
             <button className="pol-explore__button" onClick={resetView} aria-label="恢复三维视角">恢复视角</button>
             <select className="pol-explore__quality" aria-label="观察视角" value={viewPreset} onChange={(event) => { setViewPreset(event.target.value as StructureViewPreset); update({ selectedPart: null, isolatedPart: null }); }}><option value="free">自由观察</option><option value="01-front">正面</option><option value="02-side">侧面</option><option value="03-top">俯视</option><option value="04-three-quarter">主视图</option><option value="05-analyzer-close">上环近景</option><option value="06-stage-close">物台近景</option></select>
-            <select className="pol-explore__quality" aria-label="三维画质" value={quality} onChange={(event) => setQuality(event.target.value as 'standard' | 'high')}><option value="high">精细画质</option><option value="standard">流畅画质</option></select>
+            <select className="pol-explore__quality" aria-label="三维画质" value={quality} onChange={(event) => { qualityPreference.current = event.target.value as 'standard' | 'high'; setQuality(qualityPreference.current); }}><option value="high">精细画质</option><option value="standard">流畅画质</option></select>
           </div></div>
           <div className="pol-explore__projection-controls" aria-label="投屏操作">
             {!courseActive && <select className="pol-explore__quality" aria-label="投屏讲解内容" value={state.lesson} onChange={(event) => changeLesson(event.target.value as Lesson)}>{LESSONS.map((lesson) => <option key={lesson.id} value={lesson.id}>{lesson.title}</option>)}</select>}

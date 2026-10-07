@@ -14,10 +14,11 @@ export default defineConfig({
   },
   fullyParallel: true,
   workers: process.env.CI ? 4 : 4,
-  reporter: process.env.CI ? 'github' : 'list',
+  reporter: process.env.CI ? [['github'], ['json', { outputFile: 'test-results/results.json' }]] : 'list',
   use: {
     baseURL: 'http://127.0.0.1:4173',
     trace: 'retain-on-failure',
+    screenshot: 'only-on-failure',
   },
   webServer: {
     command: 'npm run preview -- --host 127.0.0.1',
@@ -30,7 +31,8 @@ export default defineConfig({
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        ...(useLocalChrome ? { channel: 'chrome' as const } : {}),
+        // Use regular Chromium's new headless mode in CI, closer to local Chrome.
+        channel: useLocalChrome ? 'chrome' : 'chromium',
       },
     },
   ],

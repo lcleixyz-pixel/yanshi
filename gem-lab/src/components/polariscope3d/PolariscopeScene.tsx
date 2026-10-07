@@ -52,6 +52,9 @@ const HOME_DIRECTION = new THREE.Vector3(1, .62, 1.45).normalize();
 const GHOST_OPACITY = .14;
 /** 部件标号与表面锚点之间的引导线长度（像素）。 */
 const CALLOUT_DISTANCE = 46;
+/** 普通档只降低渲染分辨率和阴影成本，模型、透射材质与拾取几何保持一致。 */
+const STANDARD_PIXEL_BUDGET = 192_000;
+const ORBIT_DAMPING_FACTOR = .09;
 
 /**
  * 标号锚点：落在部件可见表面上，而不是包围盒中心（折板支架、环形部件的中心在空气里）。
@@ -135,6 +138,8 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
     canvas.setAttribute('aria-label', '偏光镜三维结构：拖动背景旋转视角，拖动上下操作环调节角度，点按底座侧面按钮切换电源');
     canvas.setAttribute('role', 'img'); canvas.dataset.testid = 'polariscope-canvas';
     canvas.style.cssText = 'width:100%;height:100%;display:block;touch-action:none;'; container.appendChild(canvas);
+    const gl = renderer.getContext(), rendererInfo = gl.getExtension('WEBGL_debug_renderer_info');
+    canvas.dataset.gpuRenderer = String(gl.getParameter(rendererInfo ? rendererInfo.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
     renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1;
     renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFShadowMap; renderer.shadowMap.autoUpdate = false;
     const scene = new THREE.Scene();
@@ -144,7 +149,7 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
     let orthographicScale = 1.5, aspect = 1;
     camera.position.copy(HOME_DIRECTION).multiplyScalar(3);
     const controls = new OrbitControls(camera, canvas);
-    controls.target.set(0, .5, 0); controls.enableDamping = true; controls.dampingFactor = .09;
+    controls.target.set(0, .5, 0); controls.enableDamping = true; controls.dampingFactor = ORBIT_DAMPING_FACTOR;
     controls.minDistance = .08; controls.maxDistance = 20; controls.maxPolarAngle = Math.PI * .93;
     controls.enablePan = true; controls.screenSpacePanning = true; controls.update();
     const pmrem = new THREE.PMREMGenerator(renderer), room = new RoomEnvironment();
@@ -232,7 +237,14 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
     setCameraPreset.current = preset; resetCamera.current = () => preset(latest.current.viewPreset ?? 'free');
     const resize = () => {
       const bounds = container.getBoundingClientRect(); if (!bounds.width || !bounds.height) return;
+      const high = latest.current.quality === 'high';
+      const pixelRatio = high
+        ? Math.min(window.devicePixelRatio || 1, 1.75)
+        : Math.min(window.devicePixelRatio || 1, 1, Math.sqrt(STANDARD_PIXEL_BUDGET / (bounds.width * bounds.height)));
+      if (renderer.getPixelRatio() !== pixelRatio) renderer.setPixelRatio(pixelRatio);
       aspect = bounds.width / bounds.height; renderer.setSize(bounds.width, bounds.height, false); projection();
+      canvas.dataset.quality = latest.current.quality;
+      canvas.dataset.bufferPixels = String(canvas.width * canvas.height);
       if (loaded) {
         const { state, viewPreset } = latest.current;
         const closePart = viewPreset === '05-analyzer-close' ? 'analyzer' : viewPreset === '06-stage-close' ? 'stage' : null;
@@ -400,7 +412,7 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
       scene.updateMatrixWorld(true);
       for (const [shell, outline] of outlines) { outline.visible = internal && shell.parent?.visible !== false && (() => { for (let node: THREE.Object3D | null = shell; node; node = node.parent) if (!node.visible) return false; return true; })(); outline.matrix.copy(shell.matrixWorld); outline.matrixWorldNeedsUpdate = true; }
       if (sampleModel) sampleModel.group.visible = lessonUsesSample(state.lesson) && !!runtimes.get('stage')?.node.visible;
-      renderer.shadowMap.needsUpdate = true;
+      renderer.shadowMap.needsUpdate = renderer.shadowMap.enabled;
     };
     void (async () => {
       try {
@@ -511,20 +523,28 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
     })();
     const projected = new THREE.Vector3();
     let previousTickAt = performance.now();
+    // 后台停留不计入过渡；前台低帧率仍按实际经过的时间收敛，不拉长机械动作。
+    const resetFrameClock = () => { previousTickAt = performance.now(); };
+    ownerDocument.addEventListener('visibilitychange', resetFrameClock);
     const tick = () => {
       if (disposed || contextUnavailable) return;
       animation = requestAnimationFrame(tick);
-      const tickAt = performance.now(), dt = Math.min((tickAt - previousTickAt) / 1000, .05);
+      const tickAt = performance.now(), dt = Math.max(0, (tickAt - previousTickAt) / 1000);
       previousTickAt = tickAt;
-      if (document.hidden) return;
+      if (ownerDocument.hidden) return;
       const current = latest.current, state = current.state;
       const wantedShift = Math.max(0, Math.min(.4, current.viewShift ?? 0));
       if (Math.abs(appliedShift - wantedShift) > .0005) { appliedShift = THREE.MathUtils.damp(appliedShift, wantedShift, 7, dt); if (Math.abs(appliedShift - wantedShift) < .001) appliedShift = wantedShift; projection(); }
       if (lastQuality !== current.quality) {
-        lastQuality = current.quality; renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, current.quality === 'high' ? 1.75 : 1));
-        const mapSize = current.quality === 'high' ? 2048 : 1024;
+        lastQuality = current.quality;
+        const high = current.quality === 'high';
+        renderer.shadowMap.enabled = high; key.castShadow = high;
+        renderer.transmissionResolutionScale = high ? 1 : .4;
+        const mapSize = high ? 2048 : 1024;
         if (key.shadow.mapSize.x !== mapSize) { key.shadow.map?.dispose(); key.shadow.map = null; key.shadow.mapSize.set(mapSize, mapSize); }
-        renderer.shadowMap.needsUpdate = true; resize();
+        renderer.shadowMap.needsUpdate = high;
+        canvas.dataset.shadows = String(high); canvas.dataset.transmissionScale = String(renderer.transmissionResolutionScale);
+        resize();
       }
       const wanted = state.mode === 'explode' ? state.explosion : 0;
       explosion = THREE.MathUtils.damp(explosion, wanted, 9, dt); if (Math.abs(explosion - wanted) < .0001) explosion = wanted;
@@ -575,7 +595,13 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
         orthographicScale = THREE.MathUtils.lerp(orthographicScale, focus.scale, fraction); camera.zoom = 1; projection();
         if (camera.position.distanceTo(focus.position) < extent * .0002 && controls.target.distanceTo(focus.target) < extent * .0002) focus = null;
       }
-      if (!drag) controls.update();
+      if (!drag) {
+        // OrbitControls 的 deltaTime 只影响 autoRotate，惯性仍需换算成等效的 60 Hz 衰减。
+        controls.dampingFactor = 1 - Math.pow(1 - ORBIT_DAMPING_FACTOR, dt * 60);
+        controls.update(dt);
+        // 内部指针事件也会调用 update()，保留这些事件原有的阻尼手感。
+        controls.dampingFactor = ORBIT_DAMPING_FACTOR;
+      }
       const fieldView = current.field;
       if (fieldView?.canvas && fieldView.canvas !== fieldCanvas) {
         fieldTexture?.dispose(); fieldCanvas = fieldView.canvas;
@@ -691,6 +717,7 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
     return () => {
       disposed = true; abort.abort(); clearTimeout(timeout); cancelAnimationFrame(animation);
       resetCamera.current = null; setCameraPreset.current = null; observer.disconnect();
+      ownerDocument.removeEventListener('visibilitychange', resetFrameClock);
       canvas.removeEventListener('pointerdown', down, true); canvas.removeEventListener('pointerdown', settleDown); ownerDocument.removeEventListener('pointermove', move, true); ownerDocument.removeEventListener('pointerup', up, true);
       ownerDocument.removeEventListener('pointercancel', cancel, true); canvas.removeEventListener('lostpointercapture', lostCapture, true); window.removeEventListener('blur', cancelAll); canvas.removeEventListener('webglcontextlost', contextLost);
       controls.removeEventListener('start', orbitStart); controls.dispose();

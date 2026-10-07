@@ -1,5 +1,7 @@
 # 宝石检测实训系统（Gem Lab）
 
+偏光镜课程的保存、低帧率修复与远端检查入口见[课程保全与 CI 修复](../docs/偏光镜CI与课程保全-2026-10-07.md)。流畅档可使用 `/explore/polariscope?quality=standard`，并与 `course=basic&mode=student` 组合。
+
 `gem-lab` 是本仓库实际运行的前端应用，基于 Vite + React + TypeScript + Tailwind CSS 构建。它面向宝石检测教学场景，提供仪器知识库、交互式演示、检测流程和命名评估。
 
 偏光镜网页运行资产保留在普通 Git 中，`npm run build` 无需恢复制作素材。需要编辑 Blender 母版或重建模型时，见[资产归档与恢复](../docs/资产归档与恢复.md)；当前母版位于归档中的 `repair-v2/repaired.blend`。

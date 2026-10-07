@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, polariscopeUrl, useCiSceneQuality, type Page } from './fixtures/polariscope';
 
 const scene = (page: Page) => page.getByTestId('polariscope-scene');
 const canvas = (page: Page) => page.getByTestId('polariscope-canvas');
@@ -8,8 +8,9 @@ const partIds = ['base', 'frame', 'light', 'polarizer', 'stage', 'analyzer', 'co
 test.setTimeout(60_000);
 
 async function openExplore(page: Page) {
-  await page.goto('/explore/polariscope');
+  await page.goto(polariscopeUrl('/explore/polariscope'));
   await expect(page.getByRole('heading', { name: '偏光镜', exact: true })).toBeVisible();
+  await useCiSceneQuality(page);
   await expect(scene(page)).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
   await expect(canvas(page)).toHaveAttribute('data-loaded', 'true');
 }
@@ -21,6 +22,7 @@ test('knowledge entry preserves the original diagram and opens only structure an
   await expect(page.getByTestId('polariscope-reference-diagram').locator('img')).toBeVisible();
   await page.getByTestId('polariscope-explore-link').click();
   await expect(page).toHaveURL(/\/explore\/polariscope(\?lesson=components)?$/);
+  await useCiSceneQuality(page);
   await expect(scene(page)).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
   await expect(page.getByTestId('explore-mode-structure')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.getByTestId('explore-mode-explode')).toBeVisible();
@@ -116,12 +118,13 @@ test('camera presets and projection remain keyboard accessible without adding op
 
 test('failed model loading preserves a fallback image and can retry the same model', async ({ page }) => {
   await page.route(MODEL, route => route.abort('failed'));
-  await page.goto('/explore/polariscope');
+  await page.goto(polariscopeUrl('/explore/polariscope'));
   await expect(scene(page)).toHaveAttribute('data-status', 'error', { timeout: 30_000 });
   await expect(scene(page).locator('img')).toBeVisible();
   await expect(page.getByRole('button', { name: '重新加载三维场景', exact: true })).toBeVisible();
   await page.unroute(MODEL);
   await page.getByRole('button', { name: '重新加载三维场景', exact: true }).click();
+  await useCiSceneQuality(page);
   await expect(scene(page)).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
 });
 
@@ -165,6 +168,7 @@ test('back navigation returns to the knowledge structure section; teaching link 
   await expect(page.locator('#structure')).toBeInViewport();
   await expect(page.getByTestId('polariscope-canvas')).toHaveCount(0);
   await page.getByTestId('polariscope-explore-link').click();
+  await useCiSceneQuality(page);
   await expect(scene(page)).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
   await page.locator('a[href="/demo/polariscope"]').first().click();
   await expect(page).toHaveURL(/\/demo\/polariscope$/);
@@ -186,7 +190,8 @@ test('repeated route entry removes old canvases and resets only the structure pa
     await page.locator('a[href="/knowledge/polariscope#structure"]').first().click();
     await expect(canvas(page)).toHaveCount(0);
     await page.getByTestId('polariscope-explore-link').click();
-    await expect(scene(page)).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
+    await useCiSceneQuality(page);
+  await expect(scene(page)).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
     await expect(page.getByTestId('explore-mode-structure')).toHaveAttribute('aria-pressed', 'true');
     await expect(canvas(page)).toHaveAttribute('data-power', 'true');
     await expect(canvas(page)).toHaveAttribute('data-internal-view', 'false');

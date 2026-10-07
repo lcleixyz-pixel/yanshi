@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, polariscopeUrl, type Page } from './fixtures/polariscope';
 
 const scene = (page: Page) => page.getByTestId('polariscope-scene');
 const canvas = (page: Page) => page.getByTestId('polariscope-canvas');
@@ -13,7 +13,7 @@ async function rotateOnce(page: Page, observation: string) {
 }
 
 test('basic guided course: parts → path → crossed → rotate → reorient → explain, then advanced topics', async ({ page }) => {
-  await page.goto('/explore/polariscope');
+  await page.goto(polariscopeUrl('/explore/polariscope'));
   await expect(scene(page)).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
   await page.getByTestId('explore-course-start').click();
   await expect(page).toHaveURL(/course=basic/);
@@ -94,7 +94,7 @@ test('basic guided course: parts → path → crossed → rotate → reorient �
 });
 
 test('opening ?course=basic directly starts the course at step 1, and exit restores free exploration', async ({ page }) => {
-  await page.goto('/explore/polariscope?lesson=sample&course=basic');
+  await page.goto(polariscopeUrl('/explore/polariscope?lesson=sample&course=basic'));
   await expect(scene(page)).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
   await expect(guide(page)).toHaveAttribute('data-step', 'parts');
   await expect(page.getByTestId('polariscope-explore-page')).toHaveAttribute('data-lesson', 'components');
@@ -111,7 +111,7 @@ test('opening ?course=basic directly starts the course at step 1, and exit resto
 
 test('course in projection mode keeps the step bar and its controls usable', async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
-  await page.goto('/explore/polariscope?course=basic');
+  await page.goto(polariscopeUrl('/explore/polariscope?course=basic'));
   await expect(scene(page)).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
   await page.getByRole('button', { name: '进入投屏模式' }).click();
   await expect(guide(page)).toBeVisible();
@@ -126,7 +126,7 @@ test('course in projection mode keeps the step bar and its controls usable', asy
 
 for (const width of [1280, 1440, 1920]) test(`projection at ${width} px: the course bar does not cover the explainer or the eyepiece`, async ({ page }) => {
   await page.setViewportSize({ width, height: Math.round(width * 9 / 16) });
-  await page.goto('/explore/polariscope?course=basic');
+  await page.goto(polariscopeUrl('/explore/polariscope?course=basic'));
   await expect(scene(page)).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
   for (let i = 0; i < 3; i++) await page.getByTestId('course-skip').click();
   await page.getByRole('button', { name: '进入投屏模式' }).click();
@@ -139,14 +139,14 @@ for (const width of [1280, 1440, 1920]) test(`projection at ${width} px: the cou
 
 test('course bar fits a 390 px phone without horizontal overflow', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/explore/polariscope?course=basic');
+  await page.goto(polariscopeUrl('/explore/polariscope?course=basic'));
   await expect(guide(page)).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
 });
 
 test('projection: the reorient step can be completed with projection controls only', async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
-  await page.goto('/explore/polariscope?course=basic');
+  await page.goto(polariscopeUrl('/explore/polariscope?course=basic'));
   await expect(scene(page)).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
   for (let i = 0; i < 4; i++) await page.getByTestId('course-skip').click();
   await expect(guide(page)).toHaveAttribute('data-step', 'reorient');

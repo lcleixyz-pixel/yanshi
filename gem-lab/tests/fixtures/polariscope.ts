@@ -25,6 +25,9 @@ export const test = base.extend<{ sceneDiagnostics: void }>({
     if (diagnostics) {
       await testInfo.attach('scene-rendering', { body: JSON.stringify(diagnostics, null, 2), contentType: 'application/json' });
       console.log('[scene-rendering]', JSON.stringify(diagnostics));
+      if (process.env.CI_WEBGL_BACKEND === 'mesa') {
+        expect(diagnostics.gpuRenderer, 'The requested Mesa backend must actually render the scene').toMatch(/llvmpipe/i);
+      }
     }
   }, { auto: true }],
 });

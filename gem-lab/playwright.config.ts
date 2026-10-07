@@ -3,6 +3,7 @@ import { existsSync } from 'node:fs';
 
 const useLocalChrome =
   !process.env.CI && existsSync('/Applications/Google Chrome.app');
+const useMesa = process.env.CI_WEBGL_BACKEND === 'mesa';
 
 export default defineConfig({
   testDir: './tests',
@@ -33,6 +34,13 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         // Use regular Chromium's new headless mode in CI, closer to local Chrome.
         channel: useLocalChrome ? 'chrome' : 'chromium',
+        // Xvfb + Mesa exercises the same WebGL app without SwiftShader's
+        // severe vertex-throughput bottleneck on the hosted Linux runner.
+        headless: !useMesa,
+        launchOptions: useMesa ? {
+          args: ['--use-gl=angle', '--use-angle=gl', '--ozone-platform=x11', '--ignore-gpu-blocklist'],
+          ignoreDefaultArgs: ['--enable-unsafe-swiftshader'],
+        } : undefined,
       },
     },
   ],

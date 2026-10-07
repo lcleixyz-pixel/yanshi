@@ -35,7 +35,9 @@ jobs:
         run: npm run test:unit
 
       - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
+        run: |
+          npx playwright install --with-deps chromium
+          sudo apt-get install --no-install-recommends -y libgl1-mesa-dri libegl-mesa0 libglx-mesa0 mesa-utils
         working-directory: gem-lab
 
       - name: Run smoke tests
@@ -45,9 +47,14 @@ jobs:
 
       - name: Run polariscope browser regression tests
         # This prefix also includes guided-course and student-mode specifications.
-        run: npx playwright test polariscope3d --workers=1 --max-failures=3 --output=test-results/polariscope
+        run: |
+          xvfb-run --auto-servernum glxinfo -B
+          xvfb-run --auto-servernum npx playwright test polariscope3d --workers=1 --max-failures=3 --output=test-results/polariscope
         working-directory: gem-lab
         env:
+          CI_WEBGL_BACKEND: mesa
+          LIBGL_ALWAYS_SOFTWARE: 'true'
+          GALLIUM_DRIVER: llvmpipe
           PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/polariscope/results.json
 
       - name: Save browser test evidence

@@ -50,7 +50,13 @@
         0,
         0
       ],
-      "integralWith": "base"
+      "integralWith": "base",
+      "hotspot": [
+        -0.45,
+        0.72,
+        0.17
+      ],
+      "hotspotNote": "2026-10-07：标号锚点放在支架竖直后壁的前侧面（不在包围盒中心的空气中）。"
     },
     {
       "id": "light",
@@ -246,7 +252,13 @@
     "emitterHeightNative": 0.377,
     "baseTopHeightNative": 0.425,
     "exitApertureRadius": 0.164,
-    "construction": "schematic module; location and light path confirmed by user 2026-10-05"
+    "construction": "schematic module; location and light path confirmed by user 2026-10-05",
+    "teachingOffsetNative": [
+      0,
+      -0.17,
+      0
+    ],
+    "teachingOffsetNote": "2026-10-07 网页教学位置：光源模块在空心底座内下移 0.17（发光面约 0.207），使发光面与下偏光片之间的光路可见；GLB 几何未改。"
   },
   "integralShell": {
     "meshes": [

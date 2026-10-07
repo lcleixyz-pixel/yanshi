@@ -1,8 +1,19 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import PolariscopeScene from '../components/polariscope3d/PolariscopeScene';
+import Header from '../components/shared/Header';
+import PolariscopeScene, { type SceneCoach } from '../components/polariscope3d/PolariscopeScene';
 import EyepieceView, { EYEPIECE_RESOLUTION, type EyepieceContent } from '../components/polariscope3d/EyepieceView';
 import RotationTrace from '../components/polariscope3d/RotationTrace';
+import { CourseComplete, CourseGuide, CourseQuiz, type AdvancedTopic } from '../components/polariscope3d/CourseGuide';
+import {
+  COURSE_MINUTES,
+  COURSE_STEPS,
+  EMPTY_COURSE_PROGRESS,
+  REORIENT_SAMPLE,
+  courseChecklist,
+  type CourseProgress,
+  type CourseStepId,
+} from '../domain/polariscopeCourse';
 import {
   createInitialStructureState,
   deriveTeachingOptics,
@@ -104,11 +115,28 @@ function lessonPatch(lesson: Lesson, sampleId?: string): Partial<PolariscopeStru
 function stateForLesson(lesson: Lesson) {
   return createInitialStructureState(lessonPatch(lesson));
 }
-/** 由样品与放置方式得出的、正确的观察结论。 */
+/** 引导课程每一步进入时的场景；「解释」沿用上一步的样品画面。 */
+const COURSE_SETUP: Record<CourseStepId, [Lesson, Partial<PolariscopeStructureState>] | null> = {
+  parts: ['components', { power: true, analyzerAngle: 0, stageAngle: 0, internalView: false }],
+  path: ['path', { power: true }],
+  crossed: ['principle', { power: true, principleExample: 'empty', analyzerAngle: 0, stageAngle: 0 }],
+  rotate: ['sample', { power: true, sampleId: 'spinel', strain: null, brazilTwin: false }],
+  reorient: ['sample', { power: true, sampleId: REORIENT_SAMPLE, orientation: 'optic-axis', strain: null, brazilTwin: false }],
+  explain: null,
+};
+/** 基础课程之后的进阶内容：进入自由探索中对应的讲解与样品。 */
+const ADVANCED_TOPICS: (AdvancedTopic & { lesson: Lesson; patch: Partial<PolariscopeStructureState> })[] = [
+  { id: 'quartz', title: '水晶旋光', text: '黄晶沿光轴放置：不暗也不闪。', lesson: 'sample', patch: { sampleId: 'citrine', orientation: 'optic-axis', strain: null, brazilTwin: false } },
+  { id: 'twin', title: '巴西律双晶', text: '紫晶双层旋光互相抵消。', lesson: 'sample', patch: { sampleId: 'amethyst', orientation: 'optic-axis', strain: null, brazilTwin: true } },
+  { id: 'adr', title: '异常双折射与平行复核', text: '石榴石的应变明暗，如何区分。', lesson: 'sample', patch: { sampleId: 'garnet', orientation: 'general', strain: null, brazilTwin: false } },
+  { id: 'conoscope', title: '锥光干涉图', text: '放上干涉球，区分一轴晶与二轴晶。', lesson: 'conoscope', patch: { sampleId: 'tourmaline', brazilTwin: false } },
+];
 
 export default function PolariscopeExplorePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const requestedLesson = parseLesson(searchParams.get('lesson'));
+  const courseActive = searchParams.get('course') === 'basic';
+  const studentMode = courseActive && searchParams.get('mode') === 'student';
   const [state, setState] = useState(() => stateForLesson(requestedLesson));
   const [quality, setQuality] = useState<'standard' | 'high'>('high');
   const [projection, setProjection] = useState(false);
@@ -122,6 +150,15 @@ export default function PolariscopeExplorePage() {
   const [adrCheck, setAdrCheck] = useState<ParallelCheckResult | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [fieldCanvas, setFieldCanvas] = useState<HTMLCanvasElement | null>(null);
+  const [courseStep, setCourseStep] = useState(0);
+  const [courseReached, setCourseReached] = useState(0);
+  const [courseProgress, setCourseProgress] = useState<CourseProgress>(EMPTY_COURSE_PROGRESS);
+  const [courseFinished, setCourseFinished] = useState(false);
+  const [stepTimes, setStepTimes] = useState<number[]>(() => COURSE_STEPS.map(() => 0));
+  const stepEnteredAt = useRef(0);
+  const [narrow, setNarrow] = useState(false);
+  const [toast, setToast] = useState<{ key: number; text: string } | null>(null);
+  const doneItems = useRef<Set<string> | null>(null);
   const mainRef = useRef<HTMLElement>(null);
   const projectionExit = useRef<HTMLButtonElement>(null);
   const projectionEnter = useRef<HTMLButtonElement>(null);
@@ -201,6 +238,23 @@ export default function PolariscopeExplorePage() {
     });
   }, [state.stageAngle]); // eslint-disable-line react-hooks/exhaustive-deps -- 只响应物台转动；recording 取本次渲染的值
   useEffect(() => { if (prediction !== null && coverage >= 1) setRevealed(true); }, [prediction, coverage]);
+  // ── 引导课程：只记录本页内的完成情况，不写学习进度 ──
+  useEffect(() => {
+    if (!courseActive || !revealed) return;
+    setCourseProgress((previous) => ({ ...previous, reveals: [...previous.reveals, { sampleId: state.sampleId, orientation: state.orientation, observation }] }));
+    // 揭晓解释位于右侧面板下方，课程中滚动到可见处。
+    requestAnimationFrame(() => document.querySelector('[data-testid="sample-reveal"]')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }));
+  }, [revealed]); // eslint-disable-line react-hooks/exhaustive-deps -- 每次揭晓记录一次
+  useEffect(() => {
+    if (courseActive && state.lesson === 'path') setCourseProgress((previous) => state.pathStep > previous.pathMax ? { ...previous, pathMax: state.pathStep } : previous);
+  }, [courseActive, state.lesson, state.pathStep]);
+  const emptyFieldActive = courseActive && state.lesson === 'principle' && !halfWave && optics.active;
+  const parallelNow = emptyFieldActive && optics.relativeTransmission > .99;
+  const crossedNow = emptyFieldActive && optics.relativeTransmission === 0;
+  useEffect(() => {
+    if (parallelNow) setCourseProgress((previous) => previous.parallelSeen ? previous : { ...previous, parallelSeen: true });
+    if (crossedNow) setCourseProgress((previous) => previous.crossedSeen ? previous : { ...previous, crossedSeen: true });
+  }, [parallelNow, crossedNow]);
   // 换样品或放置方式：重新预测、重新记录。改变检偏器只重新记录曲线，已揭晓的解释保留（平行复核需要转检偏器）。
   useEffect(() => { setVisited(Array(TRACE_STEPS).fill(false)); setAdrCheck(null); setRevealed(false); }, [state.sampleId, state.orientation, strain, state.lesson, state.conoscopeInserted, state.thicknessMm, state.brazilTwin]);
   useEffect(() => { setVisited(Array(TRACE_STEPS).fill(false)); }, [state.analyzerAngle]);
@@ -232,6 +286,7 @@ export default function PolariscopeExplorePage() {
 
   const selectPart = (id: StructurePartId | null) => {
     setViewPreset('free');
+    if (courseActive && id) setCourseProgress((previous) => previous.partsSeen.includes(id) ? previous : { ...previous, partsSeen: [...previous.partsSeen, id] });
     setState((previous) => ({ ...previous, selectedPart: id, isolatedPart: id === 'light' ? null : previous.isolatedPart && id ? id : null, internalView: id === 'light' ? true : previous.internalView }));
   };
   const changeLesson = (lesson: Lesson) => {
@@ -243,6 +298,69 @@ export default function PolariscopeExplorePage() {
     setViewPreset('free');
     setResetViewKey((value) => value + 1);
   }, [requestedLesson]);
+  /** 直接切换到某一讲并套用场景（课程与进阶入口用），观察记录从头开始。 */
+  const goTo = (lesson: Lesson, patch: Partial<PolariscopeStructureState>, nextParams?: (params: URLSearchParams) => void) => {
+    setAutoRotate(false); setPrediction(null); setRevealed(false); setAdrCheck(null); setVisited(Array(TRACE_STEPS).fill(false));
+    setState((previous) => ({ ...previous, ...lessonPatch(lesson, patch.sampleId ?? previous.sampleId), ...patch }));
+    setViewPreset('free');
+    setResetViewKey((value) => value + 1);
+    setSearchParams((previous) => { const next = new URLSearchParams(previous); next.set('lesson', lesson); nextParams?.(next); return next; }, { replace: true });
+  };
+  const enterCourseStep = (index: number, mode?: 'teacher' | 'student') => {
+    const setup = COURSE_SETUP[COURSE_STEPS[index].id];
+    if (setup) goTo(setup[0], setup[1], (params) => {
+      params.set('course', 'basic');
+      if (mode === 'student') params.set('mode', 'student'); else if (mode === 'teacher') params.delete('mode');
+    });
+  };
+  const leaveCurrentStep = () => {
+    const now = performance.now(), spent = now - stepEnteredAt.current;
+    stepEnteredAt.current = now;
+    setStepTimes((previous) => previous.map((value, index) => index === courseStep ? value + spent : value));
+  };
+  /** mode 省略时保留地址中的使用方式（直接打开 ?course=basic&mode=student 时）。 */
+  const startCourse = (mode?: 'teacher' | 'student') => {
+    setCourseStep(0); setCourseReached(0); setCourseProgress(EMPTY_COURSE_PROGRESS); setCourseFinished(false);
+    setStepTimes(COURSE_STEPS.map(() => 0)); stepEnteredAt.current = performance.now(); doneItems.current = null;
+    enterCourseStep(0, mode);
+  };
+  const changeCourseMode = (mode: 'teacher' | 'student') => {
+    setSearchParams((previous) => { const next = new URLSearchParams(previous); if (mode === 'student') next.set('mode', 'student'); else next.delete('mode'); return next; }, { replace: true });
+  };
+  const changeCourseStep = (index: number) => {
+    if (index < 0 || index >= COURSE_STEPS.length) return;
+    leaveCurrentStep();
+    setCourseStep(index); setCourseReached((previous) => Math.max(previous, index));
+    enterCourseStep(index);
+  };
+  const finishCourse = () => { leaveCurrentStep(); setCourseFinished(true); };
+  const exitCourse = () => {
+    setCourseFinished(false);
+    setSearchParams((previous) => { const next = new URLSearchParams(previous); next.delete('course'); next.delete('mode'); return next; }, { replace: true });
+  };
+  const openAdvanced = (id: string) => {
+    const topic = ADVANCED_TOPICS.find((item) => item.id === id);
+    if (!topic) return;
+    setCourseFinished(false);
+    goTo(topic.lesson, topic.patch, (params) => { params.delete('course'); params.delete('mode'); });
+  };
+  // 直接打开 ?course=basic 时从第一步开始计时。
+  useEffect(() => { if (courseActive && stepEnteredAt.current === 0) startCourse(); }, [courseActive]); // eslint-disable-line react-hooks/exhaustive-deps
+  const courseStepId = COURSE_STEPS[courseStep].id;
+  const courseOverlay = courseActive ? (courseFinished ? 'complete' : courseStepId === 'explain' ? 'quiz' : null) : null;
+  // 学员模式：清单项完成时在展台上方给出短提示。
+  useEffect(() => {
+    if (!courseActive) { doneItems.current = null; return; }
+    const done = new Set(COURSE_STEPS.flatMap((step) => courseChecklist(step.id, courseProgress).filter((item) => item.done).map((item) => `${step.id}:${item.id}:${item.label}`)));
+    const previous = doneItems.current; doneItems.current = done;
+    if (!previous || !studentMode) return;
+    const fresh = [...done].find((key) => !previous.has(key));
+    if (!fresh) return;
+    setToast({ key: Date.now(), text: `${fresh.split(':').slice(2).join(':')} · 完成` });
+    const timer = window.setTimeout(() => setToast(null), 2200);
+    return () => window.clearTimeout(timer);
+  }, [courseActive, studentMode, courseProgress]);
+
   const changeMode = (mode: PolariscopeStructureState['mode']) => {
     if (state.lesson !== 'components') return;
     setViewPreset('free');
@@ -289,11 +407,11 @@ export default function PolariscopeExplorePage() {
     if (!existingViewport) document.head.appendChild(viewport);
     const mobile = window.matchMedia('(max-width: 680px)');
     let mobileLayout = mobile.matches;
-    setQuality(mobileLayout ? 'standard' : 'high');
+    setQuality(mobileLayout ? 'standard' : 'high'); setNarrow(mobileLayout);
     const updateBreakpoint = () => {
       if (mobile.matches === mobileLayout) return;
       mobileLayout = mobile.matches;
-      setQuality(mobileLayout ? 'standard' : 'high');
+      setQuality(mobileLayout ? 'standard' : 'high'); setNarrow(mobileLayout);
     };
     mobile.addEventListener('change', updateBreakpoint);
     const frame = window.requestAnimationFrame(updateBreakpoint);
@@ -333,22 +451,31 @@ export default function PolariscopeExplorePage() {
     transmission: sampleLesson ? (showConoscopicFigure ? .35 : sampleBrightness) : undefined,
     sampleGlow: sampleLesson && !showConoscopicFigure ? sampleBrightness : 0,
   }), [fieldCanvas, fieldVersion, eyepieceContent, state.lesson, sampleLesson, showConoscopicFigure, sampleBrightness]);
+  // ── 学员模式：动作提示指向要操作的部件，观察时目镜视场放大到展台左侧 ──
+  const studentObserve = studentMode && !narrow && sampleLesson && !courseOverlay;
+  const coach: SceneCoach | null = !studentMode || courseOverlay ? null : studentCoach({
+    step: courseStepId, progress: courseProgress, state, active: optics.active, crossed, crossedNow, prediction, revealed, observation,
+  });
   const sampleChoices = state.lesson === 'conoscope' ? CONOSCOPE_FEATURED : FEATURED_SAMPLE_IDS;
   const moreChoices = state.lesson === 'conoscope' ? PROFILES_BY_GROUP.anisotropic : POLARISCOPE_PROFILES;
 
   return (
-    <main ref={mainRef} className={`pol-explore${projection ? ' pol-explore--projection' : ''}`} data-testid="polariscope-explore-page" data-lesson={state.lesson}>
-      <header className="pol-explore__header">
-        <Link to="/" className="pol-explore__brand" aria-label="宝石实训，返回工作台"><strong>GEM LAB</strong><span>仪器教学</span></Link>
-        <div className="pol-explore__header-actions">
+    <main ref={mainRef} className={`pol-explore${projection ? ' pol-explore--projection' : ''}${courseActive ? ' pol-explore--course' : ''}${courseOverlay ? ' pol-explore--course-card' : ''}${studentMode ? ' pol-explore--student' : ''}${studentObserve ? ' pol-explore--student-observe' : ''}`} data-testid="polariscope-explore-page" data-lesson={state.lesson} data-course={courseActive ? courseStepId : undefined}>
+      <div className="pol-explore__header">
+        <Header title="偏光镜" subtitle="3D 仪器教学" right={<>
           <Link to={`/knowledge/polariscope#${state.lesson === 'principle' ? 'introduction' : 'structure'}`} className="pol-explore__back" data-testid="explore-back-to-knowledge">← 仪器知识库</Link>
-          <button ref={projectionEnter} className="pol-explore__button" onClick={() => setProjection(true)} aria-label="进入投屏模式">投屏模式</button>
-        </div>
-      </header>
+          <button ref={projectionEnter} className="btn-ghost" onClick={() => setProjection(true)} aria-label="进入投屏模式">投屏模式</button>
+        </>} />
+      </div>
       <section className="pol-explore__intro" aria-labelledby="polariscope-explore-title">
         <div><span className="pol-explore__eyebrow">01 / POLARISCOPE</span><div className="pol-explore__title-row"><h1 id="polariscope-explore-title">偏光镜</h1><span className="pol-explore__status">3D 仪器教学</span></div><p>{lessonCopy.caption}</p></div>
-        <LessonTabs value={state.lesson} onChange={changeLesson} />
+        {courseActive ? null : <div className="pol-explore__intro-actions">
+          <button className="pol-explore__button pol-explore__button--primary" onClick={() => startCourse('teacher')} data-testid="explore-course-start">引导课程 · 约 {Math.ceil(COURSE_MINUTES)} 分钟</button>
+          <button className="pol-explore__button" onClick={() => startCourse('student')} data-testid="explore-student-start">学员自学</button>
+          <LessonTabs value={state.lesson} onChange={changeLesson} />
+        </div>}
       </section>
+      {courseActive && <CourseGuide step={courseStep} reached={courseReached} progress={courseProgress} onStep={changeCourseStep} onFinish={finishCourse} onExit={exitCourse} onPickSample={chooseSample} onReorient={state.lesson === 'sample' && state.orientation === 'optic-axis' ? () => update({ orientation: 'general' }) : null} mode={studentMode ? 'student' : 'teacher'} onMode={changeCourseMode} />}
       <div className="pol-explore__workbench">
         <aside className="pol-explore__parts" aria-label="教学目录">
           {state.lesson === 'components' ? <>
@@ -372,20 +499,31 @@ export default function PolariscopeExplorePage() {
           <Link className="pol-explore__learning-link" to="/demo/polariscope" data-testid="explore-learning-link">进入互动学习 <span aria-hidden="true">↗</span><small>调正交 · 放样 · 旋转观察</small></Link>
         </aside>
         <section className="pol-explore__viewport" aria-label="偏光镜三维展台">
-          <div className="pol-explore__scene"><PolariscopeScene state={state} quality={quality} resetViewKey={resetViewKey} viewPreset={viewPreset} onSelectPart={selectPart} onAngleChange={changeAngle} onPowerChange={(power) => update({ power })} onStatus={setSceneStatus} field={sceneField} /></div>
+          <div className="pol-explore__scene"><PolariscopeScene state={state} quality={quality} resetViewKey={resetViewKey} viewPreset={viewPreset} onSelectPart={selectPart} onAngleChange={changeAngle} onPowerChange={(power) => update({ power })} onStatus={setSceneStatus} field={sceneField} coach={coach} viewShift={studentObserve ? .2 : 0} focusOnSelect={!studentMode} /></div>
           <div className="pol-explore__scene-caption"><div><span className="pol-explore__eyebrow">{state.lesson === 'path' ? `LIGHT PATH / 0${state.pathStep + 1}` : state.lesson === 'principle' ? 'POLARIZATION / 理想示意' : state.lesson === 'sample' ? 'SAMPLE / 正交偏光' : state.lesson === 'conoscope' ? 'CONOSCOPE / 锥光' : state.mode === 'explode' ? 'EXPLODED VIEW' : 'INSTRUMENT STUDY'}</span><h2>{state.lesson === 'components' ? modeCopy.caption : state.lesson === 'path' ? pathCopy.title : state.lesson === 'principle' ? (halfWave ? '理想半波片 · 单色 · 相位差 180°' : '空载：从平行转到正交。') : state.lesson === 'sample' ? '转动载物台，看目镜里的明暗' : showConoscopicFigure ? '干涉球就位：转动物台看图形' : '先放上干涉球'}</h2></div><span className="pol-explore__ready" data-status={sceneStatus} role="status">{STATUS_LABELS[sceneStatus]}</span></div>
-          {eyepieceContent && <div className="pol-explore__eyepiece-dock">
+          {courseOverlay && <div className="pol-course-overlay" data-testid="course-overlay">{courseOverlay === 'quiz'
+            ? <CourseQuiz correct={courseProgress.correctQuestions} onCorrect={(id) => setCourseProgress((previous) => previous.correctQuestions.includes(id) ? previous : { ...previous, correctQuestions: [...previous.correctQuestions, id] })} />
+            : <CourseComplete stepTimes={stepTimes} progress={courseProgress} topics={ADVANCED_TOPICS} onTopic={openAdvanced} onRestart={startCourse} onExit={exitCourse} />}</div>}
+          {toast && <div className="pol-student-toast" key={toast.key} role="status" data-testid="student-toast">✓ {toast.text}</div>}
+          {eyepieceContent && (studentObserve ? <div className="pol-student-observe" data-testid="student-observe">
             <EyepieceView content={eyepieceContent} stageDeg={state.stageAngle} analyzerDeg={state.analyzerAngle} active={optics.active} label={eyepieceLabel} onRendered={onFieldRendered} onCanvas={setFieldCanvas} />
-          </div>}
+            <StudentObservationCard prediction={prediction} onPredict={setPrediction} revealed={revealed} observation={observation} coverage={coverage} recording={recording}
+              brightness={sampleBrightness} active={optics.active} crossed={crossed} autoRotate={autoRotate} onAutoRotate={() => setAutoRotate(!autoRotate)}
+              trace={<RotationTrace curve={curve} visited={visited} current={state.stageAngle} reveal={revealed} analyzerDeg={state.analyzerAngle} />}
+              onCrossed={() => changeAngle('analyzer', 90)} onPower={() => update({ power: true })}
+              onReorient={profile.observation === 'anisotropic' && state.orientation === 'optic-axis' && revealed ? () => update({ orientation: 'general' }) : null} />
+          </div> : <div className="pol-explore__eyepiece-dock">
+            <EyepieceView content={eyepieceContent} stageDeg={state.stageAngle} analyzerDeg={state.analyzerAngle} active={optics.active} label={eyepieceLabel} onRendered={onFieldRendered} onCanvas={setFieldCanvas} />
+          </div>)}
           {isolatedName && <div className="pol-explore__isolation"><span>单独查看 · {isolatedName}</span><button onClick={() => update({ isolatedPart: null })}>显示整机</button></div>}
-          {projection && state.showAnnotations && <div className="pol-explore__projection-explainer" data-testid="projection-explainer"><span className="pol-explore__eyebrow">{lessonCopy.title}</span><h2>{projectionTitle}</h2><p>{projectionDescription}</p>{(state.lesson === 'path' || state.lesson === 'principle') && <p className="pol-explore__projection-reading">{optics.active ? `相对透过率 ${relativePercent}%（以下片后光强为 100%）` : blockedCopy}</p>}{state.lesson === 'principle' && halfWave && <small>单色 · 半波条件 · 理想薄片；非具体宝石实测。</small>}{sampleLesson && !optics.active && <p className="pol-explore__projection-reading">{blockedCopy}</p>}</div>}
+          {(projection || studentMode && !studentObserve && !courseOverlay) && state.showAnnotations && <div className="pol-explore__projection-explainer" data-testid="projection-explainer"><span className="pol-explore__eyebrow">{lessonCopy.title}</span><h2>{projectionTitle}</h2><p>{projectionDescription}</p>{(state.lesson === 'path' || state.lesson === 'principle') && <p className="pol-explore__projection-reading">{optics.active ? `相对透过率 ${relativePercent}%（以下片后光强为 100%）` : blockedCopy}</p>}{state.lesson === 'principle' && halfWave && <small>单色 · 半波条件 · 理想薄片；非具体宝石实测。</small>}{sampleLesson && !optics.active && <p className="pol-explore__projection-reading">{blockedCopy}</p>}</div>}
           <div className="pol-explore__viewport-tools"><p>{state.mode === 'structure' && !state.isolatedPart ? (sampleLesson ? '拖动样品或物台环旋转样品 · 拖动空白旋转视角' : '拖动空白旋转视角 · 拖动圆环旋转部件') : '拖动旋转视角 · 滚轮缩放'}</p><div className="pol-explore__view-buttons">
             <button className="pol-explore__button" onClick={resetView} aria-label="恢复三维视角">恢复视角</button>
             <select className="pol-explore__quality" aria-label="观察视角" value={viewPreset} onChange={(event) => { setViewPreset(event.target.value as StructureViewPreset); update({ selectedPart: null, isolatedPart: null }); }}><option value="free">自由观察</option><option value="01-front">正面</option><option value="02-side">侧面</option><option value="03-top">俯视</option><option value="04-three-quarter">主视图</option><option value="05-analyzer-close">上环近景</option><option value="06-stage-close">物台近景</option></select>
             <select className="pol-explore__quality" aria-label="三维画质" value={quality} onChange={(event) => setQuality(event.target.value as 'standard' | 'high')}><option value="high">精细画质</option><option value="standard">流畅画质</option></select>
           </div></div>
           <div className="pol-explore__projection-controls" aria-label="投屏操作">
-            <select className="pol-explore__quality" aria-label="投屏讲解内容" value={state.lesson} onChange={(event) => changeLesson(event.target.value as Lesson)}>{LESSONS.map((lesson) => <option key={lesson.id} value={lesson.id}>{lesson.title}</option>)}</select>
+            {!courseActive && <select className="pol-explore__quality" aria-label="投屏讲解内容" value={state.lesson} onChange={(event) => changeLesson(event.target.value as Lesson)}>{LESSONS.map((lesson) => <option key={lesson.id} value={lesson.id}>{lesson.title}</option>)}</select>}
             {state.lesson === 'components' ? <>
               <button className="pol-explore__button" onClick={() => changeMode(state.mode === 'structure' ? 'explode' : 'structure')}>{state.mode === 'structure' ? '展开部件' : '整机结构'}</button>
               {state.mode === 'explode' ? <label className="pol-explore__projection-control">拆解<input className="pol-explore__range" type="range" min="0" max="1" step="0.01" value={state.explosion} aria-label="投屏拆解程度" onChange={(event) => update({ explosion: Number(event.target.value) })} /><output>{Math.round(state.explosion * 100)}%</output></label> : null}
@@ -393,8 +531,9 @@ export default function PolariscopeExplorePage() {
               : <select className="pol-explore__quality" aria-label="投屏样品" value={state.sampleId} onChange={(event) => chooseSample(event.target.value)}>{moreChoices.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select>}
             {state.mode === 'structure' && <label className="pol-explore__projection-control">{(halfWave && state.lesson === 'principle') || sampleLesson ? '物台' : '检偏器'}<input className="pol-explore__range" type="range" min="0" max="360" value={(halfWave && state.lesson === 'principle') || sampleLesson ? state.stageAngle : state.analyzerAngle} aria-label={(halfWave && state.lesson === 'principle') || sampleLesson ? '投屏载物台角度' : '投屏检偏器角度'} onChange={(event) => changeAngle((halfWave && state.lesson === 'principle') || sampleLesson ? 'stage' : 'analyzer', Number(event.target.value))} /><output>{Math.round((halfWave && state.lesson === 'principle') || sampleLesson ? state.stageAngle : state.analyzerAngle)}°</output></label>}
             {state.lesson === 'principle' && halfWave && <button className="pol-explore__button" aria-pressed={crossed} onClick={() => changeAngle('analyzer', 90)}>90° 正交</button>}
-            {state.lesson === 'sample' && <select className="pol-explore__quality" aria-label="投屏预测" value={prediction ?? ''} disabled={revealed} onChange={(event) => setPrediction(event.target.value || null)}><option value="">先选预测…</option>{PHENOMENA.map((item) => <option key={item.id} value={item.id}>预测：{item.label}</option>)}<option value="demo">教师演示（不预测）</option></select>}
-            {state.lesson === 'sample' && <button className="pol-explore__button" aria-pressed={autoRotate} onClick={() => setAutoRotate(!autoRotate)} disabled={!optics.active}>{autoRotate ? '停止转动' : '转动一周'}</button>}
+            {state.lesson === 'sample' && !studentObserve && <select className="pol-explore__quality" aria-label="投屏预测" value={prediction ?? ''} disabled={revealed} onChange={(event) => setPrediction(event.target.value || null)}><option value="">先选预测…</option>{PHENOMENA.map((item) => <option key={item.id} value={item.id}>预测：{item.label}</option>)}<option value="demo">教师演示（不预测）</option></select>}
+            {state.lesson === 'sample' && <button className="pol-explore__button" aria-pressed={autoRotate} onClick={() => setAutoRotate(!autoRotate)} disabled={!optics.active} aria-label={autoRotate ? '投屏停止转动' : '投屏转动一周'}>{autoRotate ? '停止转动' : '转动一周'}</button>}
+            {state.lesson === 'sample' && profile.observation === 'anisotropic' && <button className="pol-explore__button" aria-pressed={state.orientation === 'optic-axis'} onClick={() => update({ orientation: state.orientation === 'optic-axis' ? 'general' : 'optic-axis' })} aria-label="投屏样品方向">{state.orientation === 'optic-axis' ? '换个方向放置' : '沿光轴放置'}</button>}
             {state.lesson === 'conoscope' && <button className="pol-explore__button" aria-pressed={state.conoscopeInserted} onClick={() => update({ conoscopeInserted: !state.conoscopeInserted, analyzerAngle: 90 })}>{state.conoscopeInserted ? '取下干涉球' : '放上干涉球'}</button>}
             {state.lesson === 'components' && <button className="pol-explore__button" aria-pressed={state.internalView} onClick={toggleInternal}>内部光源</button>}
             <PowerSwitch checked={state.power} onChange={() => update({ power: !state.power })} label="投屏电源开关" />
@@ -465,7 +604,7 @@ export default function PolariscopeExplorePage() {
           {state.lesson === 'components' ? <div className="pol-explore__internal-control"><button className="pol-explore__button" aria-pressed={state.internalView} onClick={toggleInternal} data-testid="explore-internal-toggle">{state.internalView ? '恢复底座外壳' : '查看内部光源'}<span aria-hidden="true">{state.internalView ? '↶' : '↗'}</span></button><p>{state.internalView ? '透明外壳与轮廓线表示底座与支架的边界。' : '透过底座外壳，查看光源与通光孔。'}</p></div> : state.lesson === 'path' || state.lesson === 'principle' ? <p className="pol-explore__teaching-footnote">为显示光路，外壳暂以透明显示。</p> : null}
           {state.lesson === 'components' && <>
             {state.mode === 'explode' && <div className="pol-explore__control"><div className="pol-explore__control-head"><label htmlFor="explosion-amount">拆解程度</label><output htmlFor="explosion-amount">{Math.round(state.explosion * 100)}%</output></div><input id="explosion-amount" aria-label="拆解程度" className="pol-explore__range" type="range" min="0" max="1" step="0.01" value={state.explosion} onChange={(event) => update({ explosion: Number(event.target.value) })} /><div className="pol-explore__range-labels"><span>装配</span><span>展开</span></div><p>拆解说明部件关系；内部光源和一体的支架始终留在原位。</p><button className="pol-explore__button" data-testid="explore-assembly-toggle" onClick={() => update({ explosion: state.explosion > 0 ? 0 : 1 })}>{state.explosion > 0 ? '收回装配' : '完整展开'}</button></div>}
-            {selected ? <div className="pol-explore__detail"><span className="pol-explore__detail-label">结构与操作</span><p>{selected.operation}</p><div className="pol-explore__action-row"><button className="pol-explore__button" aria-pressed={state.isolatedPart === selected.id} data-testid="explore-isolate-toggle" onClick={() => update({ isolatedPart: state.isolatedPart === selected.id ? null : selected.id, ...(selected.id === 'light' ? { internalView: true } : {}) })}>{state.isolatedPart === selected.id ? '显示整机' : selected.id === 'light' ? '单独查看光源与底座' : '单独查看'}</button><button className="pol-explore__button pol-explore__button--quiet" onClick={() => selectPart(null)}>清除选择</button></div></div> : <div className="pol-explore__detail"><button className="pol-explore__button" onClick={() => changeLesson('path')}>沿光路继续认识 →</button></div>}
+            {selected ? <div className="pol-explore__detail"><span className="pol-explore__detail-label">结构与操作</span><p>{selected.operation}</p><div className="pol-explore__action-row"><button className="pol-explore__button" aria-pressed={state.isolatedPart === selected.id} data-testid="explore-isolate-toggle" onClick={() => update({ isolatedPart: state.isolatedPart === selected.id ? null : selected.id, ...(selected.id === 'light' ? { internalView: true } : {}) })}>{state.isolatedPart === selected.id ? '显示整机' : selected.id === 'light' ? '单独查看光源与底座' : '单独查看'}</button><button className="pol-explore__button pol-explore__button--quiet" onClick={() => selectPart(null)}>清除选择</button></div></div> : <div className="pol-explore__detail">{courseActive ? <p className="pol-explore__hint">按上方课程条的提示点选部件。</p> : <button className="pol-explore__button" onClick={() => changeLesson('path')}>沿光路继续认识 →</button>}</div>}
           </>}
           <div className="pol-explore__mechanical-note"><span className="pol-explore__detail-label">{state.lesson === 'components' ? '结构动作示意' : '方向与角度'}</span><p>{state.lesson === 'components' ? '只有载物台和上方检偏器可以转动；下偏光片固定。角度以模型初始位置为零点。圆环可直接拖动，也可用方向键调节控件。' : '下片透光轴固定为 0°（目镜中的 P）。角度跟随部件，不随相机视角改变。'}</p></div>
           <AngleControl id="analyzer-angle" label="上偏光片角度" value={state.analyzerAngle} onChange={(value) => changeAngle('analyzer', value)} />
@@ -541,4 +680,73 @@ function PowerSwitch({ checked, onChange, label = '电源开关' }: { checked: b
 }
 function AngleControl({ id, label, value, onChange }: { id: string; label: string; value: number; onChange: (value: number) => void }) {
   return <div className="pol-explore__control"><div className="pol-explore__control-head"><label htmlFor={id}>{label}</label><output htmlFor={id}>{Math.round(value)}°</output></div><input id={id} aria-label={label} aria-valuetext={`${Math.round(value)} 度`} className="pol-explore__range" type="range" min="0" max="360" step="1" value={value} onChange={(event) => onChange(Number(event.target.value))} /><div className="pol-explore__range-labels"><span>0°</span><span>360°</span></div></div>;
+}
+
+const partNumber = (id: StructurePartId) => String(STRUCTURE_PART_IDS.indexOf(id) + 1).padStart(2, '0');
+const PATH_COACH_PARTS: StructurePartId[] = ['light', 'polarizer', 'stage', 'analyzer', 'analyzer'];
+
+/**
+ * 学员模式的动作提示：每一步只指向一个要操作的部件。前置条件不满足（未通电、未正交）时，
+ * 先指向需要纠正的部件；预测与揭晓由展台内的观察卡片承担，这时不再另给气泡。
+ */
+function studentCoach({ step, progress, state, active, crossed, crossedNow, prediction, revealed, observation }: {
+  step: CourseStepId; progress: CourseProgress; state: PolariscopeStructureState; active: boolean; crossed: boolean; crossedNow: boolean;
+  prediction: string | null; revealed: boolean; observation: SampleObservation;
+}): SceneCoach | null {
+  const power: SceneCoach = { part: 'powerSwitch', text: '电源关着：点这个按钮打开光源' };
+  switch (step) {
+    case 'parts': {
+      const next = (['polarizer', 'stage', 'analyzer'] as const).find((id) => !progress.partsSeen.includes(id));
+      return next ? { part: next, text: `点这里：${PARTS_BY_ID[next].shortName}（${partNumber(next)}）` } : { part: 'analyzer', text: '三个部件都认识了，点上方「下一步」', tone: 'done' };
+    }
+    case 'path':
+      return state.pathStep < 4
+        ? { part: PATH_COACH_PARTS[state.pathStep], text: `光现在到了：${PATH_STEPS[state.pathStep].short}。点下方「下一步」继续` }
+        : { part: 'analyzer', text: '光路走完了，点上方「下一步」', tone: 'done' };
+    case 'crossed':
+      if (!state.power) return power;
+      return crossedNow ? { part: 'analyzer', text: '已正交：空载视场全暗', tone: 'done' }
+        : { part: 'analyzer', text: `拖动这个镜环转到 90°，看视场变暗（现在 ${Math.round(state.analyzerAngle)}°）` };
+    case 'rotate': case 'reorient':
+      if (!state.power) return power;
+      if (!active) return null;
+      if (!crossed) return { part: 'analyzer', text: '先把上偏光片转回 90° 正交，再观察样品' };
+      if (prediction === null) return null;
+      if (!revealed) return { part: 'stage', text: '眼睛看左边的视场，手拖动这里转一整周' };
+      if (step === 'reorient' && state.orientation === 'optic-axis' && observation === 'axis-dark') return { part: 'stage', text: '全暗不一定是均质体：换个方向放置，再转一周' };
+      return null;
+    default: return null;
+  }
+}
+
+/** 学员模式：放大的目镜视场旁的「预测 → 观察 → 解释」卡片，学员不必去侧栏找控件。 */
+function StudentObservationCard({ prediction, onPredict, revealed, observation, coverage, recording, brightness, active, crossed, autoRotate, onAutoRotate, trace, onCrossed, onPower, onReorient }: {
+  prediction: string | null; onPredict: (value: string) => void; revealed: boolean; observation: SampleObservation; coverage: number; recording: boolean;
+  brightness: number; active: boolean; crossed: boolean; autoRotate: boolean; onAutoRotate: () => void; trace: React.ReactNode;
+  onCrossed: () => void; onPower: () => void; onReorient: (() => void) | null;
+}) {
+  const copy = OBSERVATION_COPY[observation];
+  const match = prediction === 'demo' ? '未预测' : prediction === EXPECTED_PREDICTION[observation] ? '与预测一致' : '与预测不同';
+  return (
+    <div className="pol-student-card" data-testid="student-card" data-phase={revealed ? 'explain' : prediction === null ? 'predict' : 'observe'}>
+      {!active ? <div className="pol-student-card__blocked"><p>电源关着，视场是暗的，这时不能判断样品。</p><button className="btn-ghost" onClick={onPower}>打开电源</button></div>
+        : !crossed ? <div className="pol-student-card__blocked"><p>上偏光片不在 90° 正交，背景本身就亮，先调回正交。</p><button className="btn-ghost" onClick={onCrossed}>转到 90° 正交</button></div>
+          : revealed ? <>
+            <span className="pol-student-card__step">③ 解释 · {match}</span>
+            <strong>{copy.title}</strong>
+            <p>{copy.text}</p>
+            {onReorient && <button className="btn-primary pol-student-card__primary" onClick={onReorient} data-testid="student-reorient">换个方向放置，再转一周</button>}
+          </> : prediction === null ? <>
+            <span className="pol-student-card__step">① 先预测</span>
+            <strong>正交偏光下转动一周，视场里的样品会？</strong>
+            <div className="pol-student-card__choices">{PHENOMENA.slice(0, 3).map((item) => <button key={item.id} onClick={() => onPredict(item.id)} data-testid={`student-predict-${item.id}`}>{item.label}</button>)}<button onClick={() => onPredict('demo')} data-testid="student-predict-skip">不确定，直接看</button></div>
+          </> : <>
+            <span className="pol-student-card__step">② 观察 · 已转过 {Math.round(coverage * 100)}%</span>
+            <strong>眼睛看视场，手转载物台</strong>
+            <p className="pol-student-card__live" data-testid="student-live">{!recording ? '暂未记录' : brightness < .04 ? '当前：暗位，继续转，找有没有变亮' : '当前：较亮，继续转，看会不会再变暗'}</p>
+            {trace}
+            <button className="btn-ghost" onClick={onAutoRotate} data-testid="student-auto-rotate">{autoRotate ? '停止转动' : '自动转一周'}</button>
+          </>}
+    </div>
+  );
 }

@@ -21,7 +21,14 @@ export interface PolariscopeSceneProps {
   onPowerChange: (power: boolean) => void;
   onStatus?: (status: 'loading' | 'ready' | 'error') => void;
   field?: SceneFieldView;
+  /** 学员模式的动作提示：气泡经引导线指向该部件的表面锚点。 */
+  coach?: SceneCoach | null;
+  /** 把仪器在画面中右移的比例（0–0.4），为放大的目镜视场让出左侧空间。 */
+  viewShift?: number;
+  /** 选中部件时镜头是否推近（学员模式保持整机视图，只淡化其余部件）。默认推近。 */
+  focusOnSelect?: boolean;
 }
+export interface SceneCoach { part: StructurePartId; text: string; tone?: 'action' | 'done' }
 type VectorTuple = [number, number, number];
 interface PartSpec {
   id: StructurePartId; label: string; node: string; explodeOffset: VectorTuple;
@@ -30,7 +37,7 @@ interface PartSpec {
 interface Manifest {
   parts: PartSpec[];
   powerControl?: { partId: StructurePartId; pressOffset: VectorTuple };
-  internalLight?: { partId: StructurePartId; baseShellMesh: string; remainsInsideDuringExplode: boolean };
+  internalLight?: { partId: StructurePartId; baseShellMesh: string; remainsInsideDuringExplode: boolean; teachingOffsetNative?: VectorTuple };
   /** 与底座一体的外壳网格（底座 + 支架为同一金属外壳）。 */
   integralShell?: { meshes: string[] };
 }
@@ -41,6 +48,35 @@ interface PartRuntime {
 interface FrameTarget { target: THREE.Vector3; position: THREE.Vector3; scale: number }
 const UP = new THREE.Vector3(0, 1, 0);
 const HOME_DIRECTION = new THREE.Vector3(1, .62, 1.45).normalize();
+/** 选中部件时，其余部件淡化到此不透明度，便于看清紧凑堆叠的部件。 */
+const GHOST_OPACITY = .14;
+/** 部件标号与表面锚点之间的引导线长度（像素）。 */
+const CALLOUT_DISTANCE = 46;
+
+/**
+ * 标号锚点：落在部件可见表面上，而不是包围盒中心（折板支架、环形部件的中心在空气里）。
+ * 先沿主视角方向射向包围盒中心取第一个命中点；未命中时取朝向主视角、离中心最近的顶点。
+ */
+function surfaceAnchor(node: THREE.Object3D, extent: number) {
+  const center = new THREE.Box3().setFromObject(node).getCenter(new THREE.Vector3());
+  const raycaster = new THREE.Raycaster(center.clone().addScaledVector(HOME_DIRECTION, extent * 4), HOME_DIRECTION.clone().negate());
+  const hit = raycaster.intersectObject(node, true)[0];
+  if (hit) return hit.point;
+  let best: THREE.Vector3 | null = null, bestDistance = Infinity;
+  const vertex = new THREE.Vector3(), normal = new THREE.Vector3(), normalMatrix = new THREE.Matrix3();
+  node.traverse(child => {
+    if (!(child instanceof THREE.Mesh)) return;
+    const position = child.geometry.getAttribute('position'), normals = child.geometry.getAttribute('normal');
+    normalMatrix.getNormalMatrix(child.matrixWorld);
+    for (let i = 0; i < position.count; i++) {
+      if (normals && normal.fromBufferAttribute(normals, i).applyMatrix3(normalMatrix).normalize().dot(HOME_DIRECTION) < .2) continue;
+      vertex.fromBufferAttribute(position, i).applyMatrix4(child.matrixWorld);
+      const distance = vertex.distanceToSquared(center);
+      if (distance < bestDistance) { bestDistance = distance; best = vertex.clone(); }
+    }
+  });
+  return best ?? center;
+}
 const isPartId = (id: unknown): id is StructurePartId => STRUCTURE_PART_IDS.includes(id as StructurePartId);
 
 function disposeTree(root: THREE.Object3D, retainedMaterials: Set<THREE.Material> = new Set()) {
@@ -67,6 +103,10 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
   const [parts, setParts] = useState<PartSpec[]>([]);
   const markers = useRef(new Map<string, HTMLButtonElement>());
   const leaders = useRef(new Map<string, SVGLineElement>());
+  const anchorDots = useRef(new Map<string, SVGCircleElement>());
+  const coachBubble = useRef<HTMLDivElement>(null);
+  const coachLine = useRef<SVGLineElement>(null);
+  const coachDot = useRef<SVGCircleElement>(null);
   const resetCamera = useRef<(() => void) | null>(null);
   const setCameraPreset = useRef<((id: string) => void) | null>(null);
 
@@ -115,12 +155,15 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
     const fill = new THREE.DirectionalLight(0xd6e5ff, .8); fill.position.set(-2, 1, -2); scene.add(fill);
     const floor = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.ShadowMaterial({ opacity: .16 }));
     floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
-    const halo = new THREE.Mesh(new THREE.RingGeometry(.99, 1, 96), new THREE.MeshBasicMaterial({ color: 0x986c38, transparent: true, opacity: .6, side: THREE.DoubleSide, depthWrite: false }));
+    const halo = new THREE.Mesh(new THREE.RingGeometry(.99, 1, 96), new THREE.MeshBasicMaterial({ color: 0x7c3aed, transparent: true, opacity: .6, side: THREE.DoubleSide, depthWrite: false }));
     halo.rotation.x = -Math.PI / 2; halo.visible = false; halo.raycast = () => {}; scene.add(halo);
     const runtimes = new Map<StructurePartId, PartRuntime>();
     const retainedMaterials = new Set<THREE.Material>();
     const emitters = new Map<THREE.MeshStandardMaterial, { intensity: number; color: THREE.Color }>();
     const shellMaterials = new Map<THREE.Material, { transparent: boolean; opacity: number; depthWrite: boolean }>();
+    /** 每个材质只属于一个部件，淡化其余部件时互不影响。 */
+    const partMaterials = new Map<THREE.Material, { part: StructurePartId; transparent: boolean; opacity: number; depthWrite: boolean }>();
+    let modelCenter = new THREE.Vector3();
     const outlines = new Map<THREE.Mesh, THREE.LineSegments>();
     const raycaster = new THREE.Raycaster(), pointer = new THREE.Vector2();
     let asset: THREE.Object3D | null = null, baseShell: THREE.Object3D | undefined;
@@ -135,7 +178,11 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
     const labelElements = new Map<string, HTMLSpanElement>();
     let teaching: ReturnType<typeof createOpticalTeachingOverlay> | null = null;
     let powerControl: Manifest['powerControl'];
+    let appliedShift = 0;
     const projection = () => {
+      // 视图偏移只平移画面，不改变取景范围；拾取与标号投影都使用同一投影矩阵。
+      const shift = appliedShift, w = container.clientWidth || 1, h = container.clientHeight || 1;
+      for (const cam of [perspectiveCamera, orthographicCamera]) { if (shift) cam.setViewOffset(w, h, -shift * w, 0, w, h); else cam.clearViewOffset(); }
       perspectiveCamera.aspect = aspect; perspectiveCamera.updateProjectionMatrix();
       orthographicCamera.left = -orthographicScale * aspect / 2; orthographicCamera.right = orthographicScale * aspect / 2;
       orthographicCamera.top = orthographicScale / 2; orthographicCamera.bottom = -orthographicScale / 2; orthographicCamera.updateProjectionMatrix();
@@ -193,6 +240,12 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
       }
     };
     const observer = new ResizeObserver(resize); observer.observe(container);
+    // 认识部件时选中一个部件：其余部件淡化（单独查看则直接隐藏）；底座与支架是同一外壳，一并保留。
+    const focusedPart = (state: PolariscopeStructureState) => state.lesson === 'components' && state.selectedPart && !state.isolatedPart ? state.selectedPart : null;
+    const isGhosted = (state: PolariscopeStructureState, id: StructurePartId) => {
+      const focused = focusedPart(state);
+      return !!focused && id !== focused && !(focused === 'base' && id === 'frame') && !(focused === 'frame' && id === 'base') && !(focused === 'powerSwitch' && id === 'base');
+    };
     const effectiveInternal = () => latest.current.state.internalView || latest.current.state.isolatedPart === 'light' || latest.current.state.lesson === 'path' || latest.current.state.lesson === 'principle';
     const pick = (event: PointerEvent): { part: StructurePartId | null; power: boolean } => {
       if (!asset) return { part: null, power: false };
@@ -335,11 +388,15 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
         part.node.updateMatrix();
       }
       for (const [material, value] of emitters) { material.emissiveIntensity = state.power ? value.intensity : 0; material.color.copy(value.color).multiplyScalar(state.power ? 1 : .15); }
-      for (const [material, value] of shellMaterials) {
-        const transparent = internal || value.transparent;
+      const focused = focusedPart(state), kept = (id: StructurePartId) => !isGhosted(state, id);
+      for (const [material, value] of partMaterials) {
+        const shell = shellMaterials.has(material) && internal, ghost = !kept(value.part);
+        const opacity = Math.min(shell ? .34 : value.opacity, ghost ? GHOST_OPACITY : 1);
+        const transparent = shell || ghost || value.transparent;
         if (material.transparent !== transparent) { material.transparent = transparent; material.needsUpdate = true; }
-        material.opacity = internal ? .34 : value.opacity; material.depthWrite = internal ? false : value.depthWrite;
+        material.opacity = opacity; material.depthWrite = shell || ghost ? false : value.depthWrite;
       }
+      canvas.dataset.ghostedParts = focused ? [...runtimes.keys()].filter(id => !kept(id)).join(',') : '';
       scene.updateMatrixWorld(true);
       for (const [shell, outline] of outlines) { outline.visible = internal && shell.parent?.visible !== false && (() => { for (let node: THREE.Object3D | null = shell; node; node = node.parent) if (!node.visible) return false; return true; })(); outline.matrix.copy(shell.matrixWorld); outline.matrixWorldNeedsUpdate = true; }
       if (sampleModel) sampleModel.group.visible = lessonUsesSample(state.lesson) && !!runtimes.get('stage')?.node.visible;
@@ -364,6 +421,14 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
           if ((spec.id === manifest.internalLight?.partId && manifest.internalLight.remainsInsideDuringExplode) || spec.id === 'powerSwitch') offset.set(0, 0, 0);
           runtimes.set(spec.id, { spec, node, initialWorld: node.getWorldPosition(new THREE.Vector3()), quaternion: node.quaternion.clone(), offset, axis, hotspot: node.worldToLocal(worldHotspot.clone()) });
         }
+        // 光源教学位置：在空心底座内下移，让发光面与下偏光片之间留出可见的光路（见 manifest 与 provenance）。
+        const lightRuntime = manifest.internalLight && runtimes.get(manifest.internalLight.partId);
+        if (lightRuntime && manifest.internalLight?.teachingOffsetNative) {
+          lightRuntime.initialWorld.add(new THREE.Vector3(...manifest.internalLight.teachingOffsetNative));
+          const parent = lightRuntime.node.parent;
+          lightRuntime.node.position.copy(parent ? parent.worldToLocal(lightRuntime.initialWorld.clone()) : lightRuntime.initialWorld);
+          scene.updateMatrixWorld(true);
+        }
         asset.traverse(object => {
           if (!(object instanceof THREE.Mesh)) return;
           const originals = Array.isArray(object.material) ? object.material : [object.material];
@@ -383,14 +448,27 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
             shellMeshes.add(object);
             // 轮廓线取外壳自身的折边（底座与支架一体），透明查看时仍能看清外形。
             const edges = new THREE.EdgesGeometry(object.geometry, 28);
-            const outline = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x668476, transparent: true, opacity: .52, depthTest: false, depthWrite: false, toneMapped: false }));
+            const outline = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x5d8fcd, transparent: true, opacity: .52, depthTest: false, depthWrite: false, toneMapped: false }));
             outline.name = 'Base_internal_view_envelope'; outline.matrixAutoUpdate = false; outline.visible = false; outline.renderOrder = 9; outline.raycast = () => {}; scene.add(outline); outlines.set(object, outline);
           }
+        });
+        for (const [id, part] of runtimes) part.node.traverse(child => {
+          if (!(child instanceof THREE.Mesh)) return;
+          const list = (Array.isArray(child.material) ? child.material : [child.material]).map(material => {
+            const owner = partMaterials.get(material);
+            // 不同部件共用的材质复制一份，淡化时互不影响；自发光、外壳材质已按网格单独复制。
+            const own = owner && owner.part !== id ? (() => { const clone = material.clone(); const glow = emitters.get(material); if (glow) emitters.set(clone, glow); const shell = shellMaterials.get(material); if (shell) shellMaterials.set(clone, shell); return clone; })() : material;
+            partMaterials.set(own, { part: id, transparent: own.transparent, opacity: own.opacity, depthWrite: own.depthWrite });
+            return own;
+          });
+          child.material = Array.isArray(child.material) ? list : list[0];
         });
         if (!emitters.size || !baseShell || !powerControl) throw new Error('光源或电源配置缺失');
         const bounds = visibleBounds(), size = bounds.getSize(new THREE.Vector3()), center = bounds.getCenter(new THREE.Vector3());
         if (bounds.isEmpty() || !size.toArray().every(Number.isFinite)) throw new Error('模型几何无效');
         extent = Math.max(size.x, size.y, size.z); floor.position.y = bounds.min.y - extent * .003;
+        modelCenter = center.clone();
+        for (const part of runtimes.values()) if (!part.spec.hotspot) part.hotspot = part.node.worldToLocal(surfaceAnchor(part.node, extent));
         teaching = createOpticalTeachingOverlay(asset, extent); scene.add(teaching.root); scene.add(teaching.extras);
         for (const label of teaching.labels) {
           const element = document.createElement('span'); element.className = `polariscope-scene-label polariscope-scene-label--${label.tone}`;
@@ -440,6 +518,8 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
       previousTickAt = tickAt;
       if (document.hidden) return;
       const current = latest.current, state = current.state;
+      const wantedShift = Math.max(0, Math.min(.4, current.viewShift ?? 0));
+      if (Math.abs(appliedShift - wantedShift) > .0005) { appliedShift = THREE.MathUtils.damp(appliedShift, wantedShift, 7, dt); if (Math.abs(appliedShift - wantedShift) < .001) appliedShift = wantedShift; projection(); }
       if (lastQuality !== current.quality) {
         lastQuality = current.quality; renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, current.quality === 'high' ? 1.75 : 1));
         const mapSize = current.quality === 'high' ? 2048 : 1024;
@@ -473,7 +553,7 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
           lastPoseKey = '';
         }
       }
-      const poseKey = [explosion, state.power, state.analyzerAngle, state.stageAngle, state.isolatedPart, effectiveInternal(), conoscopeProgress, state.lesson].join(':');
+      const poseKey = [explosion, state.power, state.analyzerAngle, state.stageAngle, state.isolatedPart, state.selectedPart, effectiveInternal(), conoscopeProgress, state.lesson].join(':');
       if (loaded && poseKey !== lastPoseKey) { applyState(); lastPoseKey = poseKey; }
       if (loaded && (state.mode !== lastMode || wanted !== lastWantedExplosion)) {
         lastMode = state.mode; lastWantedExplosion = wanted;
@@ -487,7 +567,8 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
       if (loaded && (state.selectedPart !== lastSelection || state.isolatedPart !== lastIsolated)) {
         lastSelection = state.selectedPart; lastIsolated = state.isolatedPart;
         const closePart = current.viewPreset === '05-analyzer-close' ? 'analyzer' : current.viewPreset === '06-stage-close' ? 'stage' : null;
-        if (!drag) frameBounds(visibleBounds(state.isolatedPart ?? state.selectedPart ?? closePart), undefined, true);
+        const followSelection = current.focusOnSelect !== false || state.isolatedPart;
+        if (!drag && followSelection) frameBounds(visibleBounds(state.isolatedPart ?? state.selectedPart ?? closePart), undefined, true);
       }
       if (focus) {
         const fraction = 1 - Math.exp(-6 * dt); camera.position.lerp(focus.position, fraction); controls.target.lerp(focus.target, fraction);
@@ -510,8 +591,9 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
         element.style.display = show ? '' : 'none';
         if (show) element.style.transform = `translate(${((projected.x + 1) * container.clientWidth / 2).toFixed(1)}px, ${((1 - projected.y) * container.clientHeight / 2).toFixed(1)}px) translate(-50%, -50%)`;
       }
-      const selected = state.selectedPart && runtimes.get(state.selectedPart);
-      halo.visible = !!selected && selected.node.visible && ['analyzer', 'stage', 'polarizer'].includes(state.selectedPart!);
+      const haloPart = state.selectedPart ?? (current.coach && current.coach.tone !== 'done' ? current.coach.part : null);
+      const selected = haloPart && runtimes.get(haloPart);
+      halo.visible = !!selected && selected.node.visible && ['analyzer', 'stage', 'polarizer'].includes(haloPart!);
       if (selected && halo.visible) { const box = new THREE.Box3().setFromObject(selected.node), center = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3()); halo.position.copy(center); halo.position.y = box.max.y + extent * .003; halo.scale.setScalar(Math.max(size.x, size.z) * .52); }
       const placedLabels: { x: number; y: number }[] = [], width = container.clientWidth, height = container.clientHeight;
       const switchPart = runtimes.get('powerSwitch');
@@ -520,6 +602,8 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
         projected.copy(switchPart.hotspot); switchPart.node.localToWorld(projected); projected.project(camera);
         if (projected.z > -1 && projected.z < 1 && Math.abs(projected.x) < 1 && Math.abs(projected.y) < 1) switchAnchor = { x: (projected.x + 1) * width / 2, y: (1 - projected.y) * height / 2 };
       }
+      projected.copy(modelCenter).project(camera);
+      const centerX = (projected.x + 1) * width / 2, centerY = (1 - projected.y) * height / 2;
       for (const [id, part] of runtimes) {
         const marker = markers.current.get(id); if (!marker) continue;
         projected.copy(part.hotspot); part.node.localToWorld(projected); projected.project(camera);
@@ -531,9 +615,11 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
         if (visible) {
           // Reserve the physical button for every label, including the base's
           // marker, which projects onto the actuator in the front view.
+          // 标号沿「模型中心 → 锚点」方向向外引出，避免压在部件上；冲突时依次转向、加长。
+          const outward = Math.atan2(anchorY - centerY, anchorX - centerX) || -Math.PI / 2;
           const alternatives = id === 'powerSwitch'
             ? [[52, -18], [-52, -18], [52, 30], [-52, 30], [0, -58], [0, 58]]
-            : [[0, 0], [-46, 0], [46, 0], [0, -46], [0, 46], [-46, -46], [46, 46], [-92, 0], [92, 0]];
+            : [0, .5, -.5, 1, -1, 1.5, -1.5].flatMap(turn => [1, 1.7].map(scale => [Math.cos(outward + turn) * CALLOUT_DISTANCE * scale, Math.sin(outward + turn) * CALLOUT_DISTANCE * scale]));
           alternatives.push([24 - anchorX, 24 - anchorY], [width - 24 - anchorX, 24 - anchorY], [24 - anchorX, height - 24 - anchorY], [width - 24 - anchorX, height - 24 - anchorY]);
           for (const [dx, dy] of alternatives) {
             const nx = Math.max(24, Math.min(width - 24, anchorX + dx)), ny = Math.max(24, Math.min(height - 24, anchorY + dy));
@@ -545,7 +631,35 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
         marker.style.left = `${x}px`; marker.style.top = `${y}px`;
         const leader = leaders.current.get(id);
         if (leader) { leader.style.display = visible && Math.hypot(x - anchorX, y - anchorY) > 2 ? '' : 'none'; leader.setAttribute('x1', String(anchorX)); leader.setAttribute('y1', String(anchorY)); leader.setAttribute('x2', String(x)); leader.setAttribute('y2', String(y)); }
+        const dot = anchorDots.current.get(id);
+        if (dot) { dot.style.display = visible ? '' : 'none'; dot.setAttribute('cx', String(anchorX)); dot.setAttribute('cy', String(anchorY)); dot.setAttribute('r', state.selectedPart === id ? '4' : '3'); }
+        marker.dataset.anchor = `${anchorX.toFixed(1)},${anchorY.toFixed(1)}`;
+        const ghosted = isGhosted(state, id); marker.classList.toggle('is-ghosted', ghosted); leader?.classList.toggle('is-ghosted', ghosted); dot?.classList.toggle('is-ghosted', ghosted);
       }
+      const coach = current.coach, coachPart = coach && runtimes.get(coach.part), bubble = coachBubble.current;
+      let coachVisible = false;
+      if (coach && coachPart?.node.visible && bubble) {
+        projected.copy(coachPart.hotspot); coachPart.node.localToWorld(projected); projected.project(camera);
+        if (projected.z > -1 && projected.z < 1 && Math.abs(projected.x) < 1.02 && Math.abs(projected.y) < 1.02) {
+          coachVisible = true;
+          const ax = (projected.x + 1) * width / 2, ay = (1 - projected.y) * height / 2;
+          const bw = bubble.offsetWidth, bh = bubble.offsetHeight, margin = 14;
+          // 气泡放在锚点外侧（远离模型中心），水平方向优先；放不下时换到另一侧。
+          let side = ax >= centerX ? 1 : -1;
+          if (side > 0 && ax + 70 + bw > width - margin) side = -1; else if (side < 0 && ax - 70 - bw < margin) side = 1;
+          const bx = Math.max(margin, Math.min(width - bw - margin, side > 0 ? ax + 70 : ax - 70 - bw));
+          const by = Math.max(margin, Math.min(height - bh - margin, ay - bh / 2 - 26));
+          bubble.style.transform = `translate(${bx.toFixed(1)}px, ${by.toFixed(1)}px)`;
+          const ex = side > 0 ? bx : bx + bw, ey = Math.max(by + 10, Math.min(by + bh - 10, ay));
+          coachLine.current?.setAttribute('x1', String(ax)); coachLine.current?.setAttribute('y1', String(ay));
+          coachLine.current?.setAttribute('x2', String(ex)); coachLine.current?.setAttribute('y2', String(ey));
+          coachDot.current?.setAttribute('cx', String(ax)); coachDot.current?.setAttribute('cy', String(ay));
+          bubble.dataset.anchor = `${ax.toFixed(1)},${ay.toFixed(1)}`;
+        }
+      }
+      if (bubble) bubble.style.visibility = coachVisible ? 'visible' : 'hidden';
+      for (const element of [coachLine.current, coachDot.current]) if (element) element.style.display = coachVisible ? '' : 'none';
+      canvas.dataset.viewShift = appliedShift.toFixed(3);
       renderer.render(scene, camera); renderedFrames++;
       if (renderedFrames % 30 === 0) {
         const now = performance.now(); canvas.dataset.fps = ((renderedFrames - renderedLast) * 1000 / (now - lastFpsAt)).toFixed(1);
@@ -582,7 +696,7 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
       controls.removeEventListener('start', orbitStart); controls.dispose();
       disposeTree(scene, retainedMaterials); fieldTexture?.dispose(); key.shadow.dispose(); environment.dispose(); renderer.dispose(); renderer.forceContextLoss(); canvas.remove();
       labelLayer.remove(); labelElements.clear();
-      markers.current.clear(); leaders.current.clear();
+      markers.current.clear(); leaders.current.clear(); anchorDots.current.clear();
     };
   }, [retry]);
   useEffect(() => { resetCamera.current?.(); }, [props.resetViewKey]);
@@ -592,7 +706,9 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
     <div className="polariscope-scene" data-testid="polariscope-scene" data-status={status} style={{ position: 'relative', width: '100%', height: '100%', minHeight: 380 }}>
       <div ref={host} style={{ position: 'absolute', inset: 0 }} />
       {import.meta.env.DEV && new URLSearchParams(window.location.search).has('diagnostics') && <div ref={diagnostic} role="status" aria-live="off" data-testid="scene-diagnostics" style={{ position: 'absolute', bottom: 12, left: 12, zIndex: 3, padding: '7px 10px', background: '#fffdf2de', color: '#26372e', border: '1px solid #d9dfd1', borderRadius: 7, font: '11px/1.5 monospace', whiteSpace: 'pre', pointerEvents: 'none' }} />}
-      {status === 'ready' && <svg aria-hidden="true" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>{parts.map(part => <line key={part.id} ref={line => { if (line) leaders.current.set(part.id, line); else leaders.current.delete(part.id); }} stroke="#98714e" strokeWidth="1" opacity=".65" />)}</svg>}
+      {status === 'ready' && <svg aria-hidden="true" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>{parts.map(part => <g key={part.id}><line ref={line => { if (line) leaders.current.set(part.id, line); else leaders.current.delete(part.id); }} stroke="#7c3aed" strokeWidth="1.2" opacity=".75" /><circle ref={dot => { if (dot) anchorDots.current.set(part.id, dot); else anchorDots.current.delete(part.id); }} r="3" fill="#ffffff" stroke="#7c3aed" strokeWidth="1.5" data-anchor-dot={part.id} /></g>)}
+        <line ref={coachLine} className="polariscope-coach__line" style={{ display: 'none' }} /><circle ref={coachDot} className="polariscope-coach__dot" r="5" style={{ display: 'none' }} /></svg>}
+      {status === 'ready' && props.coach && <div ref={coachBubble} className="polariscope-coach" data-testid="scene-coach" data-part={props.coach.part} data-tone={props.coach.tone ?? 'action'} role="status" aria-live="polite" style={{ visibility: 'hidden' }}><span aria-hidden="true">{props.coach.tone === 'done' ? '✓' : '→'}</span>{props.coach.text}</div>}
       {status === 'ready' && parts.map((part, index) => (
         <button key={part.id} ref={element => { if (element) markers.current.set(part.id, element); else markers.current.delete(part.id); }}
           className={`polariscope-hotspot${props.state.selectedPart === part.id ? ' is-selected' : ''}`}

@@ -19,7 +19,7 @@
     "images": 3,
     "triangles": 641461
   },
-  "packagingChanges": "Model is byte-identical to repair-v2; hero render copied as poster.png. No geometry, UV, or texture simplification. 2026-10-06: manifest.json edited (frame marked integral with the base: explodeOffset 0, label, integralShell list; mechanics note: fixed lower polarizer, independently rotating stage), per user confirmation. GLB unchanged.",
+  "packagingChanges": "Model is byte-identical to repair-v2; hero render copied as poster.png. No geometry, UV, or texture simplification. 2026-10-06: manifest.json edited (frame marked integral with the base: explodeOffset 0, label, integralShell list; mechanics note: fixed lower polarizer, independently rotating stage), per user confirmation. GLB unchanged. 2026-10-07: manifest.json internalLight.teachingOffsetNative [0,-0.17,0] added; the web scene lowers the schematic light module inside the hollow base so the emitter-to-polarizer path is visible, per user suggestion. GLB unchanged.",
   "scope": {
     "dimensionCalibrated": false,
     "physicalOpticsSimulation": false,

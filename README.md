@@ -135,7 +135,7 @@ yanshi/
 | `/detection` | 检测流程 |
 | `/assessment` | 命名评估 |
 | `/progress` | 学习图鉴与最近练习 |
-| `/explore/polariscope` | 偏光镜 3D 结构、光路与原理教学 |
+| `/explore/polariscope` | 偏光镜 3D 结构、光路与原理教学；`?course=basic` 为基础引导课程（`&mode=student` 为学员自学） |
 
 未知路由会重定向到 `/`。
 

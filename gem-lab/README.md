@@ -98,7 +98,7 @@ gem-lab/
 | `/` | 工作台首页 |
 | `/knowledge/:instrumentId` | 仪器知识库 |
 | `/demo/:instrumentId` | 仪器交互演示 |
-| `/explore/polariscope` | 同一偏光镜 3D 资产的部件、光路与原理讲解；支持 `?lesson=components`、`path`、`principle` |
+| `/explore/polariscope` | 同一偏光镜 3D 资产的部件、光路与原理讲解；支持 `?lesson=components`、`path`、`principle`；`?course=basic` 进入约 8 分钟的基础引导课程，加 `&mode=student` 为学员自学模式 |
 | `/detection` | 检测流程 |
 | `/assessment` | 命名评估 |
 | `/progress` | 学习图鉴 |

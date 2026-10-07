@@ -249,3 +249,36 @@ test('gemology audit repro: twin figure text follows analyzer, orientation and p
   await expect(panel).toContainText('把干涉球放到样品上方');
   await expect(panel).not.toContainText('中心消光');
 });
+
+test('focusing a part ghosts the other parts; isolating or clearing the selection restores them', async ({ page }) => {
+  await openLesson(page, 'components');
+  await expect(canvas(page)).toHaveAttribute('data-ghosted-parts', '');
+  await page.getByTestId('explore-part-polarizer').click();
+  await expect(canvas(page)).toHaveAttribute('data-ghosted-parts', 'base,frame,light,stage,analyzer,conoscope,powerSwitch');
+  await expect(page.locator('.polariscope-hotspot[data-part-id="stage"]')).toHaveClass(/is-ghosted/);
+  // 支架与底座是同一外壳：选中支架时底座保留。
+  await page.getByTestId('explore-part-frame').click();
+  await expect(canvas(page)).not.toHaveAttribute('data-ghosted-parts', /base/);
+  await page.getByTestId('explore-isolate-toggle').click();
+  await expect(canvas(page)).toHaveAttribute('data-ghosted-parts', '');
+  await page.getByTestId('explore-isolate-toggle').click();
+  await page.getByRole('button', { name: '清除选择' }).click();
+  await expect(canvas(page)).toHaveAttribute('data-ghosted-parts', '');
+});
+
+test('part labels are callouts anchored on the part surface; the frame anchor sits on its wall, away from the analyzer', async ({ page }) => {
+  await openLesson(page, 'components');
+  const anchor = async (id: string) => (await page.locator(`.polariscope-hotspot[data-part-id="${id}"]`).getAttribute('data-anchor'))!.split(',').map(Number);
+  await expect(page.locator('.polariscope-hotspot[data-part-id="frame"]')).toHaveAttribute('data-anchor', /\d/);
+  const [frameX] = await anchor('frame'), [analyzerX] = await anchor('analyzer');
+  expect(analyzerX - frameX).toBeGreaterThan(80);
+  await expect(page.locator('[data-anchor-dot="frame"]')).toBeVisible();
+});
+
+test('the schematic light sits low in the hollow base, leaving a visible gap below the lower polarizer', async ({ page }) => {
+  await openLesson(page, 'path');
+  const [, y] = (await canvas(page).getAttribute('data-light-position'))!.split(',').map(Number);
+  // 下偏光片玻璃约在 0.457；外壳底面约 0.067。
+  expect(y).toBeLessThan(.25);
+  expect(y).toBeGreaterThan(.1);
+});

@@ -1,0 +1,946 @@
+{
+  "createdAt": "2026-10-05T09:20:48.008Z",
+  "input": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/repaired.glb",
+  "sha256": "0d4eb62f630e74915d31524010e51e1ce031c9b50f00314a1195b7c8ce469a7b",
+  "byteLength": 29512268,
+  "inputUnchanged": true,
+  "networkReadsEnabled": false,
+  "externalResourcesEnabled": false,
+  "optimized": false,
+  "toolVersions": {
+    "node": "v22.22.3",
+    "gltfTransform": "4.5.1",
+    "gltfValidator": "2.0.0-dev.3.10"
+  },
+  "resourceIssues": [],
+  "validation": {
+    "errors": 0,
+    "warnings": 0,
+    "infos": 0,
+    "hints": 0,
+    "truncated": false
+  },
+  "inspection": {
+    "success": true
+  },
+  "extensionsUsed": [
+    "KHR_materials_clearcoat",
+    "KHR_materials_transmission",
+    "KHR_materials_emissive_strength",
+    "KHR_materials_ior"
+  ],
+  "extensionsRequired": [],
+  "counts": {
+    "nodes": 37,
+    "meshes": 29,
+    "materials": 11,
+    "textures": 6,
+    "images": 3,
+    "triangles": 641461
+  },
+  "nodes": [
+    {
+      "index": 0,
+      "name": "Analyzer_independent_glass",
+      "mesh": 0,
+      "translation": [
+        0,
+        -0.006000041961669922,
+        0
+      ],
+      "extras": {
+        "teachingPart": "analyzer",
+        "provenance": "rebuilt analytic geometry",
+        "opticalRole": "analyzer-sheet"
+      }
+    },
+    {
+      "index": 1,
+      "name": "Analyzer_regular_open_body",
+      "mesh": 1,
+      "extras": {
+        "clearAperture": 0.16,
+        "teachingPart": "analyzer",
+        "provenance": "rebuilt analytic geometry"
+      }
+    },
+    {
+      "index": 2,
+      "name": "Tripo_analyzer_grip_detail",
+      "mesh": 2,
+      "translation": [
+        -0.17800000309944153,
+        -0.9470000267028809,
+        0
+      ],
+      "extras": {
+        "teachingPart": "analyzer",
+        "provenance": "selected original Tripo triangles with original UVs; local seam hidden by replacement solids",
+        "retainedSourceTriangles": 165902,
+        "sourceSha256": "37886a63481139b2e385b7b531e1308a597c8df7c86b82b1ba4ea88401553e3a"
+      }
+    },
+    {
+      "index": 3,
+      "name": "Polariscope_analyzer",
+      "children": [
+        0,
+        1,
+        2
+      ],
+      "translation": [
+        0.17800000309944153,
+        0.9470000267028809,
+        0
+      ],
+      "extras": {
+        "teachingPart": "analyzer",
+        "label": "上偏光片",
+        "dimensionsCalibrated": false,
+        "provenance": "Tripo candidate repair; teaching relationship from existing project reference"
+      }
+    },
+    {
+      "index": 4,
+      "name": "Base_clean_powder_coat",
+      "mesh": 3,
+      "translation": [
+        -0.003000000026077032,
+        0.2460000067949295,
+        0
+      ],
+      "extras": {
+        "teachingPart": "base",
+        "provenance": "rebuilt analytic geometry",
+        "throughHole": true,
+        "apertureRadius": 0.164,
+        "internalCavity": true,
+        "evidence": "Internal light location and side power button confirmed by user; housing details schematic"
+      }
+    },
+    {
+      "index": 5,
+      "name": "Base_top_open_light_port",
+      "mesh": 4,
+      "translation": [
+        0.17800000309944153,
+        0.43799999356269836,
+        0
+      ],
+      "extras": {
+        "clearAperture": 0.164,
+        "teachingPart": "base",
+        "provenance": "rebuilt analytic geometry"
+      }
+    },
+    {
+      "index": 6,
+      "name": "Foot_regular_rubber",
+      "mesh": 5,
+      "translation": [
+        -0.4090000092983246,
+        0.035999998450279236,
+        0.25200000405311584
+      ],
+      "extras": {
+        "teachingPart": "base",
+        "provenance": "rebuilt analytic geometry"
+      }
+    },
+    {
+      "index": 7,
+      "name": "Foot_regular_rubber.001",
+      "mesh": 6,
+      "translation": [
+        -0.4090000092983246,
+        0.035999998450279236,
+        -0.25200000405311584
+      ],
+      "extras": {
+        "teachingPart": "base",
+        "provenance": "rebuilt analytic geometry"
+      }
+    },
+    {
+      "index": 8,
+      "name": "Foot_regular_rubber.002",
+      "mesh": 7,
+      "translation": [
+        0.39800000190734863,
+        0.035999998450279236,
+        0.25200000405311584
+      ],
+      "extras": {
+        "teachingPart": "base",
+        "provenance": "rebuilt analytic geometry"
+      }
+    },
+    {
+      "index": 9,
+      "name": "Foot_regular_rubber.003",
+      "mesh": 8,
+      "translation": [
+        0.39800000190734863,
+        0.035999998450279236,
+        -0.25200000405311584
+      ],
+      "extras": {
+        "teachingPart": "base",
+        "provenance": "rebuilt analytic geometry"
+      }
+    },
+    {
+      "index": 10,
+      "name": "Side_power_switch_bezel",
+      "mesh": 9,
+      "translation": [
+        0.47099998593330383,
+        0.21899999678134918,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        -0.7071068286895752,
+        0.7071067094802856
+      ],
+      "scale": [
+        1,
+        1,
+        0.8199999928474426
+      ],
+      "extras": {
+        "teachingPart": "base",
+        "provenance": "rebuilt analytic geometry"
+      }
+    },
+    {
+      "index": 11,
+      "name": "Switch_fastener_1",
+      "mesh": 10,
+      "translation": [
+        0.4779999852180481,
+        0.21899999678134918,
+        -0.05999999865889549
+      ],
+      "rotation": [
+        0,
+        0,
+        -0.7071068286895752,
+        0.7071067094802856
+      ],
+      "extras": {
+        "teachingPart": "base",
+        "provenance": "rebuilt analytic geometry"
+      }
+    },
+    {
+      "index": 12,
+      "name": "Switch_fastener_-1",
+      "mesh": 11,
+      "translation": [
+        0.4779999852180481,
+        0.21899999678134918,
+        0.05999999865889549
+      ],
+      "rotation": [
+        0,
+        0,
+        -0.7071068286895752,
+        0.7071067094802856
+      ],
+      "extras": {
+        "teachingPart": "base",
+        "provenance": "rebuilt analytic geometry"
+      }
+    },
+    {
+      "index": 13,
+      "name": "Switch_screw_slot_1",
+      "mesh": 12,
+      "translation": [
+        0.48100000619888306,
+        0.21899999678134918,
+        -0.05999999865889549
+      ],
+      "extras": {
+        "teachingPart": "base",
+        "provenance": "rebuilt analytic geometry"
+      }
+    },
+    {
+      "index": 14,
+      "name": "Switch_screw_slot_-1",
+      "mesh": 13,
+      "translation": [
+        0.48100000619888306,
+        0.21899999678134918,
+        0.05999999865889549
+      ],
+      "extras": {
+        "teachingPart": "base",
+        "provenance": "rebuilt analytic geometry"
+      }
+    },
+    {
+      "index": 15,
+      "name": "Polariscope_base",
+      "children": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "extras": {
+        "teachingPart": "base",
+        "label": "底座",
+        "dimensionsCalibrated": false,
+        "provenance": "Tripo candidate repair; teaching relationship from existing project reference"
+      }
+    },
+    {
+      "index": 16,
+      "name": "Conoscope_clear_lens",
+      "mesh": 14,
+      "extras": {
+        "teachingPart": "conoscope",
+        "provenance": "rebuilt analytic geometry",
+        "opticalRole": "conoscope-lens",
+        "evidence": "visually fitted optical element, no optical prescription"
+      }
+    },
+    {
+      "index": 17,
+      "name": "Conoscope_regular_open_ring",
+      "mesh": 15,
+      "extras": {
+        "clearAperture": 0.0405,
+        "teachingPart": "conoscope",
+        "provenance": "rebuilt analytic geometry"
+      }
+    },
+    {
+      "index": 18,
+      "name": "Tripo_retained_conoscope_handle",
+      "mesh": 16,
+      "translation": [
+        0.19740000367164612,
+        -0.7272999882698059,
+        -0.24899999797344208
+      ],
+      "extras": {
+        "teachingPart": "conoscope",
+        "provenance": "selected original Tripo triangles with original UVs; local seam hidden by replacement solids",
+        "retainedSourceTriangles": 30528,
+        "sourceSha256": "37886a63481139b2e385b7b531e1308a597c8df7c86b82b1ba4ea88401553e3a"
+      }
+    },
+    {
+      "index": 19,
+      "name": "Polariscope_conoscope",
+      "children": [
+        16,
+        17,
+        18
+      ],
+      "translation": [
+        -0.19740000367164612,
+        0.7272999882698059,
+        0.24899999797344208
+      ],
+      "extras": {
+        "teachingPart": "conoscope",
+        "label": "干涉球",
+        "dimensionsCalibrated": false,
+        "provenance": "Tripo candidate repair; teaching relationship from existing project reference"
+      }
+    },
+    {
+      "index": 20,
+      "name": "Frame_continuous_folded_shell",
+      "mesh": 17,
+      "translation": [
+        0.460999995470047,
+        -0.41999998688697815,
+        0
+      ],
+      "extras": {
+        "throughHole": true,
+        "apertureRadius": 0.163,
+        "teachingPart": "frame",
+        "provenance": "rebuilt analytic geometry"
+      }
+    },
+    {
+      "index": 21,
+      "name": "Polariscope_frame",
+      "children": [
+        20
+      ],
+      "translation": [
+        -0.460999995470047,
+        0.41999998688697815,
+        0
+      ],
+      "extras": {
+        "teachingPart": "frame",
+        "label": "折板支架",
+        "dimensionsCalibrated": false,
+        "provenance": "Tripo candidate repair; teaching relationship from existing project reference"
+      }
+    },
+    {
+      "index": 22,
+      "name": "Internal_light_emitting_surface",
+      "mesh": 18,
+      "translation": [
+        0,
+        0.027000010013580322,
+        0
+      ],
+      "extras": {
+        "teachingPart": "light",
+        "provenance": "rebuilt analytic geometry",
+        "opticalRole": "emitter",
+        "locationRole": "inside-base"
+      }
+    },
+    {
+      "index": 23,
+      "name": "Internal_light_module_body",
+      "mesh": 19,
+      "translation": [
+        0,
+        -0.0009999871253967285,
+        0
+      ],
+      "extras": {
+        "teachingPart": "light",
+        "provenance": "rebuilt analytic geometry"
+      }
+    },
+    {
+      "index": 24,
+      "name": "Internal_light_module_recess",
+      "mesh": 20,
+      "translation": [
+        0,
+        0.025999993085861206,
+        0
+      ],
+      "extras": {
+        "clearAperture": 0.142,
+        "teachingPart": "light",
+        "provenance": "rebuilt analytic geometry"
+      }
+    },
+    {
+      "index": 25,
+      "name": "Polariscope_light",
+      "children": [
+        22,
+        23,
+        24
+      ],
+      "translation": [
+        0.17800000309944153,
+        0.3499999940395355,
+        0
+      ],
+      "extras": {
+        "teachingPart": "light",
+        "label": "底座内部光源",
+        "dimensionsCalibrated": false,
+        "provenance": "Tripo candidate repair; teaching relationship from existing project reference",
+        "installation": "fixed inside base; not an external optical sheet",
+        "evidence": "Location confirmed by user; emitter module form is schematic"
+      }
+    },
+    {
+      "index": 26,
+      "name": "Fixed_lower_polarizer_glass",
+      "mesh": 21,
+      "translation": [
+        0,
+        0.003999978303909302,
+        0
+      ],
+      "extras": {
+        "teachingPart": "polarizer",
+        "provenance": "rebuilt analytic geometry",
+        "opticalRole": "polarizer-sheet"
+      }
+    },
+    {
+      "index": 27,
+      "name": "Fixed_polarizer_open_seat",
+      "mesh": 22,
+      "translation": [
+        0,
+        0.0029999911785125732,
+        0
+      ],
+      "extras": {
+        "clearAperture": 0.163,
+        "teachingPart": "polarizer",
+        "provenance": "rebuilt analytic geometry"
+      }
+    },
+    {
+      "index": 28,
+      "name": "Polariscope_polarizer",
+      "children": [
+        26,
+        27
+      ],
+      "translation": [
+        0.17800000309944153,
+        0.45500001311302185,
+        0
+      ],
+      "extras": {
+        "teachingPart": "polarizer",
+        "label": "下偏光片",
+        "dimensionsCalibrated": false,
+        "provenance": "Tripo candidate repair; teaching relationship from existing project reference"
+      }
+    },
+    {
+      "index": 29,
+      "name": "Power_symbol_arc",
+      "mesh": 23,
+      "translation": [
+        -0.4779999852180481,
+        -0.21899999678134918,
+        0
+      ],
+      "extras": {
+        "teachingPart": "powerSwitch",
+        "provenance": "rebuilt analytic geometry",
+        "interactionRole": "power-toggle"
+      }
+    },
+    {
+      "index": 30,
+      "name": "Power_symbol_bar",
+      "mesh": 24,
+      "translation": [
+        0.007700026035308838,
+        0.01000000536441803,
+        0
+      ],
+      "extras": {
+        "teachingPart": "powerSwitch",
+        "provenance": "rebuilt analytic geometry",
+        "interactionRole": "power-toggle"
+      }
+    },
+    {
+      "index": 31,
+      "name": "Side_power_switch_button",
+      "mesh": 25,
+      "translation": [
+        0.0020000040531158447,
+        0,
+        0
+      ],
+      "extras": {
+        "teachingPart": "powerSwitch",
+        "provenance": "rebuilt analytic geometry",
+        "interactionRole": "power-toggle",
+        "functionalIdentity": "power switch confirmed by user"
+      }
+    },
+    {
+      "index": 32,
+      "name": "Polariscope_powerSwitch",
+      "children": [
+        29,
+        30,
+        31
+      ],
+      "translation": [
+        0.4779999852180481,
+        0.21899999678134918,
+        0
+      ],
+      "extras": {
+        "teachingPart": "powerSwitch",
+        "label": "电源按钮",
+        "dimensionsCalibrated": false,
+        "provenance": "Tripo candidate repair; teaching relationship from existing project reference"
+      }
+    },
+    {
+      "index": 33,
+      "name": "Stage_clear_sample_support",
+      "mesh": 26,
+      "translation": [
+        0,
+        0.019999980926513672,
+        0
+      ],
+      "extras": {
+        "teachingPart": "stage",
+        "provenance": "rebuilt analytic geometry",
+        "opticalRole": "clear-support",
+        "evidence": "transparent specimen support is a teaching approximation, not measured construction"
+      }
+    },
+    {
+      "index": 34,
+      "name": "Stage_regular_open_body",
+      "mesh": 27,
+      "translation": [
+        0,
+        0.0009999871253967285,
+        0
+      ],
+      "extras": {
+        "clearAperture": 0.164,
+        "teachingPart": "stage",
+        "provenance": "rebuilt analytic geometry"
+      }
+    },
+    {
+      "index": 35,
+      "name": "Tripo_stage_grip_detail",
+      "mesh": 28,
+      "translation": [
+        -0.17800000309944153,
+        -0.4950000047683716,
+        0
+      ],
+      "extras": {
+        "teachingPart": "stage",
+        "provenance": "selected original Tripo triangles with original UVs; local seam hidden by replacement solids",
+        "retainedSourceTriangles": 359257,
+        "sourceSha256": "37886a63481139b2e385b7b531e1308a597c8df7c86b82b1ba4ea88401553e3a"
+      }
+    },
+    {
+      "index": 36,
+      "name": "Polariscope_stage",
+      "children": [
+        33,
+        34,
+        35
+      ],
+      "translation": [
+        0.17800000309944153,
+        0.4950000047683716,
+        0
+      ],
+      "extras": {
+        "teachingPart": "stage",
+        "label": "载物台",
+        "dimensionsCalibrated": false,
+        "provenance": "Tripo candidate repair; teaching relationship from existing project reference"
+      }
+    }
+  ],
+  "materials": [
+    {
+      "index": 0,
+      "doubleSided": true,
+      "extensions": {
+        "KHR_materials_transmission": {
+          "transmissionFactor": 0.9800000190734863
+        },
+        "KHR_materials_ior": {
+          "ior": 1.4900000095367432
+        }
+      },
+      "extras": {
+        "provenance": "authored replacement material; visually chosen, not measured"
+      },
+      "name": "Repair_optical_sheet",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.800000011920929,
+          0.8500000238418579,
+          0.7900000214576721,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.04500000178813934
+      }
+    },
+    {
+      "index": 1,
+      "doubleSided": true,
+      "extras": {
+        "provenance": "authored replacement material; visually chosen, not measured"
+      },
+      "name": "Repair_satin_black",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.012000000104308128,
+          0.014999999664723873,
+          0.017999999225139618,
+          1
+        ],
+        "metallicFactor": 0.6499999761581421,
+        "roughnessFactor": 0.27000001072883606
+      }
+    },
+    {
+      "index": 2,
+      "extras": {
+        "repairBaseColorFactor": 0.72,
+        "repairMetallicFactor": 0.62
+      },
+      "name": "tripo_grips_refined",
+      "normalTexture": {
+        "index": 0
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 1
+        },
+        "metallicFactor": 0.6200000047683716,
+        "metallicRoughnessTexture": {
+          "index": 2
+        },
+        "baseColorFactor": [
+          0.72,
+          0.72,
+          0.72,
+          1
+        ]
+      }
+    },
+    {
+      "index": 3,
+      "doubleSided": true,
+      "extensions": {
+        "KHR_materials_clearcoat": {
+          "clearcoatFactor": 0.07999999821186066
+        }
+      },
+      "extras": {
+        "provenance": "authored replacement material; visually chosen, not measured"
+      },
+      "name": "Repair_paint",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.7799999713897705,
+          0.7850000262260437,
+          0.7599999904632568,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.3400000035762787
+      }
+    },
+    {
+      "index": 4,
+      "doubleSided": true,
+      "extras": {
+        "provenance": "authored replacement material; visually chosen, not measured"
+      },
+      "name": "Repair_rubber",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.012000000104308128,
+          0.014999999664723873,
+          0.01600000075995922,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.7200000286102295
+      }
+    },
+    {
+      "index": 5,
+      "doubleSided": true,
+      "extras": {
+        "provenance": "authored replacement material; visually chosen, not measured"
+      },
+      "name": "Repair_bright_metal",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.47999998927116394,
+          0.5199999809265137,
+          0.550000011920929,
+          1
+        ],
+        "metallicFactor": 0.8999999761581421,
+        "roughnessFactor": 0.23999999463558197
+      }
+    },
+    {
+      "index": 6,
+      "doubleSided": true,
+      "extensions": {
+        "KHR_materials_transmission": {
+          "transmissionFactor": 1
+        },
+        "KHR_materials_ior": {
+          "ior": 1.5199999809265137
+        }
+      },
+      "extras": {
+        "provenance": "authored replacement material; visually chosen, not measured"
+      },
+      "name": "Repair_clear_glass",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.9649999737739563,
+          0.9869999885559082,
+          0.9700000286102295,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.03500000014901161
+      }
+    },
+    {
+      "index": 7,
+      "name": "tripo_material_4861551a-6cf4-48e1-83a7-1b3ebfc8abe6",
+      "normalTexture": {
+        "index": 3
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 4
+        },
+        "metallicRoughnessTexture": {
+          "index": 5
+        }
+      }
+    },
+    {
+      "index": 8,
+      "doubleSided": true,
+      "emissiveFactor": [
+        1,
+        0.6899999976158142,
+        0.3199999928474426
+      ],
+      "extensions": {
+        "KHR_materials_emissive_strength": {
+          "emissiveStrength": 2.0999999046325684
+        }
+      },
+      "extras": {
+        "provenance": "authored replacement material; visually chosen, not measured"
+      },
+      "name": "Repair_internal_light_emitter",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          1,
+          0.6899999976158142,
+          0.3199999928474426,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.41999998688697815
+      }
+    },
+    {
+      "index": 9,
+      "doubleSided": true,
+      "extras": {
+        "provenance": "authored replacement material; visually chosen, not measured"
+      },
+      "name": "Repair_switch_marking",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.9399999976158142,
+          0.9399999976158142,
+          0.8799999952316284,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.5
+      }
+    },
+    {
+      "index": 10,
+      "doubleSided": true,
+      "extras": {
+        "provenance": "authored replacement material; visually chosen, not measured"
+      },
+      "name": "Repair_amber_switch_button",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.8199999928474426,
+          0.30000001192092896,
+          0.04500000178813934,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.2800000011920929
+      }
+    }
+  ],
+  "textures": [
+    {
+      "index": 0,
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "index": 1,
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "index": 2,
+      "sampler": 0,
+      "source": 2
+    },
+    {
+      "index": 3,
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "index": 4,
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "index": 5,
+      "sampler": 0,
+      "source": 2
+    }
+  ],
+  "images": [
+    {
+      "index": 0,
+      "name": "polariscope-tripo-A-H3.1-original_normal",
+      "mimeType": "image/png",
+      "bufferView": 11,
+      "embeddedBytes": 2221418
+    },
+    {
+      "index": 1,
+      "name": "polariscope-tripo-A-H3.1-original_basecolor",
+      "mimeType": "image/jpeg",
+      "bufferView": 12,
+      "embeddedBytes": 2207568
+    },
+    {
+      "index": 2,
+      "name": "polariscope-tripo-A-H3.1-original_rm",
+      "mimeType": "image/jpeg",
+      "bufferView": 13,
+      "embeddedBytes": 1462332
+    }
+  ],
+  "limits": [
+    "Format validation does not establish physical accuracy, part separation, optical behavior, or browser appearance.",
+    "Triangle counts use declared accessors; compressed geometry and image details are also reported by glTF Transform.",
+    "No optimization, remeshing, texture recompression, input replacement, external resource reads, or network reads are enabled."
+  ],
+  "pass": true
+}

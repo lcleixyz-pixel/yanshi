@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Hotspot from '@/components/workbench/Hotspot';
 import OnboardingModal from '@/components/workbench/OnboardingModal';
 import { INSTRUMENT_LIST } from '@/data/instruments';
 import { SAMPLES } from '@/data/samples';
+import { masteryLevel } from '@/domain/practice';
 import { useProgress } from '@/store/progressStore';
 
 export default function HomePage() {
   const visited = useProgress((s) => s.visitedKnowledgeBases);
   const completedDemos = useProgress((s) => s.completedDemos);
-  const detectionHistory = useProgress((s) => s.detectionHistory);
   const totalPoints = useProgress((s) => s.totalPoints);
+  const mastery = useProgress((s) => s.sampleMastery);
   const reset = useProgress((s) => s.reset);
 
   const [bgLoaded, setBgLoaded] = useState(false);
@@ -21,10 +23,10 @@ export default function HomePage() {
 
   const knowledgeProgress = `${visited.length} / ${INSTRUMENT_LIST.length}`;
   const demoProgress = `${completedDemos.filter((d) => d.mode === 'learning').length} / ${INSTRUMENT_LIST.length}`;
-  const detectionCount = detectionHistory.length;
+  const masteredCount = SAMPLES.filter((sample) => masteryLevel(mastery[sample.id]) === 'mastered').length;
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-workbench-gradient text-white">
+    <div className="relative min-h-screen w-full overflow-x-hidden bg-workbench-gradient text-white lg:h-screen lg:w-screen lg:overflow-hidden">
       {/* 噪点纹理 */}
       <div className="pointer-events-none absolute inset-0 noise opacity-[0.04]" />
 
@@ -38,23 +40,29 @@ export default function HomePage() {
       />
 
       {/* 顶部品牌栏 */}
-      <header className="absolute left-0 right-0 top-0 z-30 flex items-start justify-between px-10 pt-8">
+      <header className="relative z-30 flex flex-wrap items-start justify-between gap-4 px-5 pt-5 sm:px-10 sm:pt-8 lg:absolute lg:left-0 lg:right-0 lg:top-0">
         <div className="animate-drop-in">
           <div className="text-[11px] tracking-[0.25em] text-lab-cyan/80">
             教学演示
           </div>
-          <h1 className="mt-1 font-display text-[34px] font-semibold leading-tight">
+          <h1 className="mt-1 font-display text-2xl font-semibold leading-tight sm:text-[34px]">
             宝石检测 <span className="italic text-lab-cyan">实验工作台</span>
           </h1>
           <p className="mt-1 text-sm text-slate-300">
-            选择一件仪器开启知识学习 · 或点击样品盘开始实战检测
+            认识仪器，或从样品盘开始检测
           </p>
         </div>
-        <div className="flex animate-drop-in items-center gap-3">
+        <div className="flex animate-drop-in flex-wrap items-center gap-2 sm:gap-3">
           <ProgressChip label="知识库" value={knowledgeProgress} />
           <ProgressChip label="演示" value={demoProgress} />
-          <ProgressChip label="检测" value={`${detectionCount} 次`} />
+          <ProgressChip label="掌握" value={`${masteredCount}/${SAMPLES.length}`} />
           <ProgressChip label="积分" value={`${totalPoints}`} highlight />
+          <Link
+            to="/progress"
+            className="rounded-lg border border-lab-cyan/40 bg-lab-cyan/15 px-3 py-2 text-xs font-medium text-lab-cyan transition hover:bg-lab-cyan/25"
+          >
+            学习图鉴 →
+          </Link>
           <button
             onClick={() => {
               if (confirm('确定重置全部学习进度？此操作不可恢复。')) reset();
@@ -67,7 +75,7 @@ export default function HomePage() {
       </header>
 
       {/* 主舞台：背景图 + 热区 */}
-      <main className="absolute inset-0 z-10 flex items-center justify-center px-6 pt-28 pb-16">
+      <main className="relative z-10 flex flex-col items-center justify-start gap-5 px-4 pb-8 pt-6 sm:px-6 lg:absolute lg:inset-0 lg:flex-row lg:justify-center lg:gap-0 lg:pb-16 lg:pt-28">
         <div className="relative aspect-[16/9] w-full max-w-[1500px] overflow-hidden rounded-[28px] shadow-[0_40px_120px_-30px_rgba(0,0,0,0.8)] ring-1 ring-white/10">
           {/* 背景图 */}
           <img
@@ -140,6 +148,17 @@ export default function HomePage() {
           />
 
         </div>
+        <nav aria-label="触屏快速入口" className="grid w-full max-w-[1500px] grid-cols-2 gap-2 lg:hidden">
+          {INSTRUMENT_LIST.map((instrument, index) => (
+            <Link key={instrument.id} to={`/knowledge/${instrument.id}`} className="flex items-center justify-between rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/20">
+              <span><span className="mr-2 font-mono text-xs text-lab-cyan">0{index + 1}</span>{instrument.name}</span>
+              <span aria-hidden="true" className="text-lab-cyan">→</span>
+            </Link>
+          ))}
+          <Link to="/detection" className="flex items-center justify-between rounded-xl border border-amber-300/35 bg-amber-400/20 px-4 py-3 text-sm font-medium text-amber-100 transition hover:bg-amber-400/30">
+            <span>开始检测</span><span aria-hidden="true">→</span>
+          </Link>
+        </nav>
       </main>
 
       <OnboardingModal />

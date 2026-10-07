@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#eeeae1">
+  <title>偏光镜 · 3D 教学资产样件</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./viewer.css">
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.min.js","three/addons/":"./vendor/addons/"}}</script>
+</head>
+<body>
+  <main>
+    <section class="stage" aria-label="可交互的偏光镜三维模型">
+      <header>
+        <a class="back" href="/knowledge/polariscope">← 返回仪器知识库</a>
+        <p class="eyebrow">GEM LAB / DIGITAL OBJECT 001</p>
+        <h1>偏光镜<span>从结构，理解观察。</span></h1>
+        <p class="intro">转动视角，分开部件，找到光穿过仪器的路径。</p>
+      </header>
+      <div id="viewport" role="img" aria-label="拖动旋转偏光镜视角，滚轮缩放；部件也可以通过右侧列表选择。"></div>
+      <div id="loading" role="status">正在准备 3D 样件…</div>
+      <div id="labels" aria-hidden="true"></div>
+      <div class="view-tools">
+        <div class="segmented" aria-label="模型展示方式">
+          <button id="assemble" class="active" aria-pressed="true">装配</button>
+          <button id="explode" aria-pressed="false">拆解</button>
+        </div>
+        <button id="reset-camera" class="quiet">复位视角</button>
+        <button id="toggle-labels" class="quiet" aria-pressed="false">显示标注</button>
+      </div>
+      <div class="stage-foot"><span>拖动旋转 · 滚轮缩放 · 点击部件查看</span><span id="view-status">装配视图</span></div>
+    </section>
+    <aside aria-label="模型控制与部件说明">
+      <div class="aside-title"><span>结构与操作</span><small>教学样件 v0.1</small></div>
+      <section class="controls">
+        <div class="control-heading"><label for="analyzer-angle">上偏光片</label><output id="analyzer-value" for="analyzer-angle">90°</output></div>
+        <input id="analyzer-angle" type="range" min="0" max="180" value="90" step="1">
+        <div class="presets"><button id="parallel">平行 · 0°</button><button id="crossed">正交 · 90°</button></div>
+        <div class="control-heading"><label for="stage-angle">载物台</label><output id="stage-value" for="stage-angle">0°</output></div>
+        <input id="stage-angle" type="range" min="0" max="360" value="0" step="1">
+        <div class="toggles"><label><input id="power" type="checkbox" checked> 光源</label><label><input id="sample" type="checkbox"> 放入示意样品</label></div>
+      </section>
+      <section class="observation" aria-label="理想空载视场示意">
+        <div id="field" aria-hidden="true"></div>
+        <div><div class="small-heading">空载视场 · 理想模型</div><strong id="field-title">正交消光</strong><p id="field-note">相对透光率 0%（以平行为 100%）</p></div>
+      </section>
+      <section class="parts-section">
+        <p class="small-heading">部件索引 <span>点击查看</span></p>
+        <div id="part-list"></div>
+        <div class="part-detail" aria-live="polite"><strong id="part-name">上偏光片（检偏器）</strong><p id="part-description">旋转上偏光片，改变它与下偏光片振动方向的夹角。观察空载视场从明亮到消光的变化。</p></div>
+      </section>
+      <footer>
+        <a class="download" href="./polariscope.glb" download>下载 3D 模型 <span>GLB ↓</span></a>
+        <p>依据项目图片建立的结构示意，比例未按实物校准。宝石光学响应未建模。拆解仅用于认识部件。</p>
+        <a class="readme" href="./README.md">资产说明与使用边界 ↗</a>
+      </footer>
+    </aside>
+  </main>
+  <script type="module" src="./viewer.js"></script>
+</body>
+</html>

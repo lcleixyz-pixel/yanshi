@@ -1,0 +1,30 @@
+{
+  "reviewedAt": "2026-10-05T12:23:12.424490+00:00",
+  "inputVideo": "飞书20261005-211800.mp4",
+  "sha256": "994e9a92136ffef15101acb64e8e5345f2f4f70199a1bae14a2bfd44f40e830f",
+  "durationSeconds": 509.8009666666667,
+  "reviewMethod": "12 evenly spaced keyframes extracted locally with AVFoundation; no audio transcript",
+  "referenceScenes": [
+    {
+      "seconds": 40.04,
+      "note": "Instrument image with polarizing filter, rotating stage and source labels"
+    },
+    {
+      "seconds": 170.17,
+      "note": "Polarization diagram associated with source, two polarizers, specimen and eye"
+    },
+    {
+      "seconds": 210.21,
+      "note": "Actual specimen observation through another physical polariscope"
+    },
+    {
+      "seconds": 295.295,
+      "note": "Chalcedony/agate illustration"
+    },
+    {
+      "seconds": 380.38,
+      "note": "Opalite observation"
+    }
+  ],
+  "use": "Teaching sequence and presentation reference. Video is not redistributed or used as measured observations for current GLB."
+}

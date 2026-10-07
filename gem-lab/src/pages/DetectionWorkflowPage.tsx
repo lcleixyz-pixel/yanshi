@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from '@/components/shared/Header';
 import Stepper from '@/components/workflow/Stepper';
@@ -9,8 +9,10 @@ import SpectroscopeDemo from '@/components/spectroscope/SpectroscopeDemo';
 import { INSTRUMENT_LIST, INSTRUMENTS } from '@/data/instruments';
 import { SAMPLES_BY_DIFFICULTY, SAMPLES_BY_ID } from '@/data/samples';
 import type { Difficulty, InstrumentId } from '@/data/types';
+import { selectPracticeSample } from '@/domain/practice';
 import { useDetection } from '@/store/detectionStore';
-import { formatDR, formatRI, OPTICAL_LABEL } from '@/utils/format';
+import { useProgress } from '@/store/progressStore';
+import { formatDR, OPTICAL_LABEL } from '@/utils/format';
 import clsx from '@/utils/clsx';
 
 const STEPS = [
@@ -33,40 +35,34 @@ const DIFFICULTY_INFO: Record<
 export default function DetectionWorkflowPage() {
   const navigate = useNavigate();
   const session = useDetection();
+  const history = useProgress((s) => s.detectionHistory);
+  const mastery = useProgress((s) => s.sampleMastery);
+  const chooseDifficulty = useDetection((s) => s.chooseDifficulty);
   const startSession = useDetection((s) => s.startSession);
   const resetSession = useDetection((s) => s.resetSession);
 
-  const [step, setStep] = useState(1);
-  const [drawnSample, setDrawnSample] = useState<string | null>(null);
+  const [step, setStep] = useState(() =>
+    session.sampleId ? (session.instrumentsUsed.length > 0 ? 5 : 3) : session.difficulty ? 2 : 1,
+  );
   const [activeInstrument, setActiveInstrument] = useState<InstrumentId | null>(null);
-
-  // 进入页面时不自动重置（允许刷新继续）
-  useEffect(() => {
-    if (session.sampleId) {
-      setDrawnSample(session.sampleId);
-      // 根据已用仪器推断步骤
-      if (session.instrumentsUsed.length > 0) setStep(5);
-      else setStep(3);
-    }
-  }, [session.sampleId, session.instrumentsUsed.length]);
+  const drawnSample = session.sampleId;
 
   const handlePickDifficulty = (d: Difficulty) => {
-    resetSession();
-    setDrawnSample(null);
+    chooseDifficulty(d);
     setActiveInstrument(null);
     setStep(2);
-    // 注意：startSession 会清空，所以先选难度，等抽样后再 startSession
-    setTimeout(() => useDetection.setState({ difficulty: d }), 0);
   };
 
   const handleDrawSample = () => {
     const diff = session.difficulty;
     if (!diff) return;
+    if (drawnSample && session.instrumentsUsed.length > 0 &&
+      !window.confirm('换样会清空本次已记录的检测数据。确定换一个样品吗？')) return;
     const pool = SAMPLES_BY_DIFFICULTY[diff];
-    const sample = pool[Math.floor(Math.random() * pool.length)];
-    setDrawnSample(sample.id);
+    const sample = selectPracticeSample(pool, history, drawnSample, Math.random, mastery);
+    if (!sample) return;
     startSession(diff, sample.id);
-    setTimeout(() => setStep(3), 700);
+    setStep(3);
   };
 
   const handleSelectInstrument = (id: InstrumentId) => {
@@ -76,11 +72,14 @@ export default function DetectionWorkflowPage() {
 
   const handleDetectionComplete = () => {
     setActiveInstrument(null);
-    setStep(3);
-    // 如果已经测过 ≥ 2 件仪器，提示可进入汇总
-    if (session.instrumentsUsed.length >= 1) {
-      setTimeout(() => setStep(5), 200);
-    }
+    setStep(useDetection.getState().instrumentsUsed.length >= 2 ? 5 : 3);
+  };
+
+  const handleReset = () => {
+    if (drawnSample && !window.confirm('确定清空当前检测并重新开始吗？')) return;
+    resetSession();
+    setActiveInstrument(null);
+    setStep(1);
   };
 
   const allDone = session.instrumentsUsed.length >= 2;
@@ -109,21 +108,20 @@ export default function DetectionWorkflowPage() {
       <Header
         title="检测流程"
         subtitle="实训演练"
-        right={
-          <Link to="/" className="btn-ghost text-xs">
-            返回工作台
-          </Link>
-        }
+        right={<div className="flex flex-wrap gap-2">
+          {session.difficulty && <button type="button" onClick={handleReset} className="btn-ghost text-xs">重新开始</button>}
+          <Link to="/" className="btn-ghost text-xs">返回工作台</Link>
+        </div>}
       />
 
       {/* Stepper */}
       <div className="border-b border-line bg-white">
-        <div className="mx-auto max-w-[1200px] px-10 py-6">
+        <div className="mx-auto max-w-[1200px] overflow-x-auto px-4 py-6 sm:px-8 lg:px-10">
           <Stepper steps={STEPS} current={step} themeHex="#1f5ba8" />
         </div>
       </div>
 
-      <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-6 px-10 py-8 lg:grid-cols-[1fr_320px]">
+      <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-6 px-4 py-8 sm:px-8 lg:grid-cols-[1fr_320px] lg:px-10">
         <main className="space-y-6">
           {/* Step 1 */}
           {step === 1 && (
@@ -137,6 +135,7 @@ export default function DetectionWorkflowPage() {
                     <button
                       key={d}
                       type="button"
+                      data-testid={`difficulty-${d}`}
                       onClick={() => handlePickDifficulty(d)}
                       className={clsx(
                         'flex flex-col gap-2 rounded-2xl border-2 p-5 text-left transition',
@@ -170,7 +169,7 @@ export default function DetectionWorkflowPage() {
               {!drawnSample ? (
                 <div className="flex flex-col items-center justify-center gap-4 py-6">
                   <div className="text-sm text-ink-3">
-                    系统将从【{DIFFICULTY_INFO[session.difficulty ?? 'beginner'].title}】难度样品池中随机抽取一个未知宝石。
+                    系统将从【{DIFFICULTY_INFO[session.difficulty ?? 'beginner'].title}】样品池抽取一个未知宝石，优先复习未测和答错的样品。
                   </div>
                   <button
                     type="button"
@@ -581,6 +580,3 @@ function DataLine({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-
-// 让 ts 不警告 formatRI 未使用
-void formatRI;

@@ -1,0 +1,276 @@
+{
+  "id": "polariscope-tripo-repair-v2",
+  "version": "repair-2",
+  "model": "repaired.glb",
+  "source": "../candidate.glb",
+  "sourceSha256": "37886a63481139b2e385b7b531e1308a597c8df7c86b82b1ba4ea88401553e3a",
+  "sha256": "0d4eb62f630e74915d31524010e51e1ce031c9b50f00314a1195b7c8ce469a7b",
+  "units": "uncalibrated source model units",
+  "dimensionsCalibrated": false,
+  "teachingOpticsSimulated": false,
+  "parts": [
+    {
+      "id": "base",
+      "label": "底座",
+      "node": "Polariscope_base",
+      "pivot": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "frame",
+      "label": "支架（与底座一体）",
+      "node": "Polariscope_frame",
+      "pivot": [
+        -0.461,
+        0.42,
+        0.0
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        0
+      ],
+      "integralWith": "base",
+      "hotspot": [
+        -0.45,
+        0.72,
+        0.17
+      ],
+      "hotspotNote": "2026-10-07：标号锚点放在支架竖直后壁的前侧面（不在包围盒中心的空气中）。"
+    },
+    {
+      "id": "light",
+      "label": "底座内部光源",
+      "node": "Polariscope_light",
+      "pivot": [
+        0.178,
+        0.35,
+        0.0
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "polarizer",
+      "label": "下偏光片",
+      "node": "Polariscope_polarizer",
+      "pivot": [
+        0.178,
+        0.455,
+        0.0
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0,
+        0.2,
+        0
+      ]
+    },
+    {
+      "id": "stage",
+      "label": "载物台",
+      "node": "Polariscope_stage",
+      "pivot": [
+        0.178,
+        0.495,
+        0.0
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": true,
+      "explodeOffset": [
+        0,
+        0.32,
+        0
+      ]
+    },
+    {
+      "id": "analyzer",
+      "label": "上偏光片",
+      "node": "Polariscope_analyzer",
+      "pivot": [
+        0.178,
+        0.947,
+        0.0
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": true,
+      "explodeOffset": [
+        0,
+        0.34,
+        0
+      ]
+    },
+    {
+      "id": "conoscope",
+      "label": "干涉球",
+      "node": "Polariscope_conoscope",
+      "pivot": [
+        -0.1974,
+        0.7273,
+        0.249
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0,
+        0.06,
+        0.24
+      ]
+    },
+    {
+      "id": "powerSwitch",
+      "label": "电源按钮",
+      "node": "Polariscope_powerSwitch",
+      "pivot": [
+        0.478,
+        0.219,
+        0.0
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "retainedGeometry": [
+    {
+      "mesh": "Tripo_analyzer_grip_detail",
+      "sourceTriangles": 165902,
+      "translationNative": [
+        0.004500000000000004,
+        0,
+        0
+      ],
+      "materialRetained": true
+    },
+    {
+      "mesh": "Tripo_stage_grip_detail",
+      "sourceTriangles": 359257,
+      "translationNative": [
+        -0.0050000000000000044,
+        0,
+        0
+      ],
+      "materialRetained": true
+    },
+    {
+      "mesh": "Tripo_retained_conoscope_handle",
+      "sourceTriangles": 30528,
+      "translationNative": [
+        0,
+        0,
+        0
+      ],
+      "materialRetained": true
+    }
+  ],
+  "materialAdjustment": {
+    "gripBaseColorFactor": 0.72,
+    "gripMetallicFactor": 0.62,
+    "handleOriginalMaterial": true,
+    "texturePixelValuesUnchanged": true
+  },
+  "changes": [
+    "Rebuilt regular base and continuous folded support with actual optical aperture",
+    "Removed unreferenced opposite-end window and invented shell seams",
+    "Kept original Tripo grip detail and handle geometry with UVs",
+    "Light source recessed inside hollow base, shining through real top aperture into lower polarizer",
+    "User-confirmed side power button with shared on/off interaction"
+  ],
+  "materialReference": "https://docs.blender.org/manual/en/5.2/addons/scene_gltf2.html",
+  "createdAt": "2026-10-05T09:19:59.454709+00:00",
+  "powerControl": {
+    "partId": "powerSwitch",
+    "pressOffset": [
+      -0.0035,
+      0,
+      0
+    ]
+  },
+  "internalLight": {
+    "partId": "light",
+    "baseShellMesh": "Base_clean_powder_coat",
+    "remainsInsideDuringExplode": true,
+    "opticalPath": [
+      "Internal_light_emitting_surface",
+      "Base_top_open_light_port",
+      "Fixed_lower_polarizer_glass"
+    ],
+    "emitterHeightNative": 0.377,
+    "baseTopHeightNative": 0.425,
+    "exitApertureRadius": 0.164,
+    "construction": "schematic module; location and light path confirmed by user 2026-10-05",
+    "teachingOffsetNative": [
+      0,
+      -0.17,
+      0
+    ],
+    "teachingOffsetNote": "2026-10-07 网页教学位置：光源模块在空心底座内下移 0.17（发光面约 0.207），使发光面与下偏光片之间的光路可见；GLB 几何未改。"
+  },
+  "integralShell": {
+    "meshes": [
+      "Base_clean_powder_coat",
+      "Frame_continuous_folded_shell"
+    ],
+    "material": "white-coated sheet metal, one piece with the base",
+    "confirmedBy": "user 2026-10-06"
+  },
+  "mechanics": {
+    "lowerPolarizer": "fixed, separate from the stage",
+    "stage": "rotates independently",
+    "confirmedBy": "user 2026-10-06"
+  }
+}

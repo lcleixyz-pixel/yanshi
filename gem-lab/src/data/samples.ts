@@ -406,7 +406,7 @@ export const SAMPLES: SampleDef[] = [
     spectrum: { features: [], description: '一般无明显吸收。' },
     detectionTips: [
       'RI 1.518–1.526',
-      '特征蓝白月光效应（钠长石与正长石聚片双晶）',
+      '特征蓝白月光效应：正长石与钠长石出溶形成的微细层状交生，对光散射而成（不是聚片双晶）',
     ],
   },
   {
@@ -447,7 +447,7 @@ export const SAMPLES: SampleDef[] = [
     detectionTips: [
       '点测法读数 1.53 – 1.69',
       '不能用刻面法',
-      '偏光镜下呈集合体特征',
+      '不透明：标准透射偏光镜不适用，需改用其他方法',
     ],
   },
   {
@@ -669,18 +669,20 @@ export const SAMPLES: SampleDef[] = [
     category: '葡萄石族',
     difficulty: 'advanced',
     image: '/assets/samples/prehnite.png',
-    refractometerShape: 'faceted',
+    // 本例为常见的弧面纤维状葡萄石：葡萄石矿物是二轴晶，但这类标本是放射状纤维集合体，
+    // 整块没有统一的光轴，按集合体处理（GIA G&G 2006 夏季刊 Prehnite from Mali 亦见刻面石为纤维集合结构）。
+    refractometerShape: 'cabochon',
     characteristics: {
       refractiveIndex: [1.611, 1.669],
-      birefringence: 0.022,
-      opticalCharacter: 'biaxial-positive',
+      opticalCharacter: 'aggregate',
       color: '黄绿',
-      transparency: '透明-半透明',
+      transparency: '半透明',
     },
     spectrum: { features: [], description: '一般无明显吸收。' },
     detectionTips: [
-      'RI 1.611–1.669，DR 较大',
-      '常见放射状纤维结构',
+      '点测 RI 约 1.61–1.67（矿物主折射率范围）',
+      '本例为放射状纤维集合体：偏光镜下呈集合体反应（转动始终亮）',
+      '葡萄石矿物为二轴晶，但不能把矿物光性直接当作整块标本的光性',
     ],
   },
   {

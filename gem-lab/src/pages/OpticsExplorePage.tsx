@@ -1,4 +1,5 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useResponsiveViewport } from '../components/shared/useResponsiveViewport';
 import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom';
 import Header from '../components/shared/Header';
 import { createOpticsViewer, type OpticsSnapshot, type OpticsViewer } from '../components/optics3d/opticsViewer.js';
@@ -24,20 +25,7 @@ function OpticsExplore({ instrumentId, onStart }: { instrumentId: OpticsInstrume
   const viewerRef = useRef<OpticsViewer | null>(null);
   const [snapshot, setSnapshot] = useState<OpticsSnapshot>({ status: 'loading' });
 
-  useLayoutEffect(() => {
-    // Same as the polariscope route: responsive here, restore the fixed teaching viewport on exit.
-    const existingViewport = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
-    const viewport = existingViewport ?? document.createElement('meta');
-    const previousContent = viewport.getAttribute('content');
-    viewport.name = 'viewport';
-    viewport.content = 'width=device-width, initial-scale=1';
-    if (!existingViewport) document.head.appendChild(viewport);
-    return () => {
-      if (!existingViewport) viewport.remove();
-      else if (previousContent === null) viewport.removeAttribute('content');
-      else viewport.setAttribute('content', previousContent);
-    };
-  }, []);
+  useResponsiveViewport();
 
   useEffect(() => {
     if (!viewportRef.current) return;

@@ -76,7 +76,7 @@ async function partsAndPath(page: Page) {
   ])
     await button(page, name).click();
   await next(page);
-  const stages = page.locator(".ref-course__path").getByRole("button");
+  const stages = page.locator(".course-shell__path").getByRole("button");
   for (let i = 0; i < 7; i++) await stages.nth(i).click();
   await question(page, "boundary", 0);
   await next(page);
@@ -271,8 +271,8 @@ test("窄屏课程无横向溢出，3D 与观察上下排列", async ({ page }) 
     .getByRole("button", { name: "开灯与放样" })
     .click();
   await button(page, "打开电源").click();
-  const model = await page.locator(".ref-course__model").boundingBox(),
-    panel = await page.locator(".ref-course__panel").boundingBox();
+  const model = await page.locator(".course-shell__model").boundingBox(),
+    panel = await page.locator(".course-shell__panel").boundingBox();
   expect(model && panel && panel.y >= model.y + model.height).toBeTruthy();
   expect(
     await page.evaluate(

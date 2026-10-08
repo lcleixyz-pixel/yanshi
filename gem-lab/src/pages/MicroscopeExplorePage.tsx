@@ -1,4 +1,5 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useResponsiveViewport } from '../components/shared/useResponsiveViewport';
 import { Link } from 'react-router-dom';
 import Header from '../components/shared/Header';
 import { createMicroscopeViewer, type MicroscopeSnapshot, type MicroscopeViewer } from '../components/microscope3d/viewer.js';
@@ -29,20 +30,7 @@ export default function MicroscopeExplorePage() {
   const viewerRef = useRef<MicroscopeViewer | null>(null);
   const [snapshot, setSnapshot] = useState<MicroscopeSnapshot>({ status: 'loading' });
 
-  useLayoutEffect(() => {
-    // Same as the polariscope route: responsive here, restore the fixed teaching viewport on exit.
-    const existingViewport = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
-    const viewport = existingViewport ?? document.createElement('meta');
-    const previousContent = viewport.getAttribute('content');
-    viewport.name = 'viewport';
-    viewport.content = 'width=device-width, initial-scale=1';
-    if (!existingViewport) document.head.appendChild(viewport);
-    return () => {
-      if (!existingViewport) viewport.remove();
-      else if (previousContent === null) viewport.removeAttribute('content');
-      else viewport.setAttribute('content', previousContent);
-    };
-  }, []);
+  useResponsiveViewport();
 
   useEffect(() => {
     if (!viewportRef.current) return;

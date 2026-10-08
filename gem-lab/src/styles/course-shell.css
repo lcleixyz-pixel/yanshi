@@ -1,4 +1,5 @@
-.ref-course {
+/* 引导课程通用外壳：课程条、三维区、操作面板、观察窗、问答、步骤导航。各仪器课程共用。 */
+.course-shell {
   height: 100dvh;
   min-height: 600px;
   display: flex;
@@ -7,7 +8,7 @@
   color: #213b43;
   font-size: 14px;
 }
-.ref-course button {
+.course-shell button {
   border: 1px solid #cfdbdd;
   background: #fff;
   border-radius: 7px;
@@ -17,20 +18,20 @@
   line-height: 1.5;
   cursor: pointer;
 }
-.ref-course button:hover {
+.course-shell button:hover {
   background: #edf4f4;
   border-color: #8faeb5;
 }
-.ref-course button:disabled {
+.course-shell button:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
-.ref-course button:focus-visible,
-.ref-course input:focus-visible {
+.course-shell button:focus-visible,
+.course-shell input:focus-visible {
   outline: 3px solid #af8032;
   outline-offset: 2px;
 }
-.ref-course__bar {
+.course-shell__bar {
   display: flex;
   gap: 16px;
   align-items: center;
@@ -39,35 +40,35 @@
   border-bottom: 1px solid #d0dddf;
   padding: 9px 18px;
 }
-.ref-course__bar nav {
+.course-shell__bar nav {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
 }
-.ref-course__bar nav button {
+.course-shell__bar nav button {
   font-size: 12px;
   border-color: transparent;
   padding: 6px 8px;
 }
-.ref-course__bar nav button[aria-current] {
+.course-shell__bar nav button[aria-current] {
   background: #285463;
   color: #fff;
 }
-.ref-course__bar nav span {
+.course-shell__bar nav span {
   margin-right: 5px;
 }
-.ref-course__main {
+.course-shell__main {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 400px;
   flex: 1;
   min-height: 0;
 }
-.ref-course__model {
+.course-shell__model {
   position: relative;
   min-width: 0;
   overflow: hidden;
 }
-.ref-course__views {
+.course-shell__views {
   position: absolute;
   z-index: 1;
   top: 16px;
@@ -75,11 +76,11 @@
   display: flex;
   gap: 5px;
 }
-.ref-course__views button {
+.course-shell__views button {
   font-size: 12px;
   background: #ffffffed;
 }
-.ref-course__model-note {
+.course-shell__model-note {
   position: absolute;
   bottom: 16px;
   left: 20px;
@@ -87,76 +88,76 @@
   color: #4d6971;
   pointer-events: none;
 }
-.ref-course__panel {
+.course-shell__panel {
   background: #fff;
   border-left: 1px solid #cfdbdd;
   padding: 22px;
   overflow: auto;
 }
-.ref-course__content {
+.course-shell__content {
   border: 0;
   padding: 0;
   margin: 0;
   min-width: 0;
 }
-.ref-course h1 {
+.course-shell h1 {
   font-size: 23px;
   margin: 5px 0 10px;
   font-weight: 600;
   letter-spacing: 0.02em;
 }
-.ref-course h2 {
+.course-shell h2 {
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 12px;
 }
-.ref-course h2 span {
+.course-shell h2 span {
   font-size: 11px;
   font-weight: 400;
   color: #758b92;
   margin-left: 8px;
 }
-.ref-course p {
+.course-shell p {
   line-height: 1.75;
 }
-.ref-course small {
+.course-shell small {
   color: #698189;
 }
-.ref-course__step {
+.course-shell__step {
   margin-bottom: 18px;
 }
-.ref-course__step p {
+.course-shell__step p {
   font-size: 13px;
   color: #59717a;
 }
-.ref-course__parts,
-.ref-course__operations {
+.course-shell__parts,
+.course-shell__operations {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 7px;
 }
-.ref-course__parts button[aria-pressed="true"],
-.ref-course__operations button[aria-pressed="true"] {
+.course-shell__parts button[aria-pressed="true"],
+.course-shell__operations button[aria-pressed="true"] {
   background: #e4eff1;
   border-color: #8eabb4;
 }
-.ref-course__note {
+.course-shell__note {
   font-size: 12px;
   background: #f0f5f5;
   padding: 12px;
   border-radius: 8px;
 }
-.ref-course__path {
+.course-shell__path {
   list-style: none;
   padding: 0;
   display: grid;
   gap: 6px;
 }
-.ref-course__path button {
+.course-shell__path button {
   font-size: 12px;
   width: 100%;
 }
-.ref-course__question {
+.course-shell__question {
   border: 0;
   padding: 0;
   margin: 22px 0;
@@ -164,24 +165,24 @@
   gap: 7px;
   min-width: 0;
 }
-.ref-course__question legend {
+.course-shell__question legend {
   font-weight: 600;
   line-height: 1.6;
   padding-bottom: 10px;
 }
-.ref-course__question button {
+.course-shell__question button {
   font-size: 12px;
 }
-.ref-course__question button[aria-pressed="true"] {
+.course-shell__question button[aria-pressed="true"] {
   border-color: #508d9d;
   background: #eaf3f5;
 }
-.ref-course__question p {
+.course-shell__question p {
   font-size: 12px;
   margin: 0;
   color: #647c85;
 }
-.ref-course__observation {
+.course-shell__observation {
   background: #f2f5f4;
   padding: 15px;
   border: 1px solid #dfe7e7;
@@ -189,38 +190,38 @@
   text-align: center;
   margin-bottom: 14px;
 }
-.ref-course__observation > div {
+.course-shell__observation > div {
   display: flex;
   justify-content: center;
 }
-.ref-course__observation p {
+.course-shell__observation p {
   font-size: 12px;
   margin: 14px 0 4px;
 }
-.ref-course__observation small {
+.course-shell__observation small {
   font-size: 11px;
   display: block;
 }
-.ref-course__operations button {
+.course-shell__operations button {
   font-size: 12px;
 }
-.ref-course__state {
+.course-shell__state {
   font-size: 11px;
   color: #798b91;
 }
-.ref-course__reading {
+.course-shell__reading {
   margin: 20px 0 10px;
 }
-.ref-course__reading label {
+.course-shell__reading label {
   display: block;
   margin-bottom: 7px;
   font-weight: 600;
 }
-.ref-course__reading > div {
+.course-shell__reading > div {
   display: flex;
   gap: 8px;
 }
-.ref-course__reading input {
+.course-shell__reading input {
   width: 120px;
   flex: 1;
   min-width: 0;
@@ -229,117 +230,117 @@
   padding: 10px;
   font-size: 17px;
 }
-.ref-course__feedback {
+.course-shell__feedback {
   border-left: 3px solid #488494;
   background: #edf5f5;
   padding: 12px;
   font-size: 12px;
 }
-.ref-course__feedback p {
+.course-shell__feedback p {
   margin: 7px 0 0;
 }
-.ref-course__check {
+.course-shell__check {
   padding-left: 0;
   list-style: none;
   font-size: 12px;
   line-height: 2;
 }
-.ref-course__navigation {
+.course-shell__navigation {
   border-top: 1px solid #e0e8e9;
   margin-top: 22px;
   padding-top: 10px;
 }
-.ref-course__navigation > div {
+.course-shell__navigation > div {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
 }
-.ref-course__navigation p {
+.course-shell__navigation p {
   font-size: 12px;
   color: #688089;
 }
-.ref-course__navigation button:nth-child(2) {
+.course-shell__navigation button:nth-child(2) {
   background: #315e6a;
   color: #fff;
 }
-.ref-course__skip {
+.course-shell__skip {
   background: transparent !important;
   color: #7a8d94 !important;
   border: 0 !important;
   font-size: 12px;
 }
-.ref-course__navigation small {
+.course-shell__navigation small {
   display: block;
   margin-top: 9px;
 }
-.ref-course__structure,
-.ref-course__sources {
+.course-shell__structure,
+.course-shell__sources {
   margin-top: 18px;
   font-size: 11px;
   color: #758a91;
   line-height: 1.8;
 }
-.ref-course__structure button {
+.course-shell__structure button {
   font-size: 11px;
   padding: 5px 8px;
 }
-.ref-course__structure label {
+.course-shell__structure label {
   display: block;
 }
-.ref-course__loading {
+.course-shell__loading {
   position: absolute;
   inset: 0;
   display: grid;
   place-content: center;
 }
-.ref-course__fallback {
+.course-shell__fallback {
   position: absolute;
   inset: 80px 20px;
   display: grid;
   place-content: center;
 }
-.ref-course__fallback img {
+.course-shell__fallback img {
   max-height: 40vh;
 }
-.ref-course__finish button {
+.course-shell__finish button {
   margin-top: 18px;
 }
 @media (max-width: 960px) {
-  .ref-course {
+  .course-shell {
     height: auto;
     min-height: 100dvh;
   }
-  .ref-course__main {
+  .course-shell__main {
     grid-template-columns: 1fr;
   }
-  .ref-course__model {
+  .course-shell__model {
     height: 48vh;
     min-height: 320px;
   }
-  .ref-course__panel {
+  .course-shell__panel {
     border-left: 0;
     border-top: 1px solid #cbdadd;
     padding: 20px;
   }
-  .ref-course__bar {
+  .course-shell__bar {
     align-items: flex-start;
     padding: 10px;
     flex-wrap: wrap;
   }
-  .ref-course__bar nav {
+  .course-shell__bar nav {
     gap: 2px;
   }
-  .ref-course__bar nav button {
+  .course-shell__bar nav button {
     font-size: 11px;
     padding: 5px;
   }
-  .ref-course__bar > button {
+  .course-shell__bar > button {
     font-size: 11px;
   }
-  .ref-course__model-note {
+  .course-shell__model-note {
     font-size: 10px;
   }
-  .ref-course__reading input {
+  .course-shell__reading input {
     max-width: 220px;
   }
 }

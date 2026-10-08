@@ -1,6 +1,7 @@
 import { SAMPLES_BY_ID } from "../data/samples";
 import { checkRI } from "./refractometerAssessment";
 import type { RefractometerView } from "../components/refractometer/ObservationWindow";
+import { mayRecordLearning, type ChoiceQuestion, type CourseMode, type CourseStep } from "./course";
 
 export const COURSE_SAMPLE = SAMPLES_BY_ID.spinel;
 export const COURSE_RI = COURSE_SAMPLE.characteristics
@@ -15,7 +16,7 @@ export type StepId =
   | "verify"
   | "explain"
   | "cleanup";
-export const STEPS: readonly { id: StepId; title: string; task: string }[] = [
+export const STEPS: readonly CourseStep<StepId>[] = [
   {
     id: "parts",
     title: "认识部件",
@@ -173,7 +174,7 @@ export const QUESTIONS = [
     correct: 0,
     feedback: "本教学参数接触液上限为 1.78；超出时不能给出精确样品 RI。",
   },
-] as const;
+] as const satisfies readonly ChoiceQuestion[];
 export interface Reading {
   value: number;
   angle: number;
@@ -181,7 +182,7 @@ export interface Reading {
   correct: boolean;
 }
 export interface CourseState {
-  mode: "student" | "teacher";
+  mode: CourseMode;
   step: StepId;
   hasSkipped: boolean;
   power: boolean;
@@ -359,7 +360,7 @@ export function isComplete(s: CourseState, id: StepId): boolean {
 export const allComplete = (s: CourseState) =>
   STEPS.every((step) => isComplete(s, step.id));
 export const maySaveProgress = (s: CourseState) =>
-  s.mode === "student" && !s.hasSkipped && allComplete(s);
+  mayRecordLearning(s.mode, s.hasSkipped, allComplete(s));
 export function navigateCourse(
   s: CourseState,
   step: StepId,

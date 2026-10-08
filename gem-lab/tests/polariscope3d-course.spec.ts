@@ -87,7 +87,7 @@ test('basic guided course: parts → path → crossed → rotate → reorient �
   expect(Number(await complete.getAttribute('data-total-ms'))).toBeGreaterThan(0);
   await expect(complete).toHaveAttribute('data-skipped', '0');
   // 讲师演示即使全部完成也不写入学习进度；学员完成的写入见 polariscope3d-student。
-  await expect(page.getByTestId('course-save-status')).toHaveText('讲师演示不写入学习进度。');
+  await expect(page.getByTestId('course-save-status')).toHaveText('讲师演示结束，不写入学习进度。');
   expect(await page.evaluate(() => localStorage.getItem('gem-lab-progress-v1'))).toBeNull();
   await page.getByTestId('course-advanced-adr').click();
   await expect(page).not.toHaveURL(/course=/);

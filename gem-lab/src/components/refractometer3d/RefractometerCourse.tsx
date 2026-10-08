@@ -1,5 +1,7 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import Header from "../shared/Header";
+import { useEffect, useRef, useState } from "react";
+import { useResponsiveViewport } from "../shared/useResponsiveViewport";
+import { ChoiceQuestionField, CourseFinish, CourseShell, CourseStepFooter, CourseStepHeading } from "../course/CourseShell";
+import { useLearningRecord } from "../course/useLearningRecord";
 import {
   createOpticsViewer,
   type OpticsSnapshot,
@@ -9,14 +11,12 @@ import { opticsAssetBase } from "../optics3d/opticsInstruments";
 import ObservationWindow from "../refractometer/ObservationWindow";
 import {
   allComplete,
-  answerCorrect,
   COURSE_RI,
   COURSE_SAMPLE,
   deriveCourse,
   initialCourse,
   isComplete,
   KEY_PARTS,
-  maySaveProgress,
   navigateCourse,
   operate,
   PATH_STAGES,
@@ -27,7 +27,6 @@ import {
   type StepId,
   type Operation,
 } from "../../domain/refractometerCourse";
-import "../../styles/refractometer-course.css";
 
 export default function RefractometerCourse({
   mode,
@@ -42,23 +41,13 @@ export default function RefractometerCourse({
   });
   const [input, setInput] = useState("");
   const [finished, setFinished] = useState(false);
-  const [saveStatus, setSaveStatus] = useState("");
-  const saving = useRef(false);
+  const learning = useLearningRecord("refractometer", mode);
   const viewport = useRef<HTMLDivElement>(null),
     viewer = useRef<OpticsViewer | null>(null);
   const derived = deriveCourse(s),
     ready = snapshot.status === "ready";
   const assetBase = opticsAssetBase("refractometer");
-  useLayoutEffect(() => {
-    const meta = document.querySelector<HTMLMetaElement>(
-      'meta[name="viewport"]',
-    );
-    const old = meta?.content;
-    if (meta) meta.content = "width=device-width, initial-scale=1";
-    return () => {
-      if (meta && old !== undefined) meta.content = old;
-    };
-  }, []);
+  useResponsiveViewport();
   useEffect(() => {
     if (!viewport.current) return;
     const v = createOpticsViewer({
@@ -98,8 +87,6 @@ export default function RefractometerCourse({
   useEffect(() => {
     setInput("");
   }, [s.epoch, s.step, s.angle]);
-  const stepIndex = STEPS.findIndex((x) => x.id === s.step),
-    step = STEPS[stepIndex];
   const selected = snapshot.status === "ready" ? snapshot.selected : null;
   const latest = s.readings
     .filter((r) => r.epoch === s.epoch && r.angle === s.angle)
@@ -110,61 +97,21 @@ export default function RefractometerCourse({
     viewer.current?.setView(id === "path" ? "optics" : "whole");
     viewer.current?.fit();
   };
-  async function finish() {
-    if (!allComplete(s) || saving.current) return;
-    saving.current = true;
+  function finish() {
+    if (!allComplete(s)) return;
     setFinished(true);
-    if (maySaveProgress(s)) {
-      try {
-        const { useProgress } = await import("../../store/progressStore");
-        useProgress.getState().markDemoComplete({
-          instrumentId: "refractometer",
-          mode: "learning",
-          completedAt: Date.now(),
-        });
-        setSaveStatus("已记录本次学习完成。");
-      } catch {
-        setSaveStatus("学习记录保存失败，可重试。");
-        saving.current = false;
-      }
-    } else
-      setSaveStatus(
-        mode === "teacher"
-          ? "讲师演示结束，不写入学习进度。"
-          : "本次使用过跳步，已完成复习，不写入学习进度。",
-      );
+    void learning.record(s.hasSkipped, true);
   }
   function question(id: string) {
-    const q = QUESTIONS.find((x) => x.id === id)!;
-    const answered = s.answers[id] !== undefined;
     return (
-      <fieldset
-        className="ref-course__question"
+      <ChoiceQuestionField
         key={id}
-        data-testid={`question-${id}`}
-      >
-        <legend>{q.prompt}</legend>
-        {q.options.map((text, i) => (
-          <button
-            type="button"
-            key={text}
-            aria-pressed={s.answers[id] === i}
-            onClick={() =>
-              setS((prev) => ({
-                ...prev,
-                answers: { ...prev.answers, [id]: i },
-              }))
-            }
-          >
-            {text}
-          </button>
-        ))}
-        {answered && (
-          <p role="status">
-            {answerCorrect(s, id) ? "判断正确。" : "再想一想。"} {q.feedback}
-          </p>
-        )}
-      </fieldset>
+        question={QUESTIONS.find((x) => x.id === id)!}
+        answer={s.answers[id]}
+        onAnswer={(i) =>
+          setS((prev) => ({ ...prev, answers: { ...prev.answers, [id]: i } }))
+        }
+      />
     );
   }
   const observe = [
@@ -175,47 +122,13 @@ export default function RefractometerCourse({
     "explain",
     "cleanup",
   ].includes(s.step);
-  return (
-    <div
-      className="ref-course"
-      data-testid="refractometer-course"
-      data-step={s.step}
-      data-mode={mode}
-    >
-      <Header
-        title="折射仪基础读数课"
-        subtitle={`${mode === "student" ? "学员练习" : "讲师演示"} · 约 9 分钟`}
-      />
-      <div className="ref-course__bar">
-        <nav aria-label="课程步骤">
-          {STEPS.map((item, i) => (
-            <button
-              key={item.id}
-              type="button"
-              aria-current={s.step === item.id ? "step" : undefined}
-              disabled={
-                mode === "student" &&
-                i > stepIndex &&
-                !STEPS.slice(0, i).every((x) => isComplete(s, x.id))
-              }
-              onClick={() => go(item.id)}
-            >
-              <span>{isComplete(s, item.id) ? "✓" : i + 1}</span>
-              {item.title}
-            </button>
-          ))}
-        </nav>
-        <button type="button" onClick={onExit}>
-          返回自由探索
-        </button>
-      </div>
-      <main className="ref-course__main">
+  const model = (
         <section
-          className="ref-course__model"
+          className="course-shell__model"
           ref={viewport}
           aria-label="课程三维仪器"
         >
-          <div className="ref-course__views">
+          <div className="course-shell__views">
             <button
               type="button"
               disabled={!ready}
@@ -242,48 +155,51 @@ export default function RefractometerCourse({
             </button>
           </div>
           {snapshot.status === "loading" && (
-            <p className="ref-course__loading" role="status">
+            <p className="course-shell__loading" role="status">
               正在载入教学模型…
             </p>
           )}
           {snapshot.status === "error" && (
-            <div className="ref-course__fallback" role="alert">
+            <div className="course-shell__fallback" role="alert">
               <img src={`${assetBase}poster.png`} alt="折射仪静态预览" />
               <p>模型载入失败，静态图不能替代操作练习。</p>
               <button onClick={() => window.location.reload()}>重新载入</button>
             </div>
           )}
-          <p className="ref-course__model-note">
+          <p className="course-shell__model-note">
             拖动旋转 · 滚轮缩放 · 比例及内部处方未标定
           </p>
         </section>
-        <aside className="ref-course__panel" aria-label="课程操作与观察">
+  );
+  return (
+    <CourseShell
+      title="折射仪基础读数课"
+      minutes={9}
+      testId="refractometer-course"
+      steps={STEPS}
+      current={s.step}
+      mode={mode}
+      isComplete={(id) => isComplete(s, id)}
+      onGo={go}
+      onExit={onExit}
+      model={model}
+    >
           {finished ? (
-            <section className="ref-course__finish">
-              <h1>本课完成</h1>
-              <p>{saveStatus || "正在保存学习记录…"}</p>
-              <p>
-                你已完成接触恢复、两次读数、解释与清洁复位。学习完成与独立检测掌握分别记录。
-              </p>
-              {saveStatus.includes("失败") && (
-                <button onClick={finish}>重试保存</button>
-              )}
-              <button onClick={onExit}>返回自由探索</button>
-            </section>
+            <CourseFinish
+              status={learning.status}
+              failed={learning.failed}
+              summary="你已完成接触恢复、两次读数、解释与清洁复位。学习完成与独立检测掌握分别记录。"
+              onRetry={() => void learning.record(s.hasSkipped, allComplete(s))}
+              onExit={onExit}
+            />
           ) : (
             <>
-              <div className="ref-course__step">
-                <small>
-                  第 {stepIndex + 1} / {STEPS.length} 步
-                </small>
-                <h1>{step.title}</h1>
-                <p>{step.task}</p>
-              </div>
+              <CourseStepHeading steps={STEPS} current={s.step} />
               {!ready && <p>模型就绪后开始操作。</p>}
-              <fieldset className="ref-course__content" disabled={!ready}>
+              <fieldset className="course-shell__content" disabled={!ready}>
                 {s.step === "parts" && (
                   <>
-                    <div className="ref-course__parts">
+                    <div className="course-shell__parts">
                       {KEY_PARTS.map((p) => (
                         <button
                           key={p.id}
@@ -305,7 +221,7 @@ export default function RefractometerCourse({
                         </button>
                       ))}
                     </div>
-                    <p className="ref-course__note">
+                    <p className="course-shell__note">
                       {KEY_PARTS.find((p) => p.id === selected?.id)?.note ||
                         "点选部件，模型会自动聚焦。"}
                     </p>
@@ -323,7 +239,7 @@ export default function RefractometerCourse({
                       />
                       显示代表光路
                     </label>
-                    <ol className="ref-course__path">
+                    <ol className="course-shell__path">
                       {PATH_STAGES.map((stage, i) => (
                         <li key={stage.part}>
                           <button
@@ -345,7 +261,7 @@ export default function RefractometerCourse({
                       ))}
                     </ol>
                     {question("boundary")}
-                    <p className="ref-course__note">
+                    <p className="course-shell__note">
                       这些线为理想单色代表路径；真实透镜面形、像差和仪器标定未模拟。
                     </p>
                   </>
@@ -353,7 +269,7 @@ export default function RefractometerCourse({
                 {observe && (
                   <>
                     <div
-                      className="ref-course__observation"
+                      className="course-shell__observation"
                       data-testid="course-observation"
                       data-view={derived.view}
                       data-valid={String(derived.validReading)}
@@ -374,7 +290,7 @@ export default function RefractometerCourse({
                       )}
                     </div>
                     <div
-                      className="ref-course__operations"
+                      className="course-shell__operations"
                       aria-label="仪器操作"
                     >
                       <button
@@ -431,7 +347,7 @@ export default function RefractometerCourse({
                         取下样品
                       </button>
                     </div>
-                    <label className="ref-course__rays">
+                    <label className="course-shell__rays">
                       <input
                         type="checkbox"
                         checked={s.rays}
@@ -441,7 +357,7 @@ export default function RefractometerCourse({
                       />
                       显示代表光路（透视叠加）
                     </label>
-                    <p className="ref-course__state">
+                    <p className="course-shell__state">
                       {s.power ? "通电" : "关机"} · 翻盖
                       {s.cover === "open" ? "打开" : "闭合"} ·{" "}
                       {s.liquid === "drop" ? "已滴液" : "无接触液"} ·{" "}
@@ -449,7 +365,7 @@ export default function RefractometerCourse({
                       {s.angle}°
                     </p>
                     {s.step === "prepare" && (
-                      <ul className="ref-course__check">
+                      <ul className="course-shell__check">
                         <li>{s.scaleSeen ? "✓" : "○"} 空载开灯看到刻度</li>
                         <li>
                           {s.placedCorrectly ? "✓" : "○"} 滴液后平整台面朝下放样
@@ -479,7 +395,7 @@ export default function RefractometerCourse({
                     {["observe", "verify"].includes(s.step) && (
                       <>
                         <form
-                          className="ref-course__reading"
+                          className="course-shell__reading"
                           onSubmit={(e) => {
                             e.preventDefault();
                             setS((prev) => submitReading(prev, Number(input)));
@@ -525,7 +441,7 @@ export default function RefractometerCourse({
                         )}
                         {latest && (
                           <div
-                            className="ref-course__feedback"
+                            className="course-shell__feedback"
                             role="status"
                             data-testid="reading-feedback"
                           >
@@ -552,7 +468,7 @@ export default function RefractometerCourse({
                       ["critical", "air", "limit"].map(question)}
                     {s.step === "cleanup" && (
                       <>
-                        <div className="ref-course__operations">
+                        <div className="course-shell__operations">
                           <button
                             disabled={s.sample === "placed"}
                             onClick={() => op("clean-stage")}
@@ -572,7 +488,7 @@ export default function RefractometerCourse({
                         </p>
                       </>
                     )}
-                    <details className="ref-course__structure">
+                    <details className="course-shell__structure">
                       <summary>部件与装配辅助</summary>
                       <label>
                         连续拆解
@@ -609,49 +525,20 @@ export default function RefractometerCourse({
                     </details>
                   </>
                 )}
-                <footer className="ref-course__navigation">
-                  <p>
-                    {isComplete(s, s.step)
-                      ? "✓ 本步已完成"
-                      : "请完成本步操作与判断"}
-                  </p>
-                  <div>
-                    {stepIndex > 0 && (
-                      <button onClick={() => go(STEPS[stepIndex - 1].id)}>
-                        上一步
-                      </button>
-                    )}
-                    {stepIndex < STEPS.length - 1 ? (
-                      <>
-                        <button
-                          disabled={!isComplete(s, s.step)}
-                          onClick={() => go(STEPS[stepIndex + 1].id)}
-                        >
-                          下一步
-                        </button>
-                        <button
-                          className="ref-course__skip"
-                          onClick={() =>
-                            go(STEPS[stepIndex + 1].id, mode === "student")
-                          }
-                        >
-                          {mode === "teacher" ? "跳到下一步" : "跳步复习"}
-                        </button>
-                      </>
-                    ) : (
-                      <button disabled={!allComplete(s)} onClick={finish}>
-                        完成课程
-                      </button>
-                    )}
-                  </div>
-                  {s.hasSkipped && (
-                    <small>本次已使用跳步；完成后不记录学习进度。</small>
-                  )}
-                </footer>
+                <CourseStepFooter
+                  steps={STEPS}
+                  current={s.step}
+                  mode={mode}
+                  isComplete={(id) => isComplete(s, id)}
+                  allComplete={allComplete(s)}
+                  hasSkipped={s.hasSkipped}
+                  onGo={go}
+                  onFinish={finish}
+                />
               </fieldset>
             </>
           )}
-          <details className="ref-course__sources">
+          <details className="course-shell__sources">
             <summary>依据与范围</summary>
             <p>
               课程采用项目中的尖晶石教学参数和理想各向同性单色光路。接触膜厚度、内部处方和尺寸未经实物标定；不覆盖双折射、点测或所有宝石。
@@ -665,8 +552,6 @@ export default function RefractometerCourse({
                 </p>
               ))}
           </details>
-        </aside>
-      </main>
-    </div>
+        </CourseShell>
   );
 }

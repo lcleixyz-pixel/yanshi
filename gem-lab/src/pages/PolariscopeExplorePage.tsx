@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useResponsiveViewport } from '../components/shared/useResponsiveViewport';
+import { mayRecordLearning, noRecordReason } from '../domain/course';
 import { Link, useSearchParams } from 'react-router-dom';
 import { TRACE_STEPS } from '../domain/rotationCoverage';
 import { useStageRotation } from '../components/polariscope3d/useStageRotation';
@@ -301,8 +303,10 @@ export default function PolariscopeExplorePage() {
     leaveCurrentStep(); setCourseFinished(true);
     // 学员全程自学、每一步都实际完成（没有跳过）时，记为偏光镜的一次学习完成，与 2D 学习模式使用同一条记录。
     if (progressRecorded.current) return;
-    if (teacherUsed.current || !studentMode) { setSaveNote('讲师演示不写入学习进度。'); return; }
-    if (!COURSE_STEPS.every((item) => isStepComplete(item.id, courseProgress))) { setSaveNote('本次有跳过的步骤，不写入学习进度。'); return; }
+    const mode = teacherUsed.current || !studentMode ? 'teacher' : 'student';
+    // 偏光镜的跳步不单独记录：完成时仍有未完成的步骤即视为跳过。
+    const skipped = !COURSE_STEPS.every((item) => isStepComplete(item.id, courseProgress));
+    if (!mayRecordLearning(mode, skipped, !skipped)) { setSaveNote(noRecordReason(mode)); return; }
     progressRecorded.current = true;
     // 按需加载进度存储：自由探索、讲师演示和未完成的课程都不读写学习记录。
     void import('../store/progressStore')
@@ -379,14 +383,9 @@ export default function PolariscopeExplorePage() {
     setState((previous) => ({ ...previous, internalView: !previous.internalView, selectedPart: previous.lesson === 'components' && !previous.internalView ? 'light' : previous.selectedPart, isolatedPart: null }));
   };
 
+  // This route is responsive; the breakpoint is read after the responsive viewport is applied.
+  useResponsiveViewport();
   useLayoutEffect(() => {
-    // This route is responsive; restore the existing fixed teaching viewport on exit.
-    const existingViewport = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
-    const viewport = existingViewport ?? document.createElement('meta');
-    const previousContent = viewport.getAttribute('content');
-    viewport.name = 'viewport';
-    viewport.content = 'width=device-width, initial-scale=1';
-    if (!existingViewport) document.head.appendChild(viewport);
     const mobile = window.matchMedia('(max-width: 680px)');
     let mobileLayout = mobile.matches;
     setQuality(qualityPreference.current ?? (mobileLayout ? 'standard' : 'high')); setNarrow(mobileLayout);
@@ -400,9 +399,6 @@ export default function PolariscopeExplorePage() {
     return () => {
       window.cancelAnimationFrame(frame);
       mobile.removeEventListener('change', updateBreakpoint);
-      if (!existingViewport) viewport.remove();
-      else if (previousContent === null) viewport.removeAttribute('content');
-      else viewport.setAttribute('content', previousContent);
     };
   }, []);
 

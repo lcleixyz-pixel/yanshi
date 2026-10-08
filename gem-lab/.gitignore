@@ -9,6 +9,8 @@ test-results
 .env
 .env.*
 .DS_Store
+__pycache__/
+*.py[cod]
 
 # Large production inputs and evidence are stored in the verified external snapshot.
 /assets-source/**

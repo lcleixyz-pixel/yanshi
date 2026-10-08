@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-08T07:42:01.398Z",
+  "validator": "independent Three GLTF triangle read; no author optics functions imported",
+  "validatorSha256": "3a0957c145c90fb7de5c21690ed7be1937662bde63ecb38ff0589f3949294d25",
+  "tolerance": {
+    "surfaceDistanceMeters": 1e-7,
+    "snellTangentialIndexVector": 0.000003,
+    "gratingSine": 0.000001,
+    "terminationMeters": 1e-7,
+    "angularDegrees": 0.0001
+  },
+  "scope": [
+    "All current display cases and all paths, including 400/550/700 nm.",
+    "Assumes collimated parallel input after the unknown collimator; does not validate collimation, slit imaging or spectral resolution.",
+    "Stops at the first actual obstacle or the actual eyepiece front surface; does not trace the unknown eyepiece or predict a retinal image.",
+    "Sellmeier indices are independently recomputed from the supplied prescription, not independently measured glass data.",
+    "Explicitly enlarged grating-ruling annotations and non-optical cement edge guides excluded from opaque-obstacle tests."
+  ],
+  "instruments": [
+    {
+      "instrumentId": "prism-spectroscope",
+      "inputDirectory": "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi-instrument-assets/gem-lab/public/assets/3d/prism-spectroscope/paper-optics-v1",
+      "modelFile": "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi-instrument-assets/gem-lab/public/assets/3d/prism-spectroscope/paper-optics-v1/model.glb",
+      "manifestFile": "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi-instrument-assets/gem-lab/public/assets/3d/prism-spectroscope/paper-optics-v1/manifest.json",
+      "modelSha256": "f46f1007cb9a17ade4b22dc411d1a8250fc4e34674fc58ba97f072dd37bbe0bd",
+      "manifestSha256": "3b27b818b808a1e5b887a528326d3a09d400b12264e93d51123e4184c7aef0cd",
+      "opticalCasesSha256": "348cec80d3f00d2b439110f9689bd1e8b3007035cbf3031ef5a07f9213b3019d",
+      "prescriptionSha256": "00ba17d26155f5bd4318136256228b3cc67b34d0b70a5366832c719dda566818",
+      "cases": [
+        {
+          "caseId": "white-light",
+          "pathCount": 7,
+          "interactionCount": 35,
+          "maxSurfaceDistanceMeters": 4.115111629365964e-9,
+          "maxSnellResidual": 2.5004841780987618e-8,
+          "maxGratingResidual": 0,
+          "maxTerminationDeltaMeters": 4.134678608553378e-9,
+          "maxExitAngleErrorDegrees": 0.000004529347710446885,
+          "blocked": 0,
+          "reachesEyepiece": 7
+        },
+        {
+          "caseId": "wavelength-400",
+          "pathCount": 1,
+          "interactionCount": 5,
+          "maxSurfaceDistanceMeters": 4.115111629365964e-9,
+          "maxSnellResidual": 1.5895902300521953e-8,
+          "maxGratingResidual": 0,
+          "maxTerminationDeltaMeters": 4.134678608553378e-9,
+          "maxExitAngleErrorDegrees": 0.000003235789399980149,
+          "blocked": 0,
+          "reachesEyepiece": 1
+        },
+        {
+          "caseId": "wavelength-550",
+          "pathCount": 1,
+          "interactionCount": 5,
+          "maxSurfaceDistanceMeters": 3.623541867238538e-9,
+          "maxSnellResidual": 1.6237610380053057e-8,
+          "maxGratingResidual": 0,
+          "maxTerminationDeltaMeters": 3.817564923902507e-9,
+          "maxExitAngleErrorDegrees": 0.0000017075474029402713,
+          "blocked": 0,
+          "reachesEyepiece": 1
+        },
+        {
+          "caseId": "wavelength-700",
+          "pathCount": 1,
+          "interactionCount": 5,
+          "maxSurfaceDistanceMeters": 1.05574389412735e-9,
+          "maxSnellResidual": 2.5004841780987618e-8,
+          "maxGratingResidual": 0,
+          "maxTerminationDeltaMeters": 6.908467806190329e-10,
+          "maxExitAngleErrorDegrees": 0.000004529347710446885,
+          "blocked": 0,
+          "reachesEyepiece": 1
+        }
+      ],
+      "ignoredAnnotationMeshes": [
+        "PrismSpectroscope_amici_cement_interface_1",
+        "PrismSpectroscope_amici_cement_interface_2"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "prism-spectroscope: model hash agrees with manifest",
+      "pass": true,
+      "evidence": null
+    },
+    {
+      "name": "prism-spectroscope/white-light: all interface points, equations and first physical obstructions",
+      "pass": true,
+      "evidence": {
+        "caseId": "white-light",
+        "pathCount": 7,
+        "interactionCount": 35,
+        "maxSurfaceDistanceMeters": 4.115111629365964e-9,
+        "maxSnellResidual": 2.5004841780987618e-8,
+        "maxGratingResidual": 0,
+        "maxTerminationDeltaMeters": 4.134678608553378e-9,
+        "maxExitAngleErrorDegrees": 0.000004529347710446885,
+        "blocked": 0,
+        "reachesEyepiece": 7
+      }
+    },
+    {
+      "name": "prism-spectroscope/wavelength-400: all interface points, equations and first physical obstructions",
+      "pass": true,
+      "evidence": {
+        "caseId": "wavelength-400",
+        "pathCount": 1,
+        "interactionCount": 5,
+        "maxSurfaceDistanceMeters": 4.115111629365964e-9,
+        "maxSnellResidual": 1.5895902300521953e-8,
+        "maxGratingResidual": 0,
+        "maxTerminationDeltaMeters": 4.134678608553378e-9,
+        "maxExitAngleErrorDegrees": 0.000003235789399980149,
+        "blocked": 0,
+        "reachesEyepiece": 1
+      }
+    },
+    {
+      "name": "prism-spectroscope/wavelength-550: all interface points, equations and first physical obstructions",
+      "pass": true,
+      "evidence": {
+        "caseId": "wavelength-550",
+        "pathCount": 1,
+        "interactionCount": 5,
+        "maxSurfaceDistanceMeters": 3.623541867238538e-9,
+        "maxSnellResidual": 1.6237610380053057e-8,
+        "maxGratingResidual": 0,
+        "maxTerminationDeltaMeters": 3.817564923902507e-9,
+        "maxExitAngleErrorDegrees": 0.0000017075474029402713,
+        "blocked": 0,
+        "reachesEyepiece": 1
+      }
+    },
+    {
+      "name": "prism-spectroscope/wavelength-700: all interface points, equations and first physical obstructions",
+      "pass": true,
+      "evidence": {
+        "caseId": "wavelength-700",
+        "pathCount": 1,
+        "interactionCount": 5,
+        "maxSurfaceDistanceMeters": 1.05574389412735e-9,
+        "maxSnellResidual": 2.5004841780987618e-8,
+        "maxGratingResidual": 0,
+        "maxTerminationDeltaMeters": 6.908467806190329e-10,
+        "maxExitAngleErrorDegrees": 0.000004529347710446885,
+        "blocked": 0,
+        "reachesEyepiece": 1
+      }
+    },
+    {
+      "name": "prism-spectroscope: manifest cement-interface planes agree with prescription and GLB",
+      "pass": true,
+      "evidence": null
+    }
+  ],
+  "passed": 6,
+  "failed": 0
+}

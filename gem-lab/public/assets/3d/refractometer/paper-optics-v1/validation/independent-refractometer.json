@@ -1,0 +1,2360 @@
+{
+  "ok": true,
+  "checks": [
+    {
+      "name": "isotropic-160 critical angles",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160 valid RI only with transmissible contact",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/incident-0 starts on finite source surface",
+      "pass": true,
+      "metrics": 1.3108365087832752e-10
+    },
+    {
+      "name": "isotropic-160/incident-0/1:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 9.57460150253402e-10
+    },
+    {
+      "name": "isotropic-160/incident-0/1:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.1000103948581645e-05
+    },
+    {
+      "name": "isotropic-160/incident-0/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 1.9687956713512533e-09
+    },
+    {
+      "name": "isotropic-160/incident-0/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.0006437328735728875,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 2.112227405866473e-05,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "isotropic-160/incident-0/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/incident-0/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/incident-0/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-0/0:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.734711264840324e-09
+    },
+    {
+      "name": "isotropic-160/reflected-0/0:refraction branch connected",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-0/0:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 1.7075472925031877e-06,
+        "toleranceDegrees": 0.003,
+        "sinResidual": 2.872214821536545e-08,
+        "curvedFacet": false
+      }
+    },
+    {
+      "name": "isotropic-160/reflected-0/1:partial-reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.0676850076794808e-09
+    },
+    {
+      "name": "isotropic-160/reflected-0/1:partial-reflection actual-face reflection",
+      "pass": true,
+      "metrics": 4.90455619685548e-06
+    },
+    {
+      "name": "isotropic-160/reflected-0/1:partial-reflection physical branch condition",
+      "pass": true,
+      "metrics": {
+        "sinTransmitted": 0.9663409879350738,
+        "kind": "partial-reflection"
+      }
+    },
+    {
+      "name": "isotropic-160/reflected-0/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.7132334091050855e-09
+    },
+    {
+      "name": "isotropic-160/reflected-0/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 1.2074182697257333e-06,
+        "toleranceDegrees": 0.003,
+        "sinResidual": 2.872224325045636e-08,
+        "curvedFacet": false
+      }
+    },
+    {
+      "name": "isotropic-160/reflected-0/3:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 1.206932481492104e-09
+    },
+    {
+      "name": "isotropic-160/reflected-0/3:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.02986711761016348,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 0.0005211053171432813,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "isotropic-160/reflected-0/5:ideal-thin-lens within visual lens bounds",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-0/6:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.2955188657959305e-09
+    },
+    {
+      "name": "isotropic-160/reflected-0/6:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.1197136397927998e-05
+    },
+    {
+      "name": "isotropic-160/reflected-0/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-0/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-0/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-0/segment3 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-0/segment4 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-0/segment5 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-0/segment6 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/transmitted-0/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/incident-1 starts on finite source surface",
+      "pass": true,
+      "metrics": 1.3108365087832752e-10
+    },
+    {
+      "name": "isotropic-160/incident-1/1:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.111153138304375e-09
+    },
+    {
+      "name": "isotropic-160/incident-1/1:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.0933637455190016e-05
+    },
+    {
+      "name": "isotropic-160/incident-1/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 1.537808091778179e-09
+    },
+    {
+      "name": "isotropic-160/incident-1/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.005119665898203886,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 0.00016798744960619947,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "isotropic-160/incident-1/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/incident-1/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/incident-1/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-1/0:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.734711264840324e-09
+    },
+    {
+      "name": "isotropic-160/reflected-1/0:refraction branch connected",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-1/0:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 2.4148365394514667e-06,
+        "toleranceDegrees": 0.003,
+        "sinResidual": 3.171830198489545e-08,
+        "curvedFacet": false
+      }
+    },
+    {
+      "name": "isotropic-160/reflected-1/1:critical on finite actual surface",
+      "pass": true,
+      "metrics": 1.0681983458578695e-09
+    },
+    {
+      "name": "isotropic-160/reflected-1/1:critical actual-face reflection",
+      "pass": true,
+      "metrics": 4.90455619685548e-06
+    },
+    {
+      "name": "isotropic-160/reflected-1/1:critical physical branch condition",
+      "pass": true,
+      "metrics": {
+        "sinTransmitted": 1.0000000209814168,
+        "kind": "critical"
+      }
+    },
+    {
+      "name": "isotropic-160/reflected-1/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.7095802816083994e-09
+    },
+    {
+      "name": "isotropic-160/reflected-1/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 1.2074182697257333e-06,
+        "toleranceDegrees": 0.003,
+        "sinResidual": 3.17182591302867e-08,
+        "curvedFacet": false
+      }
+    },
+    {
+      "name": "isotropic-160/reflected-1/3:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.089946374490316e-09
+    },
+    {
+      "name": "isotropic-160/reflected-1/3:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.022420393806992525,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 0.00039117373339374317,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "isotropic-160/reflected-1/5:ideal-thin-lens within visual lens bounds",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-1/6:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.2958494880442595e-09
+    },
+    {
+      "name": "isotropic-160/reflected-1/6:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.1131846416284069e-05
+    },
+    {
+      "name": "isotropic-160/reflected-1/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-1/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-1/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-1/segment3 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-1/segment4 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-1/segment5 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-1/segment6 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/incident-2 starts on finite source surface",
+      "pass": true,
+      "metrics": 1.3108365087832752e-10
+    },
+    {
+      "name": "isotropic-160/incident-2/1:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.256352866033962e-09
+    },
+    {
+      "name": "isotropic-160/incident-2/1:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.0833173112455685e-05
+    },
+    {
+      "name": "isotropic-160/incident-2/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.1266997758411215e-09
+    },
+    {
+      "name": "isotropic-160/incident-2/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.0068571321956989026,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 0.000224997522964947,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "isotropic-160/incident-2/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/incident-2/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/incident-2/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-2/0:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.734711264840324e-09
+    },
+    {
+      "name": "isotropic-160/reflected-2/0:refraction branch connected",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-2/0:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 3.078324659199975e-06,
+        "toleranceDegrees": 0.003,
+        "sinResidual": 3.5675755016839616e-08,
+        "curvedFacet": false
+      }
+    },
+    {
+      "name": "isotropic-160/reflected-2/1:total-internal-reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.0689111448183505e-09
+    },
+    {
+      "name": "isotropic-160/reflected-2/1:total-internal-reflection actual-face reflection",
+      "pass": true,
+      "metrics": 4.90455619685548e-06
+    },
+    {
+      "name": "isotropic-160/reflected-2/1:total-internal-reflection physical branch condition",
+      "pass": true,
+      "metrics": {
+        "sinTransmitted": 1.0309181232952582,
+        "kind": "total-internal-reflection"
+      }
+    },
+    {
+      "name": "isotropic-160/reflected-2/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.704507732023166e-09
+    },
+    {
+      "name": "isotropic-160/reflected-2/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 2.091309789151873e-06,
+        "toleranceDegrees": 0.003,
+        "sinResidual": 3.567573392260215e-08,
+        "curvedFacet": false
+      }
+    },
+    {
+      "name": "isotropic-160/reflected-2/3:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 1.1041604768553618e-09
+    },
+    {
+      "name": "isotropic-160/reflected-2/3:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.026314302838468136,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 0.00045905893360949704,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "isotropic-160/reflected-2/5:ideal-thin-lens within visual lens bounds",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-2/6:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.296612017623669e-09
+    },
+    {
+      "name": "isotropic-160/reflected-2/6:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.1197136397927998e-05
+    },
+    {
+      "name": "isotropic-160/reflected-2/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-2/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-2/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-2/segment3 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-2/segment4 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-2/segment5 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/reflected-2/segment6 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/ray0 input angle equals readout",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/ray0 energy fractions sum one",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/ray0 incoherent layer Fresnel sum",
+      "pass": true,
+      "metrics": {
+        "expected": 0.10616639587851717,
+        "reported": 0.1061663161952619,
+        "normalization": "incident inside glass; incoherent glass/contact/sample layer"
+      }
+    },
+    {
+      "name": "isotropic-160/ray0 transmitted branch Snell/continuity",
+      "pass": true,
+      "metrics": {
+        "sinResidual": 2.0242194809227954e-08,
+        "connected": true
+      }
+    },
+    {
+      "name": "isotropic-160/ray1 input angle equals readout",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/ray1 energy fractions sum one",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/ray1 incoherent layer Fresnel sum",
+      "pass": true,
+      "metrics": {
+        "expected": 1.0,
+        "reported": 1.0,
+        "normalization": "incident inside glass; incoherent glass/contact/sample layer"
+      }
+    },
+    {
+      "name": "isotropic-160/ray1 transmitted branch Snell/continuity",
+      "pass": true,
+      "metrics": {
+        "sinResidual": 3.357026812089714e-08,
+        "connected": true
+      }
+    },
+    {
+      "name": "isotropic-160/ray2 input angle equals readout",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/ray2 energy fractions sum one",
+      "pass": true
+    },
+    {
+      "name": "isotropic-160/ray2 incoherent layer Fresnel sum",
+      "pass": true,
+      "metrics": {
+        "expected": 1.0,
+        "reported": 1.0,
+        "normalization": "incident inside glass; incoherent glass/contact/sample layer"
+      }
+    },
+    {
+      "name": "isotropic-170 critical angles",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170 valid RI only with transmissible contact",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/incident-0 starts on finite source surface",
+      "pass": true,
+      "metrics": 1.3108365087832752e-10
+    },
+    {
+      "name": "isotropic-170/incident-0/1:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.274944367852908e-09
+    },
+    {
+      "name": "isotropic-170/incident-0/1:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.0866764427531615e-05
+    },
+    {
+      "name": "isotropic-170/incident-0/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 3.894028048980544e-09
+    },
+    {
+      "name": "isotropic-170/incident-0/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.013776121444467599,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 0.00045202467809785085,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "isotropic-170/incident-0/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/incident-0/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/incident-0/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-0/0:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.734711264840324e-09
+    },
+    {
+      "name": "isotropic-170/reflected-0/0:refraction branch connected",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-0/0:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 3.078324659199975e-06,
+        "toleranceDegrees": 0.003,
+        "sinResidual": 3.629664080406769e-08,
+        "curvedFacet": false
+      }
+    },
+    {
+      "name": "isotropic-170/reflected-0/1:partial-reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.0690278644948092e-09
+    },
+    {
+      "name": "isotropic-170/reflected-0/1:partial-reflection actual-face reflection",
+      "pass": true,
+      "metrics": 4.829673078902934e-06
+    },
+    {
+      "name": "isotropic-170/reflected-0/1:partial-reflection physical branch condition",
+      "pass": true,
+      "metrics": {
+        "sinTransmitted": 0.973916349918562,
+        "kind": "partial-reflection"
+      }
+    },
+    {
+      "name": "isotropic-170/reflected-0/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.7036770860328074e-09
+    },
+    {
+      "name": "isotropic-170/reflected-0/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 2.091309789151873e-06,
+        "toleranceDegrees": 0.003,
+        "sinResidual": 3.629660882964458e-08,
+        "curvedFacet": false
+      }
+    },
+    {
+      "name": "isotropic-170/reflected-0/3:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 5.324468083877443e-09
+    },
+    {
+      "name": "isotropic-170/reflected-0/3:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.015235540645722637,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 0.0002657934709213855,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "isotropic-170/reflected-0/5:ideal-thin-lens within visual lens bounds",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-0/6:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.2967617892033559e-09
+    },
+    {
+      "name": "isotropic-170/reflected-0/6:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.1164539134006841e-05
+    },
+    {
+      "name": "isotropic-170/reflected-0/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-0/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-0/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-0/segment3 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-0/segment4 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-0/segment5 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-0/segment6 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/transmitted-0/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/incident-1 starts on finite source surface",
+      "pass": true,
+      "metrics": 1.3108365087832752e-10
+    },
+    {
+      "name": "isotropic-170/incident-1/1:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.4122340858584506e-09
+    },
+    {
+      "name": "isotropic-170/incident-1/1:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.079947731352768e-05
+    },
+    {
+      "name": "isotropic-170/incident-1/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 4.000010728233737e-09
+    },
+    {
+      "name": "isotropic-170/incident-1/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.0032181477497891567,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 0.00010559447231780483,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "isotropic-170/incident-1/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/incident-1/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/incident-1/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-1/0:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.734711264840324e-09
+    },
+    {
+      "name": "isotropic-170/reflected-1/0:refraction branch connected",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-1/0:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 4.517745487845102e-06,
+        "toleranceDegrees": 0.003,
+        "sinResidual": 4.213073334646822e-08,
+        "curvedFacet": false
+      }
+    },
+    {
+      "name": "isotropic-170/reflected-1/1:critical on finite actual surface",
+      "pass": true,
+      "metrics": 1.0702136565192769e-09
+    },
+    {
+      "name": "isotropic-170/reflected-1/1:critical actual-face reflection",
+      "pass": true,
+      "metrics": 4.90455619685548e-06
+    },
+    {
+      "name": "isotropic-170/reflected-1/1:critical physical branch condition",
+      "pass": true,
+      "metrics": {
+        "sinTransmitted": 1.0000000133581382,
+        "kind": "critical"
+      }
+    },
+    {
+      "name": "isotropic-170/reflected-1/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.695238428707808e-09
+    },
+    {
+      "name": "isotropic-170/reflected-1/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 2.831646840510158e-06,
+        "toleranceDegrees": 0.003,
+        "sinResidual": 4.213072002379192e-08,
+        "curvedFacet": false
+      }
+    },
+    {
+      "name": "isotropic-170/reflected-1/3:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 5.158453901155945e-09
+    },
+    {
+      "name": "isotropic-170/reflected-1/3:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.0021779733922381306,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 3.799028427913659e-05,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "isotropic-170/reflected-1/5:ideal-thin-lens within visual lens bounds",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-1/6:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.298564127104676e-09
+    },
+    {
+      "name": "isotropic-170/reflected-1/6:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.1197136397927998e-05
+    },
+    {
+      "name": "isotropic-170/reflected-1/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-1/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-1/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-1/segment3 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-1/segment4 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-1/segment5 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-1/segment6 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/incident-2 starts on finite source surface",
+      "pass": true,
+      "metrics": 1.3108365087832752e-10
+    },
+    {
+      "name": "isotropic-170/incident-2/1:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.5438104321394835e-09
+    },
+    {
+      "name": "isotropic-170/incident-2/1:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.0663629423853027e-05
+    },
+    {
+      "name": "isotropic-170/incident-2/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 3.105857815486885e-09
+    },
+    {
+      "name": "isotropic-170/incident-2/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.004927172022484851,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 0.00016167130272100034,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "isotropic-170/incident-2/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/incident-2/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/incident-2/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-2/0:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.734711264840324e-09
+    },
+    {
+      "name": "isotropic-170/reflected-2/0:refraction branch connected",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-2/0:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 7.824964720612764e-06,
+        "toleranceDegrees": 0.003,
+        "sinResidual": 5.1451420235437695e-08,
+        "curvedFacet": false
+      }
+    },
+    {
+      "name": "isotropic-170/reflected-2/1:total-internal-reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.0726174183876488e-09
+    },
+    {
+      "name": "isotropic-170/reflected-2/1:total-internal-reflection actual-face reflection",
+      "pass": true,
+      "metrics": 4.9783130603797145e-06
+    },
+    {
+      "name": "isotropic-170/reflected-2/1:total-internal-reflection physical branch condition",
+      "pass": true,
+      "metrics": {
+        "sinTransmitted": 1.0233427456747737,
+        "kind": "total-internal-reflection"
+      }
+    },
+    {
+      "name": "isotropic-170/reflected-2/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.6781321188495966e-09
+    },
+    {
+      "name": "isotropic-170/reflected-2/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 3.91248236030638e-06,
+        "toleranceDegrees": 0.003,
+        "sinResidual": 5.145141113160889e-08,
+        "curvedFacet": false
+      }
+    },
+    {
+      "name": "isotropic-170/reflected-2/3:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.5437206921497596e-09
+    },
+    {
+      "name": "isotropic-170/reflected-2/3:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.02838521226344752,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 0.0004949555957187157,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "isotropic-170/reflected-2/5:ideal-thin-lens within visual lens bounds",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-2/6:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.3031911168682325e-09
+    },
+    {
+      "name": "isotropic-170/reflected-2/6:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.1197136397927998e-05
+    },
+    {
+      "name": "isotropic-170/reflected-2/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-2/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-2/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-2/segment3 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-2/segment4 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-2/segment5 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/reflected-2/segment6 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/ray0 input angle equals readout",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/ray0 energy fractions sum one",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/ray0 incoherent layer Fresnel sum",
+      "pass": true,
+      "metrics": {
+        "expected": 0.07098299643209122,
+        "reported": 0.07098294045678645,
+        "normalization": "incident inside glass; incoherent glass/contact/sample layer"
+      }
+    },
+    {
+      "name": "isotropic-170/ray0 transmitted branch Snell/continuity",
+      "pass": true,
+      "metrics": {
+        "sinResidual": 1.1528434429308732e-08,
+        "connected": true
+      }
+    },
+    {
+      "name": "isotropic-170/ray1 input angle equals readout",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/ray1 energy fractions sum one",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/ray1 incoherent layer Fresnel sum",
+      "pass": true,
+      "metrics": {
+        "expected": 1.0,
+        "reported": 1.0,
+        "normalization": "incident inside glass; incoherent glass/contact/sample layer"
+      }
+    },
+    {
+      "name": "isotropic-170/ray1 transmitted branch Snell/continuity",
+      "pass": true,
+      "metrics": {
+        "sinResidual": 2.270883614485797e-08,
+        "connected": true
+      }
+    },
+    {
+      "name": "isotropic-170/ray2 input angle equals readout",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/ray2 energy fractions sum one",
+      "pass": true
+    },
+    {
+      "name": "isotropic-170/ray2 incoherent layer Fresnel sum",
+      "pass": true,
+      "metrics": {
+        "expected": 1.0,
+        "reported": 1.0,
+        "normalization": "incident inside glass; incoherent glass/contact/sample layer"
+      }
+    },
+    {
+      "name": "air-gap critical angles",
+      "pass": true
+    },
+    {
+      "name": "air-gap valid RI only with transmissible contact",
+      "pass": true
+    },
+    {
+      "name": "air-gap/incident-0 starts on finite source surface",
+      "pass": true,
+      "metrics": 1.3108365087832752e-10
+    },
+    {
+      "name": "air-gap/incident-0/1:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 9.040584840805648e-10
+    },
+    {
+      "name": "air-gap/incident-0/1:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.1000103948581645e-05
+    },
+    {
+      "name": "air-gap/incident-0/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 4.774284202316187e-09
+    },
+    {
+      "name": "air-gap/incident-0/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.0024688966848196298,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 8.100991332181672e-05,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "air-gap/incident-0/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/incident-0/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/incident-0/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-0/0:total-internal-reflection on finite actual surface",
+      "pass": true,
+      "metrics": 2.734711264840324e-09
+    },
+    {
+      "name": "air-gap/reflected-0/0:total-internal-reflection branch connected",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-0/0:total-internal-reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.7538763447639102e-05
+    },
+    {
+      "name": "air-gap/reflected-0/0:total-internal-reflection physical branch condition",
+      "pass": true,
+      "metrics": {
+        "sinTransmitted": 1.5272445104295305,
+        "kind": "total-internal-reflection"
+      }
+    },
+    {
+      "name": "air-gap/reflected-0/1:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.689559611400155e-09
+    },
+    {
+      "name": "air-gap/reflected-0/1:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.022503475375620148,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 0.0003927596552867473,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "air-gap/reflected-0/3:ideal-thin-lens within visual lens bounds",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-0/4:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.277616830581453e-09
+    },
+    {
+      "name": "air-gap/reflected-0/4:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.1197136397927998e-05
+    },
+    {
+      "name": "air-gap/reflected-0/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-0/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-0/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-0/segment3 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-0/segment4 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/incident-1 starts on finite source surface",
+      "pass": true,
+      "metrics": 1.3108365087832752e-10
+    },
+    {
+      "name": "air-gap/incident-1/1:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.111153138304375e-09
+    },
+    {
+      "name": "air-gap/incident-1/1:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.0933637455190016e-05
+    },
+    {
+      "name": "air-gap/incident-1/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 1.537808091778179e-09
+    },
+    {
+      "name": "air-gap/incident-1/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.005119665898203886,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 0.00016798744960619947,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "air-gap/incident-1/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/incident-1/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/incident-1/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-1/0:total-internal-reflection on finite actual surface",
+      "pass": true,
+      "metrics": 2.734711264840324e-09
+    },
+    {
+      "name": "air-gap/reflected-1/0:total-internal-reflection branch connected",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-1/0:total-internal-reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.7517970596881582e-05
+    },
+    {
+      "name": "air-gap/reflected-1/0:total-internal-reflection physical branch condition",
+      "pass": true,
+      "metrics": {
+        "sinTransmitted": 1.5999998488309999,
+        "kind": "total-internal-reflection"
+      }
+    },
+    {
+      "name": "air-gap/reflected-1/1:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 5.635800624681982e-09
+    },
+    {
+      "name": "air-gap/reflected-1/1:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.0011340659627934282,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 1.9793191637045288e-05,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "air-gap/reflected-1/3:ideal-thin-lens within visual lens bounds",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-1/4:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.2776168238593996e-09
+    },
+    {
+      "name": "air-gap/reflected-1/4:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.1197136397927998e-05
+    },
+    {
+      "name": "air-gap/reflected-1/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-1/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-1/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-1/segment3 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-1/segment4 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/incident-2 starts on finite source surface",
+      "pass": true,
+      "metrics": 1.3108365087832752e-10
+    },
+    {
+      "name": "air-gap/incident-2/1:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.3031176111051243e-09
+    },
+    {
+      "name": "air-gap/incident-2/1:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.0866764427531615e-05
+    },
+    {
+      "name": "air-gap/incident-2/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.172443207523754e-09
+    },
+    {
+      "name": "air-gap/incident-2/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.022758282532197006,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 0.0007467489271862937,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "air-gap/incident-2/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/incident-2/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/incident-2/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-2/0:total-internal-reflection on finite actual surface",
+      "pass": true,
+      "metrics": 2.734711264840324e-09
+    },
+    {
+      "name": "air-gap/reflected-2/0:total-internal-reflection branch connected",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-2/0:total-internal-reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.7538763447639102e-05
+    },
+    {
+      "name": "air-gap/reflected-2/0:total-internal-reflection physical branch condition",
+      "pass": true,
+      "metrics": {
+        "sinTransmitted": 1.664960148800386,
+        "kind": "total-internal-reflection"
+      }
+    },
+    {
+      "name": "air-gap/reflected-2/1:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 5.450536524801627e-10
+    },
+    {
+      "name": "air-gap/reflected-2/1:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.03914893593551145,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 0.0006832773902150002,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "air-gap/reflected-2/3:ideal-thin-lens within visual lens bounds",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-2/4:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.2776168272204264e-09
+    },
+    {
+      "name": "air-gap/reflected-2/4:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.1197136397927998e-05
+    },
+    {
+      "name": "air-gap/reflected-2/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-2/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-2/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-2/segment3 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/reflected-2/segment4 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "air-gap/ray0 input angle equals readout",
+      "pass": true
+    },
+    {
+      "name": "air-gap/ray0 energy fractions sum one",
+      "pass": true
+    },
+    {
+      "name": "air-gap/ray0 air gap TIR",
+      "pass": true
+    },
+    {
+      "name": "air-gap/ray1 input angle equals readout",
+      "pass": true
+    },
+    {
+      "name": "air-gap/ray1 energy fractions sum one",
+      "pass": true
+    },
+    {
+      "name": "air-gap/ray1 air gap TIR",
+      "pass": true
+    },
+    {
+      "name": "air-gap/ray2 input angle equals readout",
+      "pass": true
+    },
+    {
+      "name": "air-gap/ray2 energy fractions sum one",
+      "pass": true
+    },
+    {
+      "name": "air-gap/ray2 air gap TIR",
+      "pass": true
+    },
+    {
+      "name": "over-liquid critical angles",
+      "pass": true
+    },
+    {
+      "name": "over-liquid valid RI only with transmissible contact",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/incident-0 starts on finite source surface",
+      "pass": true,
+      "metrics": 1.3108365087832752e-10
+    },
+    {
+      "name": "over-liquid/incident-0/1:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 9.040584840805648e-10
+    },
+    {
+      "name": "over-liquid/incident-0/1:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.1000103948581645e-05
+    },
+    {
+      "name": "over-liquid/incident-0/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 4.774284202316187e-09
+    },
+    {
+      "name": "over-liquid/incident-0/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.0024688966848196298,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 8.100991332181672e-05,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "over-liquid/incident-0/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/incident-0/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/incident-0/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-0/0:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.734711264840324e-09
+    },
+    {
+      "name": "over-liquid/reflected-0/0:refraction branch connected",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-0/0:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 1.7075472925031877e-06,
+        "toleranceDegrees": 0.003,
+        "sinResidual": 2.7877067765302854e-08,
+        "curvedFacet": false
+      }
+    },
+    {
+      "name": "over-liquid/reflected-0/1:partial-reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.0675426699319895e-09
+    },
+    {
+      "name": "over-liquid/reflected-0/1:partial-reflection actual-face reflection",
+      "pass": true,
+      "metrics": 4.829673078902934e-06
+    },
+    {
+      "name": "over-liquid/reflected-0/1:partial-reflection physical branch condition",
+      "pass": true,
+      "metrics": {
+        "sinTransmitted": 0.839145449270549,
+        "kind": "partial-reflection"
+      }
+    },
+    {
+      "name": "over-liquid/reflected-0/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.714246375400131e-09
+    },
+    {
+      "name": "over-liquid/reflected-0/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 1.2074182697257333e-06,
+        "toleranceDegrees": 0.003,
+        "sinResidual": 2.7877027575229363e-08,
+        "curvedFacet": false
+      }
+    },
+    {
+      "name": "over-liquid/reflected-0/3:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 4.631193682251471e-09
+    },
+    {
+      "name": "over-liquid/reflected-0/3:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.004776973801373231,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 8.334934160902571e-05,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "over-liquid/reflected-0/5:ideal-thin-lens within visual lens bounds",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-0/6:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.2954726708687067e-09
+    },
+    {
+      "name": "over-liquid/reflected-0/6:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.1164539134006841e-05
+    },
+    {
+      "name": "over-liquid/reflected-0/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-0/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-0/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-0/segment3 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-0/segment4 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-0/segment5 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-0/segment6 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/transmitted-0/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/incident-1 starts on finite source surface",
+      "pass": true,
+      "metrics": 1.3108365087832752e-10
+    },
+    {
+      "name": "over-liquid/incident-1/1:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.111153138304375e-09
+    },
+    {
+      "name": "over-liquid/incident-1/1:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.0933637455190016e-05
+    },
+    {
+      "name": "over-liquid/incident-1/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 1.537808091778179e-09
+    },
+    {
+      "name": "over-liquid/incident-1/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.005119665898203886,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 0.00016798744960619947,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "over-liquid/incident-1/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/incident-1/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/incident-1/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-1/0:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.734711264840324e-09
+    },
+    {
+      "name": "over-liquid/reflected-1/0:refraction branch connected",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-1/0:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 2.4148365394514667e-06,
+        "toleranceDegrees": 0.003,
+        "sinResidual": 3.171830198489545e-08,
+        "curvedFacet": false
+      }
+    },
+    {
+      "name": "over-liquid/reflected-1/1:partial-reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.0681983458578695e-09
+    },
+    {
+      "name": "over-liquid/reflected-1/1:partial-reflection actual-face reflection",
+      "pass": true,
+      "metrics": 4.90455619685548e-06
+    },
+    {
+      "name": "over-liquid/reflected-1/1:partial-reflection physical branch condition",
+      "pass": true,
+      "metrics": {
+        "sinTransmitted": 0.8791208975660806,
+        "kind": "partial-reflection"
+      }
+    },
+    {
+      "name": "over-liquid/reflected-1/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.7095802816083994e-09
+    },
+    {
+      "name": "over-liquid/reflected-1/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 1.2074182697257333e-06,
+        "toleranceDegrees": 0.003,
+        "sinResidual": 3.17182591302867e-08,
+        "curvedFacet": false
+      }
+    },
+    {
+      "name": "over-liquid/reflected-1/3:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.089946374490316e-09
+    },
+    {
+      "name": "over-liquid/reflected-1/3:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.022420393806992525,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 0.00039117373339374317,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "over-liquid/reflected-1/5:ideal-thin-lens within visual lens bounds",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-1/6:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.2958494880442595e-09
+    },
+    {
+      "name": "over-liquid/reflected-1/6:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.1131846416284069e-05
+    },
+    {
+      "name": "over-liquid/reflected-1/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-1/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-1/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-1/segment3 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-1/segment4 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-1/segment5 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-1/segment6 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/transmitted-1/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/incident-2 starts on finite source surface",
+      "pass": true,
+      "metrics": 1.3108365087832752e-10
+    },
+    {
+      "name": "over-liquid/incident-2/1:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.3031176111051243e-09
+    },
+    {
+      "name": "over-liquid/incident-2/1:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.0866764427531615e-05
+    },
+    {
+      "name": "over-liquid/incident-2/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.172443207523754e-09
+    },
+    {
+      "name": "over-liquid/incident-2/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.022758282532197006,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 0.0007467489271862937,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "over-liquid/incident-2/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/incident-2/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/incident-2/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-2/0:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.734711264840324e-09
+    },
+    {
+      "name": "over-liquid/reflected-2/0:refraction branch connected",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-2/0:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 3.4150945850063763e-06,
+        "toleranceDegrees": 0.003,
+        "sinResidual": 3.7301163491321176e-08,
+        "curvedFacet": false
+      }
+    },
+    {
+      "name": "over-liquid/reflected-2/1:partial-reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.0692200609055055e-09
+    },
+    {
+      "name": "over-liquid/reflected-2/1:partial-reflection actual-face reflection",
+      "pass": true,
+      "metrics": 4.90455619685548e-06
+    },
+    {
+      "name": "over-liquid/reflected-2/1:partial-reflection physical branch condition",
+      "pass": true,
+      "metrics": {
+        "sinTransmitted": 0.9148133569247724,
+        "kind": "partial-reflection"
+      }
+    },
+    {
+      "name": "over-liquid/reflected-2/2:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 2.7023092589572445e-09
+    },
+    {
+      "name": "over-liquid/reflected-2/2:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 2.2588727439225506e-06,
+        "toleranceDegrees": 0.003,
+        "sinResidual": 3.7301209010465186e-08,
+        "curvedFacet": false
+      }
+    },
+    {
+      "name": "over-liquid/reflected-2/3:refraction on finite actual surface",
+      "pass": true,
+      "metrics": 1.8629264766503387e-09
+    },
+    {
+      "name": "over-liquid/reflected-2/3:refraction Snell using actual face normal",
+      "pass": true,
+      "metrics": {
+        "errorDegrees": 0.011012637672397282,
+        "toleranceDegrees": 0.1,
+        "sinResidual": 0.00019211751521144849,
+        "curvedFacet": true
+      }
+    },
+    {
+      "name": "over-liquid/reflected-2/5:ideal-thin-lens within visual lens bounds",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-2/6:reflection on finite actual surface",
+      "pass": true,
+      "metrics": 1.2970209973314079e-09
+    },
+    {
+      "name": "over-liquid/reflected-2/6:reflection actual-face reflection",
+      "pass": true,
+      "metrics": 1.1197136397927998e-05
+    },
+    {
+      "name": "over-liquid/reflected-2/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-2/segment1 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-2/segment2 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-2/segment3 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-2/segment4 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-2/segment5 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/reflected-2/segment6 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/transmitted-2/segment0 opaque clearance",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/ray0 input angle equals readout",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/ray0 energy fractions sum one",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/ray0 incoherent layer Fresnel sum",
+      "pass": true,
+      "metrics": {
+        "expected": 0.005679068211991935,
+        "reported": 0.005679063400449937,
+        "normalization": "incident inside glass; incoherent glass/contact/sample layer"
+      }
+    },
+    {
+      "name": "over-liquid/ray0 transmitted branch Snell/continuity",
+      "pass": true,
+      "metrics": {
+        "sinResidual": 3.2546894068730126e-09,
+        "connected": true
+      }
+    },
+    {
+      "name": "over-liquid/ray1 input angle equals readout",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/ray1 energy fractions sum one",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/ray1 incoherent layer Fresnel sum",
+      "pass": true,
+      "metrics": {
+        "expected": 0.010695648914272764,
+        "reported": 0.010695640381606817,
+        "normalization": "incident inside glass; incoherent glass/contact/sample layer"
+      }
+    },
+    {
+      "name": "over-liquid/ray1 transmitted branch Snell/continuity",
+      "pass": true,
+      "metrics": {
+        "sinResidual": 3.7620095927337616e-09,
+        "connected": true
+      }
+    },
+    {
+      "name": "over-liquid/ray2 input angle equals readout",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/ray2 energy fractions sum one",
+      "pass": true
+    },
+    {
+      "name": "over-liquid/ray2 incoherent layer Fresnel sum",
+      "pass": true,
+      "metrics": {
+        "expected": 0.023342744891664262,
+        "reported": 0.023342728028358267,
+        "normalization": "incident inside glass; incoherent glass/contact/sample layer"
+      }
+    },
+    {
+      "name": "over-liquid/ray2 transmitted branch Snell/continuity",
+      "pass": true,
+      "metrics": {
+        "sinResidual": 4.541758080733871e-09,
+        "connected": true
+      }
+    }
+  ],
+  "failures": [],
+  "refractionDetails": [
+    {
+      "case": "isotropic-160",
+      "path": "incident-0",
+      "kind": "refraction",
+      "errorDegrees": 0.0006437328735728875,
+      "distanceMeters": 1.9687956713512533e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "isotropic-160",
+      "path": "reflected-0",
+      "kind": "refraction",
+      "errorDegrees": 1.7075472925031877e-06,
+      "distanceMeters": 2.734711264840324e-09,
+      "curvedFacet": false
+    },
+    {
+      "case": "isotropic-160",
+      "path": "reflected-0",
+      "kind": "refraction",
+      "errorDegrees": 1.2074182697257333e-06,
+      "distanceMeters": 2.7132334091050855e-09,
+      "curvedFacet": false
+    },
+    {
+      "case": "isotropic-160",
+      "path": "reflected-0",
+      "kind": "refraction",
+      "errorDegrees": 0.02986711761016348,
+      "distanceMeters": 1.206932481492104e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "isotropic-160",
+      "path": "incident-1",
+      "kind": "refraction",
+      "errorDegrees": 0.005119665898203886,
+      "distanceMeters": 1.537808091778179e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "isotropic-160",
+      "path": "reflected-1",
+      "kind": "refraction",
+      "errorDegrees": 2.4148365394514667e-06,
+      "distanceMeters": 2.734711264840324e-09,
+      "curvedFacet": false
+    },
+    {
+      "case": "isotropic-160",
+      "path": "reflected-1",
+      "kind": "refraction",
+      "errorDegrees": 1.2074182697257333e-06,
+      "distanceMeters": 2.7095802816083994e-09,
+      "curvedFacet": false
+    },
+    {
+      "case": "isotropic-160",
+      "path": "reflected-1",
+      "kind": "refraction",
+      "errorDegrees": 0.022420393806992525,
+      "distanceMeters": 2.089946374490316e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "isotropic-160",
+      "path": "incident-2",
+      "kind": "refraction",
+      "errorDegrees": 0.0068571321956989026,
+      "distanceMeters": 2.1266997758411215e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "isotropic-160",
+      "path": "reflected-2",
+      "kind": "refraction",
+      "errorDegrees": 3.078324659199975e-06,
+      "distanceMeters": 2.734711264840324e-09,
+      "curvedFacet": false
+    },
+    {
+      "case": "isotropic-160",
+      "path": "reflected-2",
+      "kind": "refraction",
+      "errorDegrees": 2.091309789151873e-06,
+      "distanceMeters": 2.704507732023166e-09,
+      "curvedFacet": false
+    },
+    {
+      "case": "isotropic-160",
+      "path": "reflected-2",
+      "kind": "refraction",
+      "errorDegrees": 0.026314302838468136,
+      "distanceMeters": 1.1041604768553618e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "isotropic-170",
+      "path": "incident-0",
+      "kind": "refraction",
+      "errorDegrees": 0.013776121444467599,
+      "distanceMeters": 3.894028048980544e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "isotropic-170",
+      "path": "reflected-0",
+      "kind": "refraction",
+      "errorDegrees": 3.078324659199975e-06,
+      "distanceMeters": 2.734711264840324e-09,
+      "curvedFacet": false
+    },
+    {
+      "case": "isotropic-170",
+      "path": "reflected-0",
+      "kind": "refraction",
+      "errorDegrees": 2.091309789151873e-06,
+      "distanceMeters": 2.7036770860328074e-09,
+      "curvedFacet": false
+    },
+    {
+      "case": "isotropic-170",
+      "path": "reflected-0",
+      "kind": "refraction",
+      "errorDegrees": 0.015235540645722637,
+      "distanceMeters": 5.324468083877443e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "isotropic-170",
+      "path": "incident-1",
+      "kind": "refraction",
+      "errorDegrees": 0.0032181477497891567,
+      "distanceMeters": 4.000010728233737e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "isotropic-170",
+      "path": "reflected-1",
+      "kind": "refraction",
+      "errorDegrees": 4.517745487845102e-06,
+      "distanceMeters": 2.734711264840324e-09,
+      "curvedFacet": false
+    },
+    {
+      "case": "isotropic-170",
+      "path": "reflected-1",
+      "kind": "refraction",
+      "errorDegrees": 2.831646840510158e-06,
+      "distanceMeters": 2.695238428707808e-09,
+      "curvedFacet": false
+    },
+    {
+      "case": "isotropic-170",
+      "path": "reflected-1",
+      "kind": "refraction",
+      "errorDegrees": 0.0021779733922381306,
+      "distanceMeters": 5.158453901155945e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "isotropic-170",
+      "path": "incident-2",
+      "kind": "refraction",
+      "errorDegrees": 0.004927172022484851,
+      "distanceMeters": 3.105857815486885e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "isotropic-170",
+      "path": "reflected-2",
+      "kind": "refraction",
+      "errorDegrees": 7.824964720612764e-06,
+      "distanceMeters": 2.734711264840324e-09,
+      "curvedFacet": false
+    },
+    {
+      "case": "isotropic-170",
+      "path": "reflected-2",
+      "kind": "refraction",
+      "errorDegrees": 3.91248236030638e-06,
+      "distanceMeters": 2.6781321188495966e-09,
+      "curvedFacet": false
+    },
+    {
+      "case": "isotropic-170",
+      "path": "reflected-2",
+      "kind": "refraction",
+      "errorDegrees": 0.02838521226344752,
+      "distanceMeters": 2.5437206921497596e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "air-gap",
+      "path": "incident-0",
+      "kind": "refraction",
+      "errorDegrees": 0.0024688966848196298,
+      "distanceMeters": 4.774284202316187e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "air-gap",
+      "path": "reflected-0",
+      "kind": "refraction",
+      "errorDegrees": 0.022503475375620148,
+      "distanceMeters": 2.689559611400155e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "air-gap",
+      "path": "incident-1",
+      "kind": "refraction",
+      "errorDegrees": 0.005119665898203886,
+      "distanceMeters": 1.537808091778179e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "air-gap",
+      "path": "reflected-1",
+      "kind": "refraction",
+      "errorDegrees": 0.0011340659627934282,
+      "distanceMeters": 5.635800624681982e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "air-gap",
+      "path": "incident-2",
+      "kind": "refraction",
+      "errorDegrees": 0.022758282532197006,
+      "distanceMeters": 2.172443207523754e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "air-gap",
+      "path": "reflected-2",
+      "kind": "refraction",
+      "errorDegrees": 0.03914893593551145,
+      "distanceMeters": 5.450536524801627e-10,
+      "curvedFacet": true
+    },
+    {
+      "case": "over-liquid",
+      "path": "incident-0",
+      "kind": "refraction",
+      "errorDegrees": 0.0024688966848196298,
+      "distanceMeters": 4.774284202316187e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "over-liquid",
+      "path": "reflected-0",
+      "kind": "refraction",
+      "errorDegrees": 1.7075472925031877e-06,
+      "distanceMeters": 2.734711264840324e-09,
+      "curvedFacet": false
+    },
+    {
+      "case": "over-liquid",
+      "path": "reflected-0",
+      "kind": "refraction",
+      "errorDegrees": 1.2074182697257333e-06,
+      "distanceMeters": 2.714246375400131e-09,
+      "curvedFacet": false
+    },
+    {
+      "case": "over-liquid",
+      "path": "reflected-0",
+      "kind": "refraction",
+      "errorDegrees": 0.004776973801373231,
+      "distanceMeters": 4.631193682251471e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "over-liquid",
+      "path": "incident-1",
+      "kind": "refraction",
+      "errorDegrees": 0.005119665898203886,
+      "distanceMeters": 1.537808091778179e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "over-liquid",
+      "path": "reflected-1",
+      "kind": "refraction",
+      "errorDegrees": 2.4148365394514667e-06,
+      "distanceMeters": 2.734711264840324e-09,
+      "curvedFacet": false
+    },
+    {
+      "case": "over-liquid",
+      "path": "reflected-1",
+      "kind": "refraction",
+      "errorDegrees": 1.2074182697257333e-06,
+      "distanceMeters": 2.7095802816083994e-09,
+      "curvedFacet": false
+    },
+    {
+      "case": "over-liquid",
+      "path": "reflected-1",
+      "kind": "refraction",
+      "errorDegrees": 0.022420393806992525,
+      "distanceMeters": 2.089946374490316e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "over-liquid",
+      "path": "incident-2",
+      "kind": "refraction",
+      "errorDegrees": 0.022758282532197006,
+      "distanceMeters": 2.172443207523754e-09,
+      "curvedFacet": true
+    },
+    {
+      "case": "over-liquid",
+      "path": "reflected-2",
+      "kind": "refraction",
+      "errorDegrees": 3.4150945850063763e-06,
+      "distanceMeters": 2.734711264840324e-09,
+      "curvedFacet": false
+    },
+    {
+      "case": "over-liquid",
+      "path": "reflected-2",
+      "kind": "refraction",
+      "errorDegrees": 2.2588727439225506e-06,
+      "distanceMeters": 2.7023092589572445e-09,
+      "curvedFacet": false
+    },
+    {
+      "case": "over-liquid",
+      "path": "reflected-2",
+      "kind": "refraction",
+      "errorDegrees": 0.011012637672397282,
+      "distanceMeters": 1.8629264766503387e-09,
+      "curvedFacet": true
+    }
+  ],
+  "tolerances": {
+    "finiteSurfaceDistanceMeters": 5e-06,
+    "planarAngleDegrees": 0.003,
+    "curvedFacetAngleDegrees": 0.1,
+    "curveReason": "Triangulated circular surface approximates the continuous semicylinder; preserve measured residual rather than accept ideal normal as actual geometry."
+  },
+  "limits": [
+    "Ideal relay checked for finite visual bounds only; no real thick-lens prescription or aberration claim.",
+    "Fresnel fractions combine the glass/contact/sample incoherent multiple-reflection series; drawn lines are representative routes, not all physical multiple-reflection paths. Whole-instrument coating/absorption remains excluded.",
+    "Reticle mathematical tick marks excluded from opaque obstruction list; transparent reticle is a teaching overlay.",
+    "Physical sample and manufacturer internal geometry remain uncalibrated."
+  ],
+  "schemaVersion": 1,
+  "instrumentId": "refractometer",
+  "inputDirectory": "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi-instrument-assets/gem-lab/public/assets/3d/refractometer/paper-optics-v1",
+  "method": "independent direct GLB parse, numpy world triangles, finite face projection, vector Snell/reflection, Moller-Trumbore intersections; no author optics or Blender imports",
+  "modelSha256": "801a87705268e57f66603b476b29d00109e56cbce06f9e88ce1a59e493ea24d6",
+  "casesSha256": "8c417684ccb4ea3f377702eff98e05f855652949173ca417d3f0fa15e02e2ba8",
+  "validatorSha256": "4b0c11f1f54e73c0599190ebf2dcc053deba75d023bb171aafee4f87f55c814d",
+  "checkCount": 374,
+  "failureCount": 0
+}

@@ -1,5 +1,6 @@
 {
-  "instrument": "通用宝石折射仪教学候选",
+  "instrument": "白色宝石折射仪教学候选 · 第3轮",
+  "selectionStatus": "当前白色款候选，待用户外观审阅",
   "dimensionsCalibrated": false,
   "manufacturerReplica": false,
   "teachingOpticsSimulated": false,
@@ -7,70 +8,103 @@
   "opticalSimulation": false,
   "referenceSources": [
     {
-      "url": "https://shop.gem-a.com/product/gem-a-refractometer/",
-      "title": "Gem-A official refractometer product and detachable polarizer description"
+      "path": "折射仪/折射仪_产品图.png",
+      "title": "用户项目白色产品原图",
+      "authorOrManufacturer": "未知；来自用户已有材料",
+      "retrievedAt": "2026-10-07",
+      "role": "本轮主要外形依据",
+      "sha256": "7290154affc9213bcc242a711d52a79f0114ba0fc93c3a6ac5d377435915f6dd"
     },
     {
-      "url": "https://shop.gem-a.com/wp-content/uploads/2018/05/ref0006_1new.jpg",
-      "title": "Primary exterior view"
+      "path": "docs/新仪器3D资产-修改说明-第3轮-2026-10-07.md",
+      "title": "用户确认第3轮结构修改要求",
+      "role": "教学分件和运动约束"
     },
     {
-      "url": "https://shop.gem-a.com/wp-content/uploads/2018/05/ref0006_anew.jpg",
-      "title": "Secondary exterior view"
+      "url": "https://gemologyproject.com/wiki/index.php?title=Refractometer",
+      "title": "Gemology Project Refractometer",
+      "retrievedAt": "2026-10-07",
+      "role": "Eickhorst通用剖面顺序、约1.88半圆柱、589nm照明及可滑动目镜；内置照明机型说明"
     },
     {
-      "url": "https://kruess-shop.de/en/methods/refractometry-determine-optical-characteristics-of-gemstones/",
-      "title": "Optical principles, not shape reference"
+      "url": "https://gemologyproject.com/wiki/index.php?title=Course%3ATotal_internal_reflection",
+      "title": "Gemology Project Total internal reflection",
+      "retrievedAt": "2026-10-07",
+      "role": "临界角公式、接触面法线和曲面径向出入"
     }
   ],
-  "referenceLicense": "Manufacturer images publicly accessible, not found under open license. Originals remain assets-source only. Upload authorized by user for this task; manufacturer endorsement not claimed.",
+  "referenceLicense": "项目已有原图许可未核实，仅留assets-source与原项目资料；用于用户授权的本地教学重建和Tripo比较，不主张厂商授权。",
   "imagePixelsEmbeddedInWebAsset": false,
   "brandingReproduced": false,
   "sourceCandidate": {
     "present": true,
-    "file": "assets-source/refractometer/tripo-trials/2026-10-07/candidate.glb",
+    "file": "assets-source/refractometer/tripo-trials/2026-10-07/round2-white/candidate.glb",
     "geometryRetained": false,
-    "decision": "Rule surfaces rebuilt from official image constraints; raw candidate retained separately for comparison, not authoritative internal geometry.",
-    "sha256": "0851c6495bc66e9cd90163b90c36e94eecf28d66567e0a6292cc2ccb44ba7f8a",
-    "bytes": 60056824,
+    "decision": "Round-2 white-model cloud candidate is comparison only; parametric final geometry is rebuilt from project white reference.",
     "generation": {
-      "instrument": "refractometer",
-      "state": "downloaded",
+      "provider": "Tripo Studio",
       "model": "H3.1",
+      "taskId": "7296572f-cac8-43ba-b870-2a5b51b15296",
       "quality": "highest",
       "privacy": "private",
-      "generateParts": false,
-      "eightK": false,
-      "quote": 55,
-      "balanceBefore": 6090,
-      "taskId": "0975d454-e1f2-4050-a584-8729ffe41ba5",
-      "actualCost": 55,
-      "input": "gem-lab/assets-source/refractometer/references/gem-a-ref0006-front.jpg",
-      "balanceAfter": 6035,
-      "submittedAt": "2026-10-07T07:26:54.760942+00:00",
-      "candidate": "gem-lab/assets-source/refractometer/tripo-trials/2026-10-07/candidate.glb",
-      "bytes": 60056824,
-      "sha256": "0851c6495bc66e9cd90163b90c36e94eecf28d66567e0a6292cc2ccb44ba7f8a",
-      "textureResolution": "4k"
+      "credits": 55,
+      "budgetCumulative": 275,
+      "balanceBefore": 5925,
+      "balanceAfter": 5870
     },
-    "review": "Four-angle Tripo inspection: consistent box/eyepiece/cover silhouette; fused parts, opaque optics and distorted manufacturer lettering removed during reconstruction."
+    "sha256": "aa15467f550443dd761096e62d4e2e96aba364c8d7f946a7fd229c253fd8e9d8",
+    "bytes": 62716092,
+    "downloadMetadata": {
+      "taskId": "7296572f-cac8-43ba-b870-2a5b51b15296",
+      "bytes": 62716092,
+      "sha256": "aa15467f550443dd761096e62d4e2e96aba364c8d7f946a7fd229c253fd8e9d8",
+      "meshes": 1,
+      "materials": 1,
+      "images": 3,
+      "headerLengthCorrect": true,
+      "containerOnly": true,
+      "note": "原始云候选，仅作比较；尚未渲染或几何验收。Chrome默认下载产生Downloads副本，已复制到当前工作树。"
+    }
   },
-  "reconstruction": "Photograph-constrained parametric hollow shell, fitted true stage opening, half-cylinder glass teaching prism, concave hinged cover, lathed hollow eyepiece and removable polarizer with physical knurl geometry.",
+  "reconstruction": "白色盒盖、白台阶承托缩小钢台、深色宽度轴半圆柱、滚花凹入镜片及调焦目镜；独立后部光源、两反射镜、透明标尺与双透镜，以及默认隐藏主线和角扇。",
+  "alternative": {
+    "path": "assets-source/refractometer/alternatives/gem-a-black",
+    "status": "备选，未采用",
+    "legacyRepair": "repair-v1原样保留；旧路径相对软链接保持历史记录可用"
+  },
   "internalAssumptions": [
-    "Semicylindrical prism selected for cutaway teaching; exact Gem-A internal geometry unverified.",
-    "Internal scale and reflector are schematic, uncalibrated and not suitable for RI measurement.",
-    "Back incident-light port position is inferred because the reference photos do not show the back.",
-    "Focus travel and cover stop angles are teaching limits rather than measured mechanics."
+    "依Gemology Project通用结构建立光路，全部内部件为教学示意，未经该白色机型厂家结构核实。",
+    "盖100°及开关0.8mm位移为教学交互限位，不是实測机械数据。",
+    "主线完整几何通路与17条临界角扇只验证至标尺；不做透镜成像或刻线校准。",
+    "油瓶只示意附件形态；白色无字标签不表达化学配方、危险等级、容量或实际折射率。"
   ],
   "materials": {
-    "Cycles": "Same PBR base with fine procedural microfinish",
-    "web": "PBR metal/roughness and KHR_materials_transmission/ior, full geometry; procedural microfinish not baked into basecolor"
+    "Cycles": "白色涂层/不锈钢/黑色金属与塑料/玻璃PBR，细微程序噪声",
+    "web": "PBR与KHR_materials_transmission/ior，无参考图片和品牌贴图"
   },
-  "generationRecord": "Tripo task and credit record stored with original candidate and in project production log.",
+  "tripoBudget": {
+    "thisRound": 0,
+    "cumulativeAllFour": 275,
+    "pauseAt": 1600,
+    "ceiling": 2000,
+    "recharged": false
+  },
   "script": "tools/3d-assets/build_refractometer.py",
   "userReviewRequired": [
-    "Black box-form proportions and neutral no-brand appearance",
-    "Cover concavity and closure clearance",
-    "Internal prism/scale/reflector and rear light port schematic positions"
-  ]
+    "白色盒盖、台阶钢台/深色窗口和粗目镜比例是否贴近原图",
+    "内部通用光路示意是否符合课程用途",
+    "独立油瓶比例以及内部示意教学范围"
+  ],
+  "revision": "repair-v3",
+  "opticalGeometryCheck": {
+    "ok": true,
+    "scope": "Pure Python nominal geometry; builder consumes these same solids and optical surfaces.",
+    "limitations": [
+      "No Blender, evaluated mesh, GLB or browser execution was performed by this mathematical check.",
+      "Main ray checked through eyepiece; 17 angular fan rays checked from an extended rear LED panel through first mirror and prism to the scale. The fan is not propagated through the lens group or eyepiece.",
+      "Curved-surface normal incidence and planar mirror reflection are geometric tests. Lens aberrations, Fresnel intensity, contact liquid, wavelength-dependent refraction and scale tick calibration are not simulated.",
+      "Exact line/nominal-solid interval intersections cover shell, stage and mirror/source carriers. Exported bevels and display tick geometry require the Blender/GLB inspection."
+    ],
+    "tickPositionsCalibrated": false
+  }
 }

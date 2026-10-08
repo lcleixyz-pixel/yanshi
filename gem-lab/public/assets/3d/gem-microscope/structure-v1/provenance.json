@@ -1,98 +1,398 @@
 {
   "id": "gem-microscope-structure-v1",
   "date": "2026-10-07",
-  "status": "technical_checks_passed_awaiting_user_appearance_review",
+  "version": "structure-4",
+  "revision": "repair-v4",
+  "status": "geometry_export_reimport_and_gltf_verified_pending_final_browser_and_user_review",
+  "modelSha256": "23ae6ef8d47c341cab52c315da9bc37d37913880ffcb9d9aaf7af144c36fe83d",
+  "byteLength": 2701720,
   "dimensionsCalibrated": false,
+  "teachingOpticsSimulated": false,
+  "photometrySimulated": false,
   "manufacturerAuthorizedDigitalTwin": false,
-  "modelSha256": "939669f42e4c9e734ee298b182f056200d86bf0b07eb1bf07c9cfe35f1974ec6",
-  "method": {
-    "cloud": "One unmodified Tripo Studio H3.1 candidate from the manufacturer catalogue photograph; kept in assets-source and as a hidden reference collection in the editable master.",
-    "finalGeometry": "All 85 final manufactured mesh surfaces are a source-constrained parametric reconstruction. No Tripo triangles or source-photo pixels are included in the web GLB. This is not a claim of direct cloud-mesh repair.",
-    "reconstruction": "Elliptical housing lofts, contoured arm and optical head profiles, actual through aperture, closed iris lamellae, separate clamp wires, two oculars, camera port, independent control knobs and two gooseneck lights.",
-    "materials": "Eight authored PBR materials; glass uses glTF transmission/IOR. No photographic highlights or manufacturer branding baked into base color."
-  },
-  "cloudGeneration": {
-    "model": "H3.1",
-    "quality": "highest",
-    "privacy": "private",
-    "generateParts": false,
-    "textureResolution": "4k",
-    "taskId": "90bc057d-ece4-4872-b003-0ee90b415e52",
-    "actualCost": 55,
-    "sha256": "fbb352d1a771a5e049e63e0f587e3dfe8445efd1d4d8cf0d114de756f2b8fce0"
+  "method": "Source-constrained parametric teaching reconstruction with shared mathematical geometry; no Tripo triangles or photographic pixels in web GLB.",
+  "rebuildScript": "gem-lab/tools/3d-assets/build_gem_microscope.py",
+  "sourceSha256": {
+    "microscope_round3_geometry.py": "f9b08bf0592179d882aab844c3ab28c3dffa6b10510e788fc37fee2ff055f5ee",
+    "build_gem_microscope.py": "fdb4c2688e7b93373a79ba957c56f11efa063dbe026db24be5ab7b5a7761515d"
   },
   "sources": [
     {
-      "id": "kruess-ksw6000-page",
+      "id": "kruess-ksw6000",
+      "author": "A. KRÜSS Optronic GmbH",
+      "title": "Stereo gemstone microscope KSW6000",
+      "retrieved": "2026-10-07",
+      "license": "No verified open redistribution license; source photo remains local.",
       "url": "https://kruess-shop.de/en/products/gemstone-microscopes/stereo-microscopes/stereo-gemstone-microscope/",
-      "author": "A. KRÜSS Optronic GmbH",
-      "title": "Stereo gemstone microscope, KSW6000",
-      "license": "未发现开放再发布许可；版权归原作者/厂家。"
+      "use": "Overall public exterior reference only; no assertion about internal illumination mechanism."
     },
     {
-      "id": "kruess-catalogue-2025",
-      "url": "https://www.kruess.com/wp-content/uploads/wpfd/preview_files/Microscopes-product-catalogue%283de78319f256b3060f1b8e51fd0fe727%29.pdf",
-      "author": "A. KRÜSS Optronic GmbH",
-      "title": "Microscopes product catalogue Version 7.5, copyright 2025",
-      "license": "未发现开放再发布许可；版权归原作者/厂家。"
+      "id": "gemology-project-microscope",
+      "author": "The Gemology Project contributors",
+      "title": "Microscope - Types of illumination",
+      "retrieved": "2026-10-07",
+      "license": "Linked for reference; no source text or image is embedded in the GLB.",
+      "url": "https://gemologyproject.com/wiki/index.php?title=Microscope",
+      "use": "Illumination modes and polarizer/analyzer placement; educational secondary reference."
     },
     {
-      "id": "unitron-z645-page",
-      "url": "https://microscopes.unitronusa.com/unitron-microscopes/unitron-stereo-microscopes/series/z645/z645-gemological-zoom-stereo-microscope-on-led-stand.html",
-      "author": "UNITRON",
-      "title": "Z645 Gemological Zoom Stereo Microscope on LED Stand",
-      "license": "未发现开放再发布许可；版权归原作者/厂家。"
-    },
-    {
-      "id": "meiji-iris-crosscheck",
-      "url": "https://meijitechno.com/product/gmz-51bf-df-binocular-stereo-gmz-microscope/",
-      "author": "Meiji Techno America",
-      "title": "GMZ-51 Brightfield/Darkfield Gem Trinocular Zoom Stereo Microscope System",
-      "license": "未发现开放再发布许可；版权归原作者/厂家。"
+      "id": "gemologyonline-bf-df",
+      "author": "GemologyOnline forum participants",
+      "title": "Microscope and Darkfield/Brightfield - Question",
+      "retrieved": "2026-10-07",
+      "license": "Public discussion linked for context; not copied as manufacturer documentation.",
+      "url": "https://www.gemologyonline.com/Forum/phpBB2/viewtopic.php?t=6477",
+      "use": "Mechanism discussion only; later posts correct SVH to GEMZ/BF-DF. Brightfield can retain reflector illumination; this is not manufacturer evidence for KRUSS."
     }
   ],
   "usageBoundary": [
-    "Source photos/PDFs have no verified open redistribution license. They remain only in assets-source; do not copy to public or docs.",
-    "User authorized this private cloud generation. This provenance does not grant manufacturer image/design rights or independently certify Tripo service licensing.",
-    "Unbranded generic teaching configuration based on public references, not manufacturer CAD or a calibrated digital twin."
+    "Source photos remain in assets-source; no verified open redistribution license.",
+    "Illustrative dimensions, ellipsoid, objective cone, focus and filter travel; not manufacturer CAD or measured optics."
   ],
-  "unverifiedStructure": [
-    "Exact product dimensions, material grades, focus transmission and zoom cams",
-    "Eight-blade iris geometry, central darkfield stop, reflector and light-emitting window are functional-location teaching schematics",
-    "Internal paired stereo optical channels are not reconstructed; the lower glass represents an external protective optical face only",
-    "Rear/base surfaces and simple switch housing are generic reconstructions, not measured product details",
-    "Flexible goosenecks are fixed shaped meshes; no single rigid rotation represents their real deformation"
+  "cloudGeneration": {
+    "historicalTaskId": "90bc057d-ece4-4872-b003-0ee90b415e52",
+    "historicalModel": "H3.1",
+    "historicalQuality": "highest/private/geometry-and-texture/4k",
+    "newCallsThisRound": 0,
+    "round4Cost": 0,
+    "historicalMicroscopeCost": 55,
+    "cumulativeProjectCost": 275,
+    "sourceCandidate": "assets-source/gem-microscope/tripo-trials/2026-10-07/candidate.glb",
+    "sourceSha256": "fbb352d1a771a5e049e63e0f587e3dfe8445efd1d4d8cf0d114de756f2b8fce0"
+  },
+  "irisMechanics": {
+    "bladePartId": "iris",
+    "rotatingControlPartId": "irisControl",
+    "controlPart": "irisControl",
+    "controlNode": "GemMicroscope_irisControl",
+    "controlAngleChangesAperture": true,
+    "bladeLinkageModeled": false,
+    "bladeCount": 12,
+    "edgeBevelMeters": 1.24875e-05,
+    "layerGapMeters": 2.08125e-05,
+    "materialRoughness": 0.66,
+    "angleRangeDegrees": [
+      0,
+      90
+    ],
+    "defaultAngleDegrees": 90.0,
+    "apertureDiameterRangeMeters": [
+      0.0075,
+      0.04
+    ],
+    "defaultApertureDiameterMeters": 0.039999999999999994,
+    "drive": {
+      "type": "morphTarget",
+      "morphTargetName": "ApertureOpen",
+      "nodes": [
+        "GemMicroscope_IrisBlade_00",
+        "GemMicroscope_IrisBlade_01",
+        "GemMicroscope_IrisBlade_02",
+        "GemMicroscope_IrisBlade_03",
+        "GemMicroscope_IrisBlade_04",
+        "GemMicroscope_IrisBlade_05",
+        "GemMicroscope_IrisBlade_06",
+        "GemMicroscope_IrisBlade_07",
+        "GemMicroscope_IrisBlade_08",
+        "GemMicroscope_IrisBlade_09",
+        "GemMicroscope_IrisBlade_10",
+        "GemMicroscope_IrisBlade_11"
+      ],
+      "weightRange": [
+        0,
+        1
+      ]
+    },
+    "mapping": "t = clamp(angleDegrees / 90, 0, 1); each leaf ApertureOpen weight = t; diameter = diameterMin + t * (diameterMax - diameterMin). Ring rotation relative to rest = angleDegrees - defaultAngleDegrees.",
+    "note": "十二片弧形叶片的连续形变会改变真实中心圆孔；叶片不做整体旋转冒充开度。叶片变形是教学近似，未建实际连杆、轴销或叶片数实测。"
+  },
+  "illuminationModes": [
+    {
+      "id": "darkfield",
+      "label": "暗域",
+      "states": {
+        "sources": {
+          "bottom": true,
+          "top": false,
+          "fiber": false
+        },
+        "darkfieldStop": "closed",
+        "irisAngleDegrees": 90,
+        "diffuser": "out",
+        "polarizer": "out",
+        "analyzer": "out"
+      },
+      "note": "部件位置与照明预设；明域叠加外围反射光。网页受光为等效教学示意，不代表实测照度、宝石折射/偏振或目镜成像。"
+    },
+    {
+      "id": "brightfield",
+      "label": "亮域",
+      "states": {
+        "sources": {
+          "bottom": true,
+          "top": false,
+          "fiber": false
+        },
+        "darkfieldStop": "open",
+        "irisAngleDegrees": 90,
+        "diffuser": "out",
+        "polarizer": "out",
+        "analyzer": "out"
+      },
+      "note": "部件位置与照明预设；明域叠加外围反射光。网页受光为等效教学示意，不代表实测照度、宝石折射/偏振或目镜成像。"
+    },
+    {
+      "id": "pinpoint",
+      "label": "点光源",
+      "states": {
+        "sources": {
+          "bottom": true,
+          "top": false,
+          "fiber": false
+        },
+        "darkfieldStop": "open",
+        "irisAngleDegrees": 0,
+        "diffuser": "out",
+        "polarizer": "out",
+        "analyzer": "out"
+      },
+      "note": "部件位置与照明预设；明域叠加外围反射光。网页受光为等效教学示意，不代表实测照度、宝石折射/偏振或目镜成像。"
+    },
+    {
+      "id": "diffused",
+      "label": "漫射",
+      "states": {
+        "sources": {
+          "bottom": true,
+          "top": false,
+          "fiber": false
+        },
+        "darkfieldStop": "open",
+        "irisAngleDegrees": 90,
+        "diffuser": "in",
+        "polarizer": "out",
+        "analyzer": "out"
+      },
+      "note": "部件位置与照明预设；明域叠加外围反射光。网页受光为等效教学示意，不代表实测照度、宝石折射/偏振或目镜成像。"
+    },
+    {
+      "id": "polarized",
+      "label": "偏光",
+      "states": {
+        "sources": {
+          "bottom": true,
+          "top": false,
+          "fiber": false
+        },
+        "darkfieldStop": "open",
+        "irisAngleDegrees": 90,
+        "diffuser": "out",
+        "polarizer": "in",
+        "analyzer": "in"
+      },
+      "note": "部件位置与照明预设；明域叠加外围反射光。网页受光为等效教学示意，不代表实测照度、宝石折射/偏振或目镜成像。"
+    },
+    {
+      "id": "shadowing",
+      "label": "遮光",
+      "states": {
+        "sources": {
+          "bottom": true,
+          "top": false,
+          "fiber": false
+        },
+        "darkfieldStop": "open",
+        "irisAngleDegrees": 30,
+        "diffuser": "out",
+        "polarizer": "out",
+        "analyzer": "out"
+      },
+      "note": "部件位置与照明预设；明域叠加外围反射光。网页受光为等效教学示意，不代表实测照度、宝石折射/偏振或目镜成像。"
+    },
+    {
+      "id": "overhead",
+      "label": "顶光",
+      "states": {
+        "sources": {
+          "bottom": false,
+          "top": true,
+          "fiber": false
+        },
+        "darkfieldStop": "open",
+        "irisAngleDegrees": 90,
+        "diffuser": "out",
+        "polarizer": "out",
+        "analyzer": "out"
+      },
+      "note": "部件位置与照明预设；明域叠加外围反射光。网页受光为等效教学示意，不代表实测照度、宝石折射/偏振或目镜成像。"
+    },
+    {
+      "id": "oblique",
+      "label": "斜射 / 水平",
+      "states": {
+        "sources": {
+          "bottom": false,
+          "top": false,
+          "fiber": true
+        },
+        "darkfieldStop": "open",
+        "irisAngleDegrees": 90,
+        "diffuser": "out",
+        "polarizer": "out",
+        "analyzer": "out"
+      },
+      "note": "部件位置与照明预设；明域叠加外围反射光。网页受光为等效教学示意，不代表实测照度、宝石折射/偏振或目镜成像。"
+    }
   ],
   "verification": {
+    "blenderReimport": {
+      "irisMorphTargetsAfterReimport": [
+        {
+          "node": "GemMicroscope_IrisBlade_00",
+          "targets": [
+            "Basis",
+            "ApertureOpen"
+          ],
+          "defaultWeight": 1.0
+        },
+        {
+          "node": "GemMicroscope_IrisBlade_01",
+          "targets": [
+            "Basis",
+            "ApertureOpen"
+          ],
+          "defaultWeight": 1.0
+        },
+        {
+          "node": "GemMicroscope_IrisBlade_02",
+          "targets": [
+            "Basis",
+            "ApertureOpen"
+          ],
+          "defaultWeight": 1.0
+        },
+        {
+          "node": "GemMicroscope_IrisBlade_03",
+          "targets": [
+            "Basis",
+            "ApertureOpen"
+          ],
+          "defaultWeight": 1.0
+        },
+        {
+          "node": "GemMicroscope_IrisBlade_04",
+          "targets": [
+            "Basis",
+            "ApertureOpen"
+          ],
+          "defaultWeight": 1.0
+        },
+        {
+          "node": "GemMicroscope_IrisBlade_05",
+          "targets": [
+            "Basis",
+            "ApertureOpen"
+          ],
+          "defaultWeight": 1.0
+        },
+        {
+          "node": "GemMicroscope_IrisBlade_06",
+          "targets": [
+            "Basis",
+            "ApertureOpen"
+          ],
+          "defaultWeight": 1.0
+        },
+        {
+          "node": "GemMicroscope_IrisBlade_07",
+          "targets": [
+            "Basis",
+            "ApertureOpen"
+          ],
+          "defaultWeight": 1.0
+        },
+        {
+          "node": "GemMicroscope_IrisBlade_08",
+          "targets": [
+            "Basis",
+            "ApertureOpen"
+          ],
+          "defaultWeight": 1.0
+        },
+        {
+          "node": "GemMicroscope_IrisBlade_09",
+          "targets": [
+            "Basis",
+            "ApertureOpen"
+          ],
+          "defaultWeight": 1.0
+        },
+        {
+          "node": "GemMicroscope_IrisBlade_10",
+          "targets": [
+            "Basis",
+            "ApertureOpen"
+          ],
+          "defaultWeight": 1.0
+        },
+        {
+          "node": "GemMicroscope_IrisBlade_11",
+          "targets": [
+            "Basis",
+            "ApertureOpen"
+          ],
+          "defaultWeight": 1.0
+        }
+      ],
+      "irisMorphLeafCount": 12,
+      "missingNamedParts": [],
+      "expectedParts": 27,
+      "importedMeshObjects": 135,
+      "byteLength": 2701720,
+      "below10MB": true,
+      "sourceUnchanged": true,
+      "allSourceMeshesClosed": true,
+      "allSourceMeshesPositiveVolume": true,
+      "formatValidation": "Run inspect-import.mjs separately; this file only covers Blender geometry/reimport."
+    },
+    "mathematicalGeometry": {
+      "microscope-illumination-check.json": {
+        "ok": true,
+        "scope": "shared-parameter static mathematical geometry; no Blender, GLB, photometry or measured optical validation"
+      },
+      "microscope-iris-math-check.json": {
+        "ok": true,
+        "scope": "shared mesh-profile and morph mathematics; not exported GLB/reimport verification"
+      },
+      "microscope-mounting-check.json": {
+        "ok": true,
+        "scope": "shared mounting primitives and conservative optical-clearance envelopes; no measured manufacturer mechanics or irradiance"
+      }
+    },
     "glTFValidator": {
       "errors": 0,
       "warnings": 0,
-      "infos": 51,
-      "hints": 0,
-      "truncated": false
+      "modelSha256": "23ae6ef8d47c341cab52c315da9bc37d37913880ffcb9d9aaf7af144c36fe83d",
+      "report": "assets-source/gem-microscope/tripo-trials/2026-10-07/repair-v4/validation/model-23ae6ef8d47c-ysaRmM/summary.json"
     },
-    "nodes": 100,
-    "meshes": 85,
-    "triangles": 87564,
-    "byteLength": 1621208,
-    "closedMeshSurfaces": 85,
-    "missingPartNodesAfterBlenderReimport": [],
-    "sourceCandidateSha256Unchanged": true,
     "browserAppearanceVerified": false,
     "userAppearanceAccepted": false,
-    "parts": 15
+    "exportedMountingGeometry": {
+      "ok": true,
+      "modelSha256": "23ae6ef8d47c341cab52c315da9bc37d37913880ffcb9d9aaf7af144c36fe83d",
+      "report": "assets-source/instruments-2026-10-07/round4/microscope-mounting-glb-check.json",
+      "mountingMeshes": 31,
+      "connections": 35,
+      "motionPoses": 308
+    }
   },
-  "rebuildScript": "gem-lab/tools/3d-assets/build_gem_microscope.py",
   "pending": [
-    "User review of overall silhouette, optical head shoulder and source photograph approximation",
-    "Web viewer material/interaction acceptance after asset integration",
-    "Real instrument dimensions/rotation ranges only if a calibrated representation is later requested"
+    "Final current-hash browser review and user appearance acceptance",
+    "No irradiance, physical calibration or manufacturer internal construction claim"
   ],
-  "irisMechanics": {
-    "fixedBladePartId": "iris",
-    "rotatingControlPartId": "irisControl",
-    "controlAngleChangesAperture": false,
-    "bladeLinkageModeled": false,
-    "note": "操纵环的旋转只表达其操作轴；实际开孔变化必须另建可验证叶片联动，不能转动整个叶片组冒充。"
-  }
+  "round4Changes": [
+    "Under-stage lamp chamber service cap, continuous lamp support, mounting flange and neutral-metal reflector retaining seat.",
+    "Fixed accessory guide rails and moving saddles with real clearance bores; analyzer fixed legs stay outside slide travel.",
+    "Lower flattened iris lever and relocated clamp pedestal/support curve avoid complete accessory travel; jaws and sample position unchanged."
+  ]
 }

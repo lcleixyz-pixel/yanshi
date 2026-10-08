@@ -1,0 +1,28 @@
+{
+  "assetId": "gem-microscope-ksw-lighting-v3-web",
+  "baseExterior": {
+    "file": "../candidate-textured.glb",
+    "sha256": "c7dc8413205c744f83dd53b6332ff80e3b53362dc0471f3aa048151688a909ea",
+    "preservation": "All 26 retained cloud nodes keep original geometry and UV; part25 removed; no slot cut."
+  },
+  "reference": {
+    "title": "宝石显微镜光源系统设计与改造",
+    "year": 2014,
+    "section": "3.3, pp65-66",
+    "url": "https://jogg.cug.edu.cn/cn/article/pdf/preview/87b93053-b5d9-48cd-9ff2-1459ff0685bd.pdf",
+    "use": "LED-collimator-central withdrawable cone-outer reflector-sample route, and distinct bright/dark lighting states only."
+  },
+  "authoredParameters": "All internal dimensions, optical surface formula, collimated beam and lateral travel are authored teaching parameters, not manufacturer measurements or manufacturing specifications.",
+  "omitted": "No unsupported protective window; no inferred internal manufacturer drive train.",
+  "sources": {
+    "build_repair.py": "9f249c18beeed961b7f98aef363ba0acca96944962422089d8772600ca1e5d4c",
+    "geometry_contract.py": "43d68f5dc152c5c40490d17a64c5e9f202c5083a76e1871b02406236cf29cd81"
+  },
+  "modelSha256": "6a24b6208af5a7f23fce1cdafc846a52a0fc4bbbb6ff8a6cca8d4a9d50767091",
+  "webBuild": {
+    "script": "tools/3d-assets/microscope-ksw-lighting-v3/build-web.mjs",
+    "from": "assets-source/gem-microscope/tripo-trials/2026-10-08/repair-v2/model.glb",
+    "sourceModelSha256": "b55e7b8299d63814409b955b1a8279cfff3dd401456e43520f98a1a938c98f68",
+    "lighting": "Top (LED + diffuser, 6500 K) and gooseneck side light added in the web layer after the 2014 paper §3.1 / Fig. 1; see microscope-ksw-lighting-v3/README.md."
+  }
+}

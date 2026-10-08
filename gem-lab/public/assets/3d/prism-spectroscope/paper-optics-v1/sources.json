@@ -1,0 +1,62 @@
+{
+  "retrievedAt": "2026-10-08",
+  "reuseBoundary": "Links and paraphrased facts only. No manufacturer image pixels or article illustrations are embedded in generated models. Public access is not an open image licence.",
+  "sources": [
+    {
+      "id": "hagen-tkaczyk-2011",
+      "title": "Compound prism design principles, I",
+      "authors": "Nathan Hagen; Tomasz S. Tkaczyk",
+      "publication": "Applied Optics 50(25), 4998–5011 (2011)",
+      "doi": "10.1364/AO.50.004998",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3302667/",
+      "authorPdf": "https://hagenlab.org/wp-content/uploads/2021/08/AO_v50p04998.pdf",
+      "locator": "Section 3 Eq. (1); Section 9 Double Amici Prisms, Fig. 10 and Eq. (14); Fig. 13",
+      "verifiedContent": "Three-element symmetric compound prisms use the same outer glasses. Direct vision requires the central wavelength exit angle to equal the entrance angle; four-interface nonlinear Snell refraction, glass dispersion and aperture geometry matter. Dispersion can be nonlinear.",
+      "evidenceLayer": "primary peer-reviewed general optics, not this instrument's internal construction",
+      "access": "Full relevant section and equations read from indexed PMC article; author PDF could not be downloaded because TLS verification failed. No figure pixel reconstruction claimed."
+    },
+    {
+      "id": "schott-nbk7",
+      "title": "SCHOTT N-BK7 optical glass datasheet",
+      "url": "https://media.schott.com/api/public/content/41e799d0bf874807a0bb8e702fbb75b5?v=54856406",
+      "precisionSourceUrl": "https://media.schott.com/api/public/content/5a407c766ca04bb19392e41efdcbd549?v=6a265694",
+      "locator": "Constants of Dispersion Formula / Konstanten der Dispersionsformel; B1–B3, C1–C3",
+      "verifiedContent": "Official Sellmeier coefficients. This model uses N-BK7 as an explicit teaching glass choice, without claiming it is present in the real handheld instrument.",
+      "evidenceLayer": "primary manufacturer material data"
+    },
+    {
+      "id": "schott-nf2",
+      "title": "SCHOTT N-F2 optical glass datasheet",
+      "url": "https://media.schott.com/api/public/content/d9b4f8b7b230479fb8902ce568b5fd3b?v=a7e44e4e",
+      "locator": "Konstanten der Dispersionsformel; B1–B3, C1–C3",
+      "verifiedContent": "Official Sellmeier coefficients. N-F2 is a teaching choice, not an identified real instrument glass.",
+      "evidenceLayer": "primary manufacturer material data"
+    },
+    {
+      "id": "newport-grating-equation",
+      "title": "MKS Newport: The Grating Equation",
+      "url": "https://www.newport.com/n/the-grating-equation",
+      "locator": "Figure 2-1(b), Equations (2-1), (2-2), (2-4)",
+      "verifiedContent": "Transmission orders lie opposite the incident side of the grating. Orders are discrete integers; zero order is not dispersed. With normal incidence, sin(theta_m)=m*lambda*line_density. The rays disperse in a plane perpendicular to the grooves, and angular dispersion is not exactly linear in wavelength.",
+      "evidenceLayer": "primary optical manufacturer handbook"
+    },
+    {
+      "id": "gem-a-2017",
+      "title": "Gemmological Instruments",
+      "authors": "Samantha Lloyd; cross-section figures Henry Mesa",
+      "publication": "Gems & Jewellery Summer 2017, Volume 26 No. 2, p. 6",
+      "url": "https://gem-a.com/wp-content/uploads/2017/04/GJ-26-2-2017.pdf",
+      "locator": "Printed p.6 (PDF page index 5), lower-right cross-section diagrams",
+      "verifiedContent": "Handheld instrument layout shows slit, lens, dispersive element and viewing end; prism version has a focusing tube. The diagram is schematic and supplies neither lens radii nor internal distances nor a grating line density.",
+      "evidenceLayer": "primary gemmological education; original reference page visually inspected"
+    },
+    {
+      "id": "gia-fixed-grating",
+      "title": "GIA Diffraction Grating Spectroscope, SKU 735032",
+      "url": "https://store.gia.edu/products/diffraction-grating-spectroscope",
+      "locator": "Product description",
+      "verifiedContent": "The small tube spectroscope has fixed focus and slit. No line density, grating inclination or internal lens prescription is given.",
+      "evidenceLayer": "primary product description; supports fixed controls only"
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "assetId": "original-teaching-gem-microscope-v1",
+  "coordinateSystem": "glTF right-handed Y up, metres; front is +Z",
+  "designBasis": "Original educational design; all dimensions and hidden mechanics are authored, not manufacturer measurements. No manufacturer meshes, photos or textures used.",
+  "model": "model.glb",
+  "rigs": {
+    "tilt": {
+      "node": "Rig_Tilt",
+      "pivot": [
+        0,
+        0.075,
+        0.01
+      ],
+      "axisLocal": [
+        1,
+        0,
+        0
+      ],
+      "rangeDegrees": [
+        0,
+        25
+      ],
+      "defaultDegrees": 0,
+      "note": "Rotates stage, bottom lamp chamber, support arm, sample and optical head as one assembly; positive angle tilts top towards viewer."
+    },
+    "focus": {
+      "node": "Rig_Focus",
+      "parent": "Rig_Tilt",
+      "axisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rangeMeters": [
+        -0.012,
+        0.018
+      ],
+      "defaultMeters": 0,
+      "note": "Only the optical head and focus carrier translate relative to the assembly."
+    }
+  },
+  "optics": {
+    "coordinates": "Tilt rig local glTF metres; add tilt pivot for world rest coordinates",
+    "samplePosition": [
+      0,
+      0.09,
+      0
+    ],
+    "observationEntrance": [
+      0,
+      0.169,
+      0
+    ],
+    "observationRadius": 0.013,
+    "brightfield": {
+      "emitterNode": "Emitter_Brightfield",
+      "center": [
+        0,
+        0.026,
+        0
+      ],
+      "radius": 0.0115,
+      "direction": [
+        0,
+        1,
+        0
+      ]
+    },
+    "darkfield": {
+      "emitterNode": "Emitter_Darkfield",
+      "center": [
+        0,
+        0.035,
+        0
+      ],
+      "radius": 0.035,
+      "target": [
+        0,
+        0.09,
+        0
+      ],
+      "rayCount": 16,
+      "note": "Independent annular directed LED teaching arrangement. Direct ray continuation beyond sample misses the observation entrance; sample scattering may enter it.",
+      "divergenceHalfAngleDegrees": 4,
+      "shutter": {
+        "node": "Part_DarkfieldShutter",
+        "openTranslation": [
+          0.03432748,
+          0,
+          -0.00682816
+        ],
+        "closedTranslation": [
+          0,
+          0,
+          0
+        ],
+        "center": [
+          0,
+          0.055,
+          0
+        ],
+        "radius": 0.015,
+        "note": "Original sliding black cover closes central BF diffuser in DF mode; opens to a protected side pocket under the stage in BF mode. Not a manufacturer mechanism.",
+        "thickness": 0.0012
+      },
+      "emittingPatchRadius": 0.0015
+    },
+    "modePolicy": "off | brightfield | darkfield; two emitter groups mutually exclusive",
+    "separator": {
+      "node": "Part_OpticalSeparator",
+      "innerRadius": 0.0125,
+      "outerRadius": 0.0145,
+      "heightRange": [
+        0.019,
+        0.049
+      ]
+    },
+    "fixedAperture": {
+      "node": "Part_Stage",
+      "radius": 0.044,
+      "note": "Fixed clear aperture; no inferred iris mechanism.",
+      "heightRange": [
+        0.057,
+        0.067
+      ]
+    },
+    "sampleRadius": 0.004
+  },
+  "controls": {
+    "power": {
+      "node": "Part_PowerButton",
+      "type": "toggle"
+    },
+    "mode": {
+      "node": "Part_ModeSelector",
+      "type": "exclusive-brightfield-darkfield"
+    },
+    "brightness": {
+      "node": "Part_BrightnessDial",
+      "type": "range",
+      "range": [
+        0,
+        1
+      ]
+    },
+    "focus": {
+      "node": "Part_FocusKnobs",
+      "type": "translation"
+    },
+    "tilt": {
+      "node": "Part_TiltHinge",
+      "type": "rotation"
+    }
+  },
+  "partsSchema": {
+    "id": "unique stable id",
+    "node": "exact glTF node name",
+    "label": "Chinese label",
+    "note": "scientific and design boundary",
+    "group": "base | mechanics | optics | illumination | specimen",
+    "explodeOffset": "glTF local xyz metres",
+    "hotspot": "glTF world baseline xyz metres"
+  }
+}

@@ -1,8 +1,9 @@
 {
   "instrument": "prism-spectroscope",
   "createdAt": "2026-10-07",
+  "revision": "repair-v3",
   "dimensionsCalibrated": false,
-  "referenceManifest": "assets-source/prism-spectroscope/references/sources.json",
+  "referenceManifest": "assets-source/prism-spectroscope/references/sources-round2.json",
   "references": [
     {
       "id": "user-product",
@@ -15,7 +16,8 @@
       "classification": "与教材可调棱镜式照片相近，无法确认具体型号或内部色散元件；不得单独作为分类证据",
       "local_file": "user-product-unclassified.png",
       "sha256": "3e198324a7c5cf2ba72cc3c016a3bfd5a264a69d1b1baad133e509c8f466476d",
-      "bytes": 177692
+      "bytes": 177692,
+      "round2Usage": "historical-only; not geometry authority"
     },
     {
       "id": "user-pdf",
@@ -35,7 +37,8 @@
       ],
       "local_file": "user-spectroscope.pdf",
       "sha256": "f1dd05ff1ada4f8f46a4d49ae0956ac30980ff8a18bc488f98bf9aecbe04e7f8",
-      "bytes": 1132910
+      "bytes": 1132910,
+      "round2Usage": "supplementary historical reference"
     },
     {
       "id": "gem-a-prism",
@@ -49,7 +52,8 @@
       "evidence": "官方命名为棱镜式，说明棱镜组色散及可调焦；外部照片为黑色长筒、两端环、侧面银色钮",
       "local_file": "gem-a-prism-product.png",
       "sha256": "10da4d501e339a9e0877fe46d12b715a27f18abf359859b0052426a3447990b0",
-      "bytes": 173575
+      "bytes": 173575,
+      "round2Usage": "historical-only; not geometry authority"
     },
     {
       "id": "gem-a-cross-sections",
@@ -68,7 +72,8 @@
       "evidence": "对比棱镜式与光栅式剖面；标出 Light slit、Lens、Prism train、Focusing tube、Diffraction grating、Eye piece",
       "local_file": "gem-a-GJ-26-2-2017.pdf",
       "sha256": "019947f0596be138ff355f8344a7e96e14b883fc13510197594fab2fcfdeb04e",
-      "bytes": 4101110
+      "bytes": 4101110,
+      "round2Usage": "supplementary historical reference"
     },
     {
       "id": "euromex-specification",
@@ -78,7 +83,87 @@
       "retrieved_at": "2026-10-07",
       "kind": "manufacturer-product-page",
       "license_or_usage": "原页面未提供开放复用许可；作为用户已授权的内部参考与 Tripo 输入保存。不得把该原图/PDF或含其像素的对照图放入 public/、docs/ 或提交仓库；不宣称取得厂商授权。",
-      "evidence": "厂家列明 SP.5150 为直视型、可调目镜、0–1 mm 可调狭缝；这是同类机构参考，不把此型号参数认作 Gem-A 产品或本资产实测值"
+      "evidence": "厂家列明 SP.5150 为直视型、可调目镜、0–1 mm 可调狭缝；这是同类机构参考，不把此型号参数认作 Gem-A 产品或本资产实测值",
+      "round2Usage": "supplementary historical reference"
+    },
+    {
+      "id": "mineralogy-collection",
+      "title": "Hand spectroscopes collection",
+      "url": "https://www.mineralogy.eu/optical/spectroscopes/01_spectroscopes.html",
+      "author_or_manufacturer": "mineralogy.eu private instrument collection",
+      "kind": "primary-object-catalogue",
+      "retrieved_at": "2026-10-07",
+      "evidence": "Penrose specimen: rotating end adjusts slit and friction draw tube focuses; Hilger 90–115 mm; Leitz 90–110 mm with three prisms and achromat. Basis is typology, not an exact Penrose/Beck copy.",
+      "license_or_usage": "Reference only; no verified open licence. Source pixels remain in ignored assets-source and are not embedded in public assets."
+    },
+    {
+      "id": "skyjems-handheld",
+      "title": "Handheld Prism Spectroscope",
+      "url": "https://skyjems.ca/pages/encyclopedia-handheld-prism-spectroscope",
+      "author_or_manufacturer": "Skyjems",
+      "kind": "retailer-encyclopedia-supplement-only",
+      "retrieved_at": "2026-10-07",
+      "evidence": "Supplementary general construction. Its red-compressed/violet-expanded text agrees with Lotus but conflicts with Skyjems Beck page. Wavelength scale claim is not applied to this basic model.",
+      "license_or_usage": "Reference only; no verified open licence. Source pixels remain in ignored assets-source and are not embedded in public assets."
+    },
+    {
+      "id": "skyjems-beck",
+      "title": "Beck Spectroscope",
+      "url": "https://skyjems.ca/pages/encyclopedia-beck-spectroscope",
+      "author_or_manufacturer": "Skyjems",
+      "kind": "retailer-encyclopedia-supplement-only",
+      "retrieved_at": "2026-10-07",
+      "evidence": "Supplement only: Amici/direct-vision concept. Its violet-compressed/red-expanded claim conflicts with Lotus and its own handheld page and is not adopted; historical Beck is not asserted to have three prisms.",
+      "license_or_usage": "Reference only; no verified open licence. Source pixels remain in ignored assets-source and are not embedded in public assets."
+    },
+    {
+      "id": "lotus-spectroscope",
+      "title": "Gem Testing with the Spectroscope",
+      "url": "https://lotusgemology.com/index.php/en/resources/articles/282-gem-testing-with-the-spectroscope-lotus-gemology",
+      "author_or_manufacturer": "Richard W. Hughes / Lotus Gemology",
+      "kind": "primary-practitioner-education",
+      "retrieved_at": "2026-10-07",
+      "evidence": "Diffraction models have fixed slit and balanced spacing. Prism spectra expand violet and compress red. Historical Beck model described as five-prism; present three-prism count is an explicitly illustrative Amici choice.",
+      "license_or_usage": "Reference only; no verified open licence. Source pixels remain in ignored assets-source and are not embedded in public assets."
+    },
+    {
+      "id": "opl-pocket",
+      "title": "OPL Pocket Diffraction Grating Spectroscope",
+      "url": "https://www.oplspectra.com/shop/opl-pocket-diffraction-grating-spectroscope/",
+      "author_or_manufacturer": "Orwin Products Limited",
+      "kind": "manufacturer-product-page",
+      "retrieved_at": "2026-10-07",
+      "evidence": "Comparable pocket type is 55 mm long and 12.5 mm wide, with fixed slit/focus. The asset uses requested illustrative 55 mm x 14.5 mm; 14.5 mm is not a GIA or OPL measured specification.",
+      "license_or_usage": "Reference only; no verified open licence. Source pixels remain in ignored assets-source and are not embedded in public assets."
+    },
+    {
+      "id": "mineralogy-penrose-photo",
+      "title": "Penrose and Co. hand prism spectroscope",
+      "url": "https://www.mineralogy.eu/optical/spectroscopes/handspectro-Penrose.html",
+      "image_url": "https://www.mineralogy.eu/optical/spectroscopes/images/handspectro-Penrose.jpg",
+      "author_or_manufacturer": "mineralogy.eu private collection; original manufacturer Penrose and Co.",
+      "retrieved_at": "2026-10-07",
+      "kind": "primary-object-catalogue",
+      "local_file": "mineralogy-penrose.jpg",
+      "sha256": "e7e209542aacc4c167f376aadf0d221868d005ace63d8279617ec58fe2e5937d",
+      "bytes": 104068,
+      "evidence": "Rotating coaxial end collar and friction focusing tube; historic brass appearance is not copied. Black anodised finish follows round-2 task direction.",
+      "license_or_usage": "No verified open reuse licence. Archive and review comparison only, never public/ or Git."
+    },
+    {
+      "id": "gia-grating",
+      "title": "Diffraction Grating Spectroscope, SKU 735032",
+      "url": "https://store.gia.edu/products/diffraction-grating-spectroscope",
+      "author_or_manufacturer": "GIA Store / GIA Instruments",
+      "retrieved_at": "2026-10-07",
+      "kind": "manufacturer-product-page",
+      "license_or_usage": "原页面未提供开放复用许可；作为用户已授权的内部参考与 Tripo 输入保存。不得把该原图/PDF或含其像素的对照图放入 public/、docs/ 或提交仓库；不宣称取得厂商授权。",
+      "image_url": "https://store.gia.edu/cdn/shop/products/Diffraction_Grating_Spectroscope_1000x1000.jpg?v=1736288121",
+      "evidence": "官方明确小筒型、固定焦距和固定狭缝；推荐无品牌文字的单筒图作为生成输入",
+      "local_file": "gia-grating-product.jpg",
+      "sha256": "cbba8816a17b4e334f5f32d2da89606b87e31ef1973066507ebe2493c19b8187",
+      "bytes": 10281,
+      "round2Usage": "comparison type only; fixed slit/focus diffraction form"
     }
   ],
   "originalCandidate": {
@@ -89,54 +174,48 @@
   "reconstruction": {
     "script": "tools/3d-assets/blender/build_spectroscopes.py",
     "blenderVersion": "5.2.2 LTS",
-    "method": "Reference constrained parametric reconstruction of manufactured surfaces. Raw Tripo candidate retained as comparison; geometric retention assessed separately.",
-    "geometrySource": "Original parametric mesh authored in Blender; not a textured reproduction of source photographs.",
-    "retainedCandidateGeometry": [],
-    "retentionDecision": "No original candidate triangles retained: continuous lathed hardware is rebuilt to remove warped shells, false interior closures and generated lettering. Original candidate and its inspection are retained for comparison."
+    "method": "Round 3 independent parametric rebuild; Amici boundary visibility and glass identity updated, round-2 exterior geometry and mechanical ranges retained. No source photo pixels or original cloud triangles retained.",
+    "round1Archive": "assets-source/prism-spectroscope/tripo-trials/2026-10-07/repair-v1/",
+    "round2Archive": "assets-source/prism-spectroscope/tripo-trials/2026-10-07/repair-v2/",
+    "master": "assets-source/prism-spectroscope/tripo-trials/2026-10-07/repair-v3/master.blend",
+    "round3Change": "Preserve the round-2 three-block tessellation and add two peripheral cement-edge guides; crown glass stays cooler and flint slightly yellow with a higher illustrative material IOR.",
+    "sharedGeometryScript": "tools/3d-assets/spectroscope_geometry.py",
+    "sourceSnapshot": "assets-source/prism-spectroscope/tripo-trials/2026-10-07/repair-v3/source/",
+    "sourceSnapshotSha256": {
+      "blender/build_spectroscopes.py": "8f554bc5107c605f7c0d0cf619200011e3617a27d60d1b98be2c5f11b5b59ef3",
+      "spectroscope_geometry.py": "f201fd91e0a18decacaca55cb55b9c111e3b3b517983801a24f5bfd0e054073b",
+      "finalize_spectroscopes.py": "7ae54972ccc741d7a4e61bf3d6aabc5d2ffb374c3c5cda35b8e6bc114d58f750",
+      "spectroscope-review-sheets.py": "3588b636a18b2787defd0119c022f6aac0fe344de0820b43edb22975e9a01e5c"
+    }
   },
   "tripo": {
-    "instrument": "prism-spectroscope",
-    "state": "downloaded",
-    "model": "H3.1",
-    "quality": "highest",
-    "privacy": "private",
-    "generateParts": false,
-    "eightK": false,
-    "quote": 55,
-    "balanceBefore": 6035,
-    "taskId": "c588ceaf-7245-401a-a06b-7a4eeb683673",
-    "actualCost": 55,
-    "input": "gem-lab/assets-source/prism-spectroscope/references/gem-a-prism-product.png",
-    "balanceAfter": 5980,
-    "submittedAt": "2026-10-07T07:28:01.416527+00:00",
-    "candidate": "gem-lab/assets-source/prism-spectroscope/tripo-trials/2026-10-07/candidate.glb",
-    "bytes": 63507748,
-    "sha256": "9b0d9c40ac53cf6f903e04271f4198af6002bcc606e8f66cb0ebd5406fdd0a42",
-    "textureResolution": "4k"
+    "round2Credits": 0,
+    "round3Credits": 0,
+    "newCloudGeneration": false,
+    "reason": "Existing round-1 candidate is preserved for comparison. Requested structural changes are directly rebuilt parametrically.",
+    "round1InstrumentCredits": 55,
+    "globalLedger": "assets-source/instruments-2026-10-07/tripo-ledger.json"
   },
-  "licenseBoundary": "Published reference photographs have no verified open licence. Originals and side-by-side comparisons remain only in ignored assets-source. Public assets contain independently authored geometry/materials with no logo. Manufacturer endorsement, measured dimensions and optical calibration are not claimed.",
+  "licenseBoundary": "Published photographs are reference-only with no verified open licence. Source photographs and comparisons remain in ignored assets-source. Public files contain independently authored geometry/materials and model-only renders.",
+  "sourceConflict": {
+    "taskText": "棱镜式紫端压缩、红端展开",
+    "adoptedText": "棱镜式紫端展开、红端压缩",
+    "reason": "Lotus Gemology primary practitioner article describes prism models as pulling violet and pushing red. Skyjems handheld page agrees; its Beck page contradicts both. Use Lotus and retain discrepancy for review.",
+    "primarySource": "https://lotusgemology.com/index.php/en/resources/articles/282-gem-testing-with-the-spectroscope-lotus-gemology"
+  },
   "reviewRequired": [
-    "Proportions and side-control appearance",
-    "Illustrative internal optics and supports",
-    "No physical specimen or optical calibration performed"
+    "Two alternating cement interfaces and subtle crown/flint material contrast must be inspected in the new isolated closeup and transparent-shell browser view.",
+    "Relative proportions and black surface/knurled collar appearance",
+    "Illustrative internal optics, supports and requested geometry",
+    "No optical prescription, physical calibration or user appearance acceptance claimed"
   ],
-  "candidateInspection": {
-    "candidateSha256": "9b0d9c40ac53cf6f903e04271f4198af6002bcc606e8f66cb0ebd5406fdd0a42",
-    "meshCount": 1,
-    "vertices": 1026110,
-    "triangles": 1975935,
-    "principalExtentsRaw": [
-      0.2728566432085687,
-      0.9800290990327943,
-      0.2346732372177999
-    ],
-    "lengthDiameterRatio": 3.59173625940883,
-    "materialNames": [
-      "Dots Stroke",
-      "Material",
-      "tripo_material_3e67970f-053a-44a3-a363-097b23c1eb25"
-    ],
-    "note": "PCA normalization only for this review render; input untouched. Candidate topology is not evidence of true hidden structure.",
-    "inputUnchanged": true
+  "verification": {
+    "modelSha256": "ba3d45fb33ff390a4759c84845ba3e55d185a4ae24b6811913a1e1403b58d14d",
+    "technicalPass": true,
+    "gltfErrors": 0,
+    "gltfWarnings": 0,
+    "report": "assets-source/prism-spectroscope/tripo-trials/2026-10-07/repair-v3/analysis/verification.json",
+    "browserValidation": "Pending round-3 browser review; prior-round records do not certify this export.",
+    "userAppearanceAccepted": false
   }
 }

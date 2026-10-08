@@ -1,0 +1,168 @@
+{
+  "status": "pass",
+  "createdAt": "2026-10-08",
+  "candidateModelSha256": "e49c2a6ca2b8171c0f90fec5e358a4a43f8e7f28441982caec2413c46117d536",
+  "modelSha256": "f46f1007cb9a17ade4b22dc411d1a8250fc4e34674fc58ba97f072dd37bbe0bd",
+  "modelBytes": 1032860,
+  "binaryChunkUnchanged": true,
+  "binaryChunkSha256": "254b9e934ec8e20924448ef5358f2729390201c82329e8099fb274d84ce7c0b4",
+  "allNonMaterialGLTFFieldsUnchanged": true,
+  "nodeCount": 32,
+  "meshCount": 22,
+  "materialChanges": [
+    {
+      "materialIndex": 7,
+      "glass": "N-BK7",
+      "before": {
+        "doubleSided": true,
+        "extensions": {
+          "KHR_materials_transmission": {
+            "transmissionFactor": 0.9200000166893005
+          },
+          "KHR_materials_ior": {
+            "ior": 1.5185223817825317
+          }
+        },
+        "name": "N-BK7 educational design at 550nm",
+        "pbrMetallicRoughness": {
+          "baseColorFactor": [
+            0.800000011920929,
+            0.9100000262260437,
+            0.9800000190734863,
+            1
+          ],
+          "metallicFactor": 0,
+          "roughnessFactor": 0.054999999701976776
+        }
+      },
+      "after": {
+        "doubleSided": true,
+        "extensions": {
+          "KHR_materials_transmission": {
+            "transmissionFactor": 0.7
+          },
+          "KHR_materials_ior": {
+            "ior": 1.5185223817825317
+          }
+        },
+        "name": "N-BK7 educational design at 550nm",
+        "pbrMetallicRoughness": {
+          "baseColorFactor": [
+            0.13,
+            0.55,
+            0.95,
+            1.0
+          ],
+          "metallicFactor": 0,
+          "roughnessFactor": 0.054999999701976776
+        }
+      }
+    },
+    {
+      "materialIndex": 8,
+      "glass": "N-F2",
+      "before": {
+        "doubleSided": true,
+        "extensions": {
+          "KHR_materials_transmission": {
+            "transmissionFactor": 0.8600000143051147
+          },
+          "KHR_materials_ior": {
+            "ior": 1.6236565113067627
+          }
+        },
+        "name": "N-F2 educational design at 550nm",
+        "pbrMetallicRoughness": {
+          "baseColorFactor": [
+            0.9599999785423279,
+            0.9100000262260437,
+            0.7400000095367432,
+            1
+          ],
+          "metallicFactor": 0,
+          "roughnessFactor": 0.06499999761581421
+        }
+      },
+      "after": {
+        "doubleSided": true,
+        "extensions": {
+          "KHR_materials_transmission": {
+            "transmissionFactor": 0.64
+          },
+          "KHR_materials_ior": {
+            "ior": 1.6236565113067627
+          }
+        },
+        "name": "N-F2 educational design at 550nm",
+        "pbrMetallicRoughness": {
+          "baseColorFactor": [
+            0.97,
+            0.39,
+            0.075,
+            1.0
+          ],
+          "metallicFactor": 0,
+          "roughnessFactor": 0.06499999761581421
+        }
+      }
+    }
+  ],
+  "onlyChangedFields": [
+    "materials[7].pbrMetallicRoughness.baseColorFactor",
+    "materials[7].extensions.KHR_materials_transmission.transmissionFactor",
+    "materials[8].pbrMetallicRoughness.baseColorFactor",
+    "materials[8].extensions.KHR_materials_transmission.transmissionFactor"
+  ],
+  "allIORFieldsUnchanged": true,
+  "opticalCasesByteIdentical": true,
+  "prescriptionByteIdentical": true,
+  "blenderImportedWorldMeshSignatures": {
+    "PrismSpectroscope_internal_baffle": "fb332ebd9009780ddc77cf38689590d4e57053239cb6ab9e9aa738482f265bb2",
+    "PrismSpectroscope_internal_baffle.001": "7310fb1b63e69bfe0752d92633ff2b8ca862240413a12ea5ba5073e7654725ac",
+    "PrismSpectroscope_hollow_barrel": "fd805c5f540509a7ec3c9ce0b51f69500a345d26d6bb87f06e282aae1a850673",
+    "PrismSpectroscope_achromat_crown": "720add3ba80f01b62c438f7ee7c4f754c34add46509bdee084c8823adcccbb21",
+    "PrismSpectroscope_achromat_flint": "86bcf3f8150e3642cd3bbf2818e03420e2e98171c9ffceda86c1e757ffc025d8",
+    "PrismSpectroscope_collimator_retainer": "004ab2630c2e25f64278aae873d2583b6d70d2af57cdf282df5beea709e568a0",
+    "PrismSpectroscope_continuous_eyepiece_and_recess": "27de4264c4d6d292cea69ce0a1b3c6ede387c24e17509188bc63af44a58c754f",
+    "PrismSpectroscope_eyepiece_glass": "76df3adb2fb6e9ae0577d5d1b01c5c5520a42846c2759e3f2e7a67c46061d3da",
+    "PrismSpectroscope_sliding_focus_tube": "696eddbd03859169c8fd551b66aff084d22c17bfe0c6ad7a5ef15fedfb2dfbec",
+    "PrismSpectroscope_amici_1_crown": "1ddae5fb2631b977d62b7b9ee7ea428af9923e10877fb5c85204168daaa8fbc0",
+    "PrismSpectroscope_amici_2_flint": "3f67a6763d037b109a91315589d1d7d200690fd00708e081a2857e22d33313ca",
+    "PrismSpectroscope_amici_3_crown": "3e8399b86440b9179975ce21b21c9ec1ee233e3d8dfad4bec33f0742aca29df3",
+    "PrismSpectroscope_amici_cement_interface_1": "f489486de4b100b59e52fcaf00c4b6a632413743a62866a399dee1624db8886b",
+    "PrismSpectroscope_amici_cement_interface_2": "0a221ddc69a2aac1c5af73ac71475fa18572940457f80d6a7bb3923cbaf1876e",
+    "PrismSpectroscope_prism_support": "8791302536e6034c5fa4e15327a1887154308993c87e7caef22abc3c5bc12260",
+    "PrismSpectroscope_prism_support.001": "1baddebbc6daf378b4f76d8b1b2a46e5fc671b02a926f94f50b05d5f2d2953b1",
+    "PrismSpectroscope_coaxial_knurled_slit_ring": "8eb6ded93ff1d31f0ef7c24834605ea30df72c1193e737e827aafded5218f7a7",
+    "PrismSpectroscope_slit_control_index": "fbc02e5901e852bea4465867702611c7fbc71c44591f010b898f3e34c188b972",
+    "PrismSpectroscope_entry_lip": "249f93bde2a32f53353ebc7e5a2c92c5f43fb6aa0d70b0c66900a1bf84ff26a8",
+    "PrismSpectroscope_entry_recess": "1c769d4c45c01bfa7bf877da083825f84f4a40eebe36cd9d76f1f65f599379f9",
+    "PrismSpectroscope_knife_Left": "32c9bbb91f48fa7af0c1e2c3462b6c61d9ad53b0ba33c1d610da6a4ee5b23e49",
+    "PrismSpectroscope_knife_Right": "06540b41d04fcc898c95623c7cda42d45f9915b6fabe52daf2dd9a458ef4621f"
+  },
+  "masterImportedExactPublicGLB": true,
+  "masterSha256": "44d386e255bc315b6d6254befe3aa7356cfe826c4719f893dec708f9ffe78314",
+  "posterSha256": "993f8dd02e8cfacb63211530993e0e8b249c06cc763d1425c2dfabbc3ce197d7",
+  "opticsPosterSha256": "964a050a0dc0040f942a156d36e99f71e63e5230f67639b334d2cfba192483b4",
+  "packageScriptSha256": "e0cd5119f87123cd8bcbf3ba403a3ee687c63513d70a88f377b14bc0c3fad45e",
+  "protectedInputFilesUnchanged": true,
+  "protectedInputSha256": {
+    "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi-instrument-assets/gem-lab/public/assets/3d/prism-spectroscope/structure-v1/provenance.json": "1556d002b507b8a5a6249250ecb2d15163351b0d898e28ed770fce595540a934",
+    "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi-instrument-assets/gem-lab/public/assets/3d/prism-spectroscope/structure-v1/poster.png": "86f899da820da629579762840a0c212897cfa62545274cca4db7b0417a7d8579",
+    "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi-instrument-assets/gem-lab/public/assets/3d/prism-spectroscope/structure-v1/manifest.json": "cc409ddffd51760271985784b2a8929e1a7dec586c29005e058954a0479a86f1",
+    "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi-instrument-assets/gem-lab/public/assets/3d/prism-spectroscope/structure-v1/model.glb": "ba3d45fb33ff390a4759c84845ba3e55d185a4ae24b6811913a1e1403b58d14d",
+    "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi-instrument-assets/gem-lab/assets-source/optics-paper-review/2026-10-08/prism-spectroscope/sources.json": "2f414b286bf8113fa09527b68309698ef8884c59ac22b75ad75a928d26639f33",
+    "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi-instrument-assets/gem-lab/assets-source/optics-paper-review/2026-10-08/prism-spectroscope/audit.json": "9fc4170523d95905387c4ec874591461dd248f4c5eaf79fee5131963b4174781",
+    "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi-instrument-assets/gem-lab/assets-source/optics-paper-review/2026-10-08/prism-spectroscope/editable.blend": "f1f34e0efc6cc2217c2059d6b2cd2633b4366036fc25cc77a98c7e01c1988f0c",
+    "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi-instrument-assets/gem-lab/assets-source/optics-paper-review/2026-10-08/prism-spectroscope/prescription.json": "00ba17d26155f5bd4318136256228b3cc67b34d0b70a5366832c719dda566818",
+    "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi-instrument-assets/gem-lab/assets-source/optics-paper-review/2026-10-08/prism-spectroscope/optical-cases.json": "348cec80d3f00d2b439110f9689bd1e8b3007035cbf3031ef5a07f9213b3019d",
+    "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi-instrument-assets/gem-lab/assets-source/optics-paper-review/2026-10-08/prism-spectroscope/manifest.json": "92722cbab96d646511a9646aea9bc3cbf34952334fdcd8e5427a7ac710f925d3",
+    "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi-instrument-assets/gem-lab/assets-source/optics-paper-review/2026-10-08/prism-spectroscope/editable.blend1": "f2b55e2e701bcc9cdc1a5b34963b92cfd7b97b683c06a80927a17ba648aaa074",
+    "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi-instrument-assets/gem-lab/assets-source/optics-paper-review/2026-10-08/prism-spectroscope/model.glb": "e49c2a6ca2b8171c0f90fec5e358a4a43f8e7f28441982caec2413c46117d536"
+  },
+  "limitations": [
+    "蓝色冕牌与暖色火石仅作部件识别；不是实际玻璃固有颜色、吸收光谱或透射率。材质外观不参与折射和色散计算。",
+    "Geometry preservation does not replace independent optical validation of the public model.",
+    "Posters are renders of this exact packaged model, with camera and lighting added only in the editable master. The optics closeup hides other meshes without changing glass geometry."
+  ]
+}

@@ -1,9 +1,10 @@
 {
   "id": "prism-spectroscope-structure-v1",
-  "version": "structure-1",
+  "version": "structure-3",
+  "revision": "repair-v3",
   "model": "model.glb",
-  "sha256": "aaca601e609a3b0f53ebec09abde059cb5721caea6509e7c97dc40fc1926cbbc",
-  "byteLength": 1229652,
+  "sha256": "ba3d45fb33ff390a4759c84845ba3e55d185a4ae24b6811913a1e1403b58d14d",
+  "byteLength": 1417552,
   "units": "meters",
   "dimensionsCalibrated": false,
   "teachingOpticsSimulated": false,
@@ -19,7 +20,7 @@
   "parts": [
     {
       "id": "barrel",
-      "label": "消光主镜筒",
+      "label": "独立消光镜筒外壳",
       "node": "PrismSpectroscope_barrel",
       "pivot": [
         0,
@@ -36,22 +37,25 @@
       "explodeOffset": [
         0,
         0,
-        0
+        -0.18
       ],
       "hotspot": [
         0,
-        0.0128,
+        0.009,
         0
-      ]
+      ],
+      "transparentShell": true,
+      "shellMode": "independent-closed-hollow-mesh",
+      "materialIntent": "matte-black-anodised-aluminium"
     },
     {
       "id": "slitHousing",
-      "label": "入光端与狭缝座",
+      "label": "入光端与固定狭缝座",
       "node": "PrismSpectroscope_slitHousing",
       "pivot": [
         0,
         0,
-        -0.06949999999999999
+        -0.0445
       ],
       "rotationAxisLocal": [
         0,
@@ -63,22 +67,60 @@
       "explodeOffset": [
         0,
         0,
-        -0.018
+        -0.09
       ],
       "hotspot": [
         0,
         0,
-        -0.0725
-      ]
+        -0.0475
+      ],
+      "illustrative": true
+    },
+    {
+      "id": "slitControl",
+      "label": "同轴滚花狭缝调节环",
+      "node": "PrismSpectroscope_slitControl",
+      "pivot": [
+        0,
+        0,
+        -0.043000000000000003
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": true,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        -0.115
+      ],
+      "hotspot": [
+        0,
+        0,
+        -0.043000000000000003
+      ],
+      "rotationRangeDegrees": [
+        0,
+        90
+      ],
+      "angleStopsDegrees": [
+        0,
+        90
+      ],
+      "motionEvidence": "Penrose catalogue confirms rotation of the entrance end adjusts the slit; 0–90 degree range/linkage is teaching-only.",
+      "controlAngleChangesAperture": true
     },
     {
       "id": "slitLeft",
-      "label": "左狭缝片（开合示意）",
+      "label": "左狭缝刃口（联动）",
       "node": "PrismSpectroscope_slitLeft",
       "pivot": [
-        -0.004,
+        -0.003,
         0,
-        -0.0645
+        -0.039
       ],
       "rotationAxisLocal": [
         0,
@@ -88,14 +130,14 @@
       "rotatable": false,
       "translatable": true,
       "explodeOffset": [
-        -0.018,
         0,
-        -0.012
+        0,
+        -0.055
       ],
       "hotspot": [
-        -0.004,
+        -0.003,
         0,
-        -0.0645
+        -0.039
       ],
       "translationAxisLocal": [
         -1,
@@ -104,18 +146,19 @@
       ],
       "translationRange": [
         0,
-        0.00065
+        0.00038
       ],
-      "motionEvidence": "Opening is a teaching mechanism only; selected product linkage/scale is unverified."
+      "drivenBy": "slitControl",
+      "motionEvidence": "Symmetric linear teaching linkage; minimum gap 40 micrometres prevents blade collision."
     },
     {
       "id": "slitRight",
-      "label": "右狭缝片（开合示意）",
+      "label": "右狭缝刃口（联动）",
       "node": "PrismSpectroscope_slitRight",
       "pivot": [
-        0.004,
+        0.003,
         0,
-        -0.0645
+        -0.039
       ],
       "rotationAxisLocal": [
         0,
@@ -125,14 +168,14 @@
       "rotatable": false,
       "translatable": true,
       "explodeOffset": [
-        0.018,
         0,
-        -0.012
+        0,
+        -0.055
       ],
       "hotspot": [
-        0.004,
+        0.003,
         0,
-        -0.0645
+        -0.039
       ],
       "translationAxisLocal": [
         1,
@@ -141,18 +184,19 @@
       ],
       "translationRange": [
         0,
-        0.00065
+        0.00038
       ],
-      "motionEvidence": "Opening is a teaching mechanism only; selected product linkage/scale is unverified."
+      "drivenBy": "slitControl",
+      "motionEvidence": "Symmetric linear teaching linkage; minimum gap 40 micrometres prevents blade collision."
     },
     {
       "id": "collimator",
-      "label": "准直透镜（结构示意）",
+      "label": "消色差准直透镜（胶合双片示意）",
       "node": "PrismSpectroscope_collimator",
       "pivot": [
         0,
         0,
-        -0.05449999999999999
+        -0.025500000000000002
       ],
       "rotationAxisLocal": [
         0,
@@ -163,80 +207,61 @@
       "translatable": false,
       "explodeOffset": [
         0,
-        0.017,
-        -0.009
+        0,
+        -0.03
       ],
       "hotspot": [
         0,
         0,
-        -0.05449999999999999
-      ]
-    },
-    {
-      "id": "prismTrain",
-      "label": "直视棱镜组（数量与排布示意）",
-      "node": "PrismSpectroscope_prismTrain",
-      "pivot": [
-        0,
-        0,
-        -0.011
-      ],
-      "rotationAxisLocal": [
-        0,
-        0,
-        1
-      ],
-      "rotatable": false,
-      "translatable": false,
-      "explodeOffset": [
-        0,
-        0.026,
-        0
-      ],
-      "hotspot": [
-        0,
-        0,
-        -0.011
-      ],
-      "illustrative": true,
-      "opticalSimulation": false
-    },
-    {
-      "id": "prismCarrier",
-      "label": "棱镜夹持架（结构示意）",
-      "node": "PrismSpectroscope_prismCarrier",
-      "pivot": [
-        0,
-        0,
-        -0.011
-      ],
-      "rotationAxisLocal": [
-        0,
-        0,
-        1
-      ],
-      "rotatable": false,
-      "translatable": false,
-      "explodeOffset": [
-        0,
-        -0.024,
-        0
-      ],
-      "hotspot": [
-        0,
-        0,
-        -0.011
+        -0.025500000000000002
       ],
       "illustrative": true
     },
     {
+      "id": "prismTrain",
+      "label": "Amici 直视棱镜组：冕–火石–冕（3块示意）",
+      "node": "PrismSpectroscope_prismTrain",
+      "pivot": [
+        0,
+        0,
+        0
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        0.018
+      ],
+      "hotspot": [
+        0,
+        0,
+        0
+      ],
+      "illustrative": true,
+      "opticalSimulation": false,
+      "glassSequence": [
+        "crown",
+        "flint",
+        "crown"
+      ],
+      "prismCount": 3,
+      "cemented": true,
+      "countIsTeachingSchematic": true
+    },
+    {
       "id": "focusTube",
-      "label": "调焦管",
+      "label": "目镜抽拉套筒",
       "node": "PrismSpectroscope_focusTube",
       "pivot": [
         0,
         0,
-        0.0465
+        0.0265
       ],
       "rotationAxisLocal": [
         0,
@@ -248,12 +273,12 @@
       "explodeOffset": [
         0,
         0,
-        0.025
+        0.075
       ],
       "hotspot": [
         0,
         0,
-        0.0465
+        0.0265
       ],
       "translationAxisLocal": [
         0,
@@ -262,18 +287,18 @@
       ],
       "translationRange": [
         0,
-        0.012
+        0.02
       ],
-      "motionEvidence": "Focus adjustment confirmed by Gem-A; axis and illustrative travel are not measured."
+      "motionEvidence": "Friction draw tube confirmed in mineralogy.eu collection. 20 mm illustrative travel yields 95–115 mm overall length, not a specific measured specimen."
     },
     {
       "id": "eyepiece",
-      "label": "观察端与目口",
+      "label": "目镜与目口（随抽拉套筒）",
       "node": "PrismSpectroscope_eyepiece",
       "pivot": [
         0,
         0,
-        0.06949999999999999
+        0.0445
       ],
       "rotationAxisLocal": [
         0,
@@ -285,52 +310,24 @@
       "explodeOffset": [
         0,
         0,
-        0.047
+        0.045
       ],
       "hotspot": [
         0,
         0,
-        0.06949999999999999
+        0.0445
       ],
       "integralWith": "focusTube",
       "parentPart": "focusTube"
     },
     {
-      "id": "sideControl",
-      "label": "侧调节钮（功能对应待核实）",
-      "node": "PrismSpectroscope_sideControl",
-      "pivot": [
-        0.0148,
-        0,
-        0.050499999999999996
-      ],
-      "rotationAxisLocal": [
-        0,
-        0,
-        1
-      ],
-      "rotatable": false,
-      "translatable": false,
-      "explodeOffset": [
-        0.016,
-        0,
-        0.012
-      ],
-      "hotspot": [
-        0.0148,
-        0,
-        0.050499999999999996
-      ],
-      "functionUnverified": true
-    },
-    {
       "id": "baffles",
-      "label": "镜筒内消光环（示意）",
+      "label": "内部消光环（示意）",
       "node": "PrismSpectroscope_baffles",
       "pivot": [
         0,
         0,
-        0.023
+        0.0335
       ],
       "rotationAxisLocal": [
         0,
@@ -340,27 +337,153 @@
       "rotatable": false,
       "translatable": false,
       "explodeOffset": [
-        0.023,
         0,
-        0
+        0,
+        0.057
       ],
       "hotspot": [
         0,
         0,
-        0.023
+        0.0335
       ],
       "illustrative": true
     }
   ],
   "createdAt": "2026-10-07",
+  "transparentShellParts": [
+    "barrel"
+  ],
+  "explodeAlongOpticalAxis": true,
   "constructionNotes": [
-    "Exterior scale is illustrative, inferred from published photographs.",
-    "Hidden optics, supports and distances are teaching diagrams, not verified internal metrology.",
-    "No brand names/logos or source image pixels are embedded.",
-    "Explode offsets are explanatory separation, not mechanical freedoms."
+    "Relative scale is educational and uncalibrated. All exported geometry and metadata use metres.",
+    "Internal optics, glass recipes, supports and mechanical ranges are illustrative.",
+    "No side slot, side knob, external wavelength tube, brand/logo or reference photograph pixels.",
+    "Exploded layout separates only along the optical axis; it is not a mechanical travel limit."
   ],
   "boundsNominalMeters": {
-    "length": 0.145,
-    "diameter": 0.0256
+    "length": 0.095,
+    "diameter": 0.019,
+    "barrelDiameter": 0.018,
+    "lengthAtMaximumFocus": 0.115
+  },
+  "opticalPath": [
+    "adjustableSlit",
+    "achromaticCollimator",
+    "AmiciCrownFlintCrown",
+    "eyepiece"
+  ],
+  "wavelengthScale": {
+    "externalTube": false,
+    "physicalReticleIncluded": false,
+    "plannedDisplay": "Future webpage eyepiece-view teaching overlay only."
+  },
+  "teachingComparison": {
+    "grating": "光栅式波长分布较线性、均匀；本袖珍款狭缝和焦距固定。",
+    "prism": "棱镜式紫端展开、红端压缩；通常透光效率较高，亮度取决于狭缝、镀膜和照明；此款可调狭缝与抽拉调焦。",
+    "sourceConflict": {
+      "taskText": "棱镜式紫端压缩、红端展开",
+      "adoptedText": "棱镜式紫端展开、红端压缩",
+      "reason": "Lotus Gemology primary practitioner article describes prism models as pulling violet and pushing red. Skyjems handheld page agrees; its Beck page contradicts both. Use Lotus and retain discrepancy for review.",
+      "primarySource": "https://lotusgemology.com/index.php/en/resources/articles/282-gem-testing-with-the-spectroscope-lotus-gemology"
+    }
+  },
+  "controlLinkages": [
+    {
+      "type": "symmetricSlit",
+      "controlPart": "slitControl",
+      "drivenParts": [
+        "slitLeft",
+        "slitRight"
+      ],
+      "angleRangeDegrees": [
+        0,
+        90
+      ],
+      "apertureRangeMeters": [
+        4e-05,
+        0.0008
+      ],
+      "perBladeTravelMeters": 0.00038,
+      "closedStopGapMeters": 4e-05,
+      "hardStops": true,
+      "formula": "gap = 0.00004 + 0.00076 * clamp(angleDegrees, 0, 90) / 90; left/right move by -/+0.00038 * angleDegrees / 90 along X",
+      "couplingIsTeachingSchematic": true
+    }
+  ],
+  "amiciAssembly": {
+    "count": 3,
+    "sequence": [
+      "crown",
+      "flint",
+      "crown"
+    ],
+    "cemented": true,
+    "countIsTeachingSchematic": true,
+    "historicalBeckReplica": false,
+    "glassIORsAtDesignWavelength": null,
+    "note": "3-block Amici teaching construction; actual historic Beck examples may have five prisms. Glass recipe/apex angles are not an optical prescription.",
+    "interfaces": [
+      {
+        "node": "PrismSpectroscope_amici_cement_interface_1",
+        "planeXZ": {
+          "zInterceptMeters": -0.0065,
+          "zSlopePerX": -1.1607142857142856
+        },
+        "between": [
+          "crown",
+          "flint"
+        ],
+        "edgeGuidesOnly": true,
+        "widthMeters": 0.00014,
+        "depthMeters": 8e-05,
+        "guideFaces": [
+          "+Y",
+          "-Y"
+        ]
+      },
+      {
+        "node": "PrismSpectroscope_amici_cement_interface_2",
+        "planeXZ": {
+          "zInterceptMeters": 0.0065,
+          "zSlopePerX": 1.1607142857142856
+        },
+        "between": [
+          "flint",
+          "crown"
+        ],
+        "edgeGuidesOnly": true,
+        "widthMeters": 0.00014,
+        "depthMeters": 8e-05,
+        "guideFaces": [
+          "+Y",
+          "-Y"
+        ]
+      }
+    ],
+    "alternatingSlopes": true,
+    "materialAppearance": {
+      "crown": {
+        "baseColor": [
+          0.8,
+          0.91,
+          0.98
+        ],
+        "transmission": 0.92,
+        "roughness": 0.055,
+        "ior": 1.52
+      },
+      "flint": {
+        "baseColor": [
+          0.96,
+          0.91,
+          0.74
+        ],
+        "transmission": 0.86,
+        "roughness": 0.065,
+        "ior": 1.62
+      }
+    },
+    "interfaceVisibility": "Two narrow edge guides on both exterior Y faces make the shared alternating cement planes visible; no air gap or opaque layer across the optical path.",
+    "appearanceValuesIllustrative": true
   }
 }

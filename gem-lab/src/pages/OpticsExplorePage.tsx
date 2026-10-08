@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom';
 import Header from '../components/shared/Header';
 import { createOpticsViewer, type OpticsSnapshot, type OpticsViewer } from '../components/optics3d/opticsViewer.js';
 import { isOpticsInstrument, OPTICS_INSTRUMENTS, opticsAssetBase, type OpticsInstrumentId } from '../components/optics3d/opticsInstruments';
@@ -8,7 +8,10 @@ import RefractometerCourse from '../components/refractometer3d/RefractometerCour
 
 export default function OpticsExplorePage() {
   const { instrumentId } = useParams<{ instrumentId: string }>();
-  const [courseMode, setCourseMode] = useState<'student' | 'teacher' | null>(null);
+  // 课程由地址驱动（?course=basic&mode=student|teacher），知识库可以直接打开；未写 mode 时按讲师演示，与偏光镜一致。
+  const [searchParams, setSearchParams] = useSearchParams();
+  const courseMode = searchParams.get('course') === 'basic' ? (searchParams.get('mode') === 'student' ? 'student' : 'teacher') : null;
+  const setCourseMode = (mode: 'student' | 'teacher' | null) => setSearchParams(mode ? { course: 'basic', mode } : {}, { replace: !mode });
   if (!isOpticsInstrument(instrumentId)) return <Navigate to="/" replace />;
   if (instrumentId === 'refractometer' && courseMode) return <RefractometerCourse key={courseMode} mode={courseMode} onExit={() => setCourseMode(null)} />;
   // Remount per instrument so each viewer owns exactly one model.

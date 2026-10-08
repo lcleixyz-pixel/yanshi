@@ -155,6 +155,9 @@ export default function PolariscopeExplorePage() {
   const [toast, setToast] = useState<{ key: number; text: string } | null>(null);
   const doneItems = useRef<Set<string> | null>(null);
   const progressRecorded = useRef(false);
+  /** 本轮课程中是否用过讲师模式：讲师演示（含中途切换）不计入学员的学习进度。 */
+  const teacherUsed = useRef(false);
+  const [saveNote, setSaveNote] = useState('');
   const mainRef = useRef<HTMLElement>(null);
   const projectionExit = useRef<HTMLButtonElement>(null);
   const projectionEnter = useRef<HTMLButtonElement>(null);
@@ -281,7 +284,7 @@ export default function PolariscopeExplorePage() {
   /** mode 省略时保留地址中的使用方式（直接打开 ?course=basic&mode=student 时）。 */
   /** start 为起始步骤：知识库「使用方法」可以直接跳到对应步骤（地址参数 step）。 */
   const startCourse = (mode?: 'teacher' | 'student', start = 0) => {
-    setCourseStep(start); setCourseReached(start); setCourseProgress(EMPTY_COURSE_PROGRESS); setCourseFinished(false); progressRecorded.current = false;
+    setCourseStep(start); setCourseReached(start); setCourseProgress(EMPTY_COURSE_PROGRESS); setCourseFinished(false); progressRecorded.current = false; teacherUsed.current = (mode ?? (studentMode ? 'student' : 'teacher')) === 'teacher'; setSaveNote('');
     setStepTimes(COURSE_STEPS.map(() => 0)); stepEnteredAt.current = performance.now(); doneItems.current = null;
     enterCourseStep(start, mode);
   };
@@ -296,12 +299,15 @@ export default function PolariscopeExplorePage() {
   };
   const finishCourse = () => {
     leaveCurrentStep(); setCourseFinished(true);
-    // 每一步都实际完成（没有跳过）时，记为偏光镜的一次学习完成，与 2D 学习模式使用同一条记录。
-    if (!progressRecorded.current && COURSE_STEPS.every((item) => isStepComplete(item.id, courseProgress))) {
-      progressRecorded.current = true;
-      // 按需加载进度存储：自由探索和未完成的课程都不读写学习记录。
-      void import('../store/progressStore').then(({ useProgress }) => useProgress.getState().markDemoComplete({ instrumentId: 'polariscope', mode: 'learning', completedAt: Date.now() }));
-    }
+    // 学员全程自学、每一步都实际完成（没有跳过）时，记为偏光镜的一次学习完成，与 2D 学习模式使用同一条记录。
+    if (progressRecorded.current) return;
+    if (teacherUsed.current || !studentMode) { setSaveNote('讲师演示不写入学习进度。'); return; }
+    if (!COURSE_STEPS.every((item) => isStepComplete(item.id, courseProgress))) { setSaveNote('本次有跳过的步骤，不写入学习进度。'); return; }
+    progressRecorded.current = true;
+    // 按需加载进度存储：自由探索、讲师演示和未完成的课程都不读写学习记录。
+    void import('../store/progressStore')
+      .then(({ useProgress }) => { useProgress.getState().markDemoComplete({ instrumentId: 'polariscope', mode: 'learning', completedAt: Date.now() }); setSaveNote('已记录本次学习完成。'); })
+      .catch(() => { progressRecorded.current = false; setSaveNote('学习记录保存失败，可点「完成课程」重试。'); });
   };
   const exitCourse = () => {
     setCourseFinished(false);
@@ -321,6 +327,7 @@ export default function PolariscopeExplorePage() {
     startCourse(undefined, start);
     if (searchParams.has('step')) setSearchParams((previous) => { const next = new URLSearchParams(previous); next.delete('step'); return next; }, { replace: true });
   }, [courseActive]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (courseActive && !studentMode) teacherUsed.current = true; }, [courseActive, studentMode]);
   const courseStepId = COURSE_STEPS[courseStep].id;
   const courseOverlay = courseActive ? (courseFinished ? 'complete' : courseStepId === 'explain' ? 'quiz' : null) : null;
   // 学员模式：清单项完成时在展台上方给出短提示。
@@ -478,7 +485,7 @@ export default function PolariscopeExplorePage() {
           <div className="pol-explore__scene-caption"><div><span className="pol-explore__eyebrow">{state.lesson === 'path' ? `LIGHT PATH / 0${state.pathStep + 1}` : state.lesson === 'principle' ? 'POLARIZATION / 理想示意' : state.lesson === 'sample' ? 'SAMPLE / 正交偏光' : state.lesson === 'conoscope' ? 'CONOSCOPE / 锥光' : state.mode === 'explode' ? 'EXPLODED VIEW' : 'INSTRUMENT STUDY'}</span><h2>{state.lesson === 'components' ? modeCopy.caption : state.lesson === 'path' ? pathCopy.title : state.lesson === 'principle' ? (halfWave ? '理想半波片 · 单色 · 相位差 180°' : '空载：从平行转到正交。') : state.lesson === 'sample' ? '转动载物台，看目镜里的明暗' : showConoscopicFigure ? '干涉球就位：转动物台看图形' : '先放上干涉球'}</h2></div><span className="pol-explore__ready" data-status={sceneStatus} role="status">{STATUS_LABELS[sceneStatus]}</span></div>
           {courseOverlay && <div className="pol-course-overlay" data-testid="course-overlay">{courseOverlay === 'quiz'
             ? <CourseQuiz correct={courseProgress.correctQuestions} onCorrect={(id) => setCourseProgress((previous) => previous.correctQuestions.includes(id) ? previous : { ...previous, correctQuestions: [...previous.correctQuestions, id] })} />
-            : <CourseComplete stepTimes={stepTimes} progress={courseProgress} topics={ADVANCED_TOPICS} onTopic={openAdvanced} onRestart={() => startCourse()} onExit={exitCourse} />}</div>}
+            : <CourseComplete stepTimes={stepTimes} progress={courseProgress} saveNote={saveNote} topics={ADVANCED_TOPICS} onTopic={openAdvanced} onRestart={() => startCourse()} onExit={exitCourse} />}</div>}
           {toast && <div className="pol-student-toast" key={toast.key} role="status" data-testid="student-toast">✓ {toast.text}</div>}
           {eyepieceContent && (studentObserve ? <div className="pol-student-observe" data-testid="student-observe">
             <EyepieceView content={eyepieceContent} stageDeg={state.stageAngle} analyzerDeg={state.analyzerAngle} active={optics.active} label={eyepieceLabel} onRendered={onFieldRendered} onCanvas={setFieldCanvas} />

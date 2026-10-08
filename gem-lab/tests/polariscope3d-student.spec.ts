@@ -114,3 +114,49 @@ test('student mode on a 390 px phone keeps the stacked layout without horizontal
   await expect(page.getByTestId('student-observe')).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
 });
+
+test('student mode: a full run without skipping records one polariscope learning completion', async ({ page }) => {
+  await openStudent(page);
+  for (const part of ['polarizer', 'stage', 'analyzer']) await page.locator(`.polariscope-hotspot[data-part-id="${part}"]`).click();
+  await page.getByTestId('course-next').click();
+
+  await expect(guide(page)).toHaveAttribute('data-step', 'path');
+  // 学员模式侧栏收起，光路步骤用展台下方的投屏控制条。
+  for (let i = 0; i < 4; i++) await page.getByRole('button', { name: '投屏下一步' }).click();
+  await page.getByTestId('course-next').click();
+
+  await expect(guide(page)).toHaveAttribute('data-step', 'crossed');
+  await page.getByRole('slider', { name: '投屏检偏器角度' }).fill('90');
+  await page.getByTestId('course-next').click();
+
+  await expect(guide(page)).toHaveAttribute('data-step', 'rotate');
+  await rotateWithCard(page, 'all-dark');
+  await guide(page).getByRole('button', { name: '碧玺转一周' }).click();
+  await rotateWithCard(page, 'four-bright-four-dark');
+  await guide(page).getByRole('button', { name: '翡翠转一周' }).click();
+  await rotateWithCard(page, 'all-bright');
+  await page.getByTestId('course-next').click();
+
+  await expect(guide(page)).toHaveAttribute('data-step', 'reorient');
+  await rotateWithCard(page, 'axis-dark');
+  await page.getByTestId('student-reorient').click();
+  await page.getByTestId('student-auto-rotate').click();
+  await expect(page.getByTestId('sample-reveal')).toHaveAttribute('data-observation', 'four-bright-four-dark', { timeout: 20_000 });
+  await page.getByTestId('course-next').click();
+
+  const quiz = page.getByTestId('course-quiz');
+  const question = (id: string) => quiz.getByTestId(`course-question-${id}`);
+  await question('why-crossed').getByLabel(/样品造成的明暗变化才能看清/).check();
+  await question('why-crossed').getByRole('button', { name: '提交' }).click();
+  await question('why-reorient').getByLabel(/看起来和均质体一样暗/).check();
+  await question('why-reorient').getByRole('button', { name: '提交' }).click();
+  for (const text of [/电源关闭/, /没转到正交/, /只在一个方向/, /样品不透明/]) await question('no-conclusion').getByLabel(text).check();
+  await question('no-conclusion').getByRole('button', { name: '提交' }).click();
+  expect(await page.evaluate(() => localStorage.getItem('gem-lab-progress-v1'))).toBeNull();
+  await page.getByTestId('course-finish').click();
+
+  await expect(page.getByTestId('course-complete')).toHaveAttribute('data-skipped', '0');
+  await expect(page.getByTestId('course-save-status')).toHaveText('已记录本次学习完成。');
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('gem-lab-progress-v1') ?? '{}').state?.completedDemos ?? []))
+    .toEqual([expect.objectContaining({ instrumentId: 'polariscope', mode: 'learning' })]);
+});

@@ -86,9 +86,9 @@ test('basic guided course: parts → path → crossed → rotate → reorient �
   await expect(complete).toBeVisible();
   expect(Number(await complete.getAttribute('data-total-ms'))).toBeGreaterThan(0);
   await expect(complete).toHaveAttribute('data-skipped', '0');
-  // 没有跳过任何步骤：记为一次偏光镜学习完成（与 2D 学习模式同一条记录）。
-  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('gem-lab-progress-v1') ?? '{}').state?.completedDemos ?? []))
-    .toEqual([expect.objectContaining({ instrumentId: 'polariscope', mode: 'learning' })]);
+  // 讲师演示即使全部完成也不写入学习进度；学员完成的写入见 polariscope3d-student。
+  await expect(page.getByTestId('course-save-status')).toHaveText('讲师演示不写入学习进度。');
+  expect(await page.evaluate(() => localStorage.getItem('gem-lab-progress-v1'))).toBeNull();
   await page.getByTestId('course-advanced-adr').click();
   await expect(page).not.toHaveURL(/course=/);
   await expect(page.getByTestId('course-guide')).toHaveCount(0);

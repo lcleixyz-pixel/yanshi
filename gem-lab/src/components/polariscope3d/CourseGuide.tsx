@@ -107,7 +107,7 @@ export function CourseQuiz({ correct, onCorrect }: { correct: readonly string[];
 export interface AdvancedTopic { id: string; title: string; text: string }
 
 /** 课程完成：总用时、各步用时与进阶内容入口。 */
-export function CourseComplete({ stepTimes, progress, topics, onTopic, onRestart, onExit }: { stepTimes: number[]; progress: CourseProgress; topics: readonly AdvancedTopic[]; onTopic: (id: string) => void; onRestart: () => void; onExit: () => void }) {
+export function CourseComplete({ stepTimes, progress, saveNote, topics, onTopic, onRestart, onExit }: { stepTimes: number[]; progress: CourseProgress; saveNote?: string; topics: readonly AdvancedTopic[]; onTopic: (id: string) => void; onRestart: () => void; onExit: () => void }) {
   const total = stepTimes.reduce((sum, value) => sum + value, 0);
   return (
     <div className="pol-course-card" role="region" aria-label="课程完成" data-testid="course-complete" data-total-ms={Math.round(total)} data-skipped={COURSE_STEPS.filter((step) => !isStepComplete(step.id, progress)).length}>
@@ -115,6 +115,7 @@ export function CourseComplete({ stepTimes, progress, topics, onTopic, onRestart
       <h2>基础课程完成 · 用时 {formatDuration(total)}</h2>
       <ol className="pol-course-complete__times">{COURSE_STEPS.map((step, index) => { const done = isStepComplete(step.id, progress); return <li key={step.id} data-done={done}><span>{step.title}{done ? null : <em>已跳过</em>}</span><output>{formatDuration(stepTimes[index] ?? 0)}</output></li>; })}</ol>
       <p className="pol-course-complete__note">用时只在本页显示，不保存、不计分。</p>
+      {saveNote && <p className="pol-course-complete__note" role="status" data-testid="course-save-status">{saveNote}</p>}
       <h3>进阶内容</h3>
       <div className="pol-course-complete__topics">{topics.map((topic) => <button key={topic.id} className="pol-course-complete__topic" onClick={() => onTopic(topic.id)} data-testid={`course-advanced-${topic.id}`}><strong>{topic.title}</strong><span>{topic.text}</span></button>)}</div>
       <div className="pol-course__nav"><button className="pol-explore__button" onClick={onRestart} data-testid="course-restart">再学一遍</button><button className="pol-explore__button pol-explore__button--primary" onClick={onExit}>进入自由探索</button></div>

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/shared/Header';
 import { SAMPLES, SAMPLES_BY_ID } from '@/data/samples';
+import { INSTRUMENT_LIST } from '@/data/instruments';
+import { INSTRUMENT_COURSES } from '@/data/courses';
 import { masteryLevel, type MasteryLevel } from '@/domain/practice';
 import { useProgress } from '@/store/progressStore';
 import clsx from '@/utils/clsx';
@@ -27,6 +29,16 @@ export default function ProgressPage() {
   const mastery = useProgress((s) => s.sampleMastery);
   const history = useProgress((s) => s.detectionHistory);
   const totalPoints = useProgress((s) => s.totalPoints);
+  const visited = useProgress((s) => s.visitedKnowledgeBases);
+  const demos = useProgress((s) => s.completedDemos);
+  const instruments = INSTRUMENT_LIST.map((it) => ({
+    ...it,
+    visited: visited.includes(it.id),
+    learned: demos.some((d) => d.instrumentId === it.id && d.mode === 'learning'),
+    detected: demos.some((d) => d.instrumentId === it.id && d.mode === 'detection'),
+  }));
+  // 「复习仪器知识」指向第一台还没学完的仪器。
+  const nextInstrument = instruments.find((it) => !it.learned) ?? instruments[0];
   const [filter, setFilter] = useState<Filter>('all');
 
   const counts = SAMPLES.reduce<Record<MasteryLevel, number>>((result, sample) => {
@@ -57,7 +69,7 @@ export default function ProgressPage() {
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link to="/detection" className="btn rounded-xl bg-lab-cyan px-5 py-2.5 font-semibold text-lab-ink hover:bg-white">开始一轮练习 →</Link>
-                <Link to="/knowledge/refractometer" className="btn rounded-xl border border-white/25 bg-white/10 px-5 py-2.5 text-white hover:bg-white/20">复习仪器知识</Link>
+                <Link to={`/knowledge/${nextInstrument.id}`} data-testid="progress-next-instrument" className="btn rounded-xl border border-white/25 bg-white/10 px-5 py-2.5 text-white hover:bg-white/20">复习仪器知识</Link>
               </div>
             </div>
             <div className="rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur">
@@ -85,6 +97,26 @@ export default function ProgressPage() {
           <Stat label="待复习" value={String(counts.review)} hint="最近一次判断有误" />
           <Stat label="最近记录" value={String(history.length)} hint="最多保留 50 条明细" />
           <Stat label="累计积分" value={String(totalPoints)} hint="只用于记录个人进步" />
+        </section>
+
+        <section className="rounded-3xl border border-line bg-white p-5 shadow-soft sm:p-6" aria-label="仪器学习">
+          <h2 className="font-display text-xl font-semibold text-ink">仪器学习</h2>
+          <p className="mt-1 text-sm text-ink-3">学员自学完成全部步骤、没有跳过才记为「已学完」；讲师演示和自由探索不计入。</p>
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
+            {instruments.map((it) => (
+              <Link key={it.id} to={`/knowledge/${it.id}`} data-testid={`progress-instrument-${it.id}`} data-learned={it.learned} className="flex min-w-0 gap-3 rounded-2xl border border-line p-3 transition-shadow hover:shadow-card">
+                <img src={it.productImage} alt="" loading="lazy" className="h-14 w-14 shrink-0 rounded-xl bg-brand-50 object-contain p-1.5" />
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-display text-sm font-semibold text-ink">{it.name}</h3>
+                  <ul className="mt-1.5 space-y-0.5 text-[11px] text-ink-3">
+                    <li>{it.visited ? '✓' : '○'} 知识库</li>
+                    <li>{it.learned ? '✓' : '○'} {INSTRUMENT_COURSES[it.id] ? '3D 引导课程或 2D 学习模式' : '2D 学习模式'}</li>
+                    <li>{it.detected ? '✓' : '○'} 检测练习</li>
+                  </ul>
+                </div>
+              </Link>
+            ))}
+          </div>
         </section>
 
         <section className="rounded-3xl border border-line bg-white p-5 shadow-soft sm:p-6">

@@ -320,3 +320,37 @@ test('桌面教学画面与手机操作留存，窄条测台和既有 2D 参考�
   await page.getByAltText('v2窄条测台').evaluate(async(image:HTMLImageElement)=>image.decode());
   await page.screenshot({path:path.join(out,'window-comparison.png')});
 });
+
+test("知识库以 3D 读数课为主线，地址可直接打开学员或讲师课程", async ({
+  page,
+}) => {
+  const student = `${route}?course=basic&mode=student`;
+  await page.goto("/knowledge/refractometer");
+  await expect(page.getByTestId("knowledge-start-course")).toHaveAttribute("href", student);
+  await expect(page.getByTestId("knowledge-teacher-course")).toHaveAttribute("href", `${route}?course=basic&mode=teacher`);
+  await expect(page.getByTestId("knowledge-cta-learning")).toHaveAttribute("href", student);
+  await expect(page.getByTestId("knowledge-classic-demo")).toHaveAttribute("href", "/demo/refractometer");
+  await expect(page.getByTestId("method-practice-facet").getByRole("link")).toHaveAttribute("href", student);
+  await page.getByTestId("knowledge-start-course").click();
+  await expect(course(page)).toHaveAttribute("data-mode", "student");
+  await expect(canvas(page)).toHaveAttribute("data-loaded", "true", { timeout: 60_000 });
+  await button(page, "返回自由探索").first().click();
+  await expect(page).not.toHaveURL(/course=/);
+  await expect(page.getByTestId("optics-explore-page")).toBeVisible();
+  await page.goto(`${route}?course=basic&mode=teacher`);
+  await expect(course(page)).toHaveAttribute("data-mode", "teacher");
+  await page.goto(`${route}?course=basic`);
+  await expect(course(page)).toHaveAttribute("data-mode", "teacher");
+});
+
+test("进度页按仪器显示学习完成，并指向下一台未学完的仪器", async ({ page }) => {
+  await page.goto("/progress");
+  await page.evaluate(() => localStorage.setItem("gem-lab-progress-v1", JSON.stringify({
+    state: { completedDemos: [{ instrumentId: "refractometer", mode: "learning", completedAt: 1 }], visitedKnowledgeBases: ["refractometer"] },
+    version: 2,
+  })));
+  await page.reload();
+  await expect(page.getByTestId("progress-instrument-refractometer")).toHaveAttribute("data-learned", "true");
+  await expect(page.getByTestId("progress-instrument-polariscope")).toHaveAttribute("data-learned", "false");
+  await expect(page.getByTestId("progress-next-instrument")).toHaveAttribute("href", "/knowledge/polariscope");
+});

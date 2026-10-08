@@ -4,15 +4,18 @@ import Header from '../components/shared/Header';
 import { createOpticsViewer, type OpticsSnapshot, type OpticsViewer } from '../components/optics3d/opticsViewer.js';
 import { isOpticsInstrument, OPTICS_INSTRUMENTS, opticsAssetBase, type OpticsInstrumentId } from '../components/optics3d/opticsInstruments';
 import '../styles/microscope-explore.css';
+import RefractometerCourse from '../components/refractometer3d/RefractometerCourse';
 
 export default function OpticsExplorePage() {
   const { instrumentId } = useParams<{ instrumentId: string }>();
+  const [courseMode, setCourseMode] = useState<'student' | 'teacher' | null>(null);
   if (!isOpticsInstrument(instrumentId)) return <Navigate to="/" replace />;
+  if (instrumentId === 'refractometer' && courseMode) return <RefractometerCourse key={courseMode} mode={courseMode} onExit={() => setCourseMode(null)} />;
   // Remount per instrument so each viewer owns exactly one model.
-  return <OpticsExplore key={instrumentId} instrumentId={instrumentId} />;
+  return <OpticsExplore key={instrumentId} instrumentId={instrumentId} onStart={setCourseMode} />;
 }
 
-function OpticsExplore({ instrumentId }: { instrumentId: OpticsInstrumentId }) {
+function OpticsExplore({ instrumentId, onStart }: { instrumentId: OpticsInstrumentId; onStart: (mode: 'student' | 'teacher') => void }) {
   const info = OPTICS_INSTRUMENTS[instrumentId], assetBase = opticsAssetBase(instrumentId);
   const viewportRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<OpticsViewer | null>(null);
@@ -66,8 +69,13 @@ function OpticsExplore({ instrumentId }: { instrumentId: OpticsInstrumentId }) {
         </section>
 
         <aside className="mic-explore__sidebar" aria-label="光路与部件控制">
+          {instrumentId === 'refractometer' && <section className="mic-explore__block" aria-label="基础读数课">
+            <h2>基础读数课 <span>约 9 分钟</span></h2>
+            <p className="mic-explore__note">从接触恢复到自主读数与换方向复核。固定尖晶石教学样品，先记录再核对。</p>
+            <div className="mic-explore__row"><button type="button" onClick={() => onStart('student')}>开始学习（学员）</button><button type="button" onClick={() => onStart('teacher')}>讲师演示</button></div>
+          </section>}
           <section className="mic-explore__block" aria-label="光路示例">
-            <h2>光路示例 <span>paper-optics-v1</span></h2>
+            <h2>光路示例 <span>{instrumentId === 'refractometer' ? 'paper-optics-v2' : 'paper-optics-v1'}</span></h2>
             <select className="opt-explore__select" aria-label="光路示例" disabled={!ready} value={ready?.state.caseId ?? ''} onChange={event => viewer()?.setCase(event.target.value)}>
               {ready?.cases.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}
             </select>

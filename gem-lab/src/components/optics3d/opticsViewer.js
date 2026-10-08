@@ -1,4 +1,4 @@
-// Three.js viewer for the paper-optics-v1 spectroscopes and refractometer.
+// Three.js viewer for the versioned paper-optics spectroscopes and refractometer.
 // Ported from tools/3d-assets/instruments-optics-2026-10-08/review/review.mjs: same verified paths,
 // poses and display rules; the page UI is React and receives a snapshot through onChange.
 import * as THREE from 'three';
@@ -51,6 +51,7 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
   let modelExtent = 1, root, manifest, caseFile, sources, parts = [], helpers = new THREE.Group(), animationFrame, disposed = false;
   const materials = new Map(), originalPoses = new Map();
   scene.add(helpers);
+  let external = null;
   let state = { view: 'optics', caseId: null, rays: true, explode: 0, selectedId: null, isolated: false };
   const currentCase = () => caseFile?.cases.find(c => c.id === state.caseId);
   const chosen = () => parts.find(p => p.id === state.selectedId);
@@ -60,9 +61,9 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
     for (const [o, p] of originalPoses) { o.position.copy(p.position); o.quaternion.copy(p.quaternion); o.scale.copy(p.scale); }
     root.updateMatrixWorld(true);
   }
-  function applyPose(part, offset = [0, 0, 0], delta = null) {
+  function applyPose(part, offset = [0, 0, 0], delta = null, pivotOverride = null) {
     const o = part.object; o.updateWorldMatrix(true, true);
-    const pivot = new THREE.Vector3().setFromMatrixPosition(o.matrixWorld);
+    const pivot = pivotOverride ? new THREE.Vector3(...pivotOverride).applyMatrix4(root.matrixWorld) : new THREE.Vector3().setFromMatrixPosition(o.matrixWorld);
     const shift = new THREE.Vector3(...offset).applyMatrix4(root.matrixWorld).sub(new THREE.Vector3().setFromMatrixPosition(root.matrixWorld));
     const transform = new THREE.Matrix4().makeTranslation(...shift.toArray());
     if (delta) {
@@ -93,7 +94,7 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
       distance = Math.max(distance, v.dot(dir) + 1.15 * Math.max(Math.abs(v.dot(right)) / tanH, Math.abs(v.dot(up)) / tanV));
     }
     controls.target.copy(center); camera.position.copy(center).addScaledVector(dir, distance);
-    camera.near = Math.max(.000001, distance / 2000); camera.far = Math.max(10, distance * 50); camera.updateProjectionMatrix();
+    camera.near = Math.max(.000001, distance / (instrument === 'refractometer' ? 100 : 2000)); camera.far = Math.max(10, distance * 50); camera.updateProjectionMatrix();
     controls.minDistance = r * .1; controls.maxDistance = Math.max(2, distance * 20); controls.update();
   }
   function fit() {
@@ -166,9 +167,14 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
     for (const part of parts) {
       const offset = c?.partOffsets?.[part.id] || [0, 0, 0], explode = (part.explodeOffset || [0, 0, 0]).map(n => n * state.explode);
       applyPose(part, offset.map((n, i) => n + explode[i]), c?.partRotations?.[part.id]);
+      if (external && instrument === 'refractometer') {
+        if (part.id === 'power_switch' && external.power) applyPose(part, [-.0008, 0, 0]);
+        if (part.id === 'cover' && external.cover === 'closed') applyPose(part, [0, 0, 0], new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), THREE.MathUtils.degToRad(100)).toArray(), part.pivot);
+        if (part.id === 'isotropic_sample' && external.angle) applyPose(part, [0, 0, 0], new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(...manifest.contactWindow.normal), THREE.MathUtils.degToRad(external.angle)).toArray(), part.pivot);
+      }
     }
     root.updateMatrixWorld(true);
-    for (const part of parts) part.object.visible = (c?.partVisibility?.[part.id] ?? part.defaultVisible) !== false && !part.teachingOverlay
+    for (const part of parts) part.object.visible = (external?.partVisibility?.[part.id] ?? c?.partVisibility?.[part.id] ?? part.defaultVisible) !== false && !part.teachingOverlay
       && (!state.isolated || part.id === state.selectedId || chosen()?.object.parent === part.object);
     for (const [material, base] of materials) {
       material.opacity = base.opacity; material.transparent = base.transparent; material.depthWrite = base.depthWrite;
@@ -179,6 +185,14 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
         part.object.traverse(o => { if (!o.isMesh) return; for (const m of Array.isArray(o.material) ? o.material : [o.material]) { m.opacity = .11; m.transparent = true; m.depthWrite = false; } });
       for (const [m, base] of materials) if (base.transmission > 0) { m.transmission = 0; m.opacity = .22; m.transparent = true; m.depthWrite = false; }
     }
+    if (external && instrument === 'refractometer') {
+      parts.find(p => p.id === 'internal_light')?.object.traverse(o => {
+        if (!o.isMesh) return;
+        for (const m of Array.isArray(o.material) ? o.material : [o.material]) if (m.emissive) {
+          m.emissive.set(external.power ? '#d39323' : '#000000'); m.emissiveIntensity = external.power ? .65 : 0;
+        }
+      });
+    }
     clearHelpers();
     const suspended = state.isolated || state.explode > 0;
     if (!suspended) {
@@ -186,6 +200,8 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
       if (state.rays) for (const path of displayPaths(instrument, c?.paths)) makeLine(path);
     }
     canvas.dataset.displayPaths = JSON.stringify(suspended || !state.rays ? [] : displayPaths(instrument, c?.paths).map(p => ({ id: p.id, kind: p.kind, color: p.color })));
+    if (external) canvas.dataset.operation = JSON.stringify({ power: external.power, cover: external.cover, angle: external.angle, partVisibility: external.partVisibility });
+    else delete canvas.dataset.operation;
     canvas.dataset.state = JSON.stringify(state); canvas.dataset.selectedPart = state.selectedId || '';
     canvas.dataset.case = JSON.stringify({ id: c?.id, pathCount: c?.paths?.length || 0, visiblePathCount: suspended || !state.rays ? 0 : (c?.paths?.length || 0), suspended });
     onChange?.(describe());
@@ -222,7 +238,7 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
         o.material = Array.isArray(o.material) ? o.material.map(m => m.clone()) : o.material.clone();
         for (const m of Array.isArray(o.material) ? o.material : [o.material]) materials.set(m, { opacity: m.opacity, transparent: m.transparent, depthWrite: m.depthWrite, transmission: m.transmission });
       });
-      state = { ...state, caseId: cf.defaultCaseId || cf.cases[0].id };
+      state = { ...state, caseId: external?.caseId || cf.defaultCaseId || cf.cases[0].id };
       canvas.dataset.modelSha256 = mf.modelSha256 || ''; canvas.dataset.assetVersion = mf.version || ''; canvas.dataset.partCount = String(parts.length);
       resize(); apply(); fit(); canvas.dataset.loaded = 'true';
     } catch (error) {
@@ -258,13 +274,18 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
   }
   animate(); load();
   return {
+    setState: patch => {
+      external = patch;
+      state = { ...state, caseId: patch.caseId, rays: patch.rays ?? state.rays };
+      apply();
+    },
     setView: view => update({ view }, true),
     setCase: caseId => update({ caseId, explode: 0, isolated: false, selectedId: null }, true),
     setRays: rays => update({ rays }),
     setExplode: explode => update({ explode }, true),
     toggleIsolate: () => update({ isolated: !state.isolated }, true),
     select, focusSelected: () => { if (chosen()) fitBox(bounds([chosen().object])); },
-    fit, reset: () => update({ view: 'optics', caseId: caseFile.defaultCaseId || caseFile.cases[0].id, rays: true, explode: 0, selectedId: null, isolated: false }, true),
+    fit, reset: () => { external = null; update({ view: 'optics', caseId: caseFile.defaultCaseId || caseFile.cases[0].id, rays: true, explode: 0, selectedId: null, isolated: false }, true); },
     dispose,
   };
 }

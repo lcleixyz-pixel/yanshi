@@ -21,6 +21,8 @@ export function checkRI(
   if (standard === 'over-1.78' || isOverRange(standard)) return userMin === null;
   if (userMin === null || !Number.isFinite(userMin)) return false;
   const TOL = 0.005;
+  // Inclusive decimal tolerance despite binary floating point at either endpoint.
+  const within = (a: number, b: number) => Math.abs(a - b) <= TOL + Number.EPSILON * Math.max(1, Math.abs(a), Math.abs(b)) * 4;
   if (method === 'spot') {
     const [min, max] = typeof standard === 'number' ? [standard, standard] : standard;
     // 点测保留两位小数，允许半个末位单位的舍入误差；不据此测定双折射率。
@@ -28,9 +30,9 @@ export function checkRI(
     return userMin >= min - precision - Number.EPSILON
       && userMin <= max + precision + Number.EPSILON;
   }
-  if (typeof standard === 'number') return Math.abs(userMin - standard) <= TOL;
+  if (typeof standard === 'number') return within(userMin, standard);
   const u = userMax ?? userMin;
-  return Math.abs(userMin - standard[0]) <= TOL && Math.abs(u - standard[1]) <= TOL;
+  return within(userMin, standard[0]) && within(u, standard[1]);
 }
 
 export function formatRIReference(standard: RefractiveIndex, method: Method): string {

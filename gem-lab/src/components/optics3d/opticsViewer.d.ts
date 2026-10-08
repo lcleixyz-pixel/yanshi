@@ -12,7 +12,11 @@ export interface OpticsSnapshotReady {
 }
 export type OpticsSnapshot = { status: 'loading' } | { status: 'error'; error: string } | OpticsSnapshotReady;
 
+export interface OpticsExternalState {
+  caseId: string; partVisibility: Record<string, boolean>; cover: 'open' | 'closed'; power: boolean; rays: boolean; angle: number;
+}
 export interface OpticsViewer {
+  setState(patch: OpticsExternalState): void;
   setView(view: 'optics' | 'whole'): void;
   setCase(caseId: string): void;
   setRays(rays: boolean): void;

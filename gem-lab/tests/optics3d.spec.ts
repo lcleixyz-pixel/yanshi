@@ -20,7 +20,7 @@ for (const [knowledge, ids] of [['spectroscope', ['prism-spectroscope', 'grating
       await page.goto(`/knowledge/${knowledge}`);
       await page.getByTestId(`optics-link-${id}`).click();
       await expect(canvas(page)).toHaveAttribute('data-loaded', 'true', { timeout: 60_000 });
-      await expect(canvas(page)).toHaveAttribute('data-asset-version', 'paper-optics-v1');
+      await expect(canvas(page)).toHaveAttribute('data-asset-version', id==='refractometer'?'paper-optics-v2':'paper-optics-v1');
       expect((await caseInfo(page)).visiblePathCount).toBeGreaterThan(0);
       const select = page.getByRole('combobox', { name: '光路示例' });
       const values = await select.locator('option').evaluateAll(options => options.map(option => (option as HTMLOptionElement).value));

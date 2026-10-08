@@ -79,11 +79,13 @@ def trace(theta,ns,nl):
         transmittedFraction=1-power,interface=opticalInterface,pre=pre,post=post,transmitted=transmitted,
         apertures={name:h for name,h in [('first_mirror',mh),('internal_scale',scale),('lens_group',lens),('second_mirror',mirror),('eyepiece',eye)]})
 
-def make_cases():
+def make_cases(course_ri=None):
     result=[]
-    for id,label,ns,nl in [('isotropic-160','理想均质样品 · nD 1.600',1.60,1.78),('isotropic-170','理想均质样品 · nD 1.700',1.70,1.78),('air-gap','缺少光学接触 · 空气间隙',1.60,1.),('over-liquid','样品超过接触液上限',1.82,1.78)]:
+    definitions=[('isotropic-160','理想均质样品 · nD 1.600',1.60,1.78),('isotropic-170','理想均质样品 · nD 1.700',1.70,1.78),('air-gap','缺少光学接触 · 空气间隙',1.60,1.),('over-liquid','样品超过接触液上限',1.82,1.78)]
+    if course_ri is not None: definitions += [('spinel-good','课程样品 · 接触良好',course_ri,1.78),('spinel-air-gap','课程样品 · 空气间隙',course_ri,1.)]
+    for id,label,ns,nl in definitions:
         sample_critical=math.degrees(math.asin(ns/NG))
-        if id in ['air-gap','over-liquid']: angles=[54.32756657358341,58.32756657358341,62.32756657358341]
+        if id in ['air-gap','over-liquid','spinel-air-gap']: angles=[54.32756657358341,58.32756657358341,62.32756657358341]
         else: angles=[sample_critical-3,sample_critical,sample_critical+3]
         traces=[trace(math.radians(t),ns,nl) for t in angles];paths=[]
         for i,t in enumerate(traces):
@@ -96,17 +98,17 @@ def make_cases():
             interactions.extend([dict(pointIndex=count-5,kind='refraction',surfaceNode='Refractometer_test_prism',n1=NG,n2=1,wavelengthNm=589),dict(pointIndex=count-3,kind='ideal-thin-lens',surfaceNode='Refractometer_lens_group',focalLengthMeters=FOCAL),dict(pointIndex=count-2,kind='reflection',surfaceNode='Refractometer_second_mirror',normal=gl(G['surfaces']['second_mirror']['normal']))])
             paths.append(dict(id=f'reflected-{i}',kind=t['kind'],color=col,points=[gl(p) for p in t['post']],relativeIntensity=t['reflectedFraction'],interactions=interactions))
             if t['transmitted']:paths.append(dict(id=f'transmitted-{i}',kind='grazing-boundary' if t['kind']=='critical' else 'transmitted',color='#63d8c1',points=[gl(p) for p in t['transmitted']],relativeIntensity=t['transmittedFraction']))
-        has_edge=id in ['isotropic-160','isotropic-170']
+        has_edge=nl>ns
         result.append(dict(id=id,label=label,description='玻璃—接触层—理想各向同性样品；光线和示例读数由同一状态计算。接触层厚度仅为教学假设。',
           intensitySemantics=INTENSITY_SEMANTICS,
           parameters=dict(glassIndex=NG,contactIndex=nl,sampleIndex=ns,wavelengthNm=589,contactThicknessMeters=FILM,idealRelayFocalLengthMeters=FOCAL,anisotropic=False,
             angleReference='所有 angleDegrees 及 sampleCriticalAngleDegrees 均为玻璃内部光线相对于接触平面法线的角度。sampleCriticalAngleDegrees=asin(n样品/n玻璃)，不是液体—样品界面的入射角；contactCriticalAngleDegrees=asin(n接触层/n玻璃)，指玻璃—接触层界面的临界角。样品超过接触层折射率时，前者仅为不可直接到达的理论玻璃角，不产生有效样品读数。'),paths=paths,
           readout=dict(status='valid-ideal-example' if has_edge else 'no-sample-reading',sampleRI=f'{ns:.3f}' if has_edge else None,
             sampleCriticalAngleDegrees=sample_critical,contactCriticalAngleDegrees=math.degrees(math.asin(nl/NG)),
-            explanation='低角度仍有部分反射；超过样品临界角的光全反射，因此形成反射强弱的边界。' if has_edge else ('空气界面已全反射，不能读成样品折射率。' if id=='air-gap' else '在所示角度内尚无样品全反射；继续增大角度将先达到玻璃—液体上限，不能据此给出样品精确 RI。'),
+            explanation='低角度仍有部分反射；超过样品临界角的光全反射，因此形成反射强弱的边界。' if has_edge else ('空气界面已全反射，不能读成样品折射率。' if nl==1. else '在所示角度内尚无样品全反射；继续增大角度将先达到玻璃—液体上限，不能据此给出样品精确 RI。'),
             rows=[{k:t[k] for k in ['angleDegrees','kind','reflectedFraction','transmittedFraction','interface','normalizedAt']} for t in traces],
             interfaceSemantics='interface 标识本条光线发生分支的界面；reflectedFraction 和 transmittedFraction 为整个接触层系统的等效能量，不是该单一界面的 Fresnel 系数。'),
-          partVisibility={'contact_layer':id!='air-gap'},verification=traces))
+          partVisibility={'contact_layer':nl!=1.},verification=traces))
     return result
 
 if __name__=='__main__':

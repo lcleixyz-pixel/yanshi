@@ -61,7 +61,7 @@ def ray_segment(tris,a,b):
  if not mask.any():return None
  k=np.argmin(np.where(mask,dist,np.inf));return float(dist[k]),(a+direction*dist[k]).tolist()
 
-def evaluate(glb,cases):
+def evaluate(glb,cases,window=None):
  checks=[];details=[];failures=[]
  def check(name,value,metrics=None):
   row={'name':name,'pass':bool(value)}
@@ -69,7 +69,30 @@ def evaluate(glb,cases):
   checks.append(row)
   if not value:failures.append(row)
  curve_tol_deg=.10;plane_tol_deg=.003;point_tol_m=5e-6
+ if window:
+  center=np.asarray(window['center']);axes=np.asarray(window['axes']);normal=unit(window['normal']);half=np.asarray(window['sizeMeters'])/2
+  # Independently probe the actual exported steel triangles at the top opening.
+  steel=glb.surface('Refractometer_metal_stage')
+  top=glb.nearest('Refractometer_metal_stage',center+axes[1]*.003)
+  check('actual steel top faces outward for browser backface culling',top['normal'].dot(normal)>.9999,top['normal'].tolist())
+  separation=(top['projected']-(center+axes[1]*.003)).dot(normal)
+  check('steel and prism are not coplanar; offset below contact film',6e-6<separation<12e-6 and separation<cases['cases'][0]['parameters']['contactThicknessMeters'],float(separation))
+  contact=glb.nearest('Refractometer_test_prism',center)
+  check('actual prism contact plane faces outward',contact['normal'].dot(normal)>.9999,contact['normal'].tolist())
+  for x,z,inside in [(0,0,True),(.008,0,True),(0,.0016,True),(0,-.0016,True),(0,.0022,False),(0,-.0022,False)]:
+   point=center+axes[0]*x+axes[1]*z
+   hit=ray_segment(steel,point+normal*.0003,point-normal*.00002)
+   check(f'narrow top opening real steel probe {x},{z}',(hit is None)==inside,{'insideExpected':inside,'steelHit':hit})
  for case in cases['cases']:
+  if window:
+   for path in case['paths']:
+    for event in path.get('interactions',[]):
+     if event['surfaceNode'] not in ['Refractometer_test_prism','Refractometer_isotropic_sample']:continue
+     point=np.asarray(path['points'][event['pointIndex']]);delta=point-center
+     # Contact/film surfaces only; curved prism entry and exit are audited below.
+     if abs(delta.dot(normal)) > .00005:continue
+     local=axes@delta
+     check(case['id']+'/'+path['id']+f'/contact{event["pointIndex"]} in narrow strip',bool(np.all(np.abs(local)<=half+1e-8)),{'offsetMeters':local.tolist(),'halfWindowMeters':half.tolist()})
   c=case['id'];paths={p['id']:p for p in case['paths']};par=case['parameters'];ng=par['glassIndex'];nc=par['contactIndex'];ns=par['sampleIndex'];rows=case['readout']['rows']
   critical_g=math.degrees(math.asin(min(1,ns/ng)));critical_c=math.degrees(math.asin(min(1,nc/ng)))
   check(c+' critical angles',abs(case['readout']['sampleCriticalAngleDegrees']-critical_g)<1e-7 and abs(case['readout']['contactCriticalAngleDegrees']-critical_c)<1e-7)
@@ -138,5 +161,5 @@ def evaluate(glb,cases):
 
 if __name__=='__main__':
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('--expected-sha',required=True);p.add_argument('--input-dir',type=Path,default=OUT);p.add_argument('--output-dir',type=Path);args=p.parse_args();input_dir=args.input_dir.resolve();glb=GLB(input_dir/'model.glb');assert glb.sha==args.expected_sha,(glb.sha,args.expected_sha)
- cases=json.loads((input_dir/'optical-cases.json').read_text());report=evaluate(glb,cases);report.update({'schemaVersion':1,'instrumentId':'refractometer','inputDirectory':str(input_dir),'method':'independent direct GLB parse, numpy world triangles, finite face projection, vector Snell/reflection, Moller-Trumbore intersections; no author optics or Blender imports','modelSha256':glb.sha,'casesSha256':hashlib.sha256((input_dir/'optical-cases.json').read_bytes()).hexdigest(),'validatorSha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'checkCount':len(report['checks']),'failureCount':len(report['failures'])})
+ cases=json.loads((input_dir/'optical-cases.json').read_text());manifest=json.loads((input_dir/'manifest.json').read_text());report=evaluate(glb,cases,manifest.get('contactWindow'));report.update({'schemaVersion':1,'instrumentId':'refractometer','inputDirectory':str(input_dir),'method':'independent direct GLB parse, numpy world triangles, finite face projection, vector Snell/reflection, Moller-Trumbore intersections; no author optics or Blender imports','modelSha256':glb.sha,'casesSha256':hashlib.sha256((input_dir/'optical-cases.json').read_bytes()).hexdigest(),'validatorSha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'checkCount':len(report['checks']),'failureCount':len(report['failures'])})
  target=(args.output_dir.resolve() if args.output_dir else input_dir/'validation')/'independent-refractometer.json';target.parent.mkdir(parents=True,exist_ok=True);target.write_text(json.dumps(report,ensure_ascii=False,indent=2,default=lambda o:o.item() if isinstance(o,np.generic) else o.tolist())+'\n');print(json.dumps({k:report[k] for k in ['ok','modelSha256','checkCount','failureCount']},indent=2));print(json.dumps(report['failures'][:10],ensure_ascii=False,indent=2,default=lambda o:o.item() if isinstance(o,np.generic) else o.tolist()));raise SystemExit(0 if report['ok'] else 1)

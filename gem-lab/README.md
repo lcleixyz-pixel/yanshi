@@ -1,5 +1,7 @@
 # 宝石检测实训系统（Gem Lab）
 
+偏光镜课程、3D 检测与四台仪器页面的共同开发基线、素材保全及续接位置见[版本整合与续接](../docs/版本整合与续接-2026-10-08.md)。
+
 偏光镜课程的保存、低帧率修复与远端检查入口见[课程保全与 CI 修复](../docs/偏光镜CI与课程保全-2026-10-07.md)。流畅档可使用 `/explore/polariscope?quality=standard`，并与 `course=basic&mode=student` 组合。
 
 `gem-lab` 是本仓库实际运行的前端应用，基于 Vite + React + TypeScript + Tailwind CSS 构建。它面向宝石检测教学场景，提供仪器知识库、交互式演示、检测流程和命名评估。
@@ -53,6 +55,7 @@ npm run build           # TypeScript 项目引用构建 + Vite 生产构建
 npm run preview         # 预览 dist 构建产物，默认端口 4173
 npm run prepare-assets  # 从仓库根目录复制/切分运行时素材
 npm run test:smoke      # Playwright 核心路由烟测
+npm run test:types      # 浏览器与单元测试源码的 TypeScript 检查
 npm run test:matrix     # Playwright 28 样品 × 3 仪器检测矩阵
 npm run test:unit       # 抽样、掌握度和计分纯逻辑测试
 ```

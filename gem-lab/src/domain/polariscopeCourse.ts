@@ -5,7 +5,7 @@ import { JUDGEMENT_RULES } from './polariscopeRules';
 /**
  * 偏光镜基础引导课程（约 5–8 分钟）：认识部件 → 跟随光路 → 空载调正 → 放样旋转 → 换方向复核 → 解释。
  * 只描述步骤、完成条件与讲解规则；画面与观察结论仍由 eyepieceField 的同一套判定给出。
- * 课程不写学习进度或计分。
+ * 页面仅在所有步骤实际完成后记录学习进度；本模块不计分，也不持久化逐题作答。
  */
 
 export type CourseStepId = 'parts' | 'path' | 'crossed' | 'rotate' | 'reorient' | 'explain';

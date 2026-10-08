@@ -3,7 +3,8 @@ import test from 'node:test';
 import { coverageOf, emptyCoverage, markRotation } from '../../src/domain/rotationCoverage';
 
 const turn = (from: number, to: number, step: number) => {
-  let visited = emptyCoverage(), angle = from;
+  let visited: readonly boolean[] = emptyCoverage();
+  let angle = from;
   for (let next = from + step; step > 0 ? next <= to : next >= to; next += step) { visited = markRotation(visited, angle, next); angle = next; }
   return visited;
 };

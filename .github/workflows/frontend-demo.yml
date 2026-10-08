@@ -34,6 +34,9 @@ jobs:
       - name: Run domain unit tests
         run: npm run test:unit
 
+      - name: Type-check test sources
+        run: npm run test:types --prefix gem-lab
+
       - name: Test CI completeness checks
         run: node --test .github/scripts/verify-polariscope-shards.test.mjs
 
@@ -116,6 +119,56 @@ jobs:
         with:
           name: polariscope-shard-${{ matrix.shard }}
           path: gem-lab/test-results/polariscope-${{ matrix.shard }}/
+          if-no-files-found: error
+          retention-days: 14
+
+  instruments:
+    name: Other instrument browser regression
+    needs: build-and-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: gem-lab
+    env:
+      CI_WEBGL_BACKEND: mesa
+      LIBGL_ALWAYS_SOFTWARE: 'true'
+      GALLIUM_DRIVER: llvmpipe
+      PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/instruments/results.json
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: gem-lab/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Restore the same production build
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: gem-lab/dist/
+
+      - name: Install Playwright Chromium and Mesa
+        run: |
+          npx playwright install --with-deps chromium
+          sudo apt-get install --no-install-recommends -y libgl1-mesa-dri libegl-mesa0 libglx-mesa0 mesa-utils
+
+      - name: Run instrument browser regression
+        run: |
+          xvfb-run --auto-servernum glxinfo -B
+          xvfb-run --auto-servernum npx playwright test tests/optics3d.spec.ts tests/microscope3d.spec.ts \
+            --workers=1 --max-failures=1 --output=test-results/instruments
+
+      - name: Save instrument browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: instrument-browser-evidence
+          path: gem-lab/test-results/instruments/
           if-no-files-found: error
           retention-days: 14
 

@@ -10,7 +10,8 @@
     "prepare-assets": "tsx scripts/prepare-assets.ts",
     "test:smoke": "playwright test tests/smoke.spec.ts tests/learning-loop.spec.ts",
     "test:matrix": "playwright test tests/matrix.spec.ts",
-    "test:unit": "tsx --test tests/unit/*.test.ts"
+    "test:unit": "tsx --test tests/unit/*.test.ts",
+    "test:types": "tsc --project tsconfig.tests.json"
   },
   "dependencies": {
     "framer-motion": "^11.11.0",

@@ -20,7 +20,7 @@ export const test = base.extend<{ sceneDiagnostics: void }>({
     if (page.isClosed()) return;
     const diagnostics = await page.evaluate(() => {
       const canvas = document.querySelector<HTMLCanvasElement>('[data-testid="polariscope-canvas"]');
-      return canvas ? { url: location.href, width: canvas.width, height: canvas.height, ...canvas.dataset } : null;
+      return canvas ? { url: location.href, width: canvas.width, height: canvas.height, ...canvas.dataset, gpuRenderer: canvas.dataset.gpuRenderer } : null;
     }).catch(() => null);
     if (diagnostics) {
       await testInfo.attach('scene-rendering', { body: JSON.stringify(diagnostics, null, 2), contentType: 'application/json' });

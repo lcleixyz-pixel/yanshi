@@ -15,8 +15,8 @@ from pathlib import Path
 import shutil
 import struct
 
-SOURCE_ROOT = Path('/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi')
 WORKTREE_ROOT = Path(__file__).resolve().parents[5]
+SOURCE_ROOT = WORKTREE_ROOT
 OUTPUT_RELATIVE = Path('gem-lab/assets-source/optics-paper-review/2026-10-08/polariscope')
 SOURCE_ASSET = Path('gem-lab/public/assets/3d/polariscope/structure-v1')
 EXPECTED_MODEL_SHA = '0d4eb62f630e74915d31524010e51e1ce031c9b50f00314a1195b7c8ce469a7b'

@@ -13,7 +13,7 @@ python3 gem-lab/tools/3d-assets/instruments-optics-2026-10-08/polariscope/build_
 node gem-lab/tools/3d-assets/instruments-optics-2026-10-08/polariscope/verify-candidate.mjs
 ```
 
-构建默认从旁边的 `yanshi` 主项目读入已有资产；可传 `--source-root` 与 `--output`。模型 SHA-256 有前置检查，来源模型改变后应重新复核几何，不直接沿用旧参数。
+构建默认从脚本所在仓库读入已有资产；可传 `--source-root` 与 `--output`。验证脚本也默认使用当前仓库，可依次传入候选目录和来源仓库根目录：`node verify-candidate.mjs /absolute/candidate /absolute/source-repository`。模型 SHA-256 有前置检查，来源模型改变后应重新复核几何，不直接沿用旧参数。
 
 `manifest.json` 保留原 `parts` 协议；`original-provenance.json` 保留来源说明；`sources.json` 是论文和 GIA 手册索引；`audit.json` 记录保留项、改动依据、主项目源码哈希及边界；`optical-cases.json` 供公共审阅器读取；`validation/geometry-checks.json` 是实际 GLB/Three 几何检查。
 

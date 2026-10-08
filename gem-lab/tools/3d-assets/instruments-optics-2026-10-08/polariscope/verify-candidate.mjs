@@ -9,7 +9,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 const directory = path.dirname(fileURLToPath(import.meta.url));
 const repo = path.resolve(directory, '../../../../..');
 const output = process.argv[2] ?? path.join(repo, 'gem-lab/assets-source/optics-paper-review/2026-10-08/polariscope');
-const source = '/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi';
+const source = process.argv[3] ? path.resolve(process.argv[3]) : repo;
 const readJson = async file => JSON.parse(await fs.readFile(file, 'utf8'));
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const [data, manifest, originalManifest, audit, cases] = await Promise.all([

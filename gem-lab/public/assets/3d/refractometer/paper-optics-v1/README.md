@@ -1,6 +1,6 @@
 # 折射仪 · paper-optics-v1
 
-本目录是本机准备好的独立网页资产版本，尚未接入应用，也没有部署。
+本目录已由应用 `/explore/optics/refractometer` 使用；历史验证和待办见下文。接入不表示已经部署或完成实物验收。
 
 - `model.glb`：16 个部件，3,049,000 bytes，SHA-256 `801a87705268e57f66603b476b29d00109e56cbce06f9e88ce1a59e493ea24d6`。
 - `manifest.json`：版本标签 `paper-optics-v1`，部件协议、模型哈希与字节数。

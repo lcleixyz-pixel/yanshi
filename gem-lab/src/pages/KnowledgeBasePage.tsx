@@ -16,6 +16,15 @@ const SECTIONS = [
   { id: 'demo-cta', label: '交互演示' },
 ];
 
+const POLARISCOPE_STUDENT_COURSE = '/explore/polariscope?course=basic&mode=student';
+const POLARISCOPE_TEACHER_COURSE = '/explore/polariscope?course=basic';
+/** 偏光镜各观察方法对应的 3D 练习；暂无 3D 仿真的方法只给说明。 */
+const POLARISCOPE_METHOD_PRACTICE: Record<string, { to: string; label: string } | { note: string }> = {
+  'optical-character': { to: `${POLARISCOPE_STUDENT_COURSE}&step=crossed`, label: '在 3D 课程中练习：从空载调正开始' },
+  interference: { to: '/explore/polariscope?lesson=conoscope', label: '在 3D 仪器上观察干涉图' },
+  pleochroism: { note: '多色性观察暂无 3D 练习，请结合实物或教材图片学习。' },
+};
+
 export default function KnowledgeBasePage() {
   const { instrumentId } = useParams<{ instrumentId: InstrumentId }>();
   const navigate = useNavigate();
@@ -40,6 +49,7 @@ export default function KnowledgeBasePage() {
   }, [instrument, location.hash]);
 
   if (!instrument) return <Navigate to="/" replace />;
+  const is3D = instrument.id === 'polariscope';
 
   const otherInstruments = INSTRUMENT_LIST.filter((i) => i.id !== instrument.id);
   const hasExternalComponents = instrument.components.some((c) => !c.position);
@@ -77,13 +87,19 @@ export default function KnowledgeBasePage() {
             </h1>
             <p className="mt-2 text-sm text-ink-3">{instrument.intro.tagline}</p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <button
+              {is3D ? <>
+                {/* 偏光镜以 3D 引导课程为主线；经典 2D 演示放在「交互演示」一节作为备用。 */}
+                <Link to={POLARISCOPE_STUDENT_COURSE} className="btn-primary" style={{ background: instrument.themeHex, color: '#fff' }} data-testid="knowledge-start-course">
+                  开始学习 →
+                </Link>
+                <Link to={POLARISCOPE_TEACHER_COURSE} className="btn-ghost" data-testid="knowledge-teacher-course">讲师演示</Link>
+              </> : <button
                 onClick={() => navigate(`/demo/${instrument.id}`)}
                 className="btn-primary"
                 style={{ background: instrument.themeHex, color: '#fff' }}
               >
                 进入互动学习 →
-              </button>
+              </button>}
               <a href="#structure" className="btn-ghost">
                 查看结构
               </a>
@@ -174,7 +190,7 @@ export default function KnowledgeBasePage() {
                 </div>
               </div>
               <details className="rounded-xl border border-line bg-white p-5" data-testid="polariscope-reference-diagram">
-                <summary className="cursor-pointer text-sm font-medium text-ink-2">辅助参考：原仪器图片与部件标注</summary>
+                <summary className="cursor-pointer text-sm font-medium text-ink-2">对照：原产品图部件标注</summary>
                 <p className="mb-5 mt-3 text-xs leading-relaxed text-ink-3">原图和热点保留用于对照。点击或悬停编号，查看原有部件说明。</p>
                 <ComponentDiagram productImage={instrument.productImage} components={instrument.components} themeHex={instrument.themeHex} />
               </details>
@@ -188,9 +204,9 @@ export default function KnowledgeBasePage() {
           <section id="usage" className="scroll-mt-24">
             <SectionTitle index={3} title="使用方法" themeHex={instrument.themeHex} />
             <p className="mb-5 max-w-3xl text-sm leading-relaxed text-ink-3">
-              切换标签查看不同观察方法的步骤。每一步对应交互演示中的一个可点击元素。
+              {is3D ? '切换标签查看不同观察方法的步骤；有 3D 练习的方法，可以直接进入课程的对应步骤。' : '切换标签查看不同观察方法的步骤。每一步对应交互演示中的一个可点击元素。'}
             </p>
-            <MethodTabs methods={instrument.methods} themeHex={instrument.themeHex} />
+            <MethodTabs methods={instrument.methods} themeHex={instrument.themeHex} practice={is3D ? POLARISCOPE_METHOD_PRACTICE : undefined} />
           </section>
 
           {/* Section 4: CTA */}
@@ -208,18 +224,20 @@ export default function KnowledgeBasePage() {
                     INTERACTIVE DEMO · STEP-BY-STEP
                   </div>
                   <h3 className="mt-2 font-display text-2xl font-semibold">
-                    在虚拟工作台上动手操作 {instrument.name}
+                    {is3D ? `在 3D ${instrument.name}上完成引导课程` : `在虚拟工作台上动手操作 ${instrument.name}`}
                   </h3>
                   <p className="mt-2 max-w-xl text-sm opacity-90">
-                    跟随提示完成完整的检测流程，系统会即时反馈每一步操作是否正确，并显示对应的观察现象。
+                    {is3D ? '约 8 分钟：认识部件、跟随光路、空载调正、放样旋转、换方向复核、解释。学员可以自学，讲师可以投屏演示；学完后到检测练习中独立判断未知样品。' : '跟随提示完成完整的检测流程，系统会即时反馈每一步操作是否正确，并显示对应的观察现象。'}
                   </p>
+                  {is3D && <Link to={`/demo/${instrument.id}`} className="mt-3 inline-block text-xs underline opacity-80 hover:opacity-100" data-testid="knowledge-classic-demo">经典 2D 演示（设备较旧或 3D 无法加载时使用）</Link>}
                 </div>
                 <div className="flex flex-col gap-2 lg:flex-row">
                   <Link
-                    to={`/demo/${instrument.id}`}
+                    to={is3D ? POLARISCOPE_STUDENT_COURSE : `/demo/${instrument.id}`}
                     className="group inline-flex items-center justify-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-ink shadow-card transition hover:-translate-y-0.5 hover:shadow-lift"
+                    data-testid="knowledge-cta-learning"
                   >
-                    <span>开始学习模式</span>
+                    <span>{is3D ? '开始 3D 引导课程' : '开始学习模式'}</span>
                     <span className="transition-transform duration-300 group-hover:translate-x-1.5">
                       →
                     </span>
@@ -228,7 +246,7 @@ export default function KnowledgeBasePage() {
                     to="/detection"
                     className="group inline-flex items-center justify-center gap-2 rounded-lg border border-white/40 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/20"
                   >
-                    <span>挑战检测模式</span>
+                    <span>{is3D ? '去检测练习' : '挑战检测模式'}</span>
                     <span className="transition-transform duration-300 group-hover:translate-x-1">
                       →
                     </span>

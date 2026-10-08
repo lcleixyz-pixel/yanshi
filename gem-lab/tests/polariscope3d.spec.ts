@@ -160,7 +160,7 @@ test('structure exploration does not access existing learning or detection stora
   expect(calls).toEqual([]);
 });
 
-test('back navigation returns to the knowledge structure section; teaching link uses the existing learning flow', async ({ page }) => {
+test('back navigation returns to the knowledge structure section; the follow-up link leads to detection practice', async ({ page }) => {
   await openExplore(page);
   await page.locator('a[href="/knowledge/polariscope#structure"]').first().click();
   await expect(page).toHaveURL(/\/knowledge\/polariscope#structure$/);
@@ -170,12 +170,11 @@ test('back navigation returns to the knowledge structure section; teaching link 
   await page.getByTestId('polariscope-explore-link').click();
   await useCiSceneQuality(page);
   await expect(scene(page)).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
-  await page.locator('a[href="/demo/polariscope"]').first().click();
-  await expect(page).toHaveURL(/\/demo\/polariscope$/);
-  await expect(page.getByTestId('polariscope-start-learning')).toBeVisible();
+  // 3D 页的后续入口是检测练习；经典 2D 演示只在 3D 加载失败时提供。
+  await expect(page.locator('a[href="/demo/polariscope"]')).toHaveCount(0);
+  await page.getByTestId('explore-learning-link').click();
+  await expect(page).toHaveURL(/\/detection$/);
   await expect(page.getByTestId('polariscope-canvas')).toHaveCount(0);
-  await page.getByTestId('polariscope-start-learning').click();
-  await expect(page.getByTestId('polariscope-align-upper-state')).toBeVisible();
 });
 
 test('repeated route entry removes old canvases and resets only the structure page state', async ({ page }) => {

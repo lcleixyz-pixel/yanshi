@@ -5,7 +5,7 @@
 export default function RotationTrace({ curve, visited, current, reveal, analyzerDeg }: {
   /** 0–360° 等间隔采样（含 360°）。 */
   curve: number[];
-  visited: boolean[];
+  visited: readonly boolean[];
   current: number;
   reveal: boolean;
   analyzerDeg: number;

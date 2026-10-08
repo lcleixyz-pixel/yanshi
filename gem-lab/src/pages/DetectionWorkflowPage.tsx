@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
+import { reactionLabel } from '@/domain/polariscopeRules';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from '@/components/shared/Header';
 import Stepper from '@/components/workflow/Stepper';
 import Pill from '@/components/shared/Pill';
 import RefractometerDemo from '@/components/refractometer/RefractometerDemo';
 import PolariscopeDemo from '@/components/polariscope/PolariscopeDemo';
+// 偏光镜检测默认使用 3D；三维依赖按需加载，WebGL 不可用或加载失败时回退到 2D 检测模式。
+const PolariscopeDetection3D = lazy(() => import('@/components/polariscope3d/PolariscopeDetection3D'));
+function supportsWebGL() {
+  try { const canvas = document.createElement('canvas'); return !!(canvas.getContext('webgl2') ?? canvas.getContext('webgl')); } catch { return false; }
+}
 import SpectroscopeDemo from '@/components/spectroscope/SpectroscopeDemo';
 import { INSTRUMENT_LIST, INSTRUMENTS } from '@/data/instruments';
 import { SAMPLES_BY_DIFFICULTY, SAMPLES_BY_ID } from '@/data/samples';
@@ -70,6 +76,7 @@ export default function DetectionWorkflowPage() {
     setStep(4);
   };
 
+  const [polariscope2D, setPolariscope2D] = useState(() => !supportsWebGL());
   const handleDetectionComplete = () => {
     setActiveInstrument(null);
     setStep(useDetection.getState().instrumentsUsed.length >= 2 ? 5 : 3);
@@ -85,6 +92,13 @@ export default function DetectionWorkflowPage() {
   const allDone = session.instrumentsUsed.length >= 2;
 
   // 检测模式下打开演示，全屏渲染（覆盖 Stepper）
+  if (step === 4 && activeInstrument === 'polariscope' && drawnSample && !polariscope2D) {
+    return (
+      <Suspense fallback={<div className="grid min-h-screen place-items-center text-sm text-ink-3">正在载入 3D 偏光镜…</div>}>
+        <PolariscopeDetection3D sampleId={drawnSample} onDetectionComplete={handleDetectionComplete} onUse2D={() => setPolariscope2D(true)} />
+      </Suspense>
+    );
+  }
   if (step === 4 && activeInstrument && drawnSample) {
     const Demo =
       activeInstrument === 'refractometer'
@@ -352,13 +366,7 @@ export default function DetectionWorkflowPage() {
                       <DataLine
                         label="正交现象"
                         value={
-                          session.polariscope.phenomenon === 'four-bright-four-dark'
-                            ? '四明四暗'
-                            : session.polariscope.phenomenon === 'all-dark'
-                              ? '全暗'
-                              : session.polariscope.phenomenon === 'all-bright'
-                                ? '全亮'
-                                : '—'
+                          reactionLabel(session.polariscope.phenomenon, '—')
                         }
                       />
                       <DataLine

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { reactionLabel } from '@/domain/polariscopeRules';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from '@/components/shared/Header';
 import Pill from '@/components/shared/Pill';
@@ -203,13 +204,7 @@ export default function NamingAssessmentPage() {
               <Row
                 label="正交现象"
                 value={
-                  session.polariscope.phenomenon === 'four-bright-four-dark'
-                    ? '四明四暗'
-                    : session.polariscope.phenomenon === 'all-dark'
-                      ? '全暗'
-                      : session.polariscope.phenomenon === 'all-bright'
-                        ? '全亮'
-                        : '未观察'
+                  reactionLabel(session.polariscope.phenomenon, '未观察')
                 }
               />
             </DataReviewCard>

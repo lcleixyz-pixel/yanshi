@@ -103,7 +103,7 @@ jobs:
 
       - name: Run polariscope browser regression shard
         # Keep real GLB loading and the fixture's llvmpipe renderer assertion.
-        # This prefix includes guided-course and student-mode specifications.
+        # This prefix includes guided-course, student-mode, knowledge-entry and 3D detection specifications.
         run: |
           xvfb-run --auto-servernum glxinfo -B
           xvfb-run --auto-servernum npx playwright test polariscope3d \
@@ -120,7 +120,7 @@ jobs:
           retention-days: 14
 
   polariscope-complete:
-    name: Verify all 55 polariscope cases
+    name: Verify all 61 polariscope cases
     needs: [build-and-smoke, polariscope]
     if: always()
     runs-on: ubuntu-latest

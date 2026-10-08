@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { rotationStepDegrees } from '../domain/animationTiming';
+import { TRACE_STEPS } from '../domain/rotationCoverage';
+import { useStageRotation } from '../components/polariscope3d/useStageRotation';
 import Header from '../components/shared/Header';
 import PolariscopeScene, { type SceneCoach } from '../components/polariscope3d/PolariscopeScene';
 import EyepieceView, { EYEPIECE_RESOLUTION, type EyepieceContent } from '../components/polariscope3d/EyepieceView';
@@ -12,6 +13,7 @@ import {
   EMPTY_COURSE_PROGRESS,
   REORIENT_SAMPLE,
   courseChecklist,
+  isStepComplete,
   type CourseProgress,
   type CourseStepId,
 } from '../domain/polariscopeCourse';
@@ -35,6 +37,7 @@ import {
   POLARISCOPE_PROFILES,
   type PolariscopeSampleProfile,
 } from '../domain/polariscopeSamples';
+import { OBSERVATION_RULES } from '../domain/polariscopeRules';
 import '../styles/polariscope-explore.css';
 
 type SceneStatus = 'loading' | 'ready' | 'error';
@@ -83,22 +86,13 @@ const EXPECTED_PREDICTION: Record<Observation, Phenomenon> = {
   'all-dark': 'all-dark', 'axis-dark': 'all-dark', 'axis-twin-dark': 'all-dark', 'axis-rotation': 'all-bright', 'four-bright-four-dark': 'four-bright-four-dark',
   'all-bright': 'all-bright', anomalous: 'anomalous', 'not-applicable': 'not-applicable',
 };
-const OBSERVATION_COPY: Record<Observation, { title: string; text: string }> = {
-  'all-dark': { title: '转动一周始终暗', text: '可能是均质体（单折射）：光在样品中不分成两束，偏振方向不变，被正交的上片挡住。规范做法是换 2–3 个方向复查：非均质体沿光轴放置时，同样会全暗。' },
-  'axis-dark': { title: '全暗，但它其实是非均质体', text: '光沿光轴方向传播时不发生双折射，看起来和均质体一样暗。这正是要换方向复查的原因——点“换个方向放置”，再转一周。' },
-  'axis-twin-dark': { title: '全暗：双晶抵消了旋光', text: '这块水晶开启了巴西律双晶示意：左旋与右旋两层沿光轴的旋光互相抵消，又没有线性双折射，所以沿光轴看近于全暗——和均质体一样。可以关掉双晶示意对比单一旋向的水晶，或换个方向放置再转一周。' },
-  'axis-rotation': { title: '沿光轴：不暗，但也不闪', text: '水晶沿光轴方向没有线性双折射，所以不出现四明四暗；但它有旋光性，会把偏振方向转过一个与波长有关的角度，正交下呈现不随物台转动而改变的颜色。它既不是全暗，也不是集合体——换个方向放置再转一周，就能看到四明四暗。' },
-  'four-bright-four-dark': { title: '一周四明四暗', text: '本例是非均质体（双折射）：样品把光分成振动方向互相垂直的两束。两个振动方向与上下偏光片平行时为消光位（暗），每 90° 一次；转到两者之间最亮。注意：四明四暗通常表示双折射，但均质体的异常双折射（ADR）也可能出现，单凭这一反应不能定论，有疑问时做平行复核并结合折射仪。' },
-  'all-bright': { title: '转动一周始终亮', text: '多晶质集合体：大量取向各异的细小晶粒叠在一起，任何角度都有晶粒处在明亮位置，整体亮度几乎不随转动改变。' },
-  'anomalous': { title: '不规则的明暗斑块', text: '异常双折射（ADR）：均质体内部有应变，局部出现弱的双折射，本例明暗呈斑块、条带或“蛇形”，转动时没有整齐的四明四暗。ADR 的表现多样，也可能出现规则的明暗交替，所以「不规则」只是本例特征，不能反过来当作排除规则；可以用平行复核加以区分。' },
-  'not-applicable': { title: '几乎没有透过的光', text: '不透明样品：光无法透过，偏光镜透射观察不适用，需要改用其他检测方法。' },
-};
+/** 观察解释：与 2D 演示共用 polariscopeRules。 */
+const OBSERVATION_COPY = OBSERVATION_RULES;
 const PROFILES_BY_GROUP = {
   anisotropic: POLARISCOPE_PROFILES.filter((p) => p.observation === 'anisotropic'),
 };
 const CONOSCOPE_FEATURED = ['tourmaline', 'ruby', 'citrine', 'amethyst', 'zircon', 'peridot', 'topaz', 'tanzanite'] as const;
 const CATEGORY_LABEL: Record<PolariscopeSampleProfile['observation'], string> = { isotropic: '均质体', anisotropic: '非均质体', aggregate: '集合体', opaque: '不透明' };
-const TRACE_STEPS = 72;
 
 function parseLesson(value: string | null): Lesson {
   return (TEACHING_LESSONS as readonly string[]).includes(value ?? '') ? value as Lesson : 'components';
@@ -148,8 +142,6 @@ export default function PolariscopeExplorePage() {
   const [viewPreset, setViewPreset] = useState<StructureViewPreset>('free');
   const [fieldVersion, setFieldVersion] = useState(0);
   const [prediction, setPrediction] = useState<string | null>(null);
-  const [visited, setVisited] = useState<boolean[]>(() => Array(TRACE_STEPS).fill(false));
-  const [autoRotate, setAutoRotate] = useState(false);
   const [adrCheck, setAdrCheck] = useState<ParallelCheckResult | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [fieldCanvas, setFieldCanvas] = useState<HTMLCanvasElement | null>(null);
@@ -162,11 +154,11 @@ export default function PolariscopeExplorePage() {
   const [narrow, setNarrow] = useState(false);
   const [toast, setToast] = useState<{ key: number; text: string } | null>(null);
   const doneItems = useRef<Set<string> | null>(null);
+  const progressRecorded = useRef(false);
   const mainRef = useRef<HTMLElement>(null);
   const projectionExit = useRef<HTMLButtonElement>(null);
   const projectionEnter = useRef<HTMLButtonElement>(null);
   const wasProjection = useRef(false);
-  const previousStage = useRef(state.stageAngle);
   const selected = state.selectedPart ? PARTS_BY_ID[state.selectedPart] : null;
   const modeCopy = MODES.find((mode) => mode.id === state.mode)!;
   const lessonCopy = LESSONS.find((lesson) => lesson.id === state.lesson)!;
@@ -207,9 +199,10 @@ export default function PolariscopeExplorePage() {
   }, [showConoscopicFigure, crystal, state.thicknessMm, state.orientation, profile, sampleLesson, fieldMap, state.lesson, state.pathStep, optics.relativeTransmission]);
   // 结论由材料机理与同一份光学图决定（扣除散射灰底），见 domain/eyepieceField。
   const observation = useMemo<Observation>(() => fieldMap ? judgeObservation(profile, settings, fieldMap) : profile.expectedPhenomenon, [fieldMap, profile, settings]);
-  const coverage = visited.filter(Boolean).length / TRACE_STEPS;
   // 只在「已预测、通电、正交」时记录观察，保证先预测后观察。
   const recording = state.lesson === 'sample' && prediction !== null && optics.active && crossed;
+  // 自动转一周约 9 秒，便于课堂投屏讲解；记录规则见 domain/rotationCoverage。
+  const { visited, coverage, resetVisited, autoRotate, setAutoRotate } = useStageRotation(state.stageAngle, recording, (rotate) => setState((previous) => ({ ...previous, stageAngle: rotate(previous.stageAngle) })));
   const conoscopeKind = !crystal ? null : crystal.kind === 'biaxial' ? 'biaxial' : profile.quartz ? 'quartz' : 'uniaxial';
   const wideField = eyepieceContent?.kind === 'conoscope' && eyepieceContent.sinThetaMax !== undefined && eyepieceContent.sinThetaMax > 0.42;
   const conoscopeContext = {
@@ -221,25 +214,6 @@ export default function PolariscopeExplorePage() {
   const eyepieceLabel = showConoscopicFigure ? (wideField ? '目镜视场 · 扩大角域原理图' : '目镜视场 · 锥光干涉图') : sampleLesson ? `目镜视场 · ${profile.name}` : '目镜视场 · 空载';
   const onFieldRendered = useCallback(() => setFieldVersion((value) => value + 1), []);
 
-  // 记录物台转过的角度区间（拖动可能跳过若干格，按最短路径补齐）。
-  useEffect(() => {
-    const from = previousStage.current, to = state.stageAngle;
-    previousStage.current = to;
-    if (!recording) return;
-    // 只记录连续转动：单次跳变超过 15°（如按 End、PageUp 或点预设）只记录落点，中间角度没有被观察到。
-    const shortest = ((to - from) % 360 + 540) % 360 - 180;
-    const continuous = Math.abs(to - from) <= 15 || Math.abs(shortest) <= 15 && Math.abs(to - from) < 359;
-    const delta = continuous ? shortest : 0;
-    const stepDeg = 360 / TRACE_STEPS, count = continuous ? Math.max(1, Math.ceil(Math.abs(delta) / (stepDeg / 2))) : 0;
-    setVisited((previous) => {
-      const next = previous.slice(); let changed = false;
-      for (let k = 0; k <= count; k++) {
-        const angle = continuous ? (((from + (delta * k) / count) % 360) + 360) % 360 : ((to % 360) + 360) % 360, bin = Math.floor(angle / stepDeg) % TRACE_STEPS;
-        if (!next[bin]) { next[bin] = true; changed = true; }
-      }
-      return changed ? next : previous;
-    });
-  }, [state.stageAngle]); // eslint-disable-line react-hooks/exhaustive-deps -- 只响应物台转动；recording 取本次渲染的值
   useEffect(() => { if (prediction !== null && coverage >= 1) setRevealed(true); }, [prediction, coverage]);
   // ── 引导课程：只记录本页内的完成情况，不写学习进度 ──
   useEffect(() => {
@@ -259,30 +233,9 @@ export default function PolariscopeExplorePage() {
     if (crossedNow) setCourseProgress((previous) => previous.crossedSeen ? previous : { ...previous, crossedSeen: true });
   }, [parallelNow, crossedNow]);
   // 换样品或放置方式：重新预测、重新记录。改变检偏器只重新记录曲线，已揭晓的解释保留（平行复核需要转检偏器）。
-  useEffect(() => { setVisited(Array(TRACE_STEPS).fill(false)); setAdrCheck(null); setRevealed(false); }, [state.sampleId, state.orientation, strain, state.lesson, state.conoscopeInserted, state.thicknessMm, state.brazilTwin]);
-  useEffect(() => { setVisited(Array(TRACE_STEPS).fill(false)); }, [state.analyzerAngle]);
+  useEffect(() => { resetVisited(); setAdrCheck(null); setRevealed(false); }, [state.sampleId, state.orientation, strain, state.lesson, state.conoscopeInserted, state.thicknessMm, state.brazilTwin]);
+  useEffect(() => { resetVisited(); }, [state.analyzerAngle]);
   useEffect(() => { setPrediction(null); setRevealed(false); }, [state.sampleId, state.lesson]);
-  // 自动转一周：约 9 秒，便于课堂投屏讲解。
-  useEffect(() => {
-    if (!autoRotate) return;
-    // 按累计转角精确终止（不逐帧舍入），任何刷新率下都正好转满一周。
-    let frame = 0, last = performance.now(), travelled = 0, start: number | null = null;
-    const tick = (now: number) => {
-      const elapsed = (now - last) / 1000; last = now;
-      if (document.hidden) { frame = requestAnimationFrame(tick); return; }
-      travelled = Math.min(360, travelled + rotationStepDegrees(elapsed));
-      setState((previous) => {
-        if (start === null) start = previous.stageAngle;
-        return { ...previous, stageAngle: travelled >= 360 ? start : (start + travelled) % 360 };
-      });
-      if (travelled >= 360) { setAutoRotate(false); return; }
-      frame = requestAnimationFrame(tick);
-    };
-    const resetClock = () => { last = performance.now(); };
-    document.addEventListener('visibilitychange', resetClock);
-    frame = requestAnimationFrame(tick);
-    return () => { cancelAnimationFrame(frame); document.removeEventListener('visibilitychange', resetClock); };
-  }, [autoRotate]);
 
   const projectionTitle = state.lesson === 'components' ? selected?.name ?? (state.mode === 'explode' ? '部件与装配关系' : '选择一个部件')
     : state.lesson === 'path' ? pathCopy.title : state.lesson === 'principle' ? (halfWave ? '理想双折射示例' : '空载：两片偏光片')
@@ -307,7 +260,7 @@ export default function PolariscopeExplorePage() {
   }, [requestedLesson]);
   /** 直接切换到某一讲并套用场景（课程与进阶入口用），观察记录从头开始。 */
   const goTo = (lesson: Lesson, patch: Partial<PolariscopeStructureState>, nextParams?: (params: URLSearchParams) => void) => {
-    setAutoRotate(false); setPrediction(null); setRevealed(false); setAdrCheck(null); setVisited(Array(TRACE_STEPS).fill(false));
+    setAutoRotate(false); setPrediction(null); setRevealed(false); setAdrCheck(null); resetVisited();
     setState((previous) => ({ ...previous, ...lessonPatch(lesson, patch.sampleId ?? previous.sampleId), ...patch }));
     setViewPreset('free');
     setResetViewKey((value) => value + 1);
@@ -326,10 +279,11 @@ export default function PolariscopeExplorePage() {
     setStepTimes((previous) => previous.map((value, index) => index === courseStep ? value + spent : value));
   };
   /** mode 省略时保留地址中的使用方式（直接打开 ?course=basic&mode=student 时）。 */
-  const startCourse = (mode?: 'teacher' | 'student') => {
-    setCourseStep(0); setCourseReached(0); setCourseProgress(EMPTY_COURSE_PROGRESS); setCourseFinished(false);
+  /** start 为起始步骤：知识库「使用方法」可以直接跳到对应步骤（地址参数 step）。 */
+  const startCourse = (mode?: 'teacher' | 'student', start = 0) => {
+    setCourseStep(start); setCourseReached(start); setCourseProgress(EMPTY_COURSE_PROGRESS); setCourseFinished(false); progressRecorded.current = false;
     setStepTimes(COURSE_STEPS.map(() => 0)); stepEnteredAt.current = performance.now(); doneItems.current = null;
-    enterCourseStep(0, mode);
+    enterCourseStep(start, mode);
   };
   const changeCourseMode = (mode: 'teacher' | 'student') => {
     setSearchParams((previous) => { const next = new URLSearchParams(previous); if (mode === 'student') next.set('mode', 'student'); else next.delete('mode'); return next; }, { replace: true });
@@ -340,7 +294,15 @@ export default function PolariscopeExplorePage() {
     setCourseStep(index); setCourseReached((previous) => Math.max(previous, index));
     enterCourseStep(index);
   };
-  const finishCourse = () => { leaveCurrentStep(); setCourseFinished(true); };
+  const finishCourse = () => {
+    leaveCurrentStep(); setCourseFinished(true);
+    // 每一步都实际完成（没有跳过）时，记为偏光镜的一次学习完成，与 2D 学习模式使用同一条记录。
+    if (!progressRecorded.current && COURSE_STEPS.every((item) => isStepComplete(item.id, courseProgress))) {
+      progressRecorded.current = true;
+      // 按需加载进度存储：自由探索和未完成的课程都不读写学习记录。
+      void import('../store/progressStore').then(({ useProgress }) => useProgress.getState().markDemoComplete({ instrumentId: 'polariscope', mode: 'learning', completedAt: Date.now() }));
+    }
+  };
   const exitCourse = () => {
     setCourseFinished(false);
     setSearchParams((previous) => { const next = new URLSearchParams(previous); next.delete('course'); next.delete('mode'); return next; }, { replace: true });
@@ -352,7 +314,13 @@ export default function PolariscopeExplorePage() {
     goTo(topic.lesson, topic.patch, (params) => { params.delete('course'); params.delete('mode'); });
   };
   // 直接打开 ?course=basic 时从第一步开始计时。
-  useEffect(() => { if (courseActive && stepEnteredAt.current === 0) startCourse(); }, [courseActive]); // eslint-disable-line react-hooks/exhaustive-deps
+  // 直接打开 ?course=basic 时从第一步（或 step 指定的步骤）开始计时；step 只在进入时读取一次。
+  useEffect(() => {
+    if (!courseActive || stepEnteredAt.current !== 0) return;
+    const start = Math.max(0, COURSE_STEPS.findIndex((item) => item.id === searchParams.get('step')));
+    startCourse(undefined, start);
+    if (searchParams.has('step')) setSearchParams((previous) => { const next = new URLSearchParams(previous); next.delete('step'); return next; }, { replace: true });
+  }, [courseActive]); // eslint-disable-line react-hooks/exhaustive-deps
   const courseStepId = COURSE_STEPS[courseStep].id;
   const courseOverlay = courseActive ? (courseFinished ? 'complete' : courseStepId === 'explain' ? 'quiz' : null) : null;
   // 学员模式：清单项完成时在展台上方给出短提示。
@@ -394,7 +362,7 @@ export default function PolariscopeExplorePage() {
     setResetViewKey((value) => value + 1);
   };
   const resetAll = () => {
-    setAutoRotate(false); setPrediction(null); setRevealed(false); setAdrCheck(null); setVisited(Array(TRACE_STEPS).fill(false));
+    setAutoRotate(false); setPrediction(null); setRevealed(false); setAdrCheck(null); resetVisited();
     setState({ ...stateForLesson(state.lesson), sampleId: sampleLesson ? state.sampleId : 'tourmaline' });
     setViewPreset('free');
     setResetViewKey((value) => value + 1);
@@ -503,14 +471,14 @@ export default function PolariscopeExplorePage() {
             <label className="pol-explore__more-samples">更多样品<select value={state.sampleId} onChange={(event) => chooseSample(event.target.value)} aria-label="从样品库选择">{moreChoices.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
             <p className="pol-explore__part-note">{state.lesson === 'sample' ? '样品的光性在揭晓前不显示。' : '只有非均质单晶才产生干涉图。'}</p>
           </>}
-          <Link className="pol-explore__learning-link" to="/demo/polariscope" data-testid="explore-learning-link">进入互动学习 <span aria-hidden="true">↗</span><small>调正交 · 放样 · 旋转观察</small></Link>
+          <Link className="pol-explore__learning-link" to="/detection" data-testid="explore-learning-link">去检测练习 <span aria-hidden="true">↗</span><small>抽取未知样品 · 独立判断</small></Link>
         </aside>
         <section className="pol-explore__viewport" aria-label="偏光镜三维展台">
           <div className="pol-explore__scene"><PolariscopeScene state={state} quality={quality} resetViewKey={resetViewKey} viewPreset={viewPreset} onSelectPart={selectPart} onAngleChange={changeAngle} onPowerChange={(power) => update({ power })} onStatus={setSceneStatus} field={sceneField} coach={coach} viewShift={studentObserve ? .2 : 0} focusOnSelect={!studentMode} /></div>
           <div className="pol-explore__scene-caption"><div><span className="pol-explore__eyebrow">{state.lesson === 'path' ? `LIGHT PATH / 0${state.pathStep + 1}` : state.lesson === 'principle' ? 'POLARIZATION / 理想示意' : state.lesson === 'sample' ? 'SAMPLE / 正交偏光' : state.lesson === 'conoscope' ? 'CONOSCOPE / 锥光' : state.mode === 'explode' ? 'EXPLODED VIEW' : 'INSTRUMENT STUDY'}</span><h2>{state.lesson === 'components' ? modeCopy.caption : state.lesson === 'path' ? pathCopy.title : state.lesson === 'principle' ? (halfWave ? '理想半波片 · 单色 · 相位差 180°' : '空载：从平行转到正交。') : state.lesson === 'sample' ? '转动载物台，看目镜里的明暗' : showConoscopicFigure ? '干涉球就位：转动物台看图形' : '先放上干涉球'}</h2></div><span className="pol-explore__ready" data-status={sceneStatus} role="status">{STATUS_LABELS[sceneStatus]}</span></div>
           {courseOverlay && <div className="pol-course-overlay" data-testid="course-overlay">{courseOverlay === 'quiz'
             ? <CourseQuiz correct={courseProgress.correctQuestions} onCorrect={(id) => setCourseProgress((previous) => previous.correctQuestions.includes(id) ? previous : { ...previous, correctQuestions: [...previous.correctQuestions, id] })} />
-            : <CourseComplete stepTimes={stepTimes} progress={courseProgress} topics={ADVANCED_TOPICS} onTopic={openAdvanced} onRestart={startCourse} onExit={exitCourse} />}</div>}
+            : <CourseComplete stepTimes={stepTimes} progress={courseProgress} topics={ADVANCED_TOPICS} onTopic={openAdvanced} onRestart={() => startCourse()} onExit={exitCourse} />}</div>}
           {toast && <div className="pol-student-toast" key={toast.key} role="status" data-testid="student-toast">✓ {toast.text}</div>}
           {eyepieceContent && (studentObserve ? <div className="pol-student-observe" data-testid="student-observe">
             <EyepieceView content={eyepieceContent} stageDeg={state.stageAngle} analyzerDeg={state.analyzerAngle} active={optics.active} label={eyepieceLabel} onRendered={onFieldRendered} onCanvas={setFieldCanvas} />
@@ -522,6 +490,7 @@ export default function PolariscopeExplorePage() {
           </div> : <div className="pol-explore__eyepiece-dock">
             <EyepieceView content={eyepieceContent} stageDeg={state.stageAngle} analyzerDeg={state.analyzerAngle} active={optics.active} label={eyepieceLabel} onRendered={onFieldRendered} onCanvas={setFieldCanvas} />
           </div>)}
+          {sceneStatus === 'error' && <Link to="/demo/polariscope" className="pol-explore__fallback-2d" data-testid="explore-fallback-2d">3D 暂不可用：改用经典 2D 演示 →</Link>}
           {isolatedName && <div className="pol-explore__isolation"><span>单独查看 · {isolatedName}</span><button onClick={() => update({ isolatedPart: null })}>显示整机</button></div>}
           {(projection || studentMode && !studentObserve && !courseOverlay) && state.showAnnotations && <div className="pol-explore__projection-explainer" data-testid="projection-explainer"><span className="pol-explore__eyebrow">{lessonCopy.title}</span><h2>{projectionTitle}</h2><p>{projectionDescription}</p>{(state.lesson === 'path' || state.lesson === 'principle') && <p className="pol-explore__projection-reading">{optics.active ? `相对透过率 ${relativePercent}%（以下片后光强为 100%）` : blockedCopy}</p>}{state.lesson === 'principle' && halfWave && <small>单色 · 半波条件 · 理想薄片；非具体宝石实测。</small>}{sampleLesson && !optics.active && <p className="pol-explore__projection-reading">{blockedCopy}</p>}</div>}
           <div className="pol-explore__viewport-tools"><p>{state.mode === 'structure' && !state.isolatedPart ? (sampleLesson ? '拖动样品或物台环旋转样品 · 拖动空白旋转视角' : '拖动空白旋转视角 · 拖动圆环旋转部件') : '拖动旋转视角 · 滚轮缩放'}</p><div className="pol-explore__view-buttons">
@@ -622,7 +591,7 @@ export default function PolariscopeExplorePage() {
           <div className="pol-explore__panel-footer"><button className="pol-explore__button pol-explore__button--quiet" onClick={resetAll} data-testid="explore-reset-all">恢复初始状态</button><p>参考原项目仪器形态；尺寸未实测校准。</p></div>
         </aside>
       </div>
-      <footer className="pol-explore__footer"><a href={`${import.meta.env.BASE_URL}assets/3d/polariscope/references/index.html`} target="_blank" rel="noreferrer">公开参考资料 ↗</a><details><summary>模型与教学说明</summary><p>同一模型用于部件、光路、偏振原理、样品观察与干涉图讲解。底座与支架为一体金属外壳；下偏光片固定，只有载物台与检偏器转动。光柱、方向线、振动短杆和理想薄片属于教学叠层。</p><p>目镜视场与干涉图由程序按晶体光学实时计算：线性延迟按 I = cos²A − sin2ψ·sin2(ψ−A)·sin²(πΓ/λ)，干涉色对 400–700 nm 光谱按 CIE 1931 配色函数积分；一轴晶 Δn·sin²θ、二轴晶 Δn·sinθ₁·sinθ₂ 与 Biot–Fresnel 振动方向；水晶旋光用 Jones 椭圆延迟器。模型为理想平行板，忽略刻面折射、吸收与色散细节；体色、2V 与厚度为示意取值。用于建立现象与原理的对应，不能作为具体宝石的鉴定或实测结果。</p><p><a href="https://github.com/skyjia/gemology-notes" target="_blank" rel="noreferrer">宝石学笔记</a> · <a href="https://openstax.org/books/university-physics-volume-3/pages/1-7-polarization" target="_blank" rel="noreferrer">OpenStax：偏振原理</a> · <a href="https://www.edmundoptics.com/knowledge-center/application-notes/optics/understanding-waveplates/" target="_blank" rel="noreferrer">Edmund Optics：波片原理</a> · <a href="https://www.gia.edu/dam/jcr%3Af7447e1e-6b07-4098-bfb6-ad728779c998/GIA-Polariscope-User-Guide-English.pdf" target="_blank" rel="noreferrer">GIA 操作指南</a> · <a href="https://pubs.geoscienceworld.org/ejm/eurjmin/article/25/1/5/69671/A-revised-Michel-Levy-interference-colour-chart" target="_blank" rel="noreferrer">Sørensen 2013：Michel-Lévy 色图</a> · <a href="https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/05:_Optical_Mineralogy/5.06:_Interference_Figures" target="_blank" rel="noreferrer">LibreTexts：干涉图</a></p></details><Link to="/demo/polariscope" className="pol-explore__footer-learning">继续互动学习 →</Link></footer>
+      <footer className="pol-explore__footer"><a href={`${import.meta.env.BASE_URL}assets/3d/polariscope/references/index.html`} target="_blank" rel="noreferrer">公开参考资料 ↗</a><details><summary>模型与教学说明</summary><p>同一模型用于部件、光路、偏振原理、样品观察与干涉图讲解。底座与支架为一体金属外壳；下偏光片固定，只有载物台与检偏器转动。光柱、方向线、振动短杆和理想薄片属于教学叠层。</p><p>目镜视场与干涉图由程序按晶体光学实时计算：线性延迟按 I = cos²A − sin2ψ·sin2(ψ−A)·sin²(πΓ/λ)，干涉色对 400–700 nm 光谱按 CIE 1931 配色函数积分；一轴晶 Δn·sin²θ、二轴晶 Δn·sinθ₁·sinθ₂ 与 Biot–Fresnel 振动方向；水晶旋光用 Jones 椭圆延迟器。模型为理想平行板，忽略刻面折射、吸收与色散细节；体色、2V 与厚度为示意取值。用于建立现象与原理的对应，不能作为具体宝石的鉴定或实测结果。</p><p><a href="https://github.com/skyjia/gemology-notes" target="_blank" rel="noreferrer">宝石学笔记</a> · <a href="https://openstax.org/books/university-physics-volume-3/pages/1-7-polarization" target="_blank" rel="noreferrer">OpenStax：偏振原理</a> · <a href="https://www.edmundoptics.com/knowledge-center/application-notes/optics/understanding-waveplates/" target="_blank" rel="noreferrer">Edmund Optics：波片原理</a> · <a href="https://www.gia.edu/dam/jcr%3Af7447e1e-6b07-4098-bfb6-ad728779c998/GIA-Polariscope-User-Guide-English.pdf" target="_blank" rel="noreferrer">GIA 操作指南</a> · <a href="https://pubs.geoscienceworld.org/ejm/eurjmin/article/25/1/5/69671/A-revised-Michel-Levy-interference-colour-chart" target="_blank" rel="noreferrer">Sørensen 2013：Michel-Lévy 色图</a> · <a href="https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/05:_Optical_Mineralogy/5.06:_Interference_Figures" target="_blank" rel="noreferrer">LibreTexts：干涉图</a></p></details><Link to="/detection" className="pol-explore__footer-learning">去检测练习 →</Link></footer>
       <button ref={projectionExit} className="pol-explore__button pol-explore__projection-exit" onClick={() => setProjection(false)} aria-label="退出投屏模式">退出投屏 · Esc</button>
     </main>
   );

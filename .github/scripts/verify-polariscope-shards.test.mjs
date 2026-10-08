@@ -5,10 +5,14 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import { verifyShardReports } from './verify-polariscope-shards.mjs';
+import { EXPECTED_CASE_COUNT, SHARD_COUNT, verifyShardReports } from './verify-polariscope-shards.mjs';
+
+// Playwright 分片：前 (总数 % 分片数) 片各多一项。
+const SHARD_SIZES = Array.from({ length: SHARD_COUNT }, (_, index) => Math.floor(EXPECTED_CASE_COUNT / SHARD_COUNT) + (index < EXPECTED_CASE_COUNT % SHARD_COUNT ? 1 : 0));
+const SHARD_RANGES = SHARD_SIZES.map((size, index) => { const start = SHARD_SIZES.slice(0, index).reduce((sum, value) => sum + value, 0); return [start, start + size]; });
 
 function fixture() {
-  const specs = Array.from({ length: 55 }, (_, index) => ({
+  const specs = Array.from({ length: EXPECTED_CASE_COUNT }, (_, index) => ({
     id: `case-${index}`, title: `Case ${index}`, tests: [{
       projectId: 'chromium', expectedStatus: 'passed', status: 'expected', results: [{ status: 'passed' }],
     }],
@@ -16,23 +20,23 @@ function fixture() {
   const report = (rows, shard = null) => ({ config: { shard }, errors: [], suites: [{ specs: rows }] });
   return {
     expected: report(structuredClone(specs).map(spec => ({ ...spec, tests: spec.tests.map(item => ({ ...item, status: 'skipped', results: [] })) }))),
-    shards: [[0, 19], [19, 37], [37, 55]].map(([start, end], index) => ({
+    shards: SHARD_RANGES.map(([start, end], index) => ({
       shard: index + 1,
-      report: report(structuredClone(specs.slice(start, end)), { current: index + 1, total: 3 }),
+      report: report(structuredClone(specs.slice(start, end)), { current: index + 1, total: SHARD_COUNT }),
     })),
   };
 }
 
-test('accepts the complete 55-case set exactly once across 19/18/18 shards', () => {
+test('accepts the complete case set exactly once across the shards', () => {
   const { expected, shards } = fixture();
   const result = verifyShardReports(expected, shards, 'success');
   assert.equal(result.ok, true);
-  assert.equal(result.passedCases, 55);
-  assert.equal(result.uniqueCases, 55);
-  assert.deepEqual(result.shards.map(shard => shard.cases), [19, 18, 18]);
+  assert.equal(result.passedCases, EXPECTED_CASE_COUNT);
+  assert.equal(result.uniqueCases, EXPECTED_CASE_COUNT);
+  assert.deepEqual(result.shards.map(shard => shard.cases), SHARD_SIZES);
 });
 
-test('rejects missing, duplicate and unexpected identities even when totals claim 55 passes', () => {
+test('rejects missing, duplicate and unexpected identities even when totals claim a full pass', () => {
   for (const change of ['missing', 'duplicate', 'unexpected', 'duplicate-expected']) {
     const { expected, shards } = fixture();
     const specs = shards[1].report.suites[0].specs;
@@ -40,7 +44,7 @@ test('rejects missing, duplicate and unexpected identities even when totals clai
     if (change === 'duplicate') specs[0] = structuredClone(shards[0].report.suites[0].specs[0]);
     if (change === 'unexpected') specs[0].id = 'not-in-collected-list';
     if (change === 'duplicate-expected') expected.suites[0].specs[0].id = expected.suites[0].specs[1].id;
-    for (const shard of shards) shard.report.stats = { expected: 55, unexpected: 0, skipped: 0, flaky: 0 };
+    for (const shard of shards) shard.report.stats = { expected: EXPECTED_CASE_COUNT, unexpected: 0, skipped: 0, flaky: 0 };
     assert.equal(verifyShardReports(expected, shards, 'success').ok, false, change);
   }
 });

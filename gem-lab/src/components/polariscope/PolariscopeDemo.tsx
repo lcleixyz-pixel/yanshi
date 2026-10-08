@@ -1,3 +1,4 @@
+import { AXIS_FIGURE_GUIDE, INTERFERENCE_KEY, OBSERVATION_POSTURE_SUMMARY, OBSERVATION_RULES, REACTION_CHECK_LABEL } from '@/domain/polariscopeRules';
 import {
   useCallback,
   useEffect,
@@ -186,6 +187,7 @@ export default function PolariscopeDemo({
   const [knobReady, setKnobReady] = useState(false);
   const lastLearningStageAngle = useRef(0);
   const learningStageSweep = useRef(0);
+  const addLearningSweepRef = useRef<(degrees: number) => void>(() => {});
 
   // 样品
   const [learningSampleId, setLearningSampleId] = useState('amethyst');
@@ -289,6 +291,7 @@ export default function PolariscopeDemo({
       const dt = now - last;
       last = now;
       setRotation01((r) => (r + (dt * STAGE_AUTO_ROTATE_DEG_PER_MS) / 360) % 1);
+      if (mode === 'learning') addLearningSweepRef.current(dt * STAGE_AUTO_ROTATE_DEG_PER_MS);
       rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
@@ -311,10 +314,12 @@ export default function PolariscopeDemo({
   }, [rotation, brightness, state.power, state.crossed, state.sampleOn]);
 
   useEffect(() => {
+    // 学习模式改由累计转角判定（见 updateLearningStageAngle），不再「见到一亮一暗」就算转完一周。
+    if (mode === 'learning') return;
     if (observed.has('bright') && observed.has('dark') && !state.rotated) {
       setState((s) => ({ ...s, rotated: true, recorded: false }));
     }
-  }, [observed, state.rotated]);
+  }, [mode, observed, state.rotated]);
 
   const resetObservationState = () => {
     setRotation01(0);
@@ -511,11 +516,24 @@ export default function PolariscopeDemo({
     setLearningView('live-use');
   };
 
+  /** 学习模式累计转角：拖动圆环与自动旋转共用。步骤要求「旋转载物台 360°」，转满一周（留 10° 容差）才算完成。 */
+  const addLearningSweep = (degrees: number) => {
+    learningStageSweep.current += degrees;
+    if (learningStageSweep.current < LEARNING_FULL_TURN_DEG) return;
+    setKnobReady(true);
+    setState((s) => (
+      s.power && s.crossed && s.sampleOn && !s.rotated
+        ? { ...s, rotated: true, recorded: false }
+        : s
+    ));
+  };
+
+  addLearningSweepRef.current = addLearningSweep;
+
   const updateLearningStageAngle = (angle: number) => {
     const previous = lastLearningStageAngle.current;
     const delta = signedAngleDelta(previous, angle);
     lastLearningStageAngle.current = angle;
-    learningStageSweep.current += Math.abs(delta);
     setRotation01(angle / 360);
 
     const sweepAngles = sampleSweepAngles(previous, angle);
@@ -533,14 +551,7 @@ export default function PolariscopeDemo({
       return next.size === current.size ? current : next;
     });
 
-    if (learningStageSweep.current >= 90) {
-      setKnobReady(true);
-      setState((s) => (
-        s.power && s.crossed && s.sampleOn
-          ? { ...s, rotated: true, recorded: false }
-          : s
-      ));
-    }
+    addLearningSweep(Math.abs(delta));
   };
 
   const finishLearningRun = () => {
@@ -557,6 +568,8 @@ export default function PolariscopeDemo({
         beginLearningOperation={beginLearningOperation}
         brightness={brightness}
         canSave={canSave}
+        sweptDegrees={Math.min(360, Math.round(learningStageSweep.current))}
+        rotated={state.rotated}
         embedded={embedded}
         finishLearningRun={finishLearningRun}
         handleReset={handleReset}
@@ -883,9 +896,7 @@ export default function PolariscopeDemo({
                     <span className="ml-1 text-[9px] text-brand-600">▼ 展开</span>
                   </summary>
                   <p className="max-h-24 overflow-y-auto px-2 pb-1 text-[10px] leading-relaxed text-ink-2">
-                    将样品置于载物台中央，使光线从下方穿透。单眼俯视目镜，缓慢旋转载物台 360°，观察视场明暗变化次数。
-                    每旋转 90° 经历一次亮暗交替（共四明四暗）通常为非均质体，但均质体的异常双折射（ADR）也可能出现，需做平行复核；始终全暗多为均质体，但须从 2–3 个不同方向重复测试，排除沿光轴放置造成的全暗；样品持续透亮多见于可透光的多晶质集合体。
-                    偏光镜反应只是判断依据之一，需结合折射仪等结果综合鉴定。
+                    {OBSERVATION_POSTURE_SUMMARY}
                   </p>
                 </details>
               )}
@@ -912,7 +923,7 @@ export default function PolariscopeDemo({
                   <div className="mb-1 text-[10px] text-ink-3">观察到的现象（可多选）</div>
                   <div className="space-y-1.5">
                     <Checkbox
-                      label="四明四暗（非均质体）"
+                      label={REACTION_CHECK_LABEL.fourBright}
                       checked={
                         mode === 'detection'
                           ? userPhenomena.fourBright
@@ -922,7 +933,7 @@ export default function PolariscopeDemo({
                       disabled={mode !== 'detection'}
                     />
                     <Checkbox
-                      label="转动 360° 全暗（均质体）"
+                      label={REACTION_CHECK_LABEL.allDark}
                       checked={
                         mode === 'detection'
                           ? userPhenomena.allDark
@@ -932,7 +943,7 @@ export default function PolariscopeDemo({
                       disabled={mode !== 'detection'}
                     />
                     <Checkbox
-                      label="转动 360° 样品持续亮（多晶质集合体）"
+                      label={REACTION_CHECK_LABEL.allBright}
                       checked={
                         mode === 'detection'
                           ? userPhenomena.allBright
@@ -992,6 +1003,9 @@ export default function PolariscopeDemo({
 }
 
 interface PolariscopeLearningExperienceProps {
+  /** 学习模式累计转角（度），用于提示还差多少转满一周。 */
+  sweptDegrees: number;
+  rotated: boolean;
   activeCanvasView: ReturnType<typeof computePhenomenonBrightness>['view'] | 'off' | 'crossed-dark' | 'parallel';
   autoRotating: boolean;
   beginLearningOperation: () => void;
@@ -1028,6 +1042,8 @@ interface PolariscopeLearningExperienceProps {
 }
 
 function PolariscopeLearningExperience({
+  sweptDegrees,
+  rotated,
   activeCanvasView,
   autoRotating,
   beginLearningOperation,
@@ -1496,6 +1512,7 @@ function PolariscopeLearningExperience({
                 >
                   {opticalHint}
                 </div>
+                {!canSave && !rotated && <p className="mt-3 text-xs text-ink-3" data-testid="polariscope-sweep-progress">已转过 {sweptDegrees}° / 360°：步骤要求转满一周再完成。</p>}
                 <button
                   type="button"
                   onClick={finishLearningRun}
@@ -1519,7 +1536,7 @@ function PolariscopeLearningExperience({
                     <div className="flex flex-col items-center gap-2 px-3 pb-3">
                       <p className="text-left text-[10px] leading-relaxed text-violet-900/80">
                         真实操作：确认非均质体后，加装锥光干涉球，从目镜观察干涉图。
-                        黑十字 → 一轴晶；单/双黑臂 → 二轴晶；牛眼（旋光所致，常见于水晶）。
+                        {INTERFERENCE_KEY}。
                         下图为当前样品的示意仿真（未模拟加球操作，仅供认知建立）。
                       </p>
                       <InterferencePatternView
@@ -2339,6 +2356,9 @@ function getLearningProgressLabel(
   return '继续旋转，观察明暗变化';
 }
 
+/** 学习模式「旋转一周」的完成门槛（累计转角）。 */
+const LEARNING_FULL_TURN_DEG = 350;
+
 function normalizeAngle(angle: number): number {
   return ((angle % 360) + 360) % 360;
 }
@@ -2374,24 +2394,15 @@ function renderOpticalHint(
   }
   if (!optical) return <p>放置样品并旋转，观察视场明暗变化。</p>;
 
-  if (response === 'opaque-not-applicable') {
-    return (
-      <p>
-        该样品为<strong>不透明样品</strong>，<strong>标准透射偏光镜不适用</strong>：光线无法有效穿过样品，因此不会得到可靠的四明四暗、持续亮或全暗透射响应。此时应记录为无有效透射响应，并改用反射光观察或其他检测方法。
-      </p>
-    );
-  }
-  if (response === 'isotropic-all-dark') {
-    return <p>转动载物台 360°，样品与背景始终保持全暗、无亮位——这是<strong>均质体</strong>的典型反应。等轴晶系宝石（如石榴石、尖晶石）及非晶质体（玻璃、琥珀、欧泊）均可呈此反应。但这一个方向还不能下结论：非均质体沿光轴放置也会全暗，须换 2–3 个方向复查；部分均质体还会因应变出现异常双折射。</p>;
-  }
-  if (response === 'aggregate-continuous-bright') {
-    return <p>样品区域持续透亮、旋转时保持亮反应——这是<strong>多晶质集合体</strong>的典型特征。正交背景仍保持暗场；由于光线经过大量细小晶粒，偏振态被打乱，样品响应无法被上偏光片完全消光。翡翠、软玉等均属此类。</p>;
-  }
+  // 现象解释与 3D 讲解共用 polariscopeRules，修改口径时只改那一处。
+  if (response === 'opaque-not-applicable') return <p>{OBSERVATION_RULES['not-applicable'].text}</p>;
+  if (response === 'isotropic-all-dark') return <p>{OBSERVATION_RULES['all-dark'].text}</p>;
+  if (response === 'aggregate-continuous-bright') return <p>{OBSERVATION_RULES['all-bright'].text}</p>;
   if (optical === 'uniaxial-positive' || optical === 'uniaxial-negative') {
     return (
       <p>
-        旋转 360° 出现<strong>四明四暗</strong>，通常说明样品为非均质体（异常双折射也可能出现四明四暗，有疑问时做平行复核）。当前样品为<strong>一轴晶（{optical === 'uniaxial-positive' ? '+' : '−'}）</strong>。
-        在正交偏光下找到干涉色最强的位置，加装锥光干涉球，光轴大致直立时可观察到黑十字加同心色环的一轴晶干涉图，进一步确认轴性。（水晶因旋光性，中心可呈彩色圆斑、黑十字不到中心，即「牛眼」；它与普通一轴晶黑十字不是一回事，且受取向、旋向和双晶影响。）
+        {OBSERVATION_RULES['four-bright-four-dark'].text}当前样品为<strong>一轴晶（{optical === 'uniaxial-positive' ? '+' : '−'}）</strong>。
+        {AXIS_FIGURE_GUIDE.uniaxial}（{AXIS_FIGURE_GUIDE.quartzBullseye}）
         {brightness < 0.15 && ' · 当前处于消光位（暗位），旋转约 45° 可到达最亮位。'}
         {brightness > 0.85 && ' · 当前样品处于最亮位（45° 位），继续旋转约 45° 将到达下一个消光位。'}
       </p>
@@ -2400,8 +2411,8 @@ function renderOpticalHint(
   if (optical === 'biaxial-positive' || optical === 'biaxial-negative') {
     return (
       <p>
-        旋转 360° 出现<strong>四明四暗</strong>，通常说明样品为非均质体（异常双折射也可能出现四明四暗，有疑问时做平行复核）。当前样品为<strong>二轴晶（{optical === 'biaxial-positive' ? '+' : '−'}）</strong>。
-        加装锥光干涉球，寻找干涉图最清晰的位置——二轴晶通常显示双臂或单臂黑带，可区别于一轴晶的黑十字图。
+        {OBSERVATION_RULES['four-bright-four-dark'].text}当前样品为<strong>二轴晶（{optical === 'biaxial-positive' ? '+' : '−'}）</strong>。
+        {AXIS_FIGURE_GUIDE.biaxial}
       </p>
     );
   }

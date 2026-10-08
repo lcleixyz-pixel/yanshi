@@ -1,5 +1,6 @@
 import { STRUCTURE_PART_IDS, type SampleOrientation, type StructurePartId, type TeachingLesson } from './polariscopeStructure';
 import type { SampleObservation } from './eyepieceField';
+import { JUDGEMENT_RULES } from './polariscopeRules';
 
 /**
  * 偏光镜基础引导课程（约 5–8 分钟）：认识部件 → 跟随光路 → 空载调正 → 放样旋转 → 换方向复核 → 解释。
@@ -9,17 +10,8 @@ import type { SampleObservation } from './eyepieceField';
 
 export type CourseStepId = 'parts' | 'path' | 'crossed' | 'rotate' | 'reorient' | 'explain';
 
-/** 课程中用到的讲解规则：步骤说明与问答反馈共用这一份文字。 */
-export const COURSE_RULES = {
-  crossedWhy: '正交时空载视场全暗。放上样品后视场变亮，说明是样品改变了光的振动方向；不先调到正交，就分不清亮是样品造成的，还是仪器没调好。',
-  reorientWhy: '非均质体沿光轴方向传播时不发生双折射，看起来和均质体一样暗。所以「转一周始终暗」要换 2–3 个方向复查，才能初步判断为均质体。',
-  inactive: '电源关闭或仪器未装配时视场本来就暗，这种暗不能说明样品是否消光。',
-  notCrossed: '检偏器不在正交位置时，空载背景本身就亮，样品的明暗变化无法按正交规则解释。',
-  singleDirection: '只在一个方向看到始终暗，也可能是非均质体沿光轴放置，需要换方向复查。',
-  opaque: '不透明样品没有透射光，偏光镜透射观察不适用，需要改用其他方法。',
-  multiDirection: '正交下换了 2–3 个方向、每次转满一周都始终暗，可以初步判断为均质体；最终定名仍需结合折射仪等其他检测。',
-  adrCaveat: '四明四暗通常表示双折射，但均质体的异常双折射（ADR）也可能出现，有疑问时做平行复核并结合折射仪。',
-} as const;
+/** 课程讲解规则：与 2D 演示、结果解释共用 polariscopeRules 中的同一份文字。 */
+export const COURSE_RULES = JUDGEMENT_RULES;
 
 export interface CourseStep {
   id: CourseStepId;

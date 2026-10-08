@@ -1,4 +1,5 @@
 import type { InstrumentDef } from './types';
+import { INTERFERENCE_KEY } from '../domain/polariscopeRules';
 
 export const INSTRUMENTS: Record<string, InstrumentDef> = {
   refractometer: {
@@ -279,7 +280,7 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
           { id: 1, iconId: 'power-on', title: '打开光源，调至正交' },
           { id: 2, iconId: 'rotate', title: '上下、左右翻转样品寻找虹彩效应' },
           { id: 3, iconId: 'align', title: '加入锥光干涉球' },
-          { id: 4, iconId: 'observe', title: '观察干涉图', hint: '黑十字 → 一轴晶；单/双臂 → 二轴晶；牛眼（旋光所致）→ 常见于水晶' },
+          { id: 4, iconId: 'observe', title: '观察干涉图', hint: INTERFERENCE_KEY },
         ],
       },
       {

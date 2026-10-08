@@ -492,3 +492,4 @@
   .pol-explore--student .pol-explore__projection-controls { position: absolute; z-index: 5; bottom: 18px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 14px; width: max-content; max-width: calc(100% - 40px); padding: 10px 16px; border: 1px solid var(--pe-line-2); border-radius: 12px; background: #ffffffee; box-shadow: 0 8px 28px #1a233214; }
   .pol-explore--student-observe .pol-explore__scene-caption h2 { display: none; }
 }
+.pol-explore__fallback-2d { position: absolute; z-index: 6; left: 50%; bottom: 24px; transform: translateX(-50%); padding: 9px 16px; border-radius: 8px; color: #fff; background: var(--pe-accent); font-size: 13px; font-weight: 500; text-decoration: none; box-shadow: 0 6px 20px #1a233222; }

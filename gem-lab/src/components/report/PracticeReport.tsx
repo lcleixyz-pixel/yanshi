@@ -1,4 +1,5 @@
 import type { SampleDef } from '@/data/types';
+import { reactionLabel } from '@/domain/polariscopeRules';
 import { SAMPLES_BY_ID } from '@/data/samples';
 import type { AssessmentAttempt, DetectionSession } from '@/store/detectionStore';
 import { formatDR } from '@/utils/format';
@@ -43,7 +44,7 @@ export default function PracticeReport({
       <table>
         <tbody>
           <tr><th>折射仪</th><td>折射率 {ri}；双折射率 {formatDR(session.refractometer.birefringence ?? undefined)}</td></tr>
-          <tr><th>偏光镜</th><td>{optical}；{session.polariscope.phenomenon === 'four-bright-four-dark' ? '四明四暗' : session.polariscope.phenomenon === 'all-dark' ? '全暗' : session.polariscope.phenomenon === 'all-bright' ? '全亮' : '未记录正交现象'}</td></tr>
+          <tr><th>偏光镜</th><td>{optical}；{reactionLabel(session.polariscope.phenomenon, '未记录正交现象')}</td></tr>
           <tr><th>分光镜</th><td>{spectrum}</td></tr>
         </tbody>
       </table>

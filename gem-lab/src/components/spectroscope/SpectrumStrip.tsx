@@ -30,8 +30,10 @@ export default function SpectrumStrip({
   height = 80,
   interactive = true,
   locked = false,
+  display,
 }: {
-  features?: AbsorptionFeature[];
+  /** 特征可带 opacity（来自 domain/spectrumDisplay 的显示变换），否则按强度与 noise 计算。 */
+  features?: (AbsorptionFeature & { opacity?: number })[];
   userMarks?: number[];
   onAddMark?: (wl: number) => void;
   onRemoveMark?: (wl: number) => void;
@@ -48,6 +50,8 @@ export default function SpectrumStrip({
   height?: number;
   interactive?: boolean;
   locked?: boolean;
+  /** 给定时由显示变换决定模糊、亮度和蓝紫端变暗，替代 slitWidth / focus / noise 的估算。 */
+  display?: { blurPx: number; brightness: number; violetDim: number };
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [hoverWL, setHoverWL] = useState<number | null>(null);
@@ -56,10 +60,10 @@ export default function SpectrumStrip({
   // 综合模糊
   const focusBlur = Math.abs(focus - 0.5) * 6;
   const noiseBlur = noise * 4;
-  const blur = focusBlur + noiseBlur;
+  const blur = display ? display.blurPx : focusBlur + noiseBlur;
 
   // 综合亮度：狭缝越宽越亮（基础亮度），但 noise 会降低对比度
-  const brightness = (0.6 + slitWidth * 0.6) * (1 - noise * 0.25);
+  const brightness = display ? display.brightness : (0.6 + slitWidth * 0.6) * (1 - noise * 0.25);
 
   // 吸收线对比度：noise 越大越衰减
   const featureContrast = 1 - noise * 0.5;
@@ -132,6 +136,11 @@ export default function SpectrumStrip({
           }}
         />
 
+        {/* 蓝紫端（右侧）额外变暗：透光弱或狭缝过窄时紫端先暗下去 */}
+        {display && display.violetDim > 0 && (
+          <div className="pointer-events-none absolute inset-0" data-testid="spectrum-violet-dim" style={{ background: `linear-gradient(to left, rgba(0,0,0,${display.violetDim.toFixed(2)}) 0%, rgba(0,0,0,0) 50%)` }} />
+        )}
+
         {/* 吸收特征 */}
         {!locked && showFeatures &&
           features.map((f, i) => {
@@ -143,16 +152,18 @@ export default function SpectrumStrip({
                 : 0.4;
             const baseOpacity =
               f.intensity === 'strong' ? 0.95 : f.intensity === 'medium' ? 0.7 : 0.45;
-            const opacity = baseOpacity * featureContrast;
+            const opacity = f.opacity ?? baseOpacity * featureContrast;
             return (
               <div
                 key={i}
+                data-wavelength={f.wavelength}
                 className="absolute top-0 h-full"
                 style={{
                   left: `${xCenter - widthPct / 2}%`,
                   width: `${widthPct}%`,
                   background: '#000',
                   opacity,
+                  filter: display?.blurPx ? `blur(${display.blurPx}px)` : undefined,
                   pointerEvents: 'none',
                 }}
                 title={

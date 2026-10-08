@@ -344,3 +344,20 @@
     max-width: 220px;
   }
 }
+.course-shell__tuning {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0;
+  font-size: 12px;
+}
+.course-shell__tuning label {
+  display: grid;
+  grid-template-columns: 5em 1fr;
+  align-items: center;
+  gap: 10px;
+}
+.course-shell__observation > .course-shell__spectrum {
+  display: block;
+  margin-top: 18px;
+  text-align: left;
+}

@@ -6,6 +6,14 @@ import { createOpticsViewer, type OpticsSnapshot, type OpticsViewer } from '../c
 import { isOpticsInstrument, OPTICS_INSTRUMENTS, opticsAssetBase, type OpticsInstrumentId } from '../components/optics3d/opticsInstruments';
 import '../styles/microscope-explore.css';
 import RefractometerCourse from '../components/refractometer3d/RefractometerCourse';
+import SpectroscopeCourse from '../components/spectroscope/SpectroscopeCourse';
+
+/** 有引导课程的 3D 光学仪器：入口说明与课程组件。 */
+const COURSES = {
+  refractometer: { title: '基础读数课', minutes: 9, intro: '从接触恢复到自主读数与换方向复核。固定尖晶石教学样品，先记录再核对。', Course: RefractometerCourse },
+  'prism-spectroscope': { title: '基础观察课', minutes: 8, intro: '从对光、调狭缝与焦距到标记吸收特征。固定红宝石教学样品，先标记再核对。', Course: SpectroscopeCourse },
+} as const satisfies Partial<Record<OpticsInstrumentId, { title: string; minutes: number; intro: string; Course: typeof RefractometerCourse }>>;
+const courseFor = (id: OpticsInstrumentId) => (id in COURSES ? COURSES[id as keyof typeof COURSES] : null);
 
 export default function OpticsExplorePage() {
   const { instrumentId } = useParams<{ instrumentId: string }>();
@@ -14,13 +22,15 @@ export default function OpticsExplorePage() {
   const courseMode = searchParams.get('course') === 'basic' ? (searchParams.get('mode') === 'student' ? 'student' : 'teacher') : null;
   const setCourseMode = (mode: 'student' | 'teacher' | null) => setSearchParams(mode ? { course: 'basic', mode } : {}, { replace: !mode });
   if (!isOpticsInstrument(instrumentId)) return <Navigate to="/" replace />;
-  if (instrumentId === 'refractometer' && courseMode) return <RefractometerCourse key={courseMode} mode={courseMode} onExit={() => setCourseMode(null)} />;
+  const course = courseFor(instrumentId);
+  if (course && courseMode) return <course.Course key={`${instrumentId}-${courseMode}`} mode={courseMode} onExit={() => setCourseMode(null)} />;
   // Remount per instrument so each viewer owns exactly one model.
   return <OpticsExplore key={instrumentId} instrumentId={instrumentId} onStart={setCourseMode} />;
 }
 
 function OpticsExplore({ instrumentId, onStart }: { instrumentId: OpticsInstrumentId; onStart: (mode: 'student' | 'teacher') => void }) {
   const info = OPTICS_INSTRUMENTS[instrumentId], assetBase = opticsAssetBase(instrumentId);
+  const course = courseFor(instrumentId);
   const viewportRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<OpticsViewer | null>(null);
   const [snapshot, setSnapshot] = useState<OpticsSnapshot>({ status: 'loading' });
@@ -60,9 +70,9 @@ function OpticsExplore({ instrumentId, onStart }: { instrumentId: OpticsInstrume
         </section>
 
         <aside className="mic-explore__sidebar" aria-label="光路与部件控制">
-          {instrumentId === 'refractometer' && <section className="mic-explore__block" aria-label="基础读数课">
-            <h2>基础读数课 <span>约 9 分钟</span></h2>
-            <p className="mic-explore__note">从接触恢复到自主读数与换方向复核。固定尖晶石教学样品，先记录再核对。</p>
+          {course && <section className="mic-explore__block" aria-label={course.title}>
+            <h2>{course.title} <span>约 {course.minutes} 分钟</span></h2>
+            <p className="mic-explore__note">{course.intro}</p>
             <div className="mic-explore__row"><button type="button" onClick={() => onStart('student')}>开始学习（学员）</button><button type="button" onClick={() => onStart('teacher')}>讲师演示</button></div>
           </section>}
           <section className="mic-explore__block" aria-label="光路示例">

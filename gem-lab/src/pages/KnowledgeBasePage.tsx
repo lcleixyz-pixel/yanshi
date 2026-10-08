@@ -29,6 +29,11 @@ const METHOD_PRACTICE: Partial<Record<InstrumentId, Record<string, { to: string;
     facet: { to: INSTRUMENT_COURSES.refractometer!.student, label: '在 3D 基础读数课中练习刻面法' },
     spot: { note: '点测法暂无 3D 练习，可在「交互演示」一节的经典 2D 演示中练习。' },
   },
+  spectroscope: {
+    transmission: { to: INSTRUMENT_COURSES.spectroscope!.student, label: '在 3D 基础观察课中练习透射法' },
+    'internal-reflection': { note: '内反射法暂无 3D 练习，可在「交互演示」一节的经典 2D 演示中练习。' },
+    'surface-reflection': { note: '表面反射法暂无 3D 练习，可在「交互演示」一节的经典 2D 演示中练习。' },
+  },
 };
 
 export default function KnowledgeBasePage() {

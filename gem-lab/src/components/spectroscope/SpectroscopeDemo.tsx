@@ -119,8 +119,10 @@ export default function SpectroscopeDemo({
       : angleDeg >= 25 && angleDeg <= 65;
 
   // 调节合格
-  const focusOk = Math.abs(focus - 0.5) < 0.12;
-  const slitOk = slitWidth >= 0.18 && slitWidth <= 0.45;
+  // 手持光栅式为固定狭缝、固定焦距（GIA 产品说明），只有棱镜式需要调节这两项。
+  const fixedOptics = dispersion === 'grating';
+  const focusOk = fixedOptics || Math.abs(focus - 0.5) < 0.12;
+  const slitOk = fixedOptics || (slitWidth >= 0.18 && slitWidth <= 0.45);
   const tuneScore = (focusOk ? 1 : 0) + (slitOk ? 1 : 0);
 
   // 推进 aligned/tuned，并在上游步骤失效时清理下游观测。
@@ -758,6 +760,7 @@ export default function SpectroscopeDemo({
                   focusOk={focusOk}
                   focusCue={opticsFocusCue}
                   tuneScore={tuneScore}
+                  fixedOptics={fixedOptics}
                   themeHex={instrument.themeHex}
                   guideActive={mode === 'detection' && currentStep === 'tune'}
                 />
@@ -1179,6 +1182,7 @@ function OpticsControlPanel({
   focusOk,
   focusCue,
   tuneScore,
+  fixedOptics = false,
   themeHex,
   guideActive = false,
 }: {
@@ -1197,6 +1201,8 @@ function OpticsControlPanel({
   focusOk: boolean;
   focusCue: OpticsFocusCue;
   tuneScore: number;
+  /** 光栅式：狭缝与焦距固定，不显示调节滑块。 */
+  fixedOptics?: boolean;
   themeHex: string;
   guideActive?: boolean;
 }) {
@@ -1249,7 +1255,12 @@ function OpticsControlPanel({
         />
       )}
 
-      {aligned && (
+      {aligned && fixedOptics && (
+        <p className={clsx('text-[11px] leading-relaxed text-ink-3', angleNeeded && 'mt-3 border-t border-line pt-3')} data-testid="spectroscope-fixed-optics">
+          光栅式：狭缝与焦距固定，无需调节；光谱偏暗时改善照明或对光。
+        </p>
+      )}
+      {aligned && !fixedOptics && (
         <div className={clsx(angleNeeded && 'mt-3 border-t border-line pt-3')}>
           <div className={clsx('rounded-lg transition', focusCue === 'slit' && 'bg-cyan-50 p-2 ring-1 ring-cyan-200')}>
             <SliderRow

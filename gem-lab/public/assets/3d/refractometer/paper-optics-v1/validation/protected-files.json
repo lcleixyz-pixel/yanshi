@@ -1,0 +1,822 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-08T07:53:26.346751+00:00",
+  "baselineCreatedAt": "2026-10-08T07:35:56.874995+00:00",
+  "pass": true,
+  "protectedFileCount": 115,
+  "newProtectedFiles": [],
+  "files": [
+    {
+      "path": "gem-lab/public/assets/3d/gem-microscope/lighting-v3/manifest.json",
+      "sha256": "985ffd8d95f600a6c6ac12e6fe49bd93b4a98d5ec0b4882329af87a13287c6f3",
+      "bytes": 77757,
+      "afterSha256": "985ffd8d95f600a6c6ac12e6fe49bd93b4a98d5ec0b4882329af87a13287c6f3",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/gem-microscope/lighting-v3/model.glb",
+      "sha256": "6a24b6208af5a7f23fce1cdafc846a52a0fc4bbbb6ff8a6cca8d4a9d50767091",
+      "bytes": 4894312,
+      "afterSha256": "6a24b6208af5a7f23fce1cdafc846a52a0fc4bbbb6ff8a6cca8d4a9d50767091",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/gem-microscope/lighting-v3/poster.webp",
+      "sha256": "289a7423cdadd5d43eb8673992f553ad9cb3b33056167f4a8e0234601c02b6f2",
+      "bytes": 24440,
+      "afterSha256": "289a7423cdadd5d43eb8673992f553ad9cb3b33056167f4a8e0234601c02b6f2",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/gem-microscope/lighting-v3/provenance.json",
+      "sha256": "5602795fe35b3ca858f51a5ba0f6f46bfa58de7d1beade7f68998aa62d9a7109",
+      "bytes": 1722,
+      "afterSha256": "5602795fe35b3ca858f51a5ba0f6f46bfa58de7d1beade7f68998aa62d9a7109",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/gem-microscope/structure-v1/manifest.json",
+      "sha256": "b827c636b7c53297c03b161cad0e8376c3cc189bbaa89003ce138d4b29d6f933",
+      "bytes": 32716,
+      "afterSha256": "b827c636b7c53297c03b161cad0e8376c3cc189bbaa89003ce138d4b29d6f933",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/gem-microscope/structure-v1/model.glb",
+      "sha256": "23ae6ef8d47c341cab52c315da9bc37d37913880ffcb9d9aaf7af144c36fe83d",
+      "bytes": 2701720,
+      "afterSha256": "23ae6ef8d47c341cab52c315da9bc37d37913880ffcb9d9aaf7af144c36fe83d",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/gem-microscope/structure-v1/poster.png",
+      "sha256": "4cdfea78cc758d8ae738a09170a7da42d4290b68b1f50f3f634fd690dba78498",
+      "bytes": 1504554,
+      "afterSha256": "4cdfea78cc758d8ae738a09170a7da42d4290b68b1f50f3f634fd690dba78498",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/gem-microscope/structure-v1/provenance.json",
+      "sha256": "22439a01ffbecfb71c2cad564adb1f15e8bbc400538a3a8d07a30b1b856256c7",
+      "bytes": 13617,
+      "afterSha256": "22439a01ffbecfb71c2cad564adb1f15e8bbc400538a3a8d07a30b1b856256c7",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/grating-spectroscope/structure-v1/manifest.json",
+      "sha256": "d8269f7d79c050c3d5497e1e5c4b6a33fef2e50b02d632e4ded8d0d11f5cba50",
+      "bytes": 7527,
+      "afterSha256": "d8269f7d79c050c3d5497e1e5c4b6a33fef2e50b02d632e4ded8d0d11f5cba50",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/grating-spectroscope/structure-v1/model.glb",
+      "sha256": "bc1ae40ae18b12942b5edbd13a4ca5506fe5351d603293ce5274d54d1757e16b",
+      "bytes": 1204720,
+      "afterSha256": "bc1ae40ae18b12942b5edbd13a4ca5506fe5351d603293ce5274d54d1757e16b",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/grating-spectroscope/structure-v1/poster.png",
+      "sha256": "cef26cb9d943b1d4c71d08b66036c1a655086d8b83007799b316f9086f1d8898",
+      "bytes": 1361575,
+      "afterSha256": "cef26cb9d943b1d4c71d08b66036c1a655086d8b83007799b316f9086f1d8898",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/grating-spectroscope/structure-v1/provenance.json",
+      "sha256": "83909bf954694a360e406baaec06fd57028ca499ebe5465838e390dd0582ace4",
+      "bytes": 11244,
+      "afterSha256": "83909bf954694a360e406baaec06fd57028ca499ebe5465838e390dd0582ace4",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/polariscope/structure-v1/manifest.json",
+      "sha256": "5384edfedad505feb838f5d73c374d78f489ca4a2a68f5894429085373ae19b9",
+      "bytes": 5940,
+      "afterSha256": "5384edfedad505feb838f5d73c374d78f489ca4a2a68f5894429085373ae19b9",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/polariscope/structure-v1/poster.png",
+      "sha256": "f5f29c5980b738455e1a81c0ec7107460702fba1965ed2485077245a97d1f4e1",
+      "bytes": 865824,
+      "afterSha256": "f5f29c5980b738455e1a81c0ec7107460702fba1965ed2485077245a97d1f4e1",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/polariscope/structure-v1/provenance.json",
+      "sha256": "265b1ff6608c1a9f3c496080cb779a3449eed9f227f9610fafd5228ba029107b",
+      "bytes": 2818,
+      "afterSha256": "265b1ff6608c1a9f3c496080cb779a3449eed9f227f9610fafd5228ba029107b",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/polariscope/structure-v1/repaired.glb",
+      "sha256": "0d4eb62f630e74915d31524010e51e1ce031c9b50f00314a1195b7c8ce469a7b",
+      "bytes": 29512268,
+      "afterSha256": "0d4eb62f630e74915d31524010e51e1ce031c9b50f00314a1195b7c8ce469a7b",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/prism-spectroscope/structure-v1/manifest.json",
+      "sha256": "cc409ddffd51760271985784b2a8929e1a7dec586c29005e058954a0479a86f1",
+      "bytes": 11133,
+      "afterSha256": "cc409ddffd51760271985784b2a8929e1a7dec586c29005e058954a0479a86f1",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/prism-spectroscope/structure-v1/model.glb",
+      "sha256": "ba3d45fb33ff390a4759c84845ba3e55d185a4ae24b6811913a1e1403b58d14d",
+      "bytes": 1417552,
+      "afterSha256": "ba3d45fb33ff390a4759c84845ba3e55d185a4ae24b6811913a1e1403b58d14d",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/prism-spectroscope/structure-v1/poster.png",
+      "sha256": "86f899da820da629579762840a0c212897cfa62545274cca4db7b0417a7d8579",
+      "bytes": 1368635,
+      "afterSha256": "86f899da820da629579762840a0c212897cfa62545274cca4db7b0417a7d8579",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/prism-spectroscope/structure-v1/provenance.json",
+      "sha256": "1556d002b507b8a5a6249250ecb2d15163351b0d898e28ed770fce595540a934",
+      "bytes": 14113,
+      "afterSha256": "1556d002b507b8a5a6249250ecb2d15163351b0d898e28ed770fce595540a934",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/refractometer/structure-v1/manifest.json",
+      "sha256": "1a0cca6e4d1c17557ba251d5ae93198794cd912df9c3d41b60aa073fb69cb567",
+      "bytes": 17351,
+      "afterSha256": "1a0cca6e4d1c17557ba251d5ae93198794cd912df9c3d41b60aa073fb69cb567",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/refractometer/structure-v1/model.glb",
+      "sha256": "81e265623fbae03bbe75ded1011aef3521ff2ac8439fa5af86aa80e3233aa383",
+      "bytes": 2416144,
+      "afterSha256": "81e265623fbae03bbe75ded1011aef3521ff2ac8439fa5af86aa80e3233aa383",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/refractometer/structure-v1/poster.png",
+      "sha256": "3d5de40107596414aa3003c2e7c350154485760f7a3a4121194513357a722d3f",
+      "bytes": 1442165,
+      "afterSha256": "3d5de40107596414aa3003c2e7c350154485760f7a3a4121194513357a722d3f",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/public/assets/3d/refractometer/structure-v1/provenance.json",
+      "sha256": "5cd6fc313720fa5406dfcb8c0813832be4b2634c519d8cf25e681310e11578b1",
+      "bytes": 5404,
+      "afterSha256": "5cd6fc313720fa5406dfcb8c0813832be4b2634c519d8cf25e681310e11578b1",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/App.tsx",
+      "sha256": "359b05180dab30934edc0d27f166e6345624ea7f970ce01b746db5409af4c7af",
+      "bytes": 1861,
+      "afterSha256": "359b05180dab30934edc0d27f166e6345624ea7f970ce01b746db5409af4c7af",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/demo/DemoLayout.tsx",
+      "sha256": "ffed721beeaba4916c9305d6265e9d84bd456cc2dd43db0d2c15d9dc8ced416f",
+      "bytes": 5832,
+      "afterSha256": "ffed721beeaba4916c9305d6265e9d84bd456cc2dd43db0d2c15d9dc8ced416f",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/demo/HotPoint.tsx",
+      "sha256": "12b87308ecf16d0f63ecfe2cb9fb7711486491937afab91a59ee04ea5dc52bfb",
+      "bytes": 4517,
+      "afterSha256": "12b87308ecf16d0f63ecfe2cb9fb7711486491937afab91a59ee04ea5dc52bfb",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/demo/ObjectFitHotspotFrame.tsx",
+      "sha256": "ead17cb775380da15ae64697792ba0ae711ea88e06776e8322fee98d0171c2f2",
+      "bytes": 2501,
+      "afterSha256": "ead17cb775380da15ae64697792ba0ae711ea88e06776e8322fee98d0171c2f2",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/demo/StepGuide.tsx",
+      "sha256": "bc2f1bd09a424bdd0fb05726b11574cc86687cfe18653bc293f04b391547bfef",
+      "bytes": 3851,
+      "afterSha256": "bc2f1bd09a424bdd0fb05726b11574cc86687cfe18653bc293f04b391547bfef",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/knowledge/ComponentDiagram.tsx",
+      "sha256": "c49428af05933ce131d202c3fc519f1861567e14e2e5b95f715f0300a4a3b2fb",
+      "bytes": 11589,
+      "afterSha256": "c49428af05933ce131d202c3fc519f1861567e14e2e5b95f715f0300a4a3b2fb",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/knowledge/MethodTabs.tsx",
+      "sha256": "e1dc4c8b58307d21af45d8d7f78f37137582b399d2516bdac7d7faae41b4837b",
+      "bytes": 2715,
+      "afterSha256": "e1dc4c8b58307d21af45d8d7f78f37137582b399d2516bdac7d7faae41b4837b",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/knowledge/SectionNav.tsx",
+      "sha256": "d55492fbe5849351af881dbaaa2cd5e256cb2de2874ec28769a096bd9cb5f600",
+      "bytes": 2563,
+      "afterSha256": "d55492fbe5849351af881dbaaa2cd5e256cb2de2874ec28769a096bd9cb5f600",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/microscope3d/bottomLighting.js",
+      "sha256": "b32b088438a63c8a378ccc19e2b8d917fb4e28abf3f430df957329380f3a0b0a",
+      "bytes": 17112,
+      "afterSha256": "b32b088438a63c8a378ccc19e2b8d917fb4e28abf3f430df957329380f3a0b0a",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/microscope3d/incidentLighting.js",
+      "sha256": "ddfcbb43a72e4c09cdb725aeffc192fa277bee7bf1d0bd5b5e7b5b3b0936b425",
+      "bytes": 8727,
+      "afterSha256": "ddfcbb43a72e4c09cdb725aeffc192fa277bee7bf1d0bd5b5e7b5b3b0936b425",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/microscope3d/reviewState.d.ts",
+      "sha256": "19fcf1701fb1f19f75bd6fca5b7ba54c426c3826a633a707b968ada4aca3c372",
+      "bytes": 1635,
+      "afterSha256": "19fcf1701fb1f19f75bd6fca5b7ba54c426c3826a633a707b968ada4aca3c372",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/microscope3d/reviewState.js",
+      "sha256": "a24cdba52474a95f1c7331894a820c4b172b76f82bd221943ac4d880199fd304",
+      "bytes": 6282,
+      "afterSha256": "a24cdba52474a95f1c7331894a820c4b172b76f82bd221943ac4d880199fd304",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/microscope3d/viewer.d.ts",
+      "sha256": "494daefbb9585fea946eae84f8206d7306fe5c7d9552ec8ca5d96b9f3409146e",
+      "bytes": 902,
+      "afterSha256": "494daefbb9585fea946eae84f8206d7306fe5c7d9552ec8ca5d96b9f3409146e",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/microscope3d/viewer.js",
+      "sha256": "72ade495f9a43275d2bcbde1b2ee3a7dbb54fb85943955c3a9a14cf120c568a5",
+      "bytes": 21979,
+      "afterSha256": "72ade495f9a43275d2bcbde1b2ee3a7dbb54fb85943955c3a9a14cf120c568a5",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/polariscope/InterferencePatternView.tsx",
+      "sha256": "3fabe8e1c0da099c95b4989f71d036d8a51def5ecdec2ecda43bbbc512b15764",
+      "bytes": 2875,
+      "afterSha256": "3fabe8e1c0da099c95b4989f71d036d8a51def5ecdec2ecda43bbbc512b15764",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/polariscope/ObservationCanvas.tsx",
+      "sha256": "2fd13cbe98a1629fe2b7d000d303c1f4d026f739b86f7c7dc8666e3a1058b409",
+      "bytes": 21150,
+      "afterSha256": "2fd13cbe98a1629fe2b7d000d303c1f4d026f739b86f7c7dc8666e3a1058b409",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/polariscope/ObservationView.tsx",
+      "sha256": "0c6cd4a075c373773b42a6ad23b2804f0d8cf2eda12022c111664f5ed5f500bb",
+      "bytes": 974,
+      "afterSha256": "0c6cd4a075c373773b42a6ad23b2804f0d8cf2eda12022c111664f5ed5f500bb",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/polariscope/PolariscopeDemo.tsx",
+      "sha256": "191f09903d9dd59a15e7ad4ccd89c7a64988b38fc367e4ece563896bdc407c32",
+      "bytes": 111379,
+      "afterSha256": "191f09903d9dd59a15e7ad4ccd89c7a64988b38fc367e4ece563896bdc407c32",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/polariscope/polariscopeInterference.ts",
+      "sha256": "14f6effd32cc70e769bb21e9afa9547638ac33a05b9a29440b2c5f3e32339848",
+      "bytes": 3031,
+      "afterSha256": "14f6effd32cc70e769bb21e9afa9547638ac33a05b9a29440b2c5f3e32339848",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/polariscope3d/CourseGuide.tsx",
+      "sha256": "c203529fec85d3c04767fd349f0725e6f4be2b25c3d4b064ff6ab9695c34abcb",
+      "bytes": 9056,
+      "afterSha256": "c203529fec85d3c04767fd349f0725e6f4be2b25c3d4b064ff6ab9695c34abcb",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/polariscope3d/EyepieceView.tsx",
+      "sha256": "a230c6830b3aaef7d470a170781f92f92c3902b4cda26b7573591dc18353f388",
+      "bytes": 3219,
+      "afterSha256": "a230c6830b3aaef7d470a170781f92f92c3902b4cda26b7573591dc18353f388",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/polariscope3d/OpticalTeachingOverlay.ts",
+      "sha256": "94873a22a289aa1e4f184f763b774ece9950f7ff179664565074d7e3ce9bce91",
+      "bytes": 18434,
+      "afterSha256": "94873a22a289aa1e4f184f763b774ece9950f7ff179664565074d7e3ce9bce91",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/polariscope3d/PolariscopeScene.tsx",
+      "sha256": "1490f5b6f73b4afb8926f088863044220d7e30f190ee86dbe0bf5cc6820a6de0",
+      "bytes": 63773,
+      "afterSha256": "1490f5b6f73b4afb8926f088863044220d7e30f190ee86dbe0bf5cc6820a6de0",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/polariscope3d/RotationTrace.tsx",
+      "sha256": "e863430313e0f57ee2412c3dff82591d2911e0a597ba7f4a909485964729d75e",
+      "bytes": 2657,
+      "afterSha256": "e863430313e0f57ee2412c3dff82591d2911e0a597ba7f4a909485964729d75e",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/polariscope3d/SampleOnStage.ts",
+      "sha256": "383af83d6e381c6d6766355eeab9cd03029c105b305bc0c43942703d6c9449b1",
+      "bytes": 2986,
+      "afterSha256": "383af83d6e381c6d6766355eeab9cd03029c105b305bc0c43942703d6c9449b1",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/refractometer/ObservationWindow.tsx",
+      "sha256": "36cfc3baa1104dbe1562b1176af134bff33996f28f9bfaa54802793e310c2058",
+      "bytes": 23222,
+      "afterSha256": "36cfc3baa1104dbe1562b1176af134bff33996f28f9bfaa54802793e310c2058",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/refractometer/RefractometerDemo.tsx",
+      "sha256": "d7a2e3959dcbb08a0e3695c2ba6a58a45d2e47715212b2201b6fd87ecf2235cf",
+      "bytes": 69015,
+      "afterSha256": "d7a2e3959dcbb08a0e3695c2ba6a58a45d2e47715212b2201b6fd87ecf2235cf",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/refractometer/RotationKnob.tsx",
+      "sha256": "6b44d4c9a82f0d5db9613d2244d796f4c689c31d96c200f02ba8163c3ba06862",
+      "bytes": 4521,
+      "afterSha256": "6b44d4c9a82f0d5db9613d2244d796f4c689c31d96c200f02ba8163c3ba06862",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/refractometer/refractometerObsUtils.ts",
+      "sha256": "d9c26405cbf848da0d55c9a80e07a19b1a269180242df3d4ae7ccb073f8ae2a2",
+      "bytes": 1540,
+      "afterSha256": "d9c26405cbf848da0d55c9a80e07a19b1a269180242df3d4ae7ccb073f8ae2a2",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/refractometer/spotSlider.css",
+      "sha256": "f936b6c774bb246c129b4b85c3d41502d325a6cdd66aecfb147fa7efcad4f84d",
+      "bytes": 1613,
+      "afterSha256": "f936b6c774bb246c129b4b85c3d41502d325a6cdd66aecfb147fa7efcad4f84d",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/report/PracticeReport.tsx",
+      "sha256": "3a8d675bd35f5b0618ece604f78db4405e41a1ee3d6c0ae1e8317b17b352be48",
+      "bytes": 3679,
+      "afterSha256": "3a8d675bd35f5b0618ece604f78db4405e41a1ee3d6c0ae1e8317b17b352be48",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/shared/Breadcrumb.tsx",
+      "sha256": "54c6272a5374f759e6dbb7b5c50b5b53bab7e323058b4d48df05605df94ee689",
+      "bytes": 1055,
+      "afterSha256": "54c6272a5374f759e6dbb7b5c50b5b53bab7e323058b4d48df05605df94ee689",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/shared/Header.tsx",
+      "sha256": "7376980df14dc4b6287c0467a4344494da7350275ab59f173b54e7ad8bf5b5bc",
+      "bytes": 3133,
+      "afterSha256": "7376980df14dc4b6287c0467a4344494da7350275ab59f173b54e7ad8bf5b5bc",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/shared/Pill.tsx",
+      "sha256": "68c85d5b20eebb9fa790e3efb4b6707603291ddd3edafd999dc6085c00513be5",
+      "bytes": 767,
+      "afterSha256": "68c85d5b20eebb9fa790e3efb4b6707603291ddd3edafd999dc6085c00513be5",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/spectroscope/SpectroscopeDemo.tsx",
+      "sha256": "1b0ca11abfefbc428272c75e3934983673553ccf9e1f7c7a5fe838c0e58f3755",
+      "bytes": 62572,
+      "afterSha256": "1b0ca11abfefbc428272c75e3934983673553ccf9e1f7c7a5fe838c0e58f3755",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/spectroscope/SpectroscopeIllumination.tsx",
+      "sha256": "391db46ae66af3fff921ee916be4826926d0a1de3e75733a73eadf1cd14921f8",
+      "bytes": 14852,
+      "afterSha256": "391db46ae66af3fff921ee916be4826926d0a1de3e75733a73eadf1cd14921f8",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/spectroscope/SpectroscopeWorkbench.tsx",
+      "sha256": "14e0aa4518163c662bdd37c5c35dc03cd73e1ff4325584b796571dc1d798552b",
+      "bytes": 21654,
+      "afterSha256": "14e0aa4518163c662bdd37c5c35dc03cd73e1ff4325584b796571dc1d798552b",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/spectroscope/SpectrumStrip.tsx",
+      "sha256": "d3f238b86f7aedec2710e47e56a130aff50240ca74c954221410181b80c7de50",
+      "bytes": 8028,
+      "afterSha256": "d3f238b86f7aedec2710e47e56a130aff50240ca74c954221410181b80c7de50",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/workbench/Hotspot.tsx",
+      "sha256": "c1774f085f78f8e82b3b54e9a8bd3722e438d1f752f5ce5f4881c160500cc35f",
+      "bytes": 3573,
+      "afterSha256": "c1774f085f78f8e82b3b54e9a8bd3722e438d1f752f5ce5f4881c160500cc35f",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/workbench/OnboardingModal.tsx",
+      "sha256": "85282fa935d51f63429b13dec800641e919a23be9b2f27e590d6cc38481ffadf",
+      "bytes": 3503,
+      "afterSha256": "85282fa935d51f63429b13dec800641e919a23be9b2f27e590d6cc38481ffadf",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/components/workflow/Stepper.tsx",
+      "sha256": "a7a01251800435e27469d3798ef7796f17125a30a8377248451c5bb3cac2a039",
+      "bytes": 1765,
+      "afterSha256": "a7a01251800435e27469d3798ef7796f17125a30a8377248451c5bb3cac2a039",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/data/instruments.ts",
+      "sha256": "601acb5dab7dc078ca3ed412ad20c021aa2d455410362d8c6a4c07e367018931",
+      "bytes": 25141,
+      "afterSha256": "601acb5dab7dc078ca3ed412ad20c021aa2d455410362d8c6a4c07e367018931",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/data/refractometerSampleMethod.ts",
+      "sha256": "f112a299a3e59ee74ffccff344caf51d33e11557d00bf2fd78acf87c71420a53",
+      "bytes": 574,
+      "afterSha256": "f112a299a3e59ee74ffccff344caf51d33e11557d00bf2fd78acf87c71420a53",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/data/samples.ts",
+      "sha256": "6bc7ee214343b7312645d3fc8cf58f11bb4736e822a3aae13b3170b0da4920e6",
+      "bytes": 25475,
+      "afterSha256": "6bc7ee214343b7312645d3fc8cf58f11bb4736e822a3aae13b3170b0da4920e6",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/data/types.ts",
+      "sha256": "c22238d1699f45dc49153fa7f26effcb06273f836e029cf39ce0fcd256569497",
+      "bytes": 3678,
+      "afterSha256": "c22238d1699f45dc49153fa7f26effcb06273f836e029cf39ce0fcd256569497",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/domain/animationTiming.ts",
+      "sha256": "bc62693c6c347df2503d006875ac07afba1fa7b09c8338ed6890fd8593708ece",
+      "bytes": 438,
+      "afterSha256": "bc62693c6c347df2503d006875ac07afba1fa7b09c8338ed6890fd8593708ece",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/domain/assessment.ts",
+      "sha256": "267842306fabf6374c49b7e4fdb4dbbfa9305a718352fcc2d26d550781e4640b",
+      "bytes": 567,
+      "afterSha256": "267842306fabf6374c49b7e4fdb4dbbfa9305a718352fcc2d26d550781e4640b",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/domain/eyepieceField.ts",
+      "sha256": "a73ffb7b2a7d0e14f591aa497d63248d3199279b7ca94986b5a726513a2c6ba0",
+      "bytes": 16794,
+      "afterSha256": "a73ffb7b2a7d0e14f591aa497d63248d3199279b7ca94986b5a726513a2c6ba0",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/domain/polariscope3d.ts",
+      "sha256": "5acfe3395fec5ddf2dacb8bd83dcf916ef317d3ebae632f8f7a9eb4d35c1dde2",
+      "bytes": 16187,
+      "afterSha256": "5acfe3395fec5ddf2dacb8bd83dcf916ef317d3ebae632f8f7a9eb4d35c1dde2",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/domain/polariscopeCourse.ts",
+      "sha256": "82e8c4356622bf1851f32f59a9f33c8c8684a2f45423853b11342297a4cd1a6c",
+      "bytes": 10771,
+      "afterSha256": "82e8c4356622bf1851f32f59a9f33c8c8684a2f45423853b11342297a4cd1a6c",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/domain/polariscopeSamples.ts",
+      "sha256": "d7ce45196a1b0cf071701b3d0c13f86b79d5dbcd62248d9bf21870887b007d5a",
+      "bytes": 7207,
+      "afterSha256": "d7ce45196a1b0cf071701b3d0c13f86b79d5dbcd62248d9bf21870887b007d5a",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/domain/polariscopeStructure.ts",
+      "sha256": "65ba18337e64a84db86ef5fcda28d68ab8838fef8fd7deff14c223023166d1cd",
+      "bytes": 4673,
+      "afterSha256": "65ba18337e64a84db86ef5fcda28d68ab8838fef8fd7deff14c223023166d1cd",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/domain/polarizedLight.ts",
+      "sha256": "d311154babb09beb2d88ee63e3b7e782f0320c530337e0522d2fc51489b807c2",
+      "bytes": 22563,
+      "afterSha256": "d311154babb09beb2d88ee63e3b7e782f0320c530337e0522d2fc51489b807c2",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/domain/practice.ts",
+      "sha256": "0d21ee049dbb52129bebe6f5f70ee3646a3bd69eb5a4049e9611140f2046423f",
+      "bytes": 3015,
+      "afterSha256": "0d21ee049dbb52129bebe6f5f70ee3646a3bd69eb5a4049e9611140f2046423f",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/domain/refractometerAssessment.ts",
+      "sha256": "701474b6a8cf38ba92746b872b280aab82379516512881c2ab85df7d31b4e7b9",
+      "bytes": 2062,
+      "afterSha256": "701474b6a8cf38ba92746b872b280aab82379516512881c2ab85df7d31b4e7b9",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/main.tsx",
+      "sha256": "06ea2629f95b31a71fdea373702ae34bd724fd311718f58ed949f97ffb6722d4",
+      "bytes": 332,
+      "afterSha256": "06ea2629f95b31a71fdea373702ae34bd724fd311718f58ed949f97ffb6722d4",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/pages/DetectionWorkflowPage.tsx",
+      "sha256": "f9d4d14720423d9fda2cbbda709607c35454c261b12457dc5df5a838dd1a4405",
+      "bytes": 23924,
+      "afterSha256": "f9d4d14720423d9fda2cbbda709607c35454c261b12457dc5df5a838dd1a4405",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/pages/HomePage.tsx",
+      "sha256": "c3c86dc01d2b3427936baa0c611c333b09def77e4bcfe02b5bb59084e1a435a1",
+      "bytes": 9003,
+      "afterSha256": "c3c86dc01d2b3427936baa0c611c333b09def77e4bcfe02b5bb59084e1a435a1",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/pages/InteractiveDemoPage.tsx",
+      "sha256": "e47a64e4cd7591551c62d4d123dcbbd945ad0747aa473bc900c8bb75ce2d5000",
+      "bytes": 1140,
+      "afterSha256": "e47a64e4cd7591551c62d4d123dcbbd945ad0747aa473bc900c8bb75ce2d5000",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/pages/KnowledgeBasePage.tsx",
+      "sha256": "7f8bfe8e2f131e463dda096eb2f134e1bbbb57c75f26161ea0e4bc1d11f6aefd",
+      "bytes": 16183,
+      "afterSha256": "7f8bfe8e2f131e463dda096eb2f134e1bbbb57c75f26161ea0e4bc1d11f6aefd",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/pages/MicroscopeExplorePage.tsx",
+      "sha256": "7cee443484a40a3595dbd050aa7e094746b5f53ce6d06dca3426227ebe340697",
+      "bytes": 12592,
+      "afterSha256": "7cee443484a40a3595dbd050aa7e094746b5f53ce6d06dca3426227ebe340697",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/pages/NamingAssessmentPage.tsx",
+      "sha256": "0f848e66b52edd98985395c98b0e388e504b2a3df895b74711453c4d29f3f700",
+      "bytes": 33298,
+      "afterSha256": "0f848e66b52edd98985395c98b0e388e504b2a3df895b74711453c4d29f3f700",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/pages/PolariscopeExplorePage.tsx",
+      "sha256": "942608aaa0e700faff634c84b63f9cb5d2646c7f5a3d5b90e3733913bfe337c2",
+      "bytes": 84580,
+      "afterSha256": "942608aaa0e700faff634c84b63f9cb5d2646c7f5a3d5b90e3733913bfe337c2",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/pages/ProgressPage.tsx",
+      "sha256": "846cc68e5919920f04e812aa1d6118f261ec101eca42be82c79bcb812370768e",
+      "bytes": 9668,
+      "afterSha256": "846cc68e5919920f04e812aa1d6118f261ec101eca42be82c79bcb812370768e",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/store/detectionStore.ts",
+      "sha256": "a38cf77d238bb4ff914115841fdf6542fee323cf888a81e75b35a8a4271cec0d",
+      "bytes": 6565,
+      "afterSha256": "a38cf77d238bb4ff914115841fdf6542fee323cf888a81e75b35a8a4271cec0d",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/store/progressStore.ts",
+      "sha256": "adaa40afea91b8acc195c453af8a6db85ce66fd650182c2a2673750039a5dc03",
+      "bytes": 2959,
+      "afterSha256": "adaa40afea91b8acc195c453af8a6db85ce66fd650182c2a2673750039a5dc03",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/styles/global.css",
+      "sha256": "927a212a37b2cce40c2ba5bea6af1cfa118923dfd3f509dbe1035932295648e1",
+      "bytes": 4246,
+      "afterSha256": "927a212a37b2cce40c2ba5bea6af1cfa118923dfd3f509dbe1035932295648e1",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/styles/microscope-explore.css",
+      "sha256": "12dc57a4bf5df389e2632bcf3f5cc4ceab41cff33d5f272847b779c23cfe8994",
+      "bytes": 5663,
+      "afterSha256": "12dc57a4bf5df389e2632bcf3f5cc4ceab41cff33d5f272847b779c23cfe8994",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/styles/polariscope-explore.css",
+      "sha256": "70b14f5f5e4b494008a6049cfda7fb2d0e559938068213b9b7bcd885a5af3834",
+      "bytes": 46576,
+      "afterSha256": "70b14f5f5e4b494008a6049cfda7fb2d0e559938068213b9b7bcd885a5af3834",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/utils/clsx.ts",
+      "sha256": "48f678af934d480f2c2bf61fce2fb7d00c1bbf3d7237e4e369d6b9125b74378c",
+      "bytes": 486,
+      "afterSha256": "48f678af934d480f2c2bf61fce2fb7d00c1bbf3d7237e4e369d6b9125b74378c",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/utils/format.ts",
+      "sha256": "71890ccfe3e1a816fe8299e12d6819bb3b2d154181d2660458a3f8404f746792",
+      "bytes": 910,
+      "afterSha256": "71890ccfe3e1a816fe8299e12d6819bb3b2d154181d2660458a3f8404f746792",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/src/vite-env.d.ts",
+      "sha256": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5",
+      "bytes": 38,
+      "afterSha256": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/tests/fixtures/polariscope.ts",
+      "sha256": "ff93da9ddc766de808d5520ddddba514f2879c7b64a8369a714ebaea1a2dfc0c",
+      "bytes": 1670,
+      "afterSha256": "ff93da9ddc766de808d5520ddddba514f2879c7b64a8369a714ebaea1a2dfc0c",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/tests/learning-loop.spec.ts",
+      "sha256": "159b6bc25888d7325bda0550881ff05ca5aac6362dcf8b3be193f93873b959cd",
+      "bytes": 6338,
+      "afterSha256": "159b6bc25888d7325bda0550881ff05ca5aac6362dcf8b3be193f93873b959cd",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/tests/matrix.spec.ts",
+      "sha256": "8d2dc5fd47653a49fdff025bdb2407abd6c187c53028d120e3e778594f5ada75",
+      "bytes": 2116,
+      "afterSha256": "8d2dc5fd47653a49fdff025bdb2407abd6c187c53028d120e3e778594f5ada75",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/tests/microscope3d.spec.ts",
+      "sha256": "1d1dd3ab23fd88cbe445bfc56a2577f609e6c2e6146d5c45feb6928fc36d4c38",
+      "bytes": 2193,
+      "afterSha256": "1d1dd3ab23fd88cbe445bfc56a2577f609e6c2e6146d5c45feb6928fc36d4c38",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/tests/polariscope3d-course.spec.ts",
+      "sha256": "ad7d53e0a741817c9ba2df3edf1c75631feac5207cd6e3a912599402ef98fa90",
+      "bytes": 10501,
+      "afterSha256": "ad7d53e0a741817c9ba2df3edf1c75631feac5207cd6e3a912599402ef98fa90",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/tests/polariscope3d-lessons.spec.ts",
+      "sha256": "24587777d307031789046ea2efd3cffd1bb43673298bc5ebeac479ef88bb8ade",
+      "bytes": 18019,
+      "afterSha256": "24587777d307031789046ea2efd3cffd1bb43673298bc5ebeac479ef88bb8ade",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/tests/polariscope3d-scene.spec.ts",
+      "sha256": "3555ef1b28895868a76cb24b120724c9d8958a025b1b7c51f40b0a2e3a1aa8ab",
+      "bytes": 19037,
+      "afterSha256": "3555ef1b28895868a76cb24b120724c9d8958a025b1b7c51f40b0a2e3a1aa8ab",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/tests/polariscope3d-student.spec.ts",
+      "sha256": "7b384a24ad343fa8080f0325d9c918ecd7fbc173d17ec234bf58268a74dca23e",
+      "bytes": 6736,
+      "afterSha256": "7b384a24ad343fa8080f0325d9c918ecd7fbc173d17ec234bf58268a74dca23e",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/tests/polariscope3d-timing.spec.ts",
+      "sha256": "c2b8565905cbb1870137e732b0c184dc6bbfa13b38290f4dd19abed8b055426e",
+      "bytes": 3218,
+      "afterSha256": "c2b8565905cbb1870137e732b0c184dc6bbfa13b38290f4dd19abed8b055426e",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/tests/polariscope3d.spec.ts",
+      "sha256": "df1a5706a8f45162a16e340cdce511cb4ea08d4724d4129aa0a8e81a32afca72",
+      "bytes": 13722,
+      "afterSha256": "df1a5706a8f45162a16e340cdce511cb4ea08d4724d4129aa0a8e81a32afca72",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/tests/smoke.spec.ts",
+      "sha256": "89bdc7dc6d5f54d742e5a7c99950d5ad3842b622da06cb9abb27bbc4eb915b08",
+      "bytes": 47851,
+      "afterSha256": "89bdc7dc6d5f54d742e5a7c99950d5ad3842b622da06cb9abb27bbc4eb915b08",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/tests/unit/animationTiming.test.ts",
+      "sha256": "01912159dd0b06d01f84db85da0b92b76a66e07d3ca2f6bd0b55029081e9d912",
+      "bytes": 922,
+      "afterSha256": "01912159dd0b06d01f84db85da0b92b76a66e07d3ca2f6bd0b55029081e9d912",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/tests/unit/microscope3d.test.ts",
+      "sha256": "dd3119b8751326d5039be54d490bb661c73e4212e3e2699719a251ae4844236b",
+      "bytes": 3105,
+      "afterSha256": "dd3119b8751326d5039be54d490bb661c73e4212e3e2699719a251ae4844236b",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/tests/unit/polariscope3d.test.ts",
+      "sha256": "2a58ade6c93d8b9a2117575e2f136b5d5a7cdfff2836b12edcf6cf81e13904e0",
+      "bytes": 9434,
+      "afterSha256": "2a58ade6c93d8b9a2117575e2f136b5d5a7cdfff2836b12edcf6cf81e13904e0",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/tests/unit/polariscopeCourse.test.ts",
+      "sha256": "d51891021dc449ea88be6bd8dfe98f701955dc585e63b70a75d380b4104d350f",
+      "bytes": 4695,
+      "afterSha256": "d51891021dc449ea88be6bd8dfe98f701955dc585e63b70a75d380b4104d350f",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/tests/unit/polariscopeStructure.test.ts",
+      "sha256": "f9d73d7f23ccc1baf59eb3ee5a4b0a06ee12157130bbd2d784f2307a5dad22f7",
+      "bytes": 5641,
+      "afterSha256": "f9d73d7f23ccc1baf59eb3ee5a4b0a06ee12157130bbd2d784f2307a5dad22f7",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/tests/unit/polarizedLight.test.ts",
+      "sha256": "acd95b304991bec3f9e876e4f9eba4e506af9f5f01dbed31ecba43351c154b49",
+      "bytes": 17502,
+      "afterSha256": "acd95b304991bec3f9e876e4f9eba4e506af9f5f01dbed31ecba43351c154b49",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/tests/unit/practice.test.ts",
+      "sha256": "66dc64ee1f1213715d7fbafa467ca69b4af77a693b492fc4de6e1b344bdea034",
+      "bytes": 2628,
+      "afterSha256": "66dc64ee1f1213715d7fbafa467ca69b4af77a693b492fc4de6e1b344bdea034",
+      "unchanged": true
+    },
+    {
+      "path": "gem-lab/tests/unit/refractometerAssessment.test.ts",
+      "sha256": "047160c36e42c03cf6d47d683e8c2b10efb23eac3a5c90059be47bdb727de37b",
+      "bytes": 3505,
+      "afterSha256": "047160c36e42c03cf6d47d683e8c2b10efb23eac3a5c90059be47bdb727de37b",
+      "unchanged": true
+    }
+  ],
+  "scope": [
+    "all public/assets/3d/*/structure-v1 files",
+    "all public/assets/3d/gem-microscope files",
+    "all src files",
+    "all tests files"
+  ],
+  "note": "Compared with the working tree at this task start, not Git HEAD; existing uncommitted work preserved."
+}

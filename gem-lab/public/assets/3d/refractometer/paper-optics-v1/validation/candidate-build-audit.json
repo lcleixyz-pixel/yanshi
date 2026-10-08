@@ -1,0 +1,913 @@
+{
+  "schemaVersion": 1,
+  "instrumentId": "refractometer",
+  "modelSha256": "801a87705268e57f66603b476b29d00109e56cbce06f9e88ce1a59e493ea24d6",
+  "sourceModelSha256": "81e265623fbae03bbe75ded1011aef3521ff2ac8439fa5af86aa80e3233aa383",
+  "checks": [
+    {
+      "name": "unmodified part triangle counts and world vertices preserved within 0.1 micrometre",
+      "pass": true
+    },
+    {
+      "name": "all specified case routes meet finite optical apertures with ideal relay",
+      "pass": true
+    },
+    {
+      "name": "exported prism ray entry and exit intersections",
+      "pass": true
+    },
+    {
+      "name": "three physical branches and energy balance",
+      "pass": true
+    },
+    {
+      "name": "exported opaque triangle ray obstruction check",
+      "pass": true
+    }
+  ],
+  "ok": true,
+  "preservedParts": {
+    "body": {
+      "match": true,
+      "quantizedHashExact": true,
+      "maximumVertexDeviationMeters": 0.0,
+      "triangles": 7724,
+      "sha256": "725b3c221f32e53265212652e1d7c5566c7d29ac0e3d564d6b31af11dfe9dfa6"
+    },
+    "metal_stage": {
+      "match": true,
+      "quantizedHashExact": true,
+      "maximumVertexDeviationMeters": 7.508562660518692e-09,
+      "triangles": 640,
+      "sha256": "65e36b9ed087ad891e3919c59606226a48044fe4fe309892ef49e87f17d708e0"
+    },
+    "cover": {
+      "match": true,
+      "quantizedHashExact": false,
+      "maximumVertexDeviationMeters": 3.0719530030864917e-08,
+      "triangles": 3196,
+      "sha256": "2b99b25f26ad4509662bdeb77042b9d61b5a7d2a659cda3df77bfe6f8a06c139"
+    },
+    "eyepiece": {
+      "match": true,
+      "quantizedHashExact": false,
+      "maximumVertexDeviationMeters": 8.33000246558413e-09,
+      "triangles": 42724,
+      "sha256": "bd8c53c3d862fab1c61845b9ac15a928a639737b2c19792093909f4129c107af"
+    },
+    "polarizer": {
+      "match": true,
+      "quantizedHashExact": true,
+      "maximumVertexDeviationMeters": 7.450580596923828e-09,
+      "triangles": 3068,
+      "sha256": "e4c9933a4c90535c2f96934e23b17e6c9676f3028084e29504fdae8781878633"
+    },
+    "power_switch": {
+      "match": true,
+      "quantizedHashExact": true,
+      "maximumVertexDeviationMeters": 0.0,
+      "triangles": 1004,
+      "sha256": "0096b3a421bf8b02ef31c2d419d22951e18bc63c758929ccde22c89d7ee4e581"
+    },
+    "internal_light": {
+      "match": true,
+      "quantizedHashExact": true,
+      "maximumVertexDeviationMeters": 0.0,
+      "triangles": 600,
+      "sha256": "dc52d2051150cf57c4a349104ac2f3e52e828dddd0f89fdeff36b5ec162d01e4"
+    },
+    "first_mirror": {
+      "match": true,
+      "quantizedHashExact": true,
+      "maximumVertexDeviationMeters": 0.0,
+      "triangles": 680,
+      "sha256": "007535407ceb75e341568a2f0887094fdb8806bc90e57d7e06cb565e03694d5b"
+    },
+    "second_mirror": {
+      "match": true,
+      "quantizedHashExact": true,
+      "maximumVertexDeviationMeters": 4.6566128730773926e-09,
+      "triangles": 680,
+      "sha256": "05cd2a0d112da28ff241763ade7b3a4d1ac61d079532768300a44f782053bc5a"
+    },
+    "oil_bottle": {
+      "match": true,
+      "quantizedHashExact": true,
+      "maximumVertexDeviationMeters": 0.0,
+      "triangles": 24188,
+      "sha256": "cce694cf6c63be485ce9cb3c3208ee18c9154c2881068e49de46ddd2ab0df761"
+    }
+  },
+  "meshIntersections": [
+    {
+      "caseId": "isotropic-160",
+      "ray": 0,
+      "entryHit": true,
+      "entryDistanceErrorMeters": 1.7526224426130714e-09,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "ray": 0,
+      "exitHit": true,
+      "exitDistanceErrorMeters": 4.74631712344989e-09,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "ray": 1,
+      "entryHit": true,
+      "entryDistanceErrorMeters": 2.857420260836947e-09,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "ray": 1,
+      "exitHit": true,
+      "exitDistanceErrorMeters": 3.529984809122947e-09,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "ray": 2,
+      "entryHit": true,
+      "entryDistanceErrorMeters": 4.374939363566893e-09,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "ray": 2,
+      "exitHit": true,
+      "exitDistanceErrorMeters": 3.2946698317661787e-09,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "ray": 0,
+      "entryHit": true,
+      "entryDistanceErrorMeters": 5.378073807343867e-09,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "ray": 0,
+      "exitHit": true,
+      "exitDistanceErrorMeters": 7.981672589152696e-09,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "ray": 1,
+      "entryHit": true,
+      "entryDistanceErrorMeters": 7.000866146024718e-09,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "ray": 1,
+      "exitHit": true,
+      "exitDistanceErrorMeters": 4.779730500205272e-09,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "ray": 2,
+      "entryHit": true,
+      "entryDistanceErrorMeters": 4.851295706789664e-09,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "ray": 2,
+      "exitHit": true,
+      "exitDistanceErrorMeters": 2.81278573093957e-09,
+      "pass": true
+    },
+    {
+      "caseId": "air-gap",
+      "ray": 0,
+      "entryHit": true,
+      "entryDistanceErrorMeters": 5.814118587319643e-09,
+      "pass": true
+    },
+    {
+      "caseId": "air-gap",
+      "ray": 0,
+      "exitHit": true,
+      "exitDistanceErrorMeters": 3.181863508195612e-09,
+      "pass": true
+    },
+    {
+      "caseId": "air-gap",
+      "ray": 1,
+      "entryHit": true,
+      "entryDistanceErrorMeters": 2.857420260836947e-09,
+      "pass": true
+    },
+    {
+      "caseId": "air-gap",
+      "ray": 1,
+      "exitHit": true,
+      "exitDistanceErrorMeters": 5.725074396621838e-09,
+      "pass": true
+    },
+    {
+      "caseId": "air-gap",
+      "ray": 2,
+      "entryHit": true,
+      "entryDistanceErrorMeters": 2.5333986269953114e-09,
+      "pass": true
+    },
+    {
+      "caseId": "air-gap",
+      "ray": 2,
+      "exitHit": true,
+      "exitDistanceErrorMeters": 1.2804269874559892e-09,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "ray": 0,
+      "entryHit": true,
+      "entryDistanceErrorMeters": 5.814118587319643e-09,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "ray": 0,
+      "exitHit": true,
+      "exitDistanceErrorMeters": 6.01740810419105e-09,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "ray": 1,
+      "entryHit": true,
+      "entryDistanceErrorMeters": 2.857420260836947e-09,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "ray": 1,
+      "exitHit": true,
+      "exitDistanceErrorMeters": 3.529984809122947e-09,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "ray": 2,
+      "entryHit": true,
+      "entryDistanceErrorMeters": 2.5333986269953114e-09,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "ray": 2,
+      "exitHit": true,
+      "exitDistanceErrorMeters": 2.844783579755106e-09,
+      "pass": true
+    }
+  ],
+  "opaqueObstructions": [],
+  "maximumCurvedEntryErrorMeters": 7.000866146024718e-09,
+  "idealApertures": {
+    "isotropic-160": [
+      {
+        "first_mirror": {
+          "point": [
+            0.0,
+            0.05775644304117327,
+            0.06099251411461919
+          ],
+          "t": 0.035582013783912125,
+          "offset": 0.0015542200919108516,
+          "withinAperture": true
+        },
+        "internal_scale": {
+          "point": [
+            0.0,
+            0.009792316875201865,
+            0.06149914850206584
+          ],
+          "t": 0.01608385278806074,
+          "offset": 0.001906891098532551,
+          "withinAperture": true
+        },
+        "lens_group": {
+          "point": [
+            0.0,
+            -0.007592988495457122,
+            0.0448021624461334
+          ],
+          "t": 0.04018858647634418,
+          "offset": 0.004151481525106459,
+          "withinAperture": true
+        },
+        "second_mirror": {
+          "point": [
+            0.0,
+            -0.04051983514452301,
+            0.023736912179815346
+          ],
+          "t": 0.03908864283949642,
+          "offset": 0.00018284132703838934,
+          "withinAperture": true
+        },
+        "eyepiece": {
+          "point": [
+            0.0,
+            -0.05484978611524433,
+            0.04452801296000693
+          ],
+          "t": 0.025251086441485254,
+          "offset": 0.0024516059307740194,
+          "withinAperture": true
+        }
+      },
+      {
+        "first_mirror": {
+          "point": [
+            0.0,
+            0.05756098024036388,
+            0.06310181577145621
+          ],
+          "t": 0.03452354662801241,
+          "offset": 0.000577888150622639,
+          "withinAperture": true
+        },
+        "internal_scale": {
+          "point": [
+            0.0,
+            0.009077525715765419,
+            0.0623977641472215
+          ],
+          "t": 0.01601466817178793,
+          "offset": 0.0007586592058701723,
+          "withinAperture": true
+        },
+        "lens_group": {
+          "point": [
+            0.0,
+            -0.009079755595043149,
+            0.046671284858677
+          ],
+          "t": 0.04003568012825757,
+          "offset": 0.0017631567981306138,
+          "withinAperture": true
+        },
+        "second_mirror": {
+          "point": [
+            0.0,
+            -0.04051652509246504,
+            0.023736244317821946
+          ],
+          "t": 0.03891383508528426,
+          "offset": 0.00018621808351001844,
+          "withinAperture": true
+        },
+        "eyepiece": {
+          "point": [
+            0.0,
+            -0.05349269602897878,
+            0.04527054915351617
+          ],
+          "t": 0.025141744110745923,
+          "offset": 0.0009046561898608078,
+          "withinAperture": true
+        }
+      },
+      {
+        "first_mirror": {
+          "point": [
+            0.0,
+            0.057376318943372855,
+            0.06509455494271499
+          ],
+          "t": 0.03361570993396791,
+          "offset": 0.0025713488972820765,
+          "withinAperture": true
+        },
+        "internal_scale": {
+          "point": [
+            0.0,
+            0.008367294749949123,
+            0.0632906468432802
+          ],
+          "t": 0.01600523932464044,
+          "offset": 0.0003822472467916591,
+          "withinAperture": true
+        },
+        "lens_group": {
+          "point": [
+            0.0,
+            -0.010554067408307218,
+            0.04852474883028159
+          ],
+          "t": 0.04000627451177709,
+          "offset": 0.0006051599072038455,
+          "withinAperture": true
+        },
+        "second_mirror": {
+          "point": [
+            0.0,
+            -0.04050889097157377,
+            0.023734703997879237
+          ],
+          "t": 0.038882358178214296,
+          "offset": 0.00019400604776959304,
+          "withinAperture": true
+        },
+        "eyepiece": {
+          "point": [
+            0.0,
+            -0.052141608813596,
+            0.046009800856967945
+          ],
+          "t": 0.025129665029082374,
+          "offset": 0.0006354508663619496,
+          "withinAperture": true
+        }
+      }
+    ],
+    "isotropic-170": [
+      {
+        "first_mirror": {
+          "point": [
+            0.0,
+            0.057352674751492125,
+            0.06534970698649051
+          ],
+          "t": 0.03350632646552177,
+          "offset": 0.002827390958976523,
+          "withinAperture": true
+        },
+        "internal_scale": {
+          "point": [
+            0.0,
+            0.008273861753614853,
+            0.06340810821807664
+          ],
+          "t": 0.016008414582957587,
+          "offset": 0.0005323368845854458,
+          "withinAperture": true
+        },
+        "lens_group": {
+          "point": [
+            0.0,
+            -0.010747664559612093,
+            0.04876813380605169
+          ],
+          "t": 0.04001148342986819,
+          "offset": 0.0009161520347954823,
+          "withinAperture": true
+        },
+        "second_mirror": {
+          "point": [
+            0.0,
+            -0.040507391392616623,
+            0.023734401431099596
+          ],
+          "t": 0.038888675701234346,
+          "offset": 0.00019553584635269603,
+          "withinAperture": true
+        },
+        "eyepiece": {
+          "point": [
+            0.0,
+            -0.05196355375608511,
+            0.0461072242527891
+          ],
+          "t": 0.025135370637984687,
+          "offset": 0.000838416187435608,
+          "withinAperture": true
+        }
+      },
+      {
+        "first_mirror": {
+          "point": [
+            0.0,
+            0.05717807321152949,
+            0.06723388809923649
+          ],
+          "t": 0.03274937867188925,
+          "offset": 0.004718827289257831,
+          "withinAperture": true
+        },
+        "internal_scale": {
+          "point": [
+            0.0,
+            0.007567004872037845,
+            0.06429674910889549
+          ],
+          "t": 0.01606572687310983,
+          "offset": 0.0016678232490425816,
+          "withinAperture": true
+        },
+        "lens_group": {
+          "point": [
+            0.0,
+            -0.0122073976633876,
+            0.05060326982793324
+          ],
+          "t": 0.04011855145674621,
+          "offset": 0.00326104967713839,
+          "withinAperture": true
+        },
+        "second_mirror": {
+          "point": [
+            0.0,
+            -0.04048934703897668,
+            0.023730760661171944
+          ],
+          "t": 0.03901282365326885,
+          "offset": 0.00021394383114054042,
+          "withinAperture": true
+        },
+        "eyepiece": {
+          "point": [
+            0.0,
+            -0.05061211387699963,
+            0.04684666891731695
+          ],
+          "t": 0.02523520602181584,
+          "offset": 0.002378925245728117,
+          "withinAperture": true
+        }
+      },
+      {
+        "first_mirror": {
+          "point": [
+            0.0,
+            0.05701073777993639,
+            0.06903965831047498
+          ],
+          "t": 0.03211194816155026,
+          "offset": 0.006531995138884856,
+          "withinAperture": true
+        },
+        "internal_scale": {
+          "point": [
+            0.0,
+            0.006868847430731566,
+            0.06517445330438988
+          ],
+          "t": 0.016180338972847305,
+          "offset": 0.0027893349376307067,
+          "withinAperture": true
+        },
+        "lens_group": {
+          "point": [
+            0.0,
+            -0.013628021844071546,
+            0.05238923919506354
+          ],
+          "t": 0.040337808829802216,
+          "offset": 0.005543123217380186,
+          "withinAperture": true
+        },
+        "second_mirror": {
+          "point": [
+            0.0,
+            -0.0404430230655182,
+            0.023721413973955392
+          ],
+          "t": 0.03925415256268042,
+          "offset": 0.000261201328735167,
+          "withinAperture": true
+        },
+        "eyepiece": {
+          "point": [
+            0.0,
+            -0.049258405531121756,
+            0.04758735478072629
+          ],
+          "t": 0.025441975131800656,
+          "offset": 0.003922020133916737,
+          "withinAperture": true
+        }
+      }
+    ],
+    "air-gap": [
+      {
+        "first_mirror": {
+          "point": [
+            0.0,
+            0.05782435791069742,
+            0.06025962301606763
+          ],
+          "t": 0.03597170333926299,
+          "offset": 0.0022890580733801093,
+          "withinAperture": true
+        },
+        "internal_scale": {
+          "point": [
+            0.0,
+            0.009965569599066021,
+            0.061281339976911556
+          ],
+          "t": 0.01610825883199095,
+          "offset": 0.002185202183393059,
+          "withinAperture": true
+        },
+        "lens_group": {
+          "point": [
+            0.0,
+            -0.007333040336474098,
+            0.04447536282150493
+          ],
+          "t": 0.04022635937598107,
+          "offset": 0.004569059110730942,
+          "withinAperture": true
+        },
+        "second_mirror": {
+          "point": [
+            0.0,
+            -0.040699064625810716,
+            0.023773074921836643
+          ],
+          "t": 0.03926673275378731,
+          "offset": 3.469446951953614e-18,
+          "withinAperture": true
+        },
+        "eyepiece": {
+          "point": [
+            0.0,
+            -0.05526848711149462,
+            0.04429891936694285
+          ],
+          "t": 0.025170982534479042,
+          "offset": 0.0029288840453403483,
+          "withinAperture": true
+        }
+      },
+      {
+        "first_mirror": {
+          "point": [
+            0.0,
+            0.05756098024036388,
+            0.06310181577145621
+          ],
+          "t": 0.03452354662801241,
+          "offset": 0.000577888150622639,
+          "withinAperture": true
+        },
+        "internal_scale": {
+          "point": [
+            0.0,
+            0.00900512201781113,
+            0.06248878807062892
+          ],
+          "t": 0.016009375605036236,
+          "offset": 0.0006423507792195801,
+          "withinAperture": true
+        },
+        "lens_group": {
+          "point": [
+            0.0,
+            -0.009341248915461585,
+            0.04700002701745942
+          ],
+          "t": 0.04001960353780302,
+          "offset": 0.0013430970838227692,
+          "withinAperture": true
+        },
+        "second_mirror": {
+          "point": [
+            0.0,
+            -0.040699064625810716,
+            0.023773074921836636
+          ],
+          "t": 0.03902312019529672,
+          "offset": 3.469446951953614e-18,
+          "withinAperture": true
+        },
+        "eyepiece": {
+          "point": [
+            0.0,
+            -0.05345436245320889,
+            0.04529152349245198
+          ],
+          "t": 0.02501482063801071,
+          "offset": 0.0008609596691171638,
+          "withinAperture": true
+        }
+      },
+      {
+        "first_mirror": {
+          "point": [
+            0.0,
+            0.0573168447426948,
+            0.06573636008164584
+          ],
+          "t": 0.033343637999431866,
+          "offset": 0.0032154544613606484,
+          "withinAperture": true
+        },
+        "internal_scale": {
+          "point": [
+            0.0,
+            0.008048588349558818,
+            0.06369131570133907
+          ],
+          "t": 0.016018165626077583,
+          "offset": 0.0008942133623383244,
+          "withinAperture": true
+        },
+        "lens_group": {
+          "point": [
+            0.0,
+            -0.011341273858170967,
+            0.04951440297258061
+          ],
+          "t": 0.04003798267270767,
+          "offset": 0.0018697188485255597,
+          "withinAperture": true
+        },
+        "second_mirror": {
+          "point": [
+            0.0,
+            -0.040699064625810716,
+            0.02377307492183664
+          ],
+          "t": 0.03904479284837521,
+          "offset": 0.0,
+          "withinAperture": true
+        },
+        "eyepiece": {
+          "point": [
+            0.0,
+            -0.0516476305212176,
+            0.04628008266405727
+          ],
+          "t": 0.02502871336434308,
+          "offset": 0.0011985377234138216,
+          "withinAperture": true
+        }
+      }
+    ],
+    "over-liquid": [
+      {
+        "first_mirror": {
+          "point": [
+            0.0,
+            0.05782435791069742,
+            0.06025962301606763
+          ],
+          "t": 0.03597170333926299,
+          "offset": 0.0022890580733801093,
+          "withinAperture": true
+        },
+        "internal_scale": {
+          "point": [
+            0.0,
+            0.010032099021865004,
+            0.06119770102950561
+          ],
+          "t": 0.016120381563162214,
+          "offset": 0.0022920742453229185,
+          "withinAperture": true
+        },
+        "lens_group": {
+          "point": [
+            0.0,
+            -0.0070938307213027595,
+            0.04417463511967648
+          ],
+          "t": 0.04026747750736025,
+          "offset": 0.004953322549841978,
+          "withinAperture": true
+        },
+        "second_mirror": {
+          "point": [
+            0.0,
+            -0.04052029766285259,
+            0.023737005501131198
+          ],
+          "t": 0.03917940015645164,
+          "offset": 0.00018236948800525395,
+          "withinAperture": true
+        },
+        "eyepiece": {
+          "point": [
+            0.0,
+            -0.05530466545908752,
+            0.044279124268016876
+          ],
+          "t": 0.02530921125928631,
+          "offset": 0.0029701238171152026,
+          "withinAperture": true
+        }
+      },
+      {
+        "first_mirror": {
+          "point": [
+            0.0,
+            0.05756098024036388,
+            0.06310181577145621
+          ],
+          "t": 0.03452354662801241,
+          "offset": 0.000577888150622639,
+          "withinAperture": true
+        },
+        "internal_scale": {
+          "point": [
+            0.0,
+            0.009077525715765419,
+            0.0623977641472215
+          ],
+          "t": 0.01601466817178793,
+          "offset": 0.0007586592058701723,
+          "withinAperture": true
+        },
+        "lens_group": {
+          "point": [
+            0.0,
+            -0.009079755595043149,
+            0.046671284858677
+          ],
+          "t": 0.04003568012825757,
+          "offset": 0.0017631567981306138,
+          "withinAperture": true
+        },
+        "second_mirror": {
+          "point": [
+            0.0,
+            -0.04051652509246504,
+            0.023736244317821946
+          ],
+          "t": 0.03891383508528426,
+          "offset": 0.00018621808351001844,
+          "withinAperture": true
+        },
+        "eyepiece": {
+          "point": [
+            0.0,
+            -0.05349269602897878,
+            0.04527054915351617
+          ],
+          "t": 0.025141744110745923,
+          "offset": 0.0009046561898608078,
+          "withinAperture": true
+        }
+      },
+      {
+        "first_mirror": {
+          "point": [
+            0.0,
+            0.0573168447426948,
+            0.06573636008164584
+          ],
+          "t": 0.033343637999431866,
+          "offset": 0.0032154544613606484,
+          "withinAperture": true
+        },
+        "internal_scale": {
+          "point": [
+            0.0,
+            0.00813120437998477,
+            0.06358745311644091
+          ],
+          "t": 0.016015244564829435,
+          "offset": 0.0007614999680441985,
+          "withinAperture": true
+        },
+        "lens_group": {
+          "point": [
+            0.0,
+            -0.011043035165759905,
+            0.049139465550015624
+          ],
+          "t": 0.040023489125337784,
+          "offset": 0.0013906318120794283,
+          "withinAperture": true
+        },
+        "second_mirror": {
+          "point": [
+            0.0,
+            -0.040504796336375146,
+            0.023733877832254606
+          ],
+          "t": 0.038902946656509466,
+          "offset": 0.0001981831983593071,
+          "withinAperture": true
+        },
+        "eyepiece": {
+          "point": [
+            0.0,
+            -0.05169149385726936,
+            0.046256082699046755
+          ],
+          "t": 0.02514740371262482,
+          "offset": 0.0011485378177129551,
+          "withinAperture": true
+        }
+      }
+    ]
+  },
+  "limitations": [
+    "实际导出半圆柱三角网格和不透光物体遮挡验证；透明组件的孔径仍按数学模型计算。",
+    "透镜为明确标注的理想薄透镜；表面造型不是独立光学处方验证。",
+    "未验收真实设备尺寸、标尺精度、样品视频或生产应用。"
+  ],
+  "reportScope": "历史候选导出验证随包附带；新public路径的独立重跑报告另行保存，不混作本次重新运行。"
+}

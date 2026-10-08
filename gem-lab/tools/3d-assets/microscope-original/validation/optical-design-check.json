@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "assetId": "original-teaching-gem-microscope-v1",
+  "passed": true,
+  "method": "Conservative analytic bounds for a finite source sphere and full divergent cone; all azimuths and continuous allowed focus range.",
+  "checks": [
+    {
+      "id": "analytical_assumptions",
+      "passed": true,
+      "note": "Coaxial ring and pupil; optical head translates on +Y; fixed nominal LED axes; patch enclosed by sphere."
+    },
+    {
+      "id": "finite_source_full_cone_misses_pupil_all_focus",
+      "passed": true,
+      "endpoints": [
+        {
+          "focusMeters": -0.012,
+          "angularClearanceDegrees": 5.9037612187901285,
+          "minimumDirectRayRadiusMeters": 0.029454819384978632,
+          "pupilEdgeClearanceMeters": 0.016454819384978635
+        },
+        {
+          "focusMeters": 0.018,
+          "angularClearanceDegrees": 10.170071327856691,
+          "minimumDirectRayRadiusMeters": 0.04572396533875176,
+          "pupilEdgeClearanceMeters": 0.03272396533875176
+        }
+      ],
+      "continuousIntervalProof": "Minimum focus is worst case; separation increases and inflated pupil angular radius decreases as the pupil moves upward."
+    },
+    {
+      "id": "darkfield_full_cone_clears_separator",
+      "passed": true,
+      "minimumRadialClearanceMeters": 0.008286124018123365,
+      "note": "Upper end is the worst case before the crossover; whole finite-source beam stays outside the tube."
+    },
+    {
+      "id": "darkfield_full_cone_clears_closed_black_shutter",
+      "passed": true,
+      "minimumRadialClearanceMeters": 0.0029075143934419907
+    },
+    {
+      "id": "darkfield_full_cone_passes_stage_aperture",
+      "passed": true,
+      "maximumConservativeBeamRadiusMeters": 0.025240397592177593,
+      "minimumRadialClearanceMeters": 0.018759602407822405
+    },
+    {
+      "id": "nominal_led_cones_cover_fixed_sample",
+      "passed": true,
+      "sampleAngularRadiusDegrees": 3.5177181062034584,
+      "halfAngleDegrees": 4,
+      "note": "Every sample point is inside every nominal source-point cone. This establishes coverage, not uniform intensity or coverage by every point of the finite emitting patch."
+    },
+    {
+      "id": "brightfield_pupil_bundle_clears_separator",
+      "passed": true,
+      "minimumRadialClearanceMeters": 0.0007366412213740455
+    },
+    {
+      "id": "closed_shutter_blocks_direct_diffuser_to_pupil_bundle",
+      "passed": true,
+      "minimumRadialCoverageMeters": 0.0031610687022900763
+    },
+    {
+      "id": "open_shutter_clears_brightfield_bundle",
+      "passed": true,
+      "minimumRadialClearanceMeters": 0.008161063732804008
+    },
+    {
+      "id": "rigid_tilt_preserves_optical_geometry",
+      "passed": true,
+      "note": "Rigid transformation preserves these distances and angles only if lamps, sample, entrance and optical head share the tilt rig. Actual glTF hierarchy is a separate check."
+    }
+  ],
+  "limitations": [
+    "Author-created dimensions; no manufacturer reconstruction or physical calibration.",
+    "Simulated entrance is a geometric acceptance proxy, not a measured optical entrance pupil or numerical aperture.",
+    "No gemstone refraction, multiple scattering, diffraction, stereo imaging, magnification, depth of field or radiometric calibration is calculated.",
+    "Direct geometric beam checks do not certify real stray-light suppression, internal reflections, LED lens performance, thermal safety or manufacturability.",
+    "Actual mesh clearances, control behavior and browser output require separate verification."
+  ],
+  "sources": [
+    {
+      "url": "https://www.microscopyu.com/techniques/stereomicroscopy/darkfield-illumination",
+      "use": "Principle only: unscattered oblique illumination must miss the objective; some light redirected by the specimen can be collected."
+    },
+    {
+      "url": "https://www.gia.edu/gems-gemology/summer-2015-digital-photomicrography-gemologists",
+      "use": "Teaching context: brightfield and darkfield reveal different features; dust and surface scratches may also scatter light."
+    }
+  ],
+  "checkedAt": "2026-10-07T19:43:31.459256+00:00",
+  "contractSha256": "5f2d975b5d80a43b960aa8e3f5311fc5e97391e7d00d9c9ab577c8098038056e"
+}

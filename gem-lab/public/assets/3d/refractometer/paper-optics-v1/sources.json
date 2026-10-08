@@ -1,0 +1,81 @@
+{
+  "instrumentId": "refractometer",
+  "retrievedAt": "2026-10-08",
+  "sources": [
+    {
+      "id": "hurlbut-1981",
+      "title": "A Cubic Zirconia Refractometer",
+      "author": "C. S. Hurlbut, Jr.",
+      "publication": "Gems & Gemology 17(2), 93–95 (1981)",
+      "url": "https://cms.gia.edu/dam/jcr%3Ab9c24a55-5f60-4c6f-8d02-2f88966e1b1e/SU81.pdf",
+      "pages": "93–95, Fig.1",
+      "supports": [
+        "高RI固体与接触液均限制量程",
+        "更换半圆柱折射率须重做标尺",
+        "精密读数需统一单色光"
+      ],
+      "doesNotSupport": "当前白色机型内部几何尺寸、镜片数量或焦距",
+      "sha256": "472d1b2fdec272d49635ad07efbf9a758a0c0bddca9599de80d0838ab64f1869",
+      "fullTextReviewed": true,
+      "documentBundled": false,
+      "accessNote": "原文和目标页已在本机核查；公开资产目录只提供原出版方URL与文档哈希，不分发论文PDF或页图。"
+    },
+    {
+      "id": "cartier-2000",
+      "title": "Critical angle vs. deviation angle vs. Brewster angle",
+      "author": "R. H. Cartier",
+      "publication": "Journal of Gemmology 27(4), 233–236 (2000)",
+      "url": "https://gem-a.com/wp-content/uploads/2023/11/JoG2000_27_4.pdf",
+      "pages": "233–236; p.234 Fig.1 (PDF page 44)",
+      "supports": [
+        "临界角处折射方向沿界面",
+        "接触液限制可测量范围",
+        "临界角法区别于Brewster角法"
+      ],
+      "doesNotSupport": "均质例子不能推导所有各向异性取向",
+      "sha256": "04d679f2bb9d205f9ae575a131d6e767266c5dbfb1696eb2cd0589144ea34c1d",
+      "fullTextReviewed": true,
+      "documentBundled": false,
+      "accessNote": "原文和目标页已在本机核查；公开资产目录只提供原出版方URL与文档哈希，不分发论文PDF或页图。"
+    },
+    {
+      "id": "hurlbut-1984",
+      "title": "The jeweler’s refractometer as a mineralogical tool",
+      "author": "C. S. Hurlbut, Jr.",
+      "publication": "American Mineralogist 69, 391–398 (1984)",
+      "url": "https://www.minsocam.org/ammin/AM69/AM69_391.pdf",
+      "pages": "391–398",
+      "supports": [
+        "可转偏光片用于区分振动方向及判定光性，不等同增加测量精度"
+      ],
+      "accessNote": "原出版方URL已定位，原论文全文由Lotus/PSU存档可检索；本轮未将二级说明当厂家处方。"
+    },
+    {
+      "id": "bloss-1987",
+      "title": "Automated refractometer",
+      "author": "F. Donald Bloss",
+      "url": "https://patents.google.com/patent/EP0222831A1/en",
+      "pages": "Background prior-art description; patent automatic design not copied",
+      "supports": [
+        "透明标尺与镜/透镜的观察链路",
+        "光学接触及双边界原理"
+      ],
+      "doesNotSupport": "本候选并非专利自动仪器结构"
+    },
+    {
+      "id": "kruess-er601",
+      "title": "ER601-LED official product description",
+      "url": "https://kruess-shop.de/en/products/gemstone-refractometer/gemstone-refractometer-er601-led/",
+      "supports": [
+        "LED 589 nm 与可转偏光片为现实功能配置"
+      ],
+      "doesNotSupport": "不得推断用户白色仪器的真实波长或结构"
+    }
+  ],
+  "license": "来源URL与阅读记录随资产提供。论文PDF/页图不在public内；GLB和海报不含论文或厂商品牌像素。",
+  "implementationAssumptions": [
+    "nG=1.88,nLiquid=1.78,nSample=1.60/1.70仅数值教学参数",
+    "40微米平行膜和理想薄透镜焦距均为建模假设",
+    "各向异性、色散、吸收、相干干涉、厚透镜像差未模拟"
+  ]
+}

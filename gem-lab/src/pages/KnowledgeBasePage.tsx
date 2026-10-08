@@ -8,6 +8,7 @@ import MethodTabs from '@/components/knowledge/MethodTabs';
 import { INSTRUMENTS, INSTRUMENT_LIST } from '@/data/instruments';
 import type { InstrumentId } from '@/data/types';
 import { useProgress } from '@/store/progressStore';
+import { OPTICS_INSTRUMENTS, opticsAssetBase, opticsForKnowledge } from '@/components/optics3d/opticsInstruments';
 
 const SECTIONS = [
   { id: 'introduction', label: '基本介绍' },
@@ -195,6 +196,22 @@ export default function KnowledgeBasePage() {
                 <ComponentDiagram productImage={instrument.productImage} components={instrument.components} themeHex={instrument.themeHex} />
               </details>
             </> : <>
+              {opticsForKnowledge(instrument.id).length > 0 && (
+                <div className="mb-6 overflow-hidden rounded-2xl border border-line bg-white" data-testid="optics-3d-card">
+                  <div className="p-6">
+                    <h3 className="font-display text-xl font-semibold text-ink">在 3D 仪器上看结构与光路</h3>
+                    <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-3">点选部件查看作用，展开结构看清关系，切换光路示例观察光线在仪器内部怎样传播。内部尺寸与参数为教学设定，不是厂家实测。</p>
+                    <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                      {opticsForKnowledge(instrument.id).map(id => (
+                        <Link key={id} to={`/explore/optics/${id}`} className="group flex gap-4 rounded-xl border border-line p-3 transition hover:border-brand-300 hover:bg-brand-50/40" data-testid={`optics-link-${id}`}>
+                          <img src={opticsAssetBase(id) + 'poster.png'} alt="" className="h-20 w-28 shrink-0 rounded-lg bg-brand-50/40 object-contain" loading="lazy" />
+                          <span className="text-sm"><span className="font-semibold text-ink group-hover:text-brand-700">{OPTICS_INSTRUMENTS[id].name} 3D →</span><span className="mt-1 block text-xs leading-relaxed text-ink-3">{OPTICS_INSTRUMENTS[id].summary}</span></span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
               <p className="mb-5 max-w-3xl text-sm leading-relaxed text-ink-3">点击或悬停产品图上的编号热点，查看每个部件的详细说明。{hasExternalComponents ? ' 标记为外接附件的项目不在本体图片上，但会参与实际操作。' : ' 下方列表与图示双向联动。'}</p>
               <ComponentDiagram productImage={instrument.productImage} components={instrument.components} themeHex={instrument.themeHex} />
             </>}

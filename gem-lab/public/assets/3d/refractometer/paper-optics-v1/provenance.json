@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "instrumentId": "refractometer",
+  "version": "paper-optics-v1",
+  "date": "2026-10-08",
+  "modelSha256": "801a87705268e57f66603b476b29d00109e56cbce06f9e88ce1a59e493ea24d6",
+  "modelBytes": 3049000,
+  "predecessor": {
+    "version": "structure-3",
+    "directoryLabel": "structure-v1",
+    "modelSha256": "81e265623fbae03bbe75ded1011aef3521ff2ac8439fa5af86aa80e3233aa383",
+    "modelBytes": 2416144
+  },
+  "validatedCandidate": {
+    "revision": "paper-optics-v1-candidate",
+    "modelSha256": "801a87705268e57f66603b476b29d00109e56cbce06f9e88ce1a59e493ea24d6",
+    "modelBytes": 3049000,
+    "sourceManifestSha256": "0467aeb88cdf891d18f076281ffcb81f48bc2a7ca3efe48853d4b3b81da31315"
+  },
+  "editableMaster": {
+    "sha256": "5fe424dc47aac067123975dbd85c06fcd097dbfa7669f2eee3e7993103df5ab4",
+    "bundledInPublic": false,
+    "description": "完整可编辑母版保留在制作归档；海报由同一母版渲染。"
+  },
+  "sourceReferences": "sources.json",
+  "caseData": "optical-cases.json",
+  "assets": {
+    "model.glb": {
+      "sha256": "801a87705268e57f66603b476b29d00109e56cbce06f9e88ce1a59e493ea24d6",
+      "bytes": 3049000
+    },
+    "optical-cases.json": {
+      "sha256": "8c417684ccb4ea3f377702eff98e05f855652949173ca417d3f0fa15e02e2ba8",
+      "bytes": 61914
+    },
+    "sources.json": {
+      "sha256": "5d1d6536064d24117f677661486f970a01e0d105dc2be4c3bdf47c1f2de69bc6",
+      "bytes": 3645
+    }
+  },
+  "changes": [
+    "以固定样品取代不同RI临界线叠放；部分反射/透射/临界/全反射来自同一状态。",
+    "增加空气间隙及超接触液量程案例。",
+    "刻线按教学角度映射；透镜明确是理想薄透镜中继。",
+    "半圆柱维持原半径与接触平面，2048分段支撑导出网格法线检查。",
+    "公开版本标签、模型哈希及独立自包含案例清单统一。"
+  ],
+  "preserved": [
+    "10组既有外形和机构几何",
+    "旧structure-v1目录原样保留",
+    "本次模型字节与已独立审核候选完全一致"
+  ],
+  "meshChoice": {
+    "selectedSegments": 2048,
+    "selectedBytes": 3049000,
+    "reason": "原64分段实际网格法线误差明显；2048段已有374项独立检查依据。保持同一网页与校验网格，避免只验证高精度隐藏网格却交付低精度模型。未为减少约3.05MB文件而改变已审核几何。"
+  },
+  "deferred": [
+    "测台接触窗口应收成窄条；本轮按用户明确边界不修改，待确认后单独处理。"
+  ],
+  "limitations": [
+    "理想各向同性单色例子，不是实测样品或厂家内部处方。",
+    "薄透镜不等同真实厚透镜面形/像差验证；不承诺全量程精度。",
+    "未接入应用、未提交推送部署、未调用付费生成。"
+  ],
+  "poster": {
+    "file": "poster.png",
+    "sha256": "b94a26aa4bb2c80c20fd5c2e0d33c633795d3f4822faebcc4874846ddc977943",
+    "bytes": 2209101,
+    "masterSha256": "5fe424dc47aac067123975dbd85c06fcd097dbfa7669f2eee3e7993103df5ab4",
+    "method": "Blender Cycles from identical candidate editable master; studio camera, lights and floor only."
+  },
+  "verification": {
+    "checkedAt": "2026-10-08T07:53:26.346751+00:00",
+    "modelSha256": "801a87705268e57f66603b476b29d00109e56cbce06f9e88ce1a59e493ea24d6",
+    "independentOptics": "validation/independent-refractometer.json",
+    "gltfValidator": "validation/gltf-validator.json",
+    "browserReview": "validation/browser.json",
+    "protectedFiles": "validation/protected-files.json",
+    "localTechnicalChecksPassed": true,
+    "applicationIntegrated": false,
+    "deployed": false,
+    "userAppearanceAccepted": false,
+    "mathematicalTests": "validation/test-optics.json"
+  }
+}

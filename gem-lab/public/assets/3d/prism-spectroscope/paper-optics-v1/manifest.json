@@ -1,0 +1,528 @@
+{
+  "id": "prism-spectroscope",
+  "version": "paper-optics-v1",
+  "revision": "paper-optics-v1",
+  "model": "model.glb",
+  "sha256": "f46f1007cb9a17ade4b22dc411d1a8250fc4e34674fc58ba97f072dd37bbe0bd",
+  "byteLength": 1032860,
+  "units": "meters",
+  "dimensionsCalibrated": false,
+  "teachingOpticsSimulated": true,
+  "internalOpticsIllustrative": true,
+  "opticalSimulation": "dispersive element only",
+  "opticalAxisLocal": [
+    0,
+    0,
+    1
+  ],
+  "entryDirection": "-Z",
+  "observationDirection": "+Z",
+  "parts": [
+    {
+      "id": "barrel",
+      "label": "独立消光镜筒外壳",
+      "node": "PrismSpectroscope_barrel",
+      "pivot": [
+        0,
+        0,
+        0
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        -0.18
+      ],
+      "hotspot": [
+        0,
+        0.009,
+        0
+      ],
+      "transparentShell": true,
+      "shellMode": "independent-closed-hollow-mesh",
+      "materialIntent": "matte-black-anodised-aluminium"
+    },
+    {
+      "id": "slitHousing",
+      "label": "入光端与固定狭缝座",
+      "node": "PrismSpectroscope_slitHousing",
+      "pivot": [
+        0,
+        0,
+        -0.0445
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        -0.09
+      ],
+      "hotspot": [
+        0,
+        0,
+        -0.0475
+      ],
+      "illustrative": true
+    },
+    {
+      "id": "slitControl",
+      "label": "同轴滚花狭缝调节环",
+      "node": "PrismSpectroscope_slitControl",
+      "pivot": [
+        0,
+        0,
+        -0.043000000000000003
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": true,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        -0.115
+      ],
+      "hotspot": [
+        0,
+        0,
+        -0.043000000000000003
+      ],
+      "rotationRangeDegrees": [
+        0,
+        90
+      ],
+      "angleStopsDegrees": [
+        0,
+        90
+      ],
+      "motionEvidence": "Penrose catalogue confirms rotation of the entrance end adjusts the slit; 0–90 degree range/linkage is teaching-only.",
+      "controlAngleChangesAperture": true
+    },
+    {
+      "id": "slitLeft",
+      "label": "左狭缝刃口（联动）",
+      "node": "PrismSpectroscope_slitLeft",
+      "pivot": [
+        -0.003,
+        0,
+        -0.039
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": true,
+      "explodeOffset": [
+        0,
+        0,
+        -0.055
+      ],
+      "hotspot": [
+        -0.003,
+        0,
+        -0.039
+      ],
+      "translationAxisLocal": [
+        -1,
+        0,
+        0
+      ],
+      "translationRange": [
+        0,
+        0.00038
+      ],
+      "drivenBy": "slitControl",
+      "motionEvidence": "Symmetric linear teaching linkage; minimum gap 40 micrometres prevents blade collision."
+    },
+    {
+      "id": "slitRight",
+      "label": "右狭缝刃口（联动）",
+      "node": "PrismSpectroscope_slitRight",
+      "pivot": [
+        0.003,
+        0,
+        -0.039
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": true,
+      "explodeOffset": [
+        0,
+        0,
+        -0.055
+      ],
+      "hotspot": [
+        0.003,
+        0,
+        -0.039
+      ],
+      "translationAxisLocal": [
+        1,
+        0,
+        0
+      ],
+      "translationRange": [
+        0,
+        0.00038
+      ],
+      "drivenBy": "slitControl",
+      "motionEvidence": "Symmetric linear teaching linkage; minimum gap 40 micrometres prevents blade collision."
+    },
+    {
+      "id": "collimator",
+      "label": "消色差准直透镜（胶合双片示意）",
+      "node": "PrismSpectroscope_collimator",
+      "pivot": [
+        0,
+        0,
+        -0.025500000000000002
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        -0.03
+      ],
+      "hotspot": [
+        0,
+        0,
+        -0.025500000000000002
+      ],
+      "illustrative": true
+    },
+    {
+      "id": "prismTrain",
+      "label": "直视棱镜组：N-BK7 / N-F2 / N-BK7（教学处方）",
+      "node": "PrismSpectroscope_prismTrain",
+      "pivot": [
+        0,
+        0,
+        0
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        0.018
+      ],
+      "hotspot": [
+        0,
+        0,
+        0
+      ],
+      "illustrative": true,
+      "opticalSimulation": "four-interface Snell with Sellmeier dispersion",
+      "glassSequence": [
+        "N-BK7",
+        "N-F2",
+        "N-BK7"
+      ],
+      "prismCount": 3,
+      "cemented": true,
+      "countIsTeachingSchematic": true
+    },
+    {
+      "id": "focusTube",
+      "label": "目镜抽拉套筒",
+      "node": "PrismSpectroscope_focusTube",
+      "pivot": [
+        0,
+        0,
+        0.0265
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": true,
+      "explodeOffset": [
+        0,
+        0,
+        0.075
+      ],
+      "hotspot": [
+        0,
+        0,
+        0.0265
+      ],
+      "translationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "translationRange": [
+        0,
+        0.02
+      ],
+      "motionEvidence": "Friction draw tube confirmed in mineralogy.eu collection. 20 mm illustrative travel yields 95–115 mm overall length, not a specific measured specimen."
+    },
+    {
+      "id": "eyepiece",
+      "label": "目镜与目口（随抽拉套筒）",
+      "node": "PrismSpectroscope_eyepiece",
+      "pivot": [
+        0,
+        0,
+        0.0445
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        0.045
+      ],
+      "hotspot": [
+        0,
+        0,
+        0.0445
+      ],
+      "integralWith": "focusTube",
+      "parentPart": "focusTube"
+    },
+    {
+      "id": "baffles",
+      "label": "内部消光环（示意）",
+      "node": "PrismSpectroscope_baffles",
+      "pivot": [
+        0,
+        0,
+        0.0335
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        0.057
+      ],
+      "hotspot": [
+        0,
+        0,
+        0.0335
+      ],
+      "illustrative": true
+    }
+  ],
+  "createdAt": "2026-10-08",
+  "transparentShellParts": [
+    "barrel"
+  ],
+  "explodeAlongOpticalAxis": true,
+  "constructionNotes": [
+    "Relative scale is educational and uncalibrated. All exported geometry and metadata use metres.",
+    "Internal optics, glass recipes, supports and mechanical ranges are illustrative.",
+    "No side slot, side knob, external wavelength tube, brand/logo or reference photograph pixels.",
+    "Exploded layout separates only along the optical axis; it is not a mechanical travel limit.",
+    "The new evidence-backed optical calculation begins after idealized collimation and terminates on the actual eyepiece front. Lens aberrations, spectral resolution, efficiency and real stone absorption are not simulated.",
+    "蓝色冕牌与暖色火石仅作部件识别；不是实际玻璃固有颜色、吸收光谱或透射率。材质外观不参与折射和色散计算。"
+  ],
+  "boundsNominalMeters": {
+    "length": 0.095,
+    "diameter": 0.019,
+    "barrelDiameter": 0.018,
+    "lengthAtMaximumFocus": 0.115
+  },
+  "opticalPath": [
+    "adjustableSlit",
+    "idealizedAchromaticCollimator",
+    "AmiciNBK7NF2NBK7",
+    "eyepieceFrontTermination"
+  ],
+  "wavelengthScale": {
+    "externalTube": false,
+    "physicalReticleIncluded": false,
+    "plannedDisplay": "Future webpage eyepiece-view teaching overlay only."
+  },
+  "teachingComparison": {
+    "grating": "光栅式角度随波长为反正弦关系；小角度下近似线性。本袖珍款狭缝和焦距固定，真实刻线密度未确认。",
+    "prism": "本教学处方蓝紫端角分散较大，550 nm 直视；谱线亮度、分辨率与真实厂家视野未校准。",
+    "sourceConflict": {
+      "taskText": "棱镜式紫端压缩、红端展开",
+      "adoptedText": "棱镜式紫端展开、红端压缩",
+      "reason": "Lotus Gemology primary practitioner article describes prism models as pulling violet and pushing red. Skyjems handheld page agrees; its Beck page contradicts both. Use Lotus and retain discrepancy for review.",
+      "primarySource": "https://lotusgemology.com/index.php/en/resources/articles/282-gem-testing-with-the-spectroscope-lotus-gemology"
+    }
+  },
+  "controlLinkages": [
+    {
+      "type": "symmetricSlit",
+      "controlPart": "slitControl",
+      "drivenParts": [
+        "slitLeft",
+        "slitRight"
+      ],
+      "angleRangeDegrees": [
+        0,
+        90
+      ],
+      "apertureRangeMeters": [
+        4e-05,
+        0.0008
+      ],
+      "perBladeTravelMeters": 0.00038,
+      "closedStopGapMeters": 4e-05,
+      "hardStops": true,
+      "formula": "gap = 0.00004 + 0.00076 * clamp(angleDegrees, 0, 90) / 90; left/right move by -/+0.00038 * angleDegrees / 90 along X",
+      "couplingIsTeachingSchematic": true
+    }
+  ],
+  "amiciAssembly": {
+    "count": 3,
+    "sequence": [
+      "N-BK7",
+      "N-F2",
+      "N-BK7"
+    ],
+    "cemented": true,
+    "countIsTeachingSchematic": true,
+    "historicalBeckReplica": false,
+    "glassIORsAtDesignWavelength": [
+      1.5185223876207927,
+      1.623656506858122,
+      1.5185223876207927
+    ],
+    "note": "Truncated double-Amici teaching prescription solved at 550nm from official glass dispersion; not a manufacturer prescription.",
+    "interfaces": [
+      {
+        "node": "PrismSpectroscope_amici_cement_interface_1",
+        "planeXZ": {
+          "zInterceptMeters": -0.0048,
+          "zSlopePerX": -0.8390996311772799
+        },
+        "between": [
+          "N-BK7",
+          "N-F2"
+        ],
+        "edgeGuidesOnly": true,
+        "guideOffsetAlongZMeters": 4e-05,
+        "depthMeters": 3e-05,
+        "guideFaces": [
+          "+Y",
+          "-Y"
+        ]
+      },
+      {
+        "node": "PrismSpectroscope_amici_cement_interface_2",
+        "planeXZ": {
+          "zInterceptMeters": 0.0048,
+          "zSlopePerX": 0.8390996311772799
+        },
+        "between": [
+          "N-F2",
+          "N-BK7"
+        ],
+        "edgeGuidesOnly": true,
+        "guideOffsetAlongZMeters": 4e-05,
+        "depthMeters": 3e-05,
+        "guideFaces": [
+          "+Y",
+          "-Y"
+        ]
+      }
+    ],
+    "alternatingSlopes": true,
+    "materialAppearance": {
+      "crown": {
+        "baseColor": [
+          0.13,
+          0.55,
+          0.95
+        ],
+        "transmission": 0.7,
+        "roughness": 0.055,
+        "ior": 1.5185223876207927,
+        "glass": "N-BK7"
+      },
+      "flint": {
+        "baseColor": [
+          0.97,
+          0.39,
+          0.075
+        ],
+        "transmission": 0.64,
+        "roughness": 0.065,
+        "ior": 1.623656506858122,
+        "glass": "N-F2"
+      },
+      "iorWavelengthNm": 550.0
+    },
+    "interfaceVisibility": "Two narrow edge guides on both exterior Y faces make the shared alternating cement planes visible; no air gap or opaque layer across the optical path.",
+    "appearanceValuesIllustrative": true,
+    "designWavelengthNm": 550.0,
+    "prescription": "prescription.json",
+    "allRefractingPlanesXZ": [
+      {
+        "zInterceptMeters": -0.0118,
+        "zSlopePerX": 0.17541240997913715
+      },
+      {
+        "zInterceptMeters": -0.0048,
+        "zSlopePerX": -0.8390996311772799
+      },
+      {
+        "zInterceptMeters": 0.0048,
+        "zSlopePerX": 0.8390996311772799
+      },
+      {
+        "zInterceptMeters": 0.0118,
+        "zSlopePerX": -0.17541240997913715
+      }
+    ]
+  },
+  "sourceModelSha256": "ba3d45fb33ff390a4759c84845ba3e55d185a4ae24b6811913a1e1403b58d14d",
+  "opticalCases": "optical-cases.json",
+  "sources": "sources.json",
+  "modelSha256": "f46f1007cb9a17ade4b22dc411d1a8250fc4e34674fc58ba97f072dd37bbe0bd",
+  "modelBytes": 1032860,
+  "poster": "poster.png",
+  "opticsPoster": "poster-optics.png",
+  "provenance": "provenance.json",
+  "publicationStatus": "local-public-directory-candidate; not application-integrated or deployed",
+  "materialAppearanceNote": "蓝色冕牌与暖色火石仅作部件识别；不是实际玻璃固有颜色、吸收光谱或透射率。材质外观不参与折射和色散计算。"
+}

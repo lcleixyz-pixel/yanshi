@@ -1,0 +1,1984 @@
+{
+  "schemaVersion": 1,
+  "instrumentId": "prism-spectroscope",
+  "defaultCaseId": "white-light",
+  "cases": [
+    {
+      "id": "white-light",
+      "label": "白光：棱镜内四次折射",
+      "description": "假定准直组件输出平行白光。N-BK7/N-F2/N-BK7 为本候选教学处方；550nm 近轴直视，其他波长分散。光路止于真实目镜前表面，未模拟未知目镜的成像。",
+      "parameters": {
+        "wavelengthsNm": [
+          400,
+          450,
+          500,
+          550,
+          600,
+          650,
+          700
+        ],
+        "collimatedInput": true,
+        "designWavelengthNm": 550
+      },
+      "paths": [
+        {
+          "id": "prism-400",
+          "kind": "refracted",
+          "color": "#773bdf",
+          "wavelengthNm": 400,
+          "points": [
+            [
+              0,
+              0,
+              -0.023
+            ],
+            [
+              0.0,
+              0.0,
+              -0.011799999512732029
+            ],
+            [
+              -0.0004470578860491514,
+              0.0,
+              -0.00442487420514226
+            ],
+            [
+              -0.0003839669516310096,
+              0.0,
+              0.0044778138399124146
+            ],
+            [
+              0.00017722015036270022,
+              0.0,
+              0.011768913827836514
+            ],
+            [
+              0.0009354271460324526,
+              0.0,
+              0.04196767508983612
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "PrismSpectroscope_eyepiece_glass",
+            "point": [
+              0.0009354271460324526,
+              0.0,
+              0.04196767508983612
+            ],
+            "distanceMeters": 0.030208079144358635
+          },
+          "events": [
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                0.0,
+                0.0,
+                -0.011799999512732029
+              ],
+              "normal": [
+                0.17277441918849945,
+                -0.0,
+                -0.9849613904953003
+              ],
+              "nIncident": 1,
+              "nTransmitted": 1.5308485382492993,
+              "incident": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "outgoing": [
+                -0.060505930334329605,
+                0.0,
+                0.998167872428894
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                -0.0004470578860491514,
+                0.0,
+                -0.00442487420514226
+              ],
+              "normal": [
+                0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.5308485382492993,
+              "nTransmitted": 1.652427390711733,
+              "incident": [
+                -0.060505930334329605,
+                0.0,
+                0.998167872428894
+              ],
+              "outgoing": [
+                0.007086551748216152,
+                0.0,
+                0.9999748468399048
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_2_flint",
+              "point": [
+                -0.0003839669516310096,
+                0.0,
+                0.0044778138399124146
+              ],
+              "normal": [
+                -0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.652427390711733,
+              "nTransmitted": 1.5308485382492993,
+              "incident": [
+                0.007086551748216152,
+                0.0,
+                0.9999748468399048
+              ],
+              "outgoing": [
+                0.07674180716276169,
+                0.0,
+                0.9970510601997375
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_3_crown",
+              "point": [
+                0.00017722015036270022,
+                0.0,
+                0.011768913827836514
+              ],
+              "normal": [
+                0.17277441918849945,
+                0.0,
+                0.9849613904953003
+              ],
+              "nIncident": 1.5308485382492993,
+              "nTransmitted": 1,
+              "incident": [
+                0.07674180716276169,
+                0.0,
+                0.9970510601997375
+              ],
+              "outgoing": [
+                0.025099311023950577,
+                0.0,
+                0.9996849894523621
+              ]
+            }
+          ],
+          "interactions": [
+            {
+              "pointIndex": 1,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1,
+              "n2": 1.5308485382492993,
+              "wavelengthNm": 400
+            },
+            {
+              "pointIndex": 2,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1.5308485382492993,
+              "n2": 1.652427390711733,
+              "wavelengthNm": 400
+            },
+            {
+              "pointIndex": 3,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_2_flint",
+              "n1": 1.652427390711733,
+              "n2": 1.5308485382492993,
+              "wavelengthNm": 400
+            },
+            {
+              "pointIndex": 4,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_3_crown",
+              "n1": 1.5308485382492993,
+              "n2": 1,
+              "wavelengthNm": 400
+            },
+            {
+              "pointIndex": 5,
+              "kind": "termination",
+              "surfaceNode": "PrismSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "prism-450",
+          "kind": "refracted",
+          "color": "#2854ff",
+          "wavelengthNm": 450,
+          "points": [
+            [
+              0,
+              0,
+              -0.023
+            ],
+            [
+              0.0,
+              0.0,
+              -0.011799999512732029
+            ],
+            [
+              -0.0004438479954842478,
+              0.0,
+              -0.004427566658705473
+            ],
+            [
+              -0.00041187606984749436,
+              0.0,
+              0.004454394802451134
+            ],
+            [
+              8.971363422460854e-05,
+              0.0,
+              0.011784262955188751
+            ],
+            [
+              0.0004695790121331811,
+              0.0,
+              0.041933972388505936
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "PrismSpectroscope_eyepiece_glass",
+            "point": [
+              0.0004695790121331811,
+              0.0,
+              0.041933972388505936
+            ],
+            "distanceMeters": 0.03015190176665783
+          },
+          "events": [
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                0.0,
+                0.0,
+                -0.011799999512732029
+              ],
+              "normal": [
+                0.17277441918849945,
+                -0.0,
+                -0.9849613904953003
+              ],
+              "nIncident": 1,
+              "nTransmitted": 1.5253195028678679,
+              "incident": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "outgoing": [
+                -0.0600949302315712,
+                0.0,
+                0.9981926679611206
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                -0.0004438479954842478,
+                0.0,
+                -0.004427566658705473
+              ],
+              "normal": [
+                0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.5253195028678679,
+              "nTransmitted": 1.6388446399520915,
+              "incident": [
+                -0.0600949302315712,
+                0.0,
+                0.9981926679611206
+              ],
+              "outgoing": [
+                0.0035996250808238983,
+                0.0,
+                0.9999935030937195
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_2_flint",
+              "point": [
+                -0.00041187606984749436,
+                0.0,
+                0.004454394802451134
+              ],
+              "normal": [
+                -0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.6388446399520915,
+              "nTransmitted": 1.5253195028678679,
+              "incident": [
+                0.0035996250808238983,
+                0.0,
+                0.9999935030937195
+              ],
+              "outgoing": [
+                0.06827126443386078,
+                0.0,
+                0.9976668357849121
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_3_crown",
+              "point": [
+                8.971363422460854e-05,
+                0.0,
+                0.011784262955188751
+              ],
+              "normal": [
+                0.17277441918849945,
+                0.0,
+                0.9849613904953003
+              ],
+              "nIncident": 1.5253195028678679,
+              "nTransmitted": 1,
+              "incident": [
+                0.06827126443386078,
+                0.0,
+                0.9976668357849121
+              ],
+              "outgoing": [
+                0.012598305940628052,
+                0.0,
+                0.999920666217804
+              ]
+            }
+          ],
+          "interactions": [
+            {
+              "pointIndex": 1,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1,
+              "n2": 1.5253195028678679,
+              "wavelengthNm": 450
+            },
+            {
+              "pointIndex": 2,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1.5253195028678679,
+              "n2": 1.6388446399520915,
+              "wavelengthNm": 450
+            },
+            {
+              "pointIndex": 3,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_2_flint",
+              "n1": 1.6388446399520915,
+              "n2": 1.5253195028678679,
+              "wavelengthNm": 450
+            },
+            {
+              "pointIndex": 4,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_3_crown",
+              "n1": 1.5253195028678679,
+              "n2": 1,
+              "wavelengthNm": 450
+            },
+            {
+              "pointIndex": 5,
+              "kind": "termination",
+              "surfaceNode": "PrismSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "prism-500",
+          "kind": "refracted",
+          "color": "#0ac9b2",
+          "wavelengthNm": 500,
+          "points": [
+            [
+              0,
+              0,
+              -0.023
+            ],
+            [
+              0.0,
+              0.0,
+              -0.011799999512732029
+            ],
+            [
+              -0.00044156829244457185,
+              0.0,
+              -0.0044294800609350204
+            ],
+            [
+              -0.00042875774670392275,
+              0.0,
+              0.004440228920429945
+            ],
+            [
+              3.5921199014410377e-05,
+              0.0,
+              0.011793699115514755
+            ],
+            [
+              0.00018700458167586476,
+              0.0,
+              0.041913531720638275
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "PrismSpectroscope_eyepiece_glass",
+            "point": [
+              0.00018700458167586476,
+              0.0,
+              0.041913531720638275
+            ],
+            "distanceMeters": 0.030120009556412697
+          },
+          "events": [
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                0.0,
+                0.0,
+                -0.011799999512732029
+              ],
+              "normal": [
+                0.17277441918849945,
+                -0.0,
+                -0.9849613904953003
+              ],
+              "nIncident": 1,
+              "nTransmitted": 1.5214144757734767,
+              "incident": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "outgoing": [
+                -0.0598028339445591,
+                0.0,
+                0.9982101917266846
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                -0.00044156829244457185,
+                0.0,
+                -0.0044294800609350204
+              ],
+              "normal": [
+                0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.5214144757734767,
+              "nTransmitted": 1.6299302513160792,
+              "incident": [
+                -0.0598028339445591,
+                0.0,
+                0.9982101917266846
+              ],
+              "outgoing": [
+                0.0014443026157096028,
+                0.0,
+                0.9999990463256836
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_2_flint",
+              "point": [
+                -0.00042875774670392275,
+                0.0,
+                0.004440228920429945
+              ],
+              "normal": [
+                -0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.6299302513160792,
+              "nTransmitted": 1.5214144757734767,
+              "incident": [
+                0.0014443026157096028,
+                0.0,
+                0.9999990463256836
+              ],
+              "outgoing": [
+                0.06306599825620651,
+                0.0,
+                0.9980093836784363
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_3_crown",
+              "point": [
+                3.5921199014410377e-05,
+                0.0,
+                0.011793699115514755
+              ],
+              "normal": [
+                0.17277441918849945,
+                0.0,
+                0.9849613904953003
+              ],
+              "nIncident": 1.5214144757734767,
+              "nTransmitted": 1,
+              "incident": [
+                0.06306599825620651,
+                0.0,
+                0.9980093836784363
+              ],
+              "outgoing": [
+                0.005016013514250517,
+                0.0,
+                0.9999874234199524
+              ]
+            }
+          ],
+          "interactions": [
+            {
+              "pointIndex": 1,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1,
+              "n2": 1.5214144757734767,
+              "wavelengthNm": 500
+            },
+            {
+              "pointIndex": 2,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1.5214144757734767,
+              "n2": 1.6299302513160792,
+              "wavelengthNm": 500
+            },
+            {
+              "pointIndex": 3,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_2_flint",
+              "n1": 1.6299302513160792,
+              "n2": 1.5214144757734767,
+              "wavelengthNm": 500
+            },
+            {
+              "pointIndex": 4,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_3_crown",
+              "n1": 1.5214144757734767,
+              "n2": 1,
+              "wavelengthNm": 500
+            },
+            {
+              "pointIndex": 5,
+              "kind": "termination",
+              "surfaceNode": "PrismSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "prism-550",
+          "kind": "refracted",
+          "color": "#7fe12c",
+          "wavelengthNm": 550,
+          "points": [
+            [
+              0,
+              0,
+              -0.023
+            ],
+            [
+              0.0,
+              0.0,
+              -0.011799999512732029
+            ],
+            [
+              -0.00043987316894344985,
+              0.0,
+              -0.004430902656167746
+            ],
+            [
+              -0.00043987302342429757,
+              0.0,
+              0.004430902190506458
+            ],
+            [
+              3.7834979593753815e-10,
+              0.0,
+              0.011800000444054604
+            ],
+            [
+              1.2753998968051405e-09,
+              0.0,
+              0.04190000519156456
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "PrismSpectroscope_eyepiece_glass",
+            "point": [
+              1.2753998968051405e-09,
+              0.0,
+              0.04190000519156456
+            ],
+            "distanceMeters": 0.03009980358183384
+          },
+          "events": [
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                0.0,
+                0.0,
+                -0.011799999512732029
+              ],
+              "normal": [
+                0.17277441918849945,
+                -0.0,
+                -0.9849613904953003
+              ],
+              "nIncident": 1,
+              "nTransmitted": 1.5185223876207927,
+              "incident": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "outgoing": [
+                -0.059585534036159515,
+                0.0,
+                0.9982231855392456
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                -0.00043987316894344985,
+                0.0,
+                -0.004430902656167746
+              ],
+              "normal": [
+                0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.5185223876207927,
+              "nTransmitted": 1.623656506858122,
+              "incident": [
+                -0.059585534036159515,
+                0.0,
+                0.9982231855392456
+              ],
+              "outgoing": [
+                1.4901161193847656e-08,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_2_flint",
+              "point": [
+                -0.00043987302342429757,
+                0.0,
+                0.004430902190506458
+              ],
+              "normal": [
+                -0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.623656506858122,
+              "nTransmitted": 1.5185223876207927,
+              "incident": [
+                1.4901161193847656e-08,
+                0.0,
+                1.0
+              ],
+              "outgoing": [
+                0.059585560113191605,
+                0.0,
+                0.9982231855392456
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_3_crown",
+              "point": [
+                3.7834979593753815e-10,
+                0.0,
+                0.011800000444054604
+              ],
+              "normal": [
+                0.17277441918849945,
+                0.0,
+                0.9849613904953003
+              ],
+              "nIncident": 1.5185223876207927,
+              "nTransmitted": 1,
+              "incident": [
+                0.059585560113191605,
+                0.0,
+                0.9982231855392456
+              ],
+              "outgoing": [
+                2.980232594040899e-08,
+                0.0,
+                1.0
+              ]
+            }
+          ],
+          "interactions": [
+            {
+              "pointIndex": 1,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1,
+              "n2": 1.5185223876207927,
+              "wavelengthNm": 550
+            },
+            {
+              "pointIndex": 2,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1.5185223876207927,
+              "n2": 1.623656506858122,
+              "wavelengthNm": 550
+            },
+            {
+              "pointIndex": 3,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_2_flint",
+              "n1": 1.623656506858122,
+              "n2": 1.5185223876207927,
+              "wavelengthNm": 550
+            },
+            {
+              "pointIndex": 4,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_3_crown",
+              "n1": 1.5185223876207927,
+              "n2": 1,
+              "wavelengthNm": 550
+            },
+            {
+              "pointIndex": 5,
+              "kind": "termination",
+              "surfaceNode": "PrismSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "prism-600",
+          "kind": "refracted",
+          "color": "#ffb227",
+          "wavelengthNm": 600,
+          "points": [
+            [
+              0,
+              0,
+              -0.023
+            ],
+            [
+              0.0,
+              0.0,
+              -0.011799999512732029
+            ],
+            [
+              -0.0004385635256767273,
+              0.0,
+              -0.004432001616805792
+            ],
+            [
+              -0.0004476123722270131,
+              0.0,
+              0.0044244080781936646
+            ],
+            [
+              -2.5350513169541955e-05,
+              0.0,
+              0.011804446578025818
+            ],
+            [
+              -0.00013118400238454342,
+              0.0,
+              0.04190949350595474
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "PrismSpectroscope_eyepiece_glass",
+            "point": [
+              -0.00013118400238454342,
+              0.0,
+              0.04190949350595474
+            ],
+            "distanceMeters": 0.03010503202676773
+          },
+          "events": [
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                0.0,
+                0.0,
+                -0.011799999512732029
+              ],
+              "normal": [
+                0.17277441918849945,
+                -0.0,
+                -0.9849613904953003
+              ],
+              "nIncident": 1,
+              "nTransmitted": 1.5162948261290008,
+              "incident": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "outgoing": [
+                -0.05941758677363396,
+                0.0,
+                0.9982331991195679
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                -0.0004385635256767273,
+                0.0,
+                -0.004432001616805792
+              ],
+              "normal": [
+                0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.5162948261290008,
+              "nTransmitted": 1.619015839760843,
+              "incident": [
+                -0.05941758677363396,
+                0.0,
+                0.9982331991195679
+              ],
+              "outgoing": [
+                -0.0010217279195785522,
+                0.0,
+                0.999999463558197
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_2_flint",
+              "point": [
+                -0.0004476123722270131,
+                0.0,
+                0.0044244080781936646
+              ],
+              "normal": [
+                -0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.619015839760843,
+              "nTransmitted": 1.5162948261290008,
+              "incident": [
+                -0.0010217279195785522,
+                0.0,
+                0.999999463558197
+              ],
+              "outgoing": [
+                0.0571233332157135,
+                0.0,
+                0.998367190361023
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_3_crown",
+              "point": [
+                -2.5350513169541955e-05,
+                0.0,
+                0.011804446578025818
+              ],
+              "normal": [
+                0.17277441918849945,
+                0.0,
+                0.9849613904953003
+              ],
+              "nIncident": 1.5162948261290008,
+              "nTransmitted": 1,
+              "incident": [
+                0.0571233332157135,
+                0.0,
+                0.998367190361023
+              ],
+              "outgoing": [
+                -0.003515451680868864,
+                0.0,
+                0.9999938607215881
+              ]
+            }
+          ],
+          "interactions": [
+            {
+              "pointIndex": 1,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1,
+              "n2": 1.5162948261290008,
+              "wavelengthNm": 600
+            },
+            {
+              "pointIndex": 2,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1.5162948261290008,
+              "n2": 1.619015839760843,
+              "wavelengthNm": 600
+            },
+            {
+              "pointIndex": 3,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_2_flint",
+              "n1": 1.619015839760843,
+              "n2": 1.5162948261290008,
+              "wavelengthNm": 600
+            },
+            {
+              "pointIndex": 4,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_3_crown",
+              "n1": 1.5162948261290008,
+              "n2": 1,
+              "wavelengthNm": 600
+            },
+            {
+              "pointIndex": 5,
+              "kind": "termination",
+              "surfaceNode": "PrismSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "prism-650",
+          "kind": "refracted",
+          "color": "#fb6038",
+          "wavelengthNm": 650,
+          "points": [
+            [
+              0,
+              0,
+              -0.023
+            ],
+            [
+              0.0,
+              0.0,
+              -0.011799999512732029
+            ],
+            [
+              -0.0004375177959445864,
+              0.0,
+              -0.00443287892267108
+            ],
+            [
+              -0.000453214772278443,
+              0.0,
+              0.004419706761837006
+            ],
+            [
+              -4.396194708533585e-05,
+              0.0,
+              0.01180770993232727
+            ],
+            [
+              -0.00022710266057401896,
+              0.0,
+              0.04191643372178078
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "PrismSpectroscope_eyepiece_glass",
+            "point": [
+              -0.00022710266057401896,
+              0.0,
+              0.04191643372178078
+            ],
+            "distanceMeters": 0.03010907769203186
+          },
+          "events": [
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                0.0,
+                0.0,
+                -0.011799999512732029
+              ],
+              "normal": [
+                0.17277441918849945,
+                -0.0,
+                -0.9849613904953003
+              ],
+              "nIncident": 1,
+              "nTransmitted": 1.5145203085647796,
+              "incident": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "outgoing": [
+                -0.05928344279527664,
+                0.0,
+                0.9982411861419678
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                -0.0004375177959445864,
+                0.0,
+                -0.00443287892267108
+              ],
+              "normal": [
+                0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.5145203085647796,
+              "nTransmitted": 1.6154481538636374,
+              "incident": [
+                -0.05928344279527664,
+                0.0,
+                0.9982411861419678
+              ],
+              "outgoing": [
+                -0.001773148775100708,
+                0.0,
+                0.9999984502792358
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_2_flint",
+              "point": [
+                -0.000453214772278443,
+                0.0,
+                0.004419706761837006
+              ],
+              "normal": [
+                -0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.6154481538636374,
+              "nTransmitted": 1.5145203085647796,
+              "incident": [
+                -0.001773148775100708,
+                0.0,
+                0.9999984502792358
+              ],
+              "outgoing": [
+                0.055309440940618515,
+                0.0,
+                0.9984692931175232
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_3_crown",
+              "point": [
+                -4.396194708533585e-05,
+                0.0,
+                0.01180770993232727
+              ],
+              "normal": [
+                0.17277441918849945,
+                0.0,
+                0.9849613904953003
+              ],
+              "nIncident": 1.5145203085647796,
+              "nTransmitted": 1,
+              "incident": [
+                0.055309440940618515,
+                0.0,
+                0.9984692931175232
+              ],
+              "outgoing": [
+                -0.006082533858716488,
+                0.0,
+                0.9999814629554749
+              ]
+            }
+          ],
+          "interactions": [
+            {
+              "pointIndex": 1,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1,
+              "n2": 1.5145203085647796,
+              "wavelengthNm": 650
+            },
+            {
+              "pointIndex": 2,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1.5145203085647796,
+              "n2": 1.6154481538636374,
+              "wavelengthNm": 650
+            },
+            {
+              "pointIndex": 3,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_2_flint",
+              "n1": 1.6154481538636374,
+              "n2": 1.5145203085647796,
+              "wavelengthNm": 650
+            },
+            {
+              "pointIndex": 4,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_3_crown",
+              "n1": 1.5145203085647796,
+              "n2": 1,
+              "wavelengthNm": 650
+            },
+            {
+              "pointIndex": 5,
+              "kind": "termination",
+              "surfaceNode": "PrismSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "prism-700",
+          "kind": "refracted",
+          "color": "#e83849",
+          "wavelengthNm": 700,
+          "points": [
+            [
+              0,
+              0,
+              -0.023
+            ],
+            [
+              0.0,
+              0.0,
+              -0.011799999512732029
+            ],
+            [
+              -0.0004366579232737422,
+              0.0,
+              -0.004433599766343832
+            ],
+            [
+              -0.00045738383778370917,
+              0.0,
+              0.004416210576891899
+            ],
+            [
+              -5.803175736218691e-05,
+              0.0,
+              0.01181017979979515
+            ],
+            [
+              -0.0002993732923641801,
+              0.0,
+              0.04192166030406952
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "PrismSpectroscope_eyepiece_glass",
+            "point": [
+              -0.0002993732923641801,
+              0.0,
+              0.04192166030406952
+            ],
+            "distanceMeters": 0.030112244188785553
+          },
+          "events": [
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                0.0,
+                0.0,
+                -0.011799999512732029
+              ],
+              "normal": [
+                0.17277441918849945,
+                -0.0,
+                -0.9849613904953003
+              ],
+              "nIncident": 1,
+              "nTransmitted": 1.513063997196311,
+              "incident": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "outgoing": [
+                -0.059173110872507095,
+                0.0,
+                0.9982477426528931
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                -0.0004366579232737422,
+                0.0,
+                -0.004433599766343832
+              ],
+              "normal": [
+                0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.513063997196311,
+              "nTransmitted": 1.6126171785989925,
+              "incident": [
+                -0.059173110872507095,
+                0.0,
+                0.9982477426528931
+              ],
+              "outgoing": [
+                -0.002341955667361617,
+                0.0,
+                0.9999971985816956
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_2_flint",
+              "point": [
+                -0.00045738383778370917,
+                0.0,
+                0.004416210576891899
+              ],
+              "normal": [
+                -0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.6126171785989925,
+              "nTransmitted": 1.513063997196311,
+              "incident": [
+                -0.002341955667361617,
+                0.0,
+                0.9999971985816956
+              ],
+              "outgoing": [
+                0.05393191799521446,
+                0.0,
+                0.9985446929931641
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_3_crown",
+              "point": [
+                -5.803175736218691e-05,
+                0.0,
+                0.01181017979979515
+              ],
+              "normal": [
+                0.17277441918849945,
+                0.0,
+                0.9849613904953003
+              ],
+              "nIncident": 1.513063997196311,
+              "nTransmitted": 1,
+              "incident": [
+                0.05393191799521446,
+                0.0,
+                0.9985446929931641
+              ],
+              "outgoing": [
+                -0.008014677092432976,
+                0.0,
+                0.9999679327011108
+              ]
+            }
+          ],
+          "interactions": [
+            {
+              "pointIndex": 1,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1,
+              "n2": 1.513063997196311,
+              "wavelengthNm": 700
+            },
+            {
+              "pointIndex": 2,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1.513063997196311,
+              "n2": 1.6126171785989925,
+              "wavelengthNm": 700
+            },
+            {
+              "pointIndex": 3,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_2_flint",
+              "n1": 1.6126171785989925,
+              "n2": 1.513063997196311,
+              "wavelengthNm": 700
+            },
+            {
+              "pointIndex": 4,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_3_crown",
+              "n1": 1.513063997196311,
+              "n2": 1,
+              "wavelengthNm": 700
+            },
+            {
+              "pointIndex": 5,
+              "kind": "termination",
+              "surfaceNode": "PrismSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        }
+      ],
+      "readout": {
+        "summary": "550 nm 直视；蓝紫端角分散较大。非厂家实测处方。",
+        "exitAnglesDegrees": {
+          "400": 1.4382355876515909,
+          "450": 0.7218488350284077,
+          "500": 0.2873976084665698,
+          "550": 1.707547496058687e-06,
+          "600": -0.20142095122596557,
+          "650": -0.3485056811643691,
+          "700": -0.45921206459710234
+        }
+      }
+    },
+    {
+      "id": "wavelength-400",
+      "label": "400 nm 单色光",
+      "description": "从准直后的入射光开始，以导出网格面法线计算 Snell 折射；末端为目镜前表面。",
+      "parameters": {
+        "wavelengthNm": 400,
+        "collimatedInput": true
+      },
+      "paths": [
+        {
+          "id": "prism-400",
+          "kind": "refracted",
+          "color": "#773bdf",
+          "wavelengthNm": 400,
+          "points": [
+            [
+              0,
+              0,
+              -0.023
+            ],
+            [
+              0.0,
+              0.0,
+              -0.011799999512732029
+            ],
+            [
+              -0.0004470578860491514,
+              0.0,
+              -0.00442487420514226
+            ],
+            [
+              -0.0003839669516310096,
+              0.0,
+              0.0044778138399124146
+            ],
+            [
+              0.00017722015036270022,
+              0.0,
+              0.011768913827836514
+            ],
+            [
+              0.0009354271460324526,
+              0.0,
+              0.04196767508983612
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "PrismSpectroscope_eyepiece_glass",
+            "point": [
+              0.0009354271460324526,
+              0.0,
+              0.04196767508983612
+            ],
+            "distanceMeters": 0.030208079144358635
+          },
+          "events": [
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                0.0,
+                0.0,
+                -0.011799999512732029
+              ],
+              "normal": [
+                0.17277441918849945,
+                -0.0,
+                -0.9849613904953003
+              ],
+              "nIncident": 1,
+              "nTransmitted": 1.5308485382492993,
+              "incident": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "outgoing": [
+                -0.060505930334329605,
+                0.0,
+                0.998167872428894
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                -0.0004470578860491514,
+                0.0,
+                -0.00442487420514226
+              ],
+              "normal": [
+                0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.5308485382492993,
+              "nTransmitted": 1.652427390711733,
+              "incident": [
+                -0.060505930334329605,
+                0.0,
+                0.998167872428894
+              ],
+              "outgoing": [
+                0.007086551748216152,
+                0.0,
+                0.9999748468399048
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_2_flint",
+              "point": [
+                -0.0003839669516310096,
+                0.0,
+                0.0044778138399124146
+              ],
+              "normal": [
+                -0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.652427390711733,
+              "nTransmitted": 1.5308485382492993,
+              "incident": [
+                0.007086551748216152,
+                0.0,
+                0.9999748468399048
+              ],
+              "outgoing": [
+                0.07674180716276169,
+                0.0,
+                0.9970510601997375
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_3_crown",
+              "point": [
+                0.00017722015036270022,
+                0.0,
+                0.011768913827836514
+              ],
+              "normal": [
+                0.17277441918849945,
+                0.0,
+                0.9849613904953003
+              ],
+              "nIncident": 1.5308485382492993,
+              "nTransmitted": 1,
+              "incident": [
+                0.07674180716276169,
+                0.0,
+                0.9970510601997375
+              ],
+              "outgoing": [
+                0.025099311023950577,
+                0.0,
+                0.9996849894523621
+              ]
+            }
+          ],
+          "interactions": [
+            {
+              "pointIndex": 1,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1,
+              "n2": 1.5308485382492993,
+              "wavelengthNm": 400
+            },
+            {
+              "pointIndex": 2,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1.5308485382492993,
+              "n2": 1.652427390711733,
+              "wavelengthNm": 400
+            },
+            {
+              "pointIndex": 3,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_2_flint",
+              "n1": 1.652427390711733,
+              "n2": 1.5308485382492993,
+              "wavelengthNm": 400
+            },
+            {
+              "pointIndex": 4,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_3_crown",
+              "n1": 1.5308485382492993,
+              "n2": 1,
+              "wavelengthNm": 400
+            },
+            {
+              "pointIndex": 5,
+              "kind": "termination",
+              "surfaceNode": "PrismSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        }
+      ],
+      "readout": {
+        "summary": "400 nm 出射角 1.4382°",
+        "exitAngleDegrees": 1.4382355876515909
+      }
+    },
+    {
+      "id": "wavelength-550",
+      "label": "550 nm 单色光",
+      "description": "从准直后的入射光开始，以导出网格面法线计算 Snell 折射；末端为目镜前表面。",
+      "parameters": {
+        "wavelengthNm": 550,
+        "collimatedInput": true
+      },
+      "paths": [
+        {
+          "id": "prism-550",
+          "kind": "refracted",
+          "color": "#7fe12c",
+          "wavelengthNm": 550,
+          "points": [
+            [
+              0,
+              0,
+              -0.023
+            ],
+            [
+              0.0,
+              0.0,
+              -0.011799999512732029
+            ],
+            [
+              -0.00043987316894344985,
+              0.0,
+              -0.004430902656167746
+            ],
+            [
+              -0.00043987302342429757,
+              0.0,
+              0.004430902190506458
+            ],
+            [
+              3.7834979593753815e-10,
+              0.0,
+              0.011800000444054604
+            ],
+            [
+              1.2753998968051405e-09,
+              0.0,
+              0.04190000519156456
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "PrismSpectroscope_eyepiece_glass",
+            "point": [
+              1.2753998968051405e-09,
+              0.0,
+              0.04190000519156456
+            ],
+            "distanceMeters": 0.03009980358183384
+          },
+          "events": [
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                0.0,
+                0.0,
+                -0.011799999512732029
+              ],
+              "normal": [
+                0.17277441918849945,
+                -0.0,
+                -0.9849613904953003
+              ],
+              "nIncident": 1,
+              "nTransmitted": 1.5185223876207927,
+              "incident": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "outgoing": [
+                -0.059585534036159515,
+                0.0,
+                0.9982231855392456
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                -0.00043987316894344985,
+                0.0,
+                -0.004430902656167746
+              ],
+              "normal": [
+                0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.5185223876207927,
+              "nTransmitted": 1.623656506858122,
+              "incident": [
+                -0.059585534036159515,
+                0.0,
+                0.9982231855392456
+              ],
+              "outgoing": [
+                1.4901161193847656e-08,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_2_flint",
+              "point": [
+                -0.00043987302342429757,
+                0.0,
+                0.004430902190506458
+              ],
+              "normal": [
+                -0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.623656506858122,
+              "nTransmitted": 1.5185223876207927,
+              "incident": [
+                1.4901161193847656e-08,
+                0.0,
+                1.0
+              ],
+              "outgoing": [
+                0.059585560113191605,
+                0.0,
+                0.9982231855392456
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_3_crown",
+              "point": [
+                3.7834979593753815e-10,
+                0.0,
+                0.011800000444054604
+              ],
+              "normal": [
+                0.17277441918849945,
+                0.0,
+                0.9849613904953003
+              ],
+              "nIncident": 1.5185223876207927,
+              "nTransmitted": 1,
+              "incident": [
+                0.059585560113191605,
+                0.0,
+                0.9982231855392456
+              ],
+              "outgoing": [
+                2.980232594040899e-08,
+                0.0,
+                1.0
+              ]
+            }
+          ],
+          "interactions": [
+            {
+              "pointIndex": 1,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1,
+              "n2": 1.5185223876207927,
+              "wavelengthNm": 550
+            },
+            {
+              "pointIndex": 2,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1.5185223876207927,
+              "n2": 1.623656506858122,
+              "wavelengthNm": 550
+            },
+            {
+              "pointIndex": 3,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_2_flint",
+              "n1": 1.623656506858122,
+              "n2": 1.5185223876207927,
+              "wavelengthNm": 550
+            },
+            {
+              "pointIndex": 4,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_3_crown",
+              "n1": 1.5185223876207927,
+              "n2": 1,
+              "wavelengthNm": 550
+            },
+            {
+              "pointIndex": 5,
+              "kind": "termination",
+              "surfaceNode": "PrismSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        }
+      ],
+      "readout": {
+        "summary": "550 nm 出射角 0.0000°",
+        "exitAngleDegrees": 1.707547496058687e-06
+      }
+    },
+    {
+      "id": "wavelength-700",
+      "label": "700 nm 单色光",
+      "description": "从准直后的入射光开始，以导出网格面法线计算 Snell 折射；末端为目镜前表面。",
+      "parameters": {
+        "wavelengthNm": 700,
+        "collimatedInput": true
+      },
+      "paths": [
+        {
+          "id": "prism-700",
+          "kind": "refracted",
+          "color": "#e83849",
+          "wavelengthNm": 700,
+          "points": [
+            [
+              0,
+              0,
+              -0.023
+            ],
+            [
+              0.0,
+              0.0,
+              -0.011799999512732029
+            ],
+            [
+              -0.0004366579232737422,
+              0.0,
+              -0.004433599766343832
+            ],
+            [
+              -0.00045738383778370917,
+              0.0,
+              0.004416210576891899
+            ],
+            [
+              -5.803175736218691e-05,
+              0.0,
+              0.01181017979979515
+            ],
+            [
+              -0.0002993732923641801,
+              0.0,
+              0.04192166030406952
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "PrismSpectroscope_eyepiece_glass",
+            "point": [
+              -0.0002993732923641801,
+              0.0,
+              0.04192166030406952
+            ],
+            "distanceMeters": 0.030112244188785553
+          },
+          "events": [
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                0.0,
+                0.0,
+                -0.011799999512732029
+              ],
+              "normal": [
+                0.17277441918849945,
+                -0.0,
+                -0.9849613904953003
+              ],
+              "nIncident": 1,
+              "nTransmitted": 1.513063997196311,
+              "incident": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "outgoing": [
+                -0.059173110872507095,
+                0.0,
+                0.9982477426528931
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_1_crown",
+              "point": [
+                -0.0004366579232737422,
+                0.0,
+                -0.004433599766343832
+              ],
+              "normal": [
+                0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.513063997196311,
+              "nTransmitted": 1.6126171785989925,
+              "incident": [
+                -0.059173110872507095,
+                0.0,
+                0.9982477426528931
+              ],
+              "outgoing": [
+                -0.002341955667361617,
+                0.0,
+                0.9999971985816956
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_2_flint",
+              "point": [
+                -0.00045738383778370917,
+                0.0,
+                0.004416210576891899
+              ],
+              "normal": [
+                -0.6427876353263855,
+                0.0,
+                0.7660444378852844
+              ],
+              "nIncident": 1.6126171785989925,
+              "nTransmitted": 1.513063997196311,
+              "incident": [
+                -0.002341955667361617,
+                0.0,
+                0.9999971985816956
+              ],
+              "outgoing": [
+                0.05393191799521446,
+                0.0,
+                0.9985446929931641
+              ]
+            },
+            {
+              "node": "PrismSpectroscope_amici_3_crown",
+              "point": [
+                -5.803175736218691e-05,
+                0.0,
+                0.01181017979979515
+              ],
+              "normal": [
+                0.17277441918849945,
+                0.0,
+                0.9849613904953003
+              ],
+              "nIncident": 1.513063997196311,
+              "nTransmitted": 1,
+              "incident": [
+                0.05393191799521446,
+                0.0,
+                0.9985446929931641
+              ],
+              "outgoing": [
+                -0.008014677092432976,
+                0.0,
+                0.9999679327011108
+              ]
+            }
+          ],
+          "interactions": [
+            {
+              "pointIndex": 1,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1,
+              "n2": 1.513063997196311,
+              "wavelengthNm": 700
+            },
+            {
+              "pointIndex": 2,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_1_crown",
+              "n1": 1.513063997196311,
+              "n2": 1.6126171785989925,
+              "wavelengthNm": 700
+            },
+            {
+              "pointIndex": 3,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_2_flint",
+              "n1": 1.6126171785989925,
+              "n2": 1.513063997196311,
+              "wavelengthNm": 700
+            },
+            {
+              "pointIndex": 4,
+              "kind": "refraction",
+              "surfaceNode": "PrismSpectroscope_amici_3_crown",
+              "n1": 1.513063997196311,
+              "n2": 1,
+              "wavelengthNm": 700
+            },
+            {
+              "pointIndex": 5,
+              "kind": "termination",
+              "surfaceNode": "PrismSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        }
+      ],
+      "readout": {
+        "summary": "700 nm 出射角 -0.4592°",
+        "exitAngleDegrees": -0.45921206459710234
+      }
+    }
+  ]
+}

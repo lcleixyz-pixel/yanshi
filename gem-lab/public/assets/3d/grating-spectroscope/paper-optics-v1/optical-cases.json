@@ -1,0 +1,4780 @@
+{
+  "schemaVersion": 1,
+  "instrumentId": "grating-spectroscope",
+  "defaultCaseId": "density-150",
+  "cases": [
+    {
+      "id": "density-150",
+      "label": "150 线/mm · 教学白光",
+      "description": "正入射透射光栅：零级不分光，±1 级向两侧分开；红光偏转大于紫光。线密度是教学参数，不是这台实物参数。刻线已放大，不能用图中条纹数倒推线密度；遇到真实网格遮挡即截断，未穿过目镜成像。",
+      "parameters": {
+        "lineDensityPerMm": 150,
+        "orders": [
+          -1,
+          0,
+          1
+        ],
+        "wavelengthsNm": [
+          400,
+          450,
+          500,
+          550,
+          600,
+          650,
+          700
+        ],
+        "normalIncidence": true,
+        "groovesDirection": [
+          0,
+          1,
+          0
+        ]
+      },
+      "paths": [
+        {
+          "id": "g150-m-1-w400",
+          "kind": "diffracted",
+          "color": "#773bdf",
+          "wavelengthNm": 400,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.0011292749550193548,
+              0.0,
+              0.022037342190742493
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              -0.0011292749550193548,
+              0.0,
+              0.022037342190742493
+            ],
+            "distanceMeters": 0.018821049481630325
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 400,
+              "order": -1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m-1-w450",
+          "kind": "diffracted",
+          "color": "#2854ff",
+          "wavelengthNm": 450,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.001272914931178093,
+              0.0,
+              0.022064989432692528
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              -0.001272914931178093,
+              0.0,
+              0.022064989432692528
+            ],
+            "distanceMeters": 0.018857797607779503
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 450,
+              "order": -1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m-1-w500",
+          "kind": "diffracted",
+          "color": "#0ac9b2",
+          "wavelengthNm": 500,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.0014171982184052467,
+              0.0,
+              0.022092755883932114
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              -0.0014171982184052467,
+              0.0,
+              0.022092755883932114
+            ],
+            "distanceMeters": 0.018895775079727173
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 500,
+              "order": -1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m-1-w550",
+          "kind": "diffracted",
+          "color": "#7fe12c",
+          "wavelengthNm": 550,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.0015621543861925602,
+              0.0,
+              0.022120654582977295
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              -0.0015621543861925602,
+              0.0,
+              0.022120654582977295
+            ],
+            "distanceMeters": 0.018935004249215126
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 550,
+              "order": -1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m-1-w600",
+          "kind": "diffracted",
+          "color": "#ffb227",
+          "wavelengthNm": 600,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.0017078127712011337,
+              0.0,
+              0.02214868739247322
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              -0.0017078127712011337,
+              0.0,
+              0.02214868739247322
+            ],
+            "distanceMeters": 0.01897549442946911
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 600,
+              "order": -1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m-1-w650",
+          "kind": "diffracted",
+          "color": "#fb6038",
+          "wavelengthNm": 650,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.001857093651778996,
+              0.0,
+              0.022206364199519157
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              -0.001857093651778996,
+              0.0,
+              0.022206364199519157
+            ],
+            "distanceMeters": 0.019046911969780922
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 650,
+              "order": -1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m-1-w700",
+          "kind": "diffracted",
+          "color": "#e83849",
+          "wavelengthNm": 700,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.0020077757071703672,
+              0.0,
+              0.022265974432229996
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              -0.0020077757071703672,
+              0.0,
+              0.022265974432229996
+            ],
+            "distanceMeters": 0.019121475517749786
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 700,
+              "order": -1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m0-w550",
+          "kind": "zero-order",
+          "color": "#d8e1e8",
+          "wavelengthNm": 550,
+          "order": 0,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0,
+              0.0,
+              0.0218999981880188
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.0,
+              0.0,
+              0.0218999981880188
+            ],
+            "distanceMeters": 0.01864979788661003
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 550,
+              "order": 0,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m1-w400",
+          "kind": "diffracted",
+          "color": "#773bdf",
+          "wavelengthNm": 400,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0011292749550193548,
+              0.0,
+              0.022037342190742493
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.0011292749550193548,
+              0.0,
+              0.022037342190742493
+            ],
+            "distanceMeters": 0.018821049481630325
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 400,
+              "order": 1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m1-w450",
+          "kind": "diffracted",
+          "color": "#2854ff",
+          "wavelengthNm": 450,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.001272914931178093,
+              0.0,
+              0.022064989432692528
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.001272914931178093,
+              0.0,
+              0.022064989432692528
+            ],
+            "distanceMeters": 0.018857797607779503
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 450,
+              "order": 1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m1-w500",
+          "kind": "diffracted",
+          "color": "#0ac9b2",
+          "wavelengthNm": 500,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0014171982184052467,
+              0.0,
+              0.022092755883932114
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.0014171982184052467,
+              0.0,
+              0.022092755883932114
+            ],
+            "distanceMeters": 0.018895775079727173
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 500,
+              "order": 1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m1-w550",
+          "kind": "diffracted",
+          "color": "#7fe12c",
+          "wavelengthNm": 550,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0015621543861925602,
+              0.0,
+              0.022120654582977295
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.0015621543861925602,
+              0.0,
+              0.022120654582977295
+            ],
+            "distanceMeters": 0.018935004249215126
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 550,
+              "order": 1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m1-w600",
+          "kind": "diffracted",
+          "color": "#ffb227",
+          "wavelengthNm": 600,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0017078127712011337,
+              0.0,
+              0.02214868739247322
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.0017078127712011337,
+              0.0,
+              0.02214868739247322
+            ],
+            "distanceMeters": 0.01897549442946911
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 600,
+              "order": 1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m1-w650",
+          "kind": "diffracted",
+          "color": "#fb6038",
+          "wavelengthNm": 650,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.001857093651778996,
+              0.0,
+              0.022206364199519157
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.001857093651778996,
+              0.0,
+              0.022206364199519157
+            ],
+            "distanceMeters": 0.019046911969780922
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 650,
+              "order": 1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m1-w700",
+          "kind": "diffracted",
+          "color": "#e83849",
+          "wavelengthNm": 700,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0020077757071703672,
+              0.0,
+              0.022265974432229996
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.0020077757071703672,
+              0.0,
+              0.022265974432229996
+            ],
+            "distanceMeters": 0.019121475517749786
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 700,
+              "order": 1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        }
+      ],
+      "readout": {
+        "summary": "15/15 条代表光线到达目镜前；其余按实际遮挡截断。",
+        "reachesEyepiece": 15,
+        "total": 15,
+        "rays": [
+          {
+            "wavelengthNm": 400,
+            "order": -1,
+            "lineDensityPerMm": 150,
+            "angleDegrees": -3.439812767515196,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                -0.0011292749550193548,
+                0.0,
+                0.022037342190742493
+              ],
+              "distanceMeters": 0.018821049481630325
+            }
+          },
+          {
+            "wavelengthNm": 450,
+            "order": -1,
+            "lineDensityPerMm": 150,
+            "angleDegrees": -3.8704080113109764,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                -0.001272914931178093,
+                0.0,
+                0.022064989432692528
+              ],
+              "distanceMeters": 0.018857797607779503
+            }
+          },
+          {
+            "wavelengthNm": 500,
+            "order": -1,
+            "lineDensityPerMm": 150,
+            "angleDegrees": -4.301222304670365,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                -0.0014171982184052467,
+                0.0,
+                0.022092755883932114
+              ],
+              "distanceMeters": 0.018895775079727173
+            }
+          },
+          {
+            "wavelengthNm": 550,
+            "order": -1,
+            "lineDensityPerMm": 150,
+            "angleDegrees": -4.732280378958207,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                -0.0015621543861925602,
+                0.0,
+                0.022120654582977295
+              ],
+              "distanceMeters": 0.018935004249215126
+            }
+          },
+          {
+            "wavelengthNm": 600,
+            "order": -1,
+            "lineDensityPerMm": 150,
+            "angleDegrees": -5.163607090846378,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                -0.0017078127712011337,
+                0.0,
+                0.02214868739247322
+              ],
+              "distanceMeters": 0.01897549442946911
+            }
+          },
+          {
+            "wavelengthNm": 650,
+            "order": -1,
+            "lineDensityPerMm": 150,
+            "angleDegrees": -5.595227435527864,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                -0.001857093651778996,
+                0.0,
+                0.022206364199519157
+              ],
+              "distanceMeters": 0.019046911969780922
+            }
+          },
+          {
+            "wavelengthNm": 700,
+            "order": -1,
+            "lineDensityPerMm": 150,
+            "angleDegrees": -6.0271665601311,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                -0.0020077757071703672,
+                0.0,
+                0.022265974432229996
+              ],
+              "distanceMeters": 0.019121475517749786
+            }
+          },
+          {
+            "wavelengthNm": 550,
+            "order": 0,
+            "lineDensityPerMm": 150,
+            "angleDegrees": 0.0,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                0.0,
+                0.0,
+                0.0218999981880188
+              ],
+              "distanceMeters": 0.01864979788661003
+            }
+          },
+          {
+            "wavelengthNm": 400,
+            "order": 1,
+            "lineDensityPerMm": 150,
+            "angleDegrees": 3.439812767515196,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                0.0011292749550193548,
+                0.0,
+                0.022037342190742493
+              ],
+              "distanceMeters": 0.018821049481630325
+            }
+          },
+          {
+            "wavelengthNm": 450,
+            "order": 1,
+            "lineDensityPerMm": 150,
+            "angleDegrees": 3.8704080113109764,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                0.001272914931178093,
+                0.0,
+                0.022064989432692528
+              ],
+              "distanceMeters": 0.018857797607779503
+            }
+          },
+          {
+            "wavelengthNm": 500,
+            "order": 1,
+            "lineDensityPerMm": 150,
+            "angleDegrees": 4.301222304670365,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                0.0014171982184052467,
+                0.0,
+                0.022092755883932114
+              ],
+              "distanceMeters": 0.018895775079727173
+            }
+          },
+          {
+            "wavelengthNm": 550,
+            "order": 1,
+            "lineDensityPerMm": 150,
+            "angleDegrees": 4.732280378958207,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                0.0015621543861925602,
+                0.0,
+                0.022120654582977295
+              ],
+              "distanceMeters": 0.018935004249215126
+            }
+          },
+          {
+            "wavelengthNm": 600,
+            "order": 1,
+            "lineDensityPerMm": 150,
+            "angleDegrees": 5.163607090846378,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                0.0017078127712011337,
+                0.0,
+                0.02214868739247322
+              ],
+              "distanceMeters": 0.01897549442946911
+            }
+          },
+          {
+            "wavelengthNm": 650,
+            "order": 1,
+            "lineDensityPerMm": 150,
+            "angleDegrees": 5.595227435527864,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                0.001857093651778996,
+                0.0,
+                0.022206364199519157
+              ],
+              "distanceMeters": 0.019046911969780922
+            }
+          },
+          {
+            "wavelengthNm": 700,
+            "order": 1,
+            "lineDensityPerMm": 150,
+            "angleDegrees": 6.0271665601311,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                0.0020077757071703672,
+                0.0,
+                0.022265974432229996
+              ],
+              "distanceMeters": 0.019121475517749786
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "density-300",
+      "label": "300 线/mm · 孔径限制对比",
+      "description": "正入射透射光栅：零级不分光，±1 级向两侧分开；红光偏转大于紫光。线密度是教学参数，不是这台实物参数。刻线已放大，不能用图中条纹数倒推线密度；遇到真实网格遮挡即截断，未穿过目镜成像。",
+      "parameters": {
+        "lineDensityPerMm": 300,
+        "orders": [
+          -1,
+          0,
+          1
+        ],
+        "wavelengthsNm": [
+          400,
+          450,
+          500,
+          550,
+          600,
+          650,
+          700
+        ],
+        "normalIncidence": true,
+        "groovesDirection": [
+          0,
+          1,
+          0
+        ]
+      },
+      "paths": [
+        {
+          "id": "g300-m-1-w400",
+          "kind": "diffracted",
+          "color": "#773bdf",
+          "wavelengthNm": 400,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.0023131282068789005,
+              0.0,
+              0.02238677814602852
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              -0.0023131282068789005,
+              0.0,
+              0.02238677814602852
+            ],
+            "distanceMeters": 0.01927586831152439
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 400,
+              "order": -1,
+              "grooveDensityPerMm": 300,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g300-m-1-w450",
+          "kind": "diffracted",
+          "color": "#2854ff",
+          "wavelengthNm": 450,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.0026240949518978596,
+              0.0,
+              0.022509800270199776
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              -0.0026240949518978596,
+              0.0,
+              0.022509800270199776
+            ],
+            "distanceMeters": 0.01943754032254219
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 450,
+              "order": -1,
+              "grooveDensityPerMm": 300,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g300-m-1-w500",
+          "kind": "diffracted",
+          "color": "#0ac9b2",
+          "wavelengthNm": 500,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.0029530900064855814,
+              0.0,
+              0.0227145254611969
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              -0.0029530900064855814,
+              0.0,
+              0.0227145254611969
+            ],
+            "distanceMeters": 0.019687065854668617
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 500,
+              "order": -1,
+              "grooveDensityPerMm": 300,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g300-m-1-w550",
+          "kind": "diffracted",
+          "color": "#7fe12c",
+          "wavelengthNm": 550,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.0031500000040978193,
+              0.0,
+              0.022079238668084145
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+            "point": [
+              -0.0031500000040978193,
+              0.0,
+              0.022079238668084145
+            ],
+            "distanceMeters": 0.01909070834517479
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 550,
+              "order": -1,
+              "grooveDensityPerMm": 300,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g300-m-1-w600",
+          "kind": "diffracted",
+          "color": "#ffb227",
+          "wavelengthNm": 600,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.0031888338271528482,
+              0.0,
+              0.02067638374865055
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+            "point": [
+              -0.0031888338271528482,
+              0.0,
+              0.02067638374865055
+            ],
+            "distanceMeters": 0.017715541645884514
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 600,
+              "order": -1,
+              "grooveDensityPerMm": 300,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g300-m-1-w650",
+          "kind": "diffracted",
+          "color": "#fb6038",
+          "wavelengthNm": 650,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.0032926504500210285,
+              0.0,
+              0.019811242818832397
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+            "point": [
+              -0.0032926504500210285,
+              0.0,
+              0.019811242818832397
+            ],
+            "distanceMeters": 0.016885187476873398
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 650,
+              "order": -1,
+              "grooveDensityPerMm": 300,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g300-m-1-w700",
+          "kind": "diffracted",
+          "color": "#e83849",
+          "wavelengthNm": 700,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.003387467237189412,
+              0.0,
+              0.01902110129594803
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+            "point": [
+              -0.003387467237189412,
+              0.0,
+              0.01902110129594803
+            ],
+            "distanceMeters": 0.016130594536662102
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 700,
+              "order": -1,
+              "grooveDensityPerMm": 300,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g300-m0-w550",
+          "kind": "zero-order",
+          "color": "#d8e1e8",
+          "wavelengthNm": 550,
+          "order": 0,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0,
+              0.0,
+              0.0218999981880188
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.0,
+              0.0,
+              0.0218999981880188
+            ],
+            "distanceMeters": 0.01864979788661003
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 550,
+              "order": 0,
+              "grooveDensityPerMm": 300,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g300-m1-w400",
+          "kind": "diffracted",
+          "color": "#773bdf",
+          "wavelengthNm": 400,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0023131282068789005,
+              0.0,
+              0.02238677814602852
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.0023131282068789005,
+              0.0,
+              0.02238677814602852
+            ],
+            "distanceMeters": 0.01927586831152439
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 400,
+              "order": 1,
+              "grooveDensityPerMm": 300,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g300-m1-w450",
+          "kind": "diffracted",
+          "color": "#2854ff",
+          "wavelengthNm": 450,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0026240949518978596,
+              0.0,
+              0.022509800270199776
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.0026240949518978596,
+              0.0,
+              0.022509800270199776
+            ],
+            "distanceMeters": 0.01943754032254219
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 450,
+              "order": 1,
+              "grooveDensityPerMm": 300,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g300-m1-w500",
+          "kind": "diffracted",
+          "color": "#0ac9b2",
+          "wavelengthNm": 500,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0029530900064855814,
+              0.0,
+              0.0227145254611969
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.0029530900064855814,
+              0.0,
+              0.0227145254611969
+            ],
+            "distanceMeters": 0.019687065854668617
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 500,
+              "order": 1,
+              "grooveDensityPerMm": 300,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g300-m1-w550",
+          "kind": "diffracted",
+          "color": "#7fe12c",
+          "wavelengthNm": 550,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0031500000040978193,
+              0.0,
+              0.022079238668084145
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+            "point": [
+              0.0031500000040978193,
+              0.0,
+              0.022079238668084145
+            ],
+            "distanceMeters": 0.01909070834517479
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 550,
+              "order": 1,
+              "grooveDensityPerMm": 300,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g300-m1-w600",
+          "kind": "diffracted",
+          "color": "#ffb227",
+          "wavelengthNm": 600,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0031888338271528482,
+              0.0,
+              0.02067638374865055
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+            "point": [
+              0.0031888338271528482,
+              0.0,
+              0.02067638374865055
+            ],
+            "distanceMeters": 0.017715541645884514
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 600,
+              "order": 1,
+              "grooveDensityPerMm": 300,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g300-m1-w650",
+          "kind": "diffracted",
+          "color": "#fb6038",
+          "wavelengthNm": 650,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0032926504500210285,
+              0.0,
+              0.019811242818832397
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+            "point": [
+              0.0032926504500210285,
+              0.0,
+              0.019811242818832397
+            ],
+            "distanceMeters": 0.016885187476873398
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 650,
+              "order": 1,
+              "grooveDensityPerMm": 300,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g300-m1-w700",
+          "kind": "diffracted",
+          "color": "#e83849",
+          "wavelengthNm": 700,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.003387467237189412,
+              0.0,
+              0.01902110129594803
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+            "point": [
+              0.003387467237189412,
+              0.0,
+              0.01902110129594803
+            ],
+            "distanceMeters": 0.016130594536662102
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 700,
+              "order": 1,
+              "grooveDensityPerMm": 300,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "status": "blocked"
+            }
+          ]
+        }
+      ],
+      "readout": {
+        "summary": "7/15 条代表光线到达目镜前；其余按实际遮挡截断。",
+        "reachesEyepiece": 7,
+        "total": 15,
+        "rays": [
+          {
+            "wavelengthNm": 400,
+            "order": -1,
+            "lineDensityPerMm": 300,
+            "angleDegrees": -6.89210257934638,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                -0.0023131282068789005,
+                0.0,
+                0.02238677814602852
+              ],
+              "distanceMeters": 0.01927586831152439
+            }
+          },
+          {
+            "wavelengthNm": 450,
+            "order": -1,
+            "lineDensityPerMm": 300,
+            "angleDegrees": -7.758619888586816,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                -0.0026240949518978596,
+                0.0,
+                0.022509800270199776
+              ],
+              "distanceMeters": 0.01943754032254219
+            }
+          },
+          {
+            "wavelengthNm": 500,
+            "order": -1,
+            "lineDensityPerMm": 300,
+            "angleDegrees": -8.626926558678639,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                -0.0029530900064855814,
+                0.0,
+                0.0227145254611969
+              ],
+              "distanceMeters": 0.019687065854668617
+            }
+          },
+          {
+            "wavelengthNm": 550,
+            "order": -1,
+            "lineDensityPerMm": 300,
+            "angleDegrees": -9.497234468517048,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "point": [
+                -0.0031500000040978193,
+                0.0,
+                0.022079238668084145
+              ],
+              "distanceMeters": 0.01909070834517479
+            }
+          },
+          {
+            "wavelengthNm": 600,
+            "order": -1,
+            "lineDensityPerMm": 300,
+            "angleDegrees": -10.36975980547742,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "point": [
+                -0.0031888338271528482,
+                0.0,
+                0.02067638374865055
+              ],
+              "distanceMeters": 0.017715541645884514
+            }
+          },
+          {
+            "wavelengthNm": 650,
+            "order": -1,
+            "lineDensityPerMm": 300,
+            "angleDegrees": -11.244723592376431,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "point": [
+                -0.0032926504500210285,
+                0.0,
+                0.019811242818832397
+              ],
+              "distanceMeters": 0.016885187476873398
+            }
+          },
+          {
+            "wavelengthNm": 700,
+            "order": -1,
+            "lineDensityPerMm": 300,
+            "angleDegrees": -12.122352244789111,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "point": [
+                -0.003387467237189412,
+                0.0,
+                0.01902110129594803
+              ],
+              "distanceMeters": 0.016130594536662102
+            }
+          },
+          {
+            "wavelengthNm": 550,
+            "order": 0,
+            "lineDensityPerMm": 300,
+            "angleDegrees": 0.0,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                0.0,
+                0.0,
+                0.0218999981880188
+              ],
+              "distanceMeters": 0.01864979788661003
+            }
+          },
+          {
+            "wavelengthNm": 400,
+            "order": 1,
+            "lineDensityPerMm": 300,
+            "angleDegrees": 6.89210257934638,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                0.0023131282068789005,
+                0.0,
+                0.02238677814602852
+              ],
+              "distanceMeters": 0.01927586831152439
+            }
+          },
+          {
+            "wavelengthNm": 450,
+            "order": 1,
+            "lineDensityPerMm": 300,
+            "angleDegrees": 7.758619888586816,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                0.0026240949518978596,
+                0.0,
+                0.022509800270199776
+              ],
+              "distanceMeters": 0.01943754032254219
+            }
+          },
+          {
+            "wavelengthNm": 500,
+            "order": 1,
+            "lineDensityPerMm": 300,
+            "angleDegrees": 8.626926558678639,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                0.0029530900064855814,
+                0.0,
+                0.0227145254611969
+              ],
+              "distanceMeters": 0.019687065854668617
+            }
+          },
+          {
+            "wavelengthNm": 550,
+            "order": 1,
+            "lineDensityPerMm": 300,
+            "angleDegrees": 9.497234468517048,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "point": [
+                0.0031500000040978193,
+                0.0,
+                0.022079238668084145
+              ],
+              "distanceMeters": 0.01909070834517479
+            }
+          },
+          {
+            "wavelengthNm": 600,
+            "order": 1,
+            "lineDensityPerMm": 300,
+            "angleDegrees": 10.36975980547742,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "point": [
+                0.0031888338271528482,
+                0.0,
+                0.02067638374865055
+              ],
+              "distanceMeters": 0.017715541645884514
+            }
+          },
+          {
+            "wavelengthNm": 650,
+            "order": 1,
+            "lineDensityPerMm": 300,
+            "angleDegrees": 11.244723592376431,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "point": [
+                0.0032926504500210285,
+                0.0,
+                0.019811242818832397
+              ],
+              "distanceMeters": 0.016885187476873398
+            }
+          },
+          {
+            "wavelengthNm": 700,
+            "order": 1,
+            "lineDensityPerMm": 300,
+            "angleDegrees": 12.122352244789111,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "point": [
+                0.003387467237189412,
+                0.0,
+                0.01902110129594803
+              ],
+              "distanceMeters": 0.016130594536662102
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "density-600",
+      "label": "600 线/mm · 孔径限制对比",
+      "description": "正入射透射光栅：零级不分光，±1 级向两侧分开；红光偏转大于紫光。线密度是教学参数，不是这台实物参数。刻线已放大，不能用图中条纹数倒推线密度；遇到真实网格遮挡即截断，未穿过目镜成像。",
+      "parameters": {
+        "lineDensityPerMm": 600,
+        "orders": [
+          -1,
+          0,
+          1
+        ],
+        "wavelengthsNm": [
+          400,
+          450,
+          500,
+          550,
+          600,
+          650,
+          700
+        ],
+        "normalIncidence": true,
+        "groovesDirection": [
+          0,
+          1,
+          0
+        ]
+      },
+      "paths": [
+        {
+          "id": "g600-m-1-w400",
+          "kind": "diffracted",
+          "color": "#773bdf",
+          "wavelengthNm": 400,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.00377019215375185,
+              0.0,
+              0.01850000210106373
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+            "point": [
+              -0.00377019215375185,
+              0.0,
+              0.01850000210106373
+            ],
+            "distanceMeters": 0.015708934515714645
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 400,
+              "order": -1,
+              "grooveDensityPerMm": 600,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g600-m-1-w450",
+          "kind": "diffracted",
+          "color": "#2854ff",
+          "wavelengthNm": 450,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.004276321269571781,
+              0.0,
+              0.01850000023841858
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+            "point": [
+              -0.004276321269571781,
+              0.0,
+              0.01850000023841858
+            ],
+            "distanceMeters": 0.015838027000427246
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 450,
+              "order": -1,
+              "grooveDensityPerMm": 600,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g600-m-1-w500",
+          "kind": "diffracted",
+          "color": "#0ac9b2",
+          "wavelengthNm": 500,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.00479590380564332,
+              0.0,
+              0.01850000023841858
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+            "point": [
+              -0.00479590380564332,
+              0.0,
+              0.01850000023841858
+            ],
+            "distanceMeters": 0.015986144542694092
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 500,
+              "order": -1,
+              "grooveDensityPerMm": 600,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g600-m-1-w550",
+          "kind": "diffracted",
+          "color": "#7fe12c",
+          "wavelengthNm": 550,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.0036011727061122656,
+              0.0,
+              0.013551328331232071
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_internal_baffle",
+            "point": [
+              -0.0036011727061122656,
+              0.0,
+              0.013551328331232071
+            ],
+            "distanceMeters": 0.010912444442510605
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 550,
+              "order": -1,
+              "grooveDensityPerMm": 600,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_internal_baffle",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g600-m-1-w600",
+          "kind": "diffracted",
+          "color": "#ffb227",
+          "wavelengthNm": 600,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.003955186810344458,
+              0.0,
+              0.013500001281499863
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_internal_baffle",
+            "point": [
+              -0.003955186810344458,
+              0.0,
+              0.013500001281499863
+            ],
+            "distanceMeters": 0.010986428707838058
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 600,
+              "order": -1,
+              "grooveDensityPerMm": 600,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_internal_baffle",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g600-m-1-w650",
+          "kind": "diffracted",
+          "color": "#fb6038",
+          "wavelengthNm": 650,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.00434126378968358,
+              0.0,
+              0.013500001281499863
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_internal_baffle",
+            "point": [
+              -0.00434126378968358,
+              0.0,
+              0.013500001281499863
+            ],
+            "distanceMeters": 0.011131245642900467
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 650,
+              "order": -1,
+              "grooveDensityPerMm": 600,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_internal_baffle",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g600-m-1-w700",
+          "kind": "diffracted",
+          "color": "#e83849",
+          "wavelengthNm": 700,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.004743675701320171,
+              0.0,
+              0.013500000350177288
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_internal_baffle",
+            "point": [
+              -0.004743675701320171,
+              0.0,
+              0.013500000350177288
+            ],
+            "distanceMeters": 0.01129426620900631
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 700,
+              "order": -1,
+              "grooveDensityPerMm": 600,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_internal_baffle",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g600-m0-w550",
+          "kind": "zero-order",
+          "color": "#d8e1e8",
+          "wavelengthNm": 550,
+          "order": 0,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0,
+              0.0,
+              0.0218999981880188
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.0,
+              0.0,
+              0.0218999981880188
+            ],
+            "distanceMeters": 0.01864979788661003
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 550,
+              "order": 0,
+              "grooveDensityPerMm": 600,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g600-m1-w400",
+          "kind": "diffracted",
+          "color": "#773bdf",
+          "wavelengthNm": 400,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.00377019215375185,
+              0.0,
+              0.01850000210106373
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+            "point": [
+              0.00377019215375185,
+              0.0,
+              0.01850000210106373
+            ],
+            "distanceMeters": 0.015708934515714645
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 400,
+              "order": 1,
+              "grooveDensityPerMm": 600,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g600-m1-w450",
+          "kind": "diffracted",
+          "color": "#2854ff",
+          "wavelengthNm": 450,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.004276321269571781,
+              0.0,
+              0.01850000023841858
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+            "point": [
+              0.004276321269571781,
+              0.0,
+              0.01850000023841858
+            ],
+            "distanceMeters": 0.015838027000427246
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 450,
+              "order": 1,
+              "grooveDensityPerMm": 600,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g600-m1-w500",
+          "kind": "diffracted",
+          "color": "#0ac9b2",
+          "wavelengthNm": 500,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.00479590380564332,
+              0.0,
+              0.01850000023841858
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+            "point": [
+              0.00479590380564332,
+              0.0,
+              0.01850000023841858
+            ],
+            "distanceMeters": 0.015986144542694092
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 500,
+              "order": 1,
+              "grooveDensityPerMm": 600,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g600-m1-w550",
+          "kind": "diffracted",
+          "color": "#7fe12c",
+          "wavelengthNm": 550,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0036011727061122656,
+              0.0,
+              0.013551328331232071
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_internal_baffle",
+            "point": [
+              0.0036011727061122656,
+              0.0,
+              0.013551328331232071
+            ],
+            "distanceMeters": 0.010912444442510605
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 550,
+              "order": 1,
+              "grooveDensityPerMm": 600,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_internal_baffle",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g600-m1-w600",
+          "kind": "diffracted",
+          "color": "#ffb227",
+          "wavelengthNm": 600,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.003955186810344458,
+              0.0,
+              0.013500001281499863
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_internal_baffle",
+            "point": [
+              0.003955186810344458,
+              0.0,
+              0.013500001281499863
+            ],
+            "distanceMeters": 0.010986428707838058
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 600,
+              "order": 1,
+              "grooveDensityPerMm": 600,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_internal_baffle",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g600-m1-w650",
+          "kind": "diffracted",
+          "color": "#fb6038",
+          "wavelengthNm": 650,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.00434126378968358,
+              0.0,
+              0.013500001281499863
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_internal_baffle",
+            "point": [
+              0.00434126378968358,
+              0.0,
+              0.013500001281499863
+            ],
+            "distanceMeters": 0.011131245642900467
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 650,
+              "order": 1,
+              "grooveDensityPerMm": 600,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_internal_baffle",
+              "status": "blocked"
+            }
+          ]
+        },
+        {
+          "id": "g600-m1-w700",
+          "kind": "diffracted",
+          "color": "#e83849",
+          "wavelengthNm": 700,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.004743675701320171,
+              0.0,
+              0.013500000350177288
+            ]
+          ],
+          "termination": {
+            "status": "blocked",
+            "node": "GratingSpectroscope_internal_baffle",
+            "point": [
+              0.004743675701320171,
+              0.0,
+              0.013500000350177288
+            ],
+            "distanceMeters": 0.01129426620900631
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 700,
+              "order": 1,
+              "grooveDensityPerMm": 600,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_internal_baffle",
+              "status": "blocked"
+            }
+          ]
+        }
+      ],
+      "readout": {
+        "summary": "1/15 条代表光线到达目镜前；其余按实际遮挡截断。",
+        "reachesEyepiece": 1,
+        "total": 15,
+        "rays": [
+          {
+            "wavelengthNm": 400,
+            "order": -1,
+            "lineDensityPerMm": 600,
+            "angleDegrees": -13.88654036262899,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "point": [
+                -0.00377019215375185,
+                0.0,
+                0.01850000210106373
+              ],
+              "distanceMeters": 0.015708934515714645
+            }
+          },
+          {
+            "wavelengthNm": 450,
+            "order": -1,
+            "lineDensityPerMm": 600,
+            "angleDegrees": -15.664266851373524,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "point": [
+                -0.004276321269571781,
+                0.0,
+                0.01850000023841858
+              ],
+              "distanceMeters": 0.015838027000427246
+            }
+          },
+          {
+            "wavelengthNm": 500,
+            "order": -1,
+            "lineDensityPerMm": 600,
+            "angleDegrees": -17.45760312372209,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "point": [
+                -0.00479590380564332,
+                0.0,
+                0.01850000023841858
+              ],
+              "distanceMeters": 0.015986144542694092
+            }
+          },
+          {
+            "wavelengthNm": 550,
+            "order": -1,
+            "lineDensityPerMm": 600,
+            "angleDegrees": -19.268775491483765,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_internal_baffle",
+              "point": [
+                -0.0036011727061122656,
+                0.0,
+                0.013551328331232071
+              ],
+              "distanceMeters": 0.010912444442510605
+            }
+          },
+          {
+            "wavelengthNm": 600,
+            "order": -1,
+            "lineDensityPerMm": 600,
+            "angleDegrees": -21.10019602409302,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_internal_baffle",
+              "point": [
+                -0.003955186810344458,
+                0.0,
+                0.013500001281499863
+              ],
+              "distanceMeters": 0.010986428707838058
+            }
+          },
+          {
+            "wavelengthNm": 650,
+            "order": -1,
+            "lineDensityPerMm": 600,
+            "angleDegrees": -22.954499401392805,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_internal_baffle",
+              "point": [
+                -0.00434126378968358,
+                0.0,
+                0.013500001281499863
+              ],
+              "distanceMeters": 0.011131245642900467
+            }
+          },
+          {
+            "wavelengthNm": 700,
+            "order": -1,
+            "lineDensityPerMm": 600,
+            "angleDegrees": -24.834587489701583,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_internal_baffle",
+              "point": [
+                -0.004743675701320171,
+                0.0,
+                0.013500000350177288
+              ],
+              "distanceMeters": 0.01129426620900631
+            }
+          },
+          {
+            "wavelengthNm": 550,
+            "order": 0,
+            "lineDensityPerMm": 600,
+            "angleDegrees": 0.0,
+            "termination": {
+              "status": "reaches-eyepiece-front",
+              "node": "GratingSpectroscope_eyepiece_glass",
+              "point": [
+                0.0,
+                0.0,
+                0.0218999981880188
+              ],
+              "distanceMeters": 0.01864979788661003
+            }
+          },
+          {
+            "wavelengthNm": 400,
+            "order": 1,
+            "lineDensityPerMm": 600,
+            "angleDegrees": 13.88654036262899,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "point": [
+                0.00377019215375185,
+                0.0,
+                0.01850000210106373
+              ],
+              "distanceMeters": 0.015708934515714645
+            }
+          },
+          {
+            "wavelengthNm": 450,
+            "order": 1,
+            "lineDensityPerMm": 600,
+            "angleDegrees": 15.664266851373524,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "point": [
+                0.004276321269571781,
+                0.0,
+                0.01850000023841858
+              ],
+              "distanceMeters": 0.015838027000427246
+            }
+          },
+          {
+            "wavelengthNm": 500,
+            "order": 1,
+            "lineDensityPerMm": 600,
+            "angleDegrees": 17.45760312372209,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_tapered_fixed_eyepiece",
+              "point": [
+                0.00479590380564332,
+                0.0,
+                0.01850000023841858
+              ],
+              "distanceMeters": 0.015986144542694092
+            }
+          },
+          {
+            "wavelengthNm": 550,
+            "order": 1,
+            "lineDensityPerMm": 600,
+            "angleDegrees": 19.268775491483765,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_internal_baffle",
+              "point": [
+                0.0036011727061122656,
+                0.0,
+                0.013551328331232071
+              ],
+              "distanceMeters": 0.010912444442510605
+            }
+          },
+          {
+            "wavelengthNm": 600,
+            "order": 1,
+            "lineDensityPerMm": 600,
+            "angleDegrees": 21.10019602409302,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_internal_baffle",
+              "point": [
+                0.003955186810344458,
+                0.0,
+                0.013500001281499863
+              ],
+              "distanceMeters": 0.010986428707838058
+            }
+          },
+          {
+            "wavelengthNm": 650,
+            "order": 1,
+            "lineDensityPerMm": 600,
+            "angleDegrees": 22.954499401392805,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_internal_baffle",
+              "point": [
+                0.00434126378968358,
+                0.0,
+                0.013500001281499863
+              ],
+              "distanceMeters": 0.011131245642900467
+            }
+          },
+          {
+            "wavelengthNm": 700,
+            "order": 1,
+            "lineDensityPerMm": 600,
+            "angleDegrees": 24.834587489701583,
+            "termination": {
+              "status": "blocked",
+              "node": "GratingSpectroscope_internal_baffle",
+              "point": [
+                0.004743675701320171,
+                0.0,
+                0.013500000350177288
+              ],
+              "distanceMeters": 0.01129426620900631
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "order--1",
+      "label": "−1 级光谱",
+      "description": "150 线/mm 的教学参数；两侧一级光谱来自同一透射光栅，零级无色散。光路在目镜前结束。",
+      "parameters": {
+        "lineDensityPerMm": 150,
+        "order": -1
+      },
+      "paths": [
+        {
+          "id": "g150-m-1-w400",
+          "kind": "diffracted",
+          "color": "#773bdf",
+          "wavelengthNm": 400,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.0011292749550193548,
+              0.0,
+              0.022037342190742493
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              -0.0011292749550193548,
+              0.0,
+              0.022037342190742493
+            ],
+            "distanceMeters": 0.018821049481630325
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 400,
+              "order": -1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m-1-w450",
+          "kind": "diffracted",
+          "color": "#2854ff",
+          "wavelengthNm": 450,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.001272914931178093,
+              0.0,
+              0.022064989432692528
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              -0.001272914931178093,
+              0.0,
+              0.022064989432692528
+            ],
+            "distanceMeters": 0.018857797607779503
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 450,
+              "order": -1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m-1-w500",
+          "kind": "diffracted",
+          "color": "#0ac9b2",
+          "wavelengthNm": 500,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.0014171982184052467,
+              0.0,
+              0.022092755883932114
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              -0.0014171982184052467,
+              0.0,
+              0.022092755883932114
+            ],
+            "distanceMeters": 0.018895775079727173
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 500,
+              "order": -1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m-1-w550",
+          "kind": "diffracted",
+          "color": "#7fe12c",
+          "wavelengthNm": 550,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.0015621543861925602,
+              0.0,
+              0.022120654582977295
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              -0.0015621543861925602,
+              0.0,
+              0.022120654582977295
+            ],
+            "distanceMeters": 0.018935004249215126
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 550,
+              "order": -1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m-1-w600",
+          "kind": "diffracted",
+          "color": "#ffb227",
+          "wavelengthNm": 600,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.0017078127712011337,
+              0.0,
+              0.02214868739247322
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              -0.0017078127712011337,
+              0.0,
+              0.02214868739247322
+            ],
+            "distanceMeters": 0.01897549442946911
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 600,
+              "order": -1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m-1-w650",
+          "kind": "diffracted",
+          "color": "#fb6038",
+          "wavelengthNm": 650,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.001857093651778996,
+              0.0,
+              0.022206364199519157
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              -0.001857093651778996,
+              0.0,
+              0.022206364199519157
+            ],
+            "distanceMeters": 0.019046911969780922
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 650,
+              "order": -1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m-1-w700",
+          "kind": "diffracted",
+          "color": "#e83849",
+          "wavelengthNm": 700,
+          "order": -1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              -0.0020077757071703672,
+              0.0,
+              0.022265974432229996
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              -0.0020077757071703672,
+              0.0,
+              0.022265974432229996
+            ],
+            "distanceMeters": 0.019121475517749786
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 700,
+              "order": -1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        }
+      ],
+      "readout": {
+        "summary": "一级按波长分开，红光偏角大于紫光。"
+      }
+    },
+    {
+      "id": "order-0",
+      "label": "零级：保持白光",
+      "description": "150 线/mm 的教学参数；两侧一级光谱来自同一透射光栅，零级无色散。光路在目镜前结束。",
+      "parameters": {
+        "lineDensityPerMm": 150,
+        "order": 0
+      },
+      "paths": [
+        {
+          "id": "g150-m0-w550",
+          "kind": "zero-order",
+          "color": "#d8e1e8",
+          "wavelengthNm": 550,
+          "order": 0,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0,
+              0.0,
+              0.0218999981880188
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.0,
+              0.0,
+              0.0218999981880188
+            ],
+            "distanceMeters": 0.01864979788661003
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 550,
+              "order": 0,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        }
+      ],
+      "readout": {
+        "summary": "零级沿轴向、各波长重合。"
+      }
+    },
+    {
+      "id": "order-1",
+      "label": "+1 级光谱",
+      "description": "150 线/mm 的教学参数；两侧一级光谱来自同一透射光栅，零级无色散。光路在目镜前结束。",
+      "parameters": {
+        "lineDensityPerMm": 150,
+        "order": 1
+      },
+      "paths": [
+        {
+          "id": "g150-m1-w400",
+          "kind": "diffracted",
+          "color": "#773bdf",
+          "wavelengthNm": 400,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0011292749550193548,
+              0.0,
+              0.022037342190742493
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.0011292749550193548,
+              0.0,
+              0.022037342190742493
+            ],
+            "distanceMeters": 0.018821049481630325
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 400,
+              "order": 1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m1-w450",
+          "kind": "diffracted",
+          "color": "#2854ff",
+          "wavelengthNm": 450,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.001272914931178093,
+              0.0,
+              0.022064989432692528
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.001272914931178093,
+              0.0,
+              0.022064989432692528
+            ],
+            "distanceMeters": 0.018857797607779503
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 450,
+              "order": 1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m1-w500",
+          "kind": "diffracted",
+          "color": "#0ac9b2",
+          "wavelengthNm": 500,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0014171982184052467,
+              0.0,
+              0.022092755883932114
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.0014171982184052467,
+              0.0,
+              0.022092755883932114
+            ],
+            "distanceMeters": 0.018895775079727173
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 500,
+              "order": 1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m1-w550",
+          "kind": "diffracted",
+          "color": "#7fe12c",
+          "wavelengthNm": 550,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0015621543861925602,
+              0.0,
+              0.022120654582977295
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.0015621543861925602,
+              0.0,
+              0.022120654582977295
+            ],
+            "distanceMeters": 0.018935004249215126
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 550,
+              "order": 1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m1-w600",
+          "kind": "diffracted",
+          "color": "#ffb227",
+          "wavelengthNm": 600,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0017078127712011337,
+              0.0,
+              0.02214868739247322
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.0017078127712011337,
+              0.0,
+              0.02214868739247322
+            ],
+            "distanceMeters": 0.01897549442946911
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 600,
+              "order": 1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m1-w650",
+          "kind": "diffracted",
+          "color": "#fb6038",
+          "wavelengthNm": 650,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.001857093651778996,
+              0.0,
+              0.022206364199519157
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.001857093651778996,
+              0.0,
+              0.022206364199519157
+            ],
+            "distanceMeters": 0.019046911969780922
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 650,
+              "order": 1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        },
+        {
+          "id": "g150-m1-w700",
+          "kind": "diffracted",
+          "color": "#e83849",
+          "wavelengthNm": 700,
+          "order": 1,
+          "points": [
+            [
+              0,
+              0,
+              -0.009
+            ],
+            [
+              0.0,
+              0.0,
+              0.002749999053776264
+            ],
+            [
+              0.0,
+              0.0,
+              0.0032500000670552254
+            ],
+            [
+              0.0020077757071703672,
+              0.0,
+              0.022265974432229996
+            ]
+          ],
+          "termination": {
+            "status": "reaches-eyepiece-front",
+            "node": "GratingSpectroscope_eyepiece_glass",
+            "point": [
+              0.0020077757071703672,
+              0.0,
+              0.022265974432229996
+            ],
+            "distanceMeters": 0.019121475517749786
+          },
+          "interactions": [
+            {
+              "pointIndex": 2,
+              "kind": "diffraction",
+              "surfaceNode": "GratingSpectroscope_replica_grating_substrate",
+              "wavelengthNm": 700,
+              "order": 1,
+              "grooveDensityPerMm": 150,
+              "groovesDirection": [
+                0,
+                1,
+                0
+              ],
+              "normal": [
+                0,
+                0,
+                1
+              ]
+            },
+            {
+              "pointIndex": 3,
+              "kind": "termination",
+              "surfaceNode": "GratingSpectroscope_eyepiece_glass",
+              "status": "reaches-eyepiece-front"
+            }
+          ]
+        }
+      ],
+      "readout": {
+        "summary": "一级按波长分开，红光偏角大于紫光。"
+      }
+    }
+  ]
+}

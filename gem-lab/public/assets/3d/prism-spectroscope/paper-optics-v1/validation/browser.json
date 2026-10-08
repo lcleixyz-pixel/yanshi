@@ -1,0 +1,513 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-08T07:51:04.701Z",
+  "instrumentId": "prism-spectroscope",
+  "environment": {
+    "browser": "Codex in-app browser (Chromium)",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "url": "http://127.0.0.1:5189/tools/3d-assets/instruments-optics-2026-10-08/review/#prism-spectroscope"
+  },
+  "model": {
+    "url": "/assets/3d/prism-spectroscope/paper-optics-v1/model.glb",
+    "sha256": "f46f1007cb9a17ade4b22dc411d1a8250fc4e34674fc58ba97f072dd37bbe0bd",
+    "version": "paper-optics-v1",
+    "loaded": true,
+    "partCount": 10
+  },
+  "pass": true,
+  "caseCount": 4,
+  "cases": [
+    {
+      "id": "white-light",
+      "case": {
+        "id": "white-light",
+        "parameters": {
+          "wavelengthsNm": [
+            400,
+            450,
+            500,
+            550,
+            600,
+            650,
+            700
+          ],
+          "collimatedInput": true,
+          "designWavelengthNm": 550
+        },
+        "readout": {
+          "summary": "550 nm 直视；蓝紫端角分散较大。非厂家实测处方。",
+          "exitAnglesDegrees": {
+            "400": 1.4382355876515909,
+            "450": 0.7218488350284077,
+            "500": 0.2873976084665698,
+            "550": 1.707547496058687e-06,
+            "600": -0.20142095122596557,
+            "650": -0.3485056811643691,
+            "700": -0.45921206459710234
+          }
+        },
+        "pathCount": 7,
+        "visiblePathCount": 7,
+        "suspended": false
+      },
+      "displayPaths": [
+        {
+          "id": "white-input-0",
+          "kind": "incident-white",
+          "color": "#969b9e",
+          "points": [
+            [
+              0,
+              0,
+              -0.023
+            ],
+            [
+              0,
+              0,
+              -0.011799999512732029
+            ]
+          ]
+        },
+        {
+          "id": "prism-400-after-dispersion",
+          "sourcePathId": "prism-400",
+          "kind": "refracted",
+          "color": "#773bdf",
+          "points": [
+            [
+              0,
+              0,
+              -0.011799999512732029
+            ],
+            [
+              -0.0004470578860491514,
+              0,
+              -0.00442487420514226
+            ],
+            [
+              -0.0003839669516310096,
+              0,
+              0.0044778138399124146
+            ],
+            [
+              0.00017722015036270022,
+              0,
+              0.011768913827836514
+            ],
+            [
+              0.0009354271460324526,
+              0,
+              0.04196767508983612
+            ]
+          ]
+        },
+        {
+          "id": "prism-450-after-dispersion",
+          "sourcePathId": "prism-450",
+          "kind": "refracted",
+          "color": "#2854ff",
+          "points": [
+            [
+              0,
+              0,
+              -0.011799999512732029
+            ],
+            [
+              -0.0004438479954842478,
+              0,
+              -0.004427566658705473
+            ],
+            [
+              -0.00041187606984749436,
+              0,
+              0.004454394802451134
+            ],
+            [
+              8.971363422460854e-05,
+              0,
+              0.011784262955188751
+            ],
+            [
+              0.0004695790121331811,
+              0,
+              0.041933972388505936
+            ]
+          ]
+        },
+        {
+          "id": "prism-500-after-dispersion",
+          "sourcePathId": "prism-500",
+          "kind": "refracted",
+          "color": "#0ac9b2",
+          "points": [
+            [
+              0,
+              0,
+              -0.011799999512732029
+            ],
+            [
+              -0.00044156829244457185,
+              0,
+              -0.0044294800609350204
+            ],
+            [
+              -0.00042875774670392275,
+              0,
+              0.004440228920429945
+            ],
+            [
+              3.5921199014410377e-05,
+              0,
+              0.011793699115514755
+            ],
+            [
+              0.00018700458167586476,
+              0,
+              0.041913531720638275
+            ]
+          ]
+        },
+        {
+          "id": "prism-550-after-dispersion",
+          "sourcePathId": "prism-550",
+          "kind": "refracted",
+          "color": "#7fe12c",
+          "points": [
+            [
+              0,
+              0,
+              -0.011799999512732029
+            ],
+            [
+              -0.00043987316894344985,
+              0,
+              -0.004430902656167746
+            ],
+            [
+              -0.00043987302342429757,
+              0,
+              0.004430902190506458
+            ],
+            [
+              3.7834979593753815e-10,
+              0,
+              0.011800000444054604
+            ],
+            [
+              1.2753998968051405e-09,
+              0,
+              0.04190000519156456
+            ]
+          ]
+        },
+        {
+          "id": "prism-600-after-dispersion",
+          "sourcePathId": "prism-600",
+          "kind": "refracted",
+          "color": "#ffb227",
+          "points": [
+            [
+              0,
+              0,
+              -0.011799999512732029
+            ],
+            [
+              -0.0004385635256767273,
+              0,
+              -0.004432001616805792
+            ],
+            [
+              -0.0004476123722270131,
+              0,
+              0.0044244080781936646
+            ],
+            [
+              -2.5350513169541955e-05,
+              0,
+              0.011804446578025818
+            ],
+            [
+              -0.00013118400238454342,
+              0,
+              0.04190949350595474
+            ]
+          ]
+        },
+        {
+          "id": "prism-650-after-dispersion",
+          "sourcePathId": "prism-650",
+          "kind": "refracted",
+          "color": "#fb6038",
+          "points": [
+            [
+              0,
+              0,
+              -0.011799999512732029
+            ],
+            [
+              -0.0004375177959445864,
+              0,
+              -0.00443287892267108
+            ],
+            [
+              -0.000453214772278443,
+              0,
+              0.004419706761837006
+            ],
+            [
+              -4.396194708533585e-05,
+              0,
+              0.01180770993232727
+            ],
+            [
+              -0.00022710266057401896,
+              0,
+              0.04191643372178078
+            ]
+          ]
+        },
+        {
+          "id": "prism-700-after-dispersion",
+          "sourcePathId": "prism-700",
+          "kind": "refracted",
+          "color": "#e83849",
+          "points": [
+            [
+              0,
+              0,
+              -0.011799999512732029
+            ],
+            [
+              -0.0004366579232737422,
+              0,
+              -0.004433599766343832
+            ],
+            [
+              -0.00045738383778370917,
+              0,
+              0.004416210576891899
+            ],
+            [
+              -5.803175736218691e-05,
+              0,
+              0.01181017979979515
+            ],
+            [
+              -0.0002993732923641801,
+              0,
+              0.04192166030406952
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wavelength-400",
+      "case": {
+        "id": "wavelength-400",
+        "parameters": {
+          "wavelengthNm": 400,
+          "collimatedInput": true
+        },
+        "readout": {
+          "summary": "400 nm 出射角 1.4382°",
+          "exitAngleDegrees": 1.4382355876515909
+        },
+        "pathCount": 1,
+        "visiblePathCount": 1,
+        "suspended": false
+      },
+      "displayPaths": [
+        {
+          "id": "prism-400",
+          "kind": "refracted",
+          "color": "#773bdf",
+          "points": [
+            [
+              0,
+              0,
+              -0.023
+            ],
+            [
+              0,
+              0,
+              -0.011799999512732029
+            ],
+            [
+              -0.0004470578860491514,
+              0,
+              -0.00442487420514226
+            ],
+            [
+              -0.0003839669516310096,
+              0,
+              0.0044778138399124146
+            ],
+            [
+              0.00017722015036270022,
+              0,
+              0.011768913827836514
+            ],
+            [
+              0.0009354271460324526,
+              0,
+              0.04196767508983612
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wavelength-550",
+      "case": {
+        "id": "wavelength-550",
+        "parameters": {
+          "wavelengthNm": 550,
+          "collimatedInput": true
+        },
+        "readout": {
+          "summary": "550 nm 出射角 0.0000°",
+          "exitAngleDegrees": 1.707547496058687e-06
+        },
+        "pathCount": 1,
+        "visiblePathCount": 1,
+        "suspended": false
+      },
+      "displayPaths": [
+        {
+          "id": "prism-550",
+          "kind": "refracted",
+          "color": "#7fe12c",
+          "points": [
+            [
+              0,
+              0,
+              -0.023
+            ],
+            [
+              0,
+              0,
+              -0.011799999512732029
+            ],
+            [
+              -0.00043987316894344985,
+              0,
+              -0.004430902656167746
+            ],
+            [
+              -0.00043987302342429757,
+              0,
+              0.004430902190506458
+            ],
+            [
+              3.7834979593753815e-10,
+              0,
+              0.011800000444054604
+            ],
+            [
+              1.2753998968051405e-09,
+              0,
+              0.04190000519156456
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wavelength-700",
+      "case": {
+        "id": "wavelength-700",
+        "parameters": {
+          "wavelengthNm": 700,
+          "collimatedInput": true
+        },
+        "readout": {
+          "summary": "700 nm 出射角 -0.4592°",
+          "exitAngleDegrees": -0.45921206459710234
+        },
+        "pathCount": 1,
+        "visiblePathCount": 1,
+        "suspended": false
+      },
+      "displayPaths": [
+        {
+          "id": "prism-700",
+          "kind": "refracted",
+          "color": "#e83849",
+          "points": [
+            [
+              0,
+              0,
+              -0.023
+            ],
+            [
+              0,
+              0,
+              -0.011799999512732029
+            ],
+            [
+              -0.0004366579232737422,
+              0,
+              -0.004433599766343832
+            ],
+            [
+              -0.00045738383778370917,
+              0,
+              0.004416210576891899
+            ],
+            [
+              -5.803175736218691e-05,
+              0,
+              0.01181017979979515
+            ],
+            [
+              -0.0002993732923641801,
+              0,
+              0.04192166030406952
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "selectableParts": [
+    "barrel",
+    "slitHousing",
+    "slitControl",
+    "slitLeft",
+    "slitRight",
+    "collimator",
+    "prismTrain",
+    "focusTube",
+    "eyepiece",
+    "baffles"
+  ],
+  "interactions": {
+    "focus": true,
+    "isolationSuspendsRays": true,
+    "explosionSuspendsRays": true,
+    "resetRestoresPoses": true,
+    "rayToggle": true,
+    "viewSwitch": true
+  },
+  "console": {
+    "errors": 0,
+    "warnings": 0,
+    "entries": []
+  },
+  "visualReview": "Blue crown and warm flint distinguishable; shared incident white segment is neutral gray.",
+  "limitations": [
+    "Local candidate browser review; not app integration, deployment or user acceptance.",
+    "No claim of real manufacturer optical prescription or physical device calibration.",
+    "This run did not include Safari or a performance benchmark."
+  ],
+  "casesSha256": "348cec80d3f00d2b439110f9689bd1e8b3007035cbf3031ef5a07f9213b3019d",
+  "reviewSourceSha256": {
+    "index.html": "68fedbcf3fd23e8808b92cba07e71bd8130a8bcc9e3bfe835c96e0c7230ef5cf",
+    "review.mjs": "f288c118dee84411c29cf35a715853cc70b6f7d99e66b02d437655a6ae89baa5",
+    "display-paths.mjs": "be702c34790f201f80717db82498373a1c0769da37f6f3c6eec8a8bedc445ced"
+  }
+}

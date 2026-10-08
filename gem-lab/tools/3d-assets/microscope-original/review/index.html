@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>澄观 · 宝石显微镜教学设计</title>
+  <link rel="stylesheet" href="./review.css">
+  <script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}</script>
+</head>
+<body>
+  <header><div class="brand"><span class="brand-mark" aria-hidden="true">◉</span><div><p class="eyebrow">GEM INSTRUMENT STUDY / 01</p><h1>澄观 <span>宝石显微镜</span></h1></div></div><p class="header-note">原创教学设计 · 功能原理验证<br><span>自由观察结构，理解光从哪里来。</span></p></header>
+  <main>
+    <section class="viewport" id="viewport" aria-label="原创显微镜三维展示">
+      <nav class="view-switch" aria-label="观察方式"><button data-view="structure" aria-pressed="true">整机结构</button><button data-view="chamber" aria-pressed="false">照明剖解</button><button data-view="sample" aria-pressed="false">散射体近景</button></nav>
+      <div class="view-title"><p id="viewIndex">01 / STRUCTURE</p><h2 id="viewTitle">结构，从整体开始。</h2></div>
+      <div id="loading" role="status"><span class="loading-dot"></span>正在载入原创资产</div>
+      <div class="viewport-footer"><span id="status" aria-live="polite">模型载入中</span><span>拖动旋转 · 滚轮缩放 · 点选部件</span></div>
+      <div class="annotation"><span id="modeBadge">暗域照明</span><p id="viewNote">从底座、倾斜支架到双目观察组件，逐一查看部件之间的关系。</p></div>
+      <div id="error" role="alert" hidden><img id="fallback" alt="本次原创显微镜候选的静态预览"><h2>模型暂未载入</h2><p id="errorText"></p><button id="retry">重新载入</button></div>
+    </section>
+    <aside class="sidebar" aria-label="显微镜教学控制">
+      <section class="block"><div class="block-heading"><h2>底光照明</h2><span class="tag">互斥切换</span></div>
+        <div class="segmented" role="group" aria-label="照明模式"><button data-mode="off" aria-pressed="false">关灯</button><button data-mode="darkfield" aria-pressed="true">暗域</button><button data-mode="brightfield" aria-pressed="false">明域</button></div>
+        <p class="explanation" id="lightingNote"></p><p class="hint physical-help">也可点击模型侧面的电源键、模式旋钮。</p>
+        <label class="range-label" for="brightness">照明亮度 <output id="brightnessValue">75%</output></label><input id="brightness" type="range" min="0" max="100" value="75" step="1" aria-label="照明亮度">
+        <label class="check"><input id="showRays" type="checkbox">显示示意光路</label><label class="check"><input id="showSample" type="checkbox" checked>放置固定散射体</label>
+      </section>
+      <section class="block"><div class="block-heading"><h2>机械操作</h2><span class="tag neutral">示意行程</span></div>
+        <label class="range-label" for="tilt">整体倾斜 <output id="tiltValue">0°</output></label><input id="tilt" type="range" min="0" max="25" value="0" step="1" aria-label="整体倾斜">
+        <label class="range-label" for="focusPosition">镜头升降 <output id="focusValue">0 mm</output></label><input id="focusPosition" type="range" min="-12" max="18" value="0" step="1" aria-label="镜头升降">
+        <p class="hint">倾斜时物台、底光和镜头一同运动；升降只移动镜头组件，未模拟成像清晰度。</p>
+      </section>
+      <section class="block"><div class="block-heading"><h2>部件与装配</h2><output id="partCount">—</output></div>
+        <label class="range-label" for="explode">连续拆解 <output id="explodeValue">0%</output></label><input id="explode" type="range" min="0" max="100" value="0" step="1" aria-label="连续拆解">
+        <label class="check"><input id="cutaway" type="checkbox">照明外壳半透明</label>
+        <div class="parts" id="parts" aria-label="部件列表"></div>
+        <p class="part-note" id="partNote">点选模型或部件名称，查看作用与位置。</p>
+        <div class="row"><button class="secondary" id="isolate" aria-pressed="false" disabled>隔离所选</button><button class="secondary" id="focusPart" disabled>聚焦所选</button></div>
+        <div class="row bottom-row"><button class="secondary" id="fit">完整视野</button><button class="secondary primary" id="reset">全部复位</button></div>
+      </section>
+      <details class="sources"><summary>设计依据与演示边界</summary><p>本候选以公开资料中的功能为参考，自行设计外形和内部原理结构。无厂家标志，不代表任何商品型号、实际尺寸或厂家内部构造。</p><p>明域使用中央扩散 LED，暗域使用独立环形斜向 LED；二者互斥。光路从出光面开始简化为直线，未计算器件内部配光、衍射或杂散光。</p><p>散射体只演示不同方向的光照。同一材质、同一曝光，关灯时不受仪器展示补光影响；并非真实宝石、包裹体或目镜成像。空载可看光路，背景颜色保持不变。夹具可能遮挡局部入射光；本近景未模拟夹具阴影，不表示样品受光完全均匀。</p><p>实际模型的几何抽样检查中，6928 条进入示意样品球的光线有 15 条边缘光线被下夹具遮挡；抽样检查不等于完整杂散光分析或实物验证。</p><p>参考：<a href="https://www.szfable.cn/product/1132.html" target="_blank" rel="noreferrer">FABLE 明／暗域分离说明</a> · <a href="http://bgyq.cn/M/M.html" target="_blank" rel="noreferrer">宝光显微镜功能说明</a>。采用功能参考，不复刻其外壳和隐藏结构。</p><div class="links"><a id="manifestLink" target="_blank">资产清单</a><a id="modelLink" download>下载模型</a></div></details>
+    </aside>
+  </main><script type="module" src="./review.mjs"></script>
+</body>
+</html>

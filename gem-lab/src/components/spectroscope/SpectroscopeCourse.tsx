@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useResponsiveViewport } from '../shared/useResponsiveViewport';
-import { ChoiceQuestionField, CourseShell } from '../course/CourseShell';
+import { ChoiceQuestionField, CourseDock, CourseShell } from '../course/CourseShell';
+import { useMediaQuery } from '../shared/useMediaQuery';
 import RangeControl from '../shared/RangeControl';
 import { useLearningRecord } from '../course/useLearningRecord';
 import { createOpticsViewer, type OpticsSnapshot, type OpticsViewer } from '../optics3d/opticsViewer.js';
@@ -69,6 +70,7 @@ export default function SpectroscopeCourse({ mode, onMode, onExit, initialStep, 
   if (mode === 'teacher') teacherUsed.current = true;
   useEffect(() => setS((prev) => (prev.mode === mode ? prev : { ...prev, mode })), [mode]);
   const learning = useLearningRecord('spectroscope', teacherUsed.current ? 'teacher' : 'student');
+  const phone = useMediaQuery('(max-width: 680px)');
   const [benchView, setBenchView] = useState<(typeof BENCH_VIEWS)[number][0]>('whole');
   const [benchStatus, setBenchStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [slitGapMm, setSlitGapMm] = useState<string | null>(null);
@@ -157,7 +159,22 @@ export default function SpectroscopeCourse({ mode, onMode, onExit, initialStep, 
           <button onClick={() => window.location.reload()}>重新载入</button>
         </div>
       )}
-      <p className="course-shell__model-note">拖动旋转 · 滚轮缩放 · 手持操作与尺寸示意，未经实物标定</p>
+      {observing ? (
+        <CourseDock kind="strip" title={<>目镜观察 <span>教学模拟 · {text.scale}</span></>} data-problems={shown.problems.join(' ')}>
+          <SpectrumStrip
+            features={shown.features}
+            display={shown}
+            dispersion={variant}
+            userMarks={s.step === 'observe' ? s.marks : []}
+            onAddMark={(wavelength) => op({ type: 'mark', wavelength })}
+            onRemoveMark={(wavelength) => op({ type: 'unmark', wavelength })}
+            interactive={s.step === 'observe'}
+            showFeatureDescriptions={false}
+            height={phone ? 44 : 64}
+          />
+          <p role="status">{shown.problems.length ? shown.problems.map((p) => PROBLEM_TEXT[p]).join(' ') : text.ok}</p>
+        </CourseDock>
+      ) : <p className="course-shell__model-note">拖动旋转 · 滚轮缩放 · 手持操作与尺寸示意，未经实物标定</p>}
     </section>
   ) : (
     <section className="course-shell__model" key="instrument" ref={viewport} aria-label="课程三维仪器">
@@ -211,22 +228,7 @@ export default function SpectroscopeCourse({ mode, onMode, onExit, initialStep, 
               {question(config.stepQuestions.path)}
             </>}
             {observing && <>
-              <div className="course-shell__observation" data-testid="course-observation" data-problems={shown.problems.join(' ')}>
-                <h2>目镜观察 <span>教学模拟 · {text.scale}</span></h2>
-                <div className="course-shell__spectrum"><SpectrumStrip
-                  features={shown.features}
-                  display={shown}
-                  dispersion={variant}
-                  userMarks={s.step === 'observe' ? s.marks : []}
-                  onAddMark={(wavelength) => op({ type: 'mark', wavelength })}
-                  onRemoveMark={(wavelength) => op({ type: 'unmark', wavelength })}
-                  interactive={s.step === 'observe'}
-                  showFeatureDescriptions={false}
-                  height={84}
-                /></div>
-                <p role="status">{shown.problems.length ? shown.problems.map((p) => PROBLEM_TEXT[p]).join(' ') : text.ok}</p>
-                <small>参考光谱来自项目样品数据（与 GB/T 16553-2010 一致）；条件不合适时的变化为教学模拟。</small>
-              </div>
+              <small>目镜观察停靠在三维区底部{s.step === 'observe' ? '，直接在光谱上点出吸收线和吸收带' : ''}。参考光谱来自项目样品数据（与 GB/T 16553-2010 一致）；条件不合适时的变化为教学模拟。</small>
               <div className="course-shell__operations" aria-label="夹样">
                 <button type="button" aria-pressed={!placed} onClick={() => op({ type: 'place-sample', on: false })}>镊子上不放样品</button>
                 <button type="button" aria-pressed={placed} onClick={() => op({ type: 'place-sample', on: true })}>用镊子夹样品放入光路</button>

@@ -128,6 +128,19 @@ export function CourseShell<Id extends string>({ instrument, title, minutes, tes
   );
 }
 
+/**
+ * 观察窗停靠在三维区内（同偏光镜目镜视场）：操作滑杆时模型与观察结果同时可见。
+ * eyepiece 为右上角圆形视场，strip 为底部光谱条。其余属性透传，供页面写入核验用的 data-*。
+ */
+export function CourseDock({ kind, title, children, ...rest }: { kind: 'eyepiece' | 'strip'; title: ReactNode; children: ReactNode } & Record<`data-${string}`, string | undefined>) {
+  return (
+    <div className={`course-shell__dock course-shell__dock--${kind}`} data-testid="course-observation" role="group" aria-label="目镜观察" {...rest}>
+      <h2>{title}</h2>
+      {children}
+    </div>
+  );
+}
+
 /** 单选问答（同偏光镜）：先选择再提交，逐项显示 ✓ / ✗；答对后锁定。答错不直接给出正确答案。 */
 export function ChoiceQuestionField({ question, answer, onAnswer }: { question: ChoiceQuestion; answer: number | undefined; onAnswer: (option: number) => void }) {
   const [selected, setSelected] = useState<number | undefined>(answer);

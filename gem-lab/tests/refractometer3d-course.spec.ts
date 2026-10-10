@@ -276,9 +276,16 @@ test("窄屏课程无横向溢出，3D 与观察上下排列", async ({ page }) 
   await page.setViewportSize({ width: 390, height: 844 });
   await openAt(page, "prepare");
   await button(page, "打开电源").click();
+  await page.evaluate(() => window.scrollTo(0, 0));
   const model = await page.locator(".course-shell__model").boundingBox(),
     panel = await page.locator(".course-shell__panel").boundingBox();
   expect(model && panel && panel.y >= model.y + model.height).toBeTruthy();
+  // 滚到面板操作时，三维区连同停靠的目镜观察吸附在顶部，仍然可见。
+  await button(page, "滴一小滴接触液").scrollIntoViewIfNeeded();
+  await page.evaluate(() => window.scrollBy(0, 400));
+  const stuck = await page.locator(".course-shell__model").boundingBox();
+  expect(stuck && Math.abs(stuck.y) <= 1).toBeTruthy();
+  await expect(field(page)).toBeInViewport();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth + 1,

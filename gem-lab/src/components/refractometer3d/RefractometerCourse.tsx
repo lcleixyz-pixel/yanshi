@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useResponsiveViewport } from "../shared/useResponsiveViewport";
-import { ChoiceQuestionField, CourseShell } from "../course/CourseShell";
+import { ChoiceQuestionField, CourseDock, CourseShell } from "../course/CourseShell";
+import { useMediaQuery } from "../shared/useMediaQuery";
 import RangeControl from "../shared/RangeControl";
 import { useLearningRecord } from "../course/useLearningRecord";
 import {
@@ -56,6 +57,7 @@ export default function RefractometerCourse({
     status: "loading",
   });
   const [input, setInput] = useState("");
+  const phone = useMediaQuery("(max-width: 680px)");
   const [finished, setFinished] = useState(false);
   const learning = useLearningRecord("refractometer", teacherUsed.current ? "teacher" : "student");
   const viewport = useRef<HTMLDivElement>(null),
@@ -189,6 +191,23 @@ export default function RefractometerCourse({
               <button onClick={() => window.location.reload()}>重新载入</button>
             </div>
           )}
+          {observe && (
+            <CourseDock
+              kind="eyepiece"
+              title={<>目镜观察 <span>教学模拟</span></>}
+              data-view={derived.view}
+              data-valid={String(derived.validReading)}
+            >
+              <ObservationWindow
+                view={derived.view}
+                sample={COURSE_SAMPLE}
+                size={phone ? 128 : 196}
+                showReading={false}
+                hideChrome
+              />
+              <p role="status">{derived.reason}</p>
+            </CourseDock>
+          )}
           <p className="course-shell__model-note">
             拖动旋转 · 滚轮缩放 · 比例及内部处方未标定
           </p>
@@ -288,27 +307,10 @@ export default function RefractometerCourse({
                 )}
                 {observe && (
                   <>
-                    <div
-                      className="course-shell__observation"
-                      data-testid="course-observation"
-                      data-view={derived.view}
-                      data-valid={String(derived.validReading)}
-                    >
-                      <h2>
-                        目镜观察 <span>教学模拟</span>
-                      </h2>
-                      <ObservationWindow
-                        view={derived.view}
-                        sample={COURSE_SAMPLE}
-                        size={248}
-                        showReading={false}
-                        hideChrome
-                      />
-                      <p role="status">{derived.reason}</p><small>刻度为教学示意；本例接触液可测上限为 1.78。</small>
-                      {!derived.validReading && (
-                        <small>{derived.recovery}</small>
-                      )}
-                    </div>
+                    {!derived.validReading && derived.recovery && (
+                      <p className="iu-blocked">{derived.recovery}</p>
+                    )}
+                    <small>目镜观察停靠在三维区右上角。刻度为教学示意；本例接触液可测上限为 1.78。</small>
                     <div
                       className="course-shell__operations"
                       aria-label="仪器操作"

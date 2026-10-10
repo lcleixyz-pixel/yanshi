@@ -159,6 +159,21 @@ test("课程从对光起换到照明与夹样工作台：夹样改变光路，�
   await expect(bench(page)).toHaveCount(0);
 });
 
+test("手机上拖狭缝滑杆时，三维区与停靠的光谱条吸附在顶部仍可见", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(`${route}?course=basic&mode=teacher&step=tune`);
+  await expect(bench(page)).toHaveAttribute("data-loaded", "true", { timeout: 60_000 });
+  await button(page, "用镊子夹样品放入光路").click();
+  const slit = page.getByLabel("狭缝宽度");
+  await slit.scrollIntoViewIfNeeded();
+  await page.evaluate(() => window.scrollBy(0, 200));
+  await slit.fill("32");
+  await expect(slit).toBeInViewport();
+  await expect(field(page)).toBeInViewport();
+  await expect(field(page)).toHaveAttribute("data-problems", "defocus");
+  expect(Math.abs((await page.locator(".course-shell__model").boundingBox())!.y)).toBeLessThanOrEqual(1);
+});
+
 test("窄屏课程无横向溢出", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await open(page, "student");

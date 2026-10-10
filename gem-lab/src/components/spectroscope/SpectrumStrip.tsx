@@ -214,7 +214,7 @@ export default function SpectrumStrip({
           ))}
         </div>
       )}
-      <div className="mt-0.5 text-center font-mono text-[10px] text-ink-4">
+      <div className="spectrum-strip__caption mt-0.5 text-center font-mono text-[10px] text-ink-4">
         波长（nm）· {dispersion === 'prism' ? '棱镜式色散' : '光栅式色散'}
       </div>
     </div>

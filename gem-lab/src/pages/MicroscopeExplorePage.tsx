@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Header from '../components/shared/Header';
 import { createMicroscopeViewer, type MicroscopeSnapshot, type MicroscopeViewer } from '../components/microscope3d/viewer.js';
 import type { LightingMode, MicroscopeEvent, ViewMode } from '../components/microscope3d/reviewState.js';
+import '../styles/instrument-ui.css';
 import '../styles/microscope-explore.css';
 
 export const MICROSCOPE_ASSETS = `${import.meta.env.BASE_URL}assets/3d/gem-microscope/lighting-v3/`;
@@ -49,7 +50,7 @@ export default function MicroscopeExplorePage() {
     : '整机外形沿用 KSW6000 候选；进入灯室剖解，查看底光与短行程切换。';
 
   return (
-    <div className="mic-explore" data-testid="microscope-explore-page">
+    <div className="mic-explore iu" data-instrument="microscope" data-testid="microscope-explore-page">
       <Header title="宝石显微镜" subtitle="3D 三路照明" />
       <main className="mic-explore__main">
         <section className="mic-explore__viewport" ref={viewportRef} aria-label="显微镜三维教学区">

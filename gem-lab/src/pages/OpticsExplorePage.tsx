@@ -4,7 +4,9 @@ import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom';
 import Header from '../components/shared/Header';
 import { createOpticsViewer, type OpticsSnapshot, type OpticsViewer } from '../components/optics3d/opticsViewer.js';
 import { isOpticsInstrument, OPTICS_INSTRUMENTS, opticsAssetBase, type OpticsInstrumentId } from '../components/optics3d/opticsInstruments';
+import '../styles/instrument-ui.css';
 import '../styles/microscope-explore.css';
+import RangeControl from '../components/shared/RangeControl';
 import RefractometerCourse from '../components/refractometer3d/RefractometerCourse';
 import SpectroscopeCourse, { GratingSpectroscopeCourse } from '../components/spectroscope/SpectroscopeCourse';
 
@@ -36,22 +38,25 @@ function OpticsExplore({ instrumentId, onStart }: { instrumentId: OpticsInstrume
   const viewportRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<OpticsViewer | null>(null);
   const [snapshot, setSnapshot] = useState<OpticsSnapshot>({ status: 'loading' });
+  // 载入失败时原地重试：换一次 attempt 就重新创建查看器，不刷新整页（同偏光镜）。
+  const [attempt, setAttempt] = useState(0);
 
   useResponsiveViewport();
 
   useEffect(() => {
     if (!viewportRef.current) return;
+    setSnapshot({ status: 'loading' });
     const viewer = createOpticsViewer({ container: viewportRef.current, instrument: instrumentId, assetBase, onChange: setSnapshot });
     viewerRef.current = viewer;
     return () => { viewer.dispose(); viewerRef.current = null; };
-  }, [instrumentId, assetBase]);
+  }, [instrumentId, assetBase, attempt]);
 
   const ready = snapshot.status === 'ready' ? snapshot : null;
   const viewer = () => viewerRef.current;
   const siblings = (Object.keys(OPTICS_INSTRUMENTS) as OpticsInstrumentId[]).filter(id => id !== instrumentId);
 
   return (
-    <div className="mic-explore" data-testid="optics-explore-page" data-instrument={instrumentId}>
+    <div className="mic-explore iu" data-testid="optics-explore-page" data-instrument={info.knowledgeId} data-optics={instrumentId}>
       <Header title={info.name} subtitle="3D 结构与光路" />
       <main className="mic-explore__main">
         <section className="mic-explore__viewport" ref={viewportRef} aria-label="三维仪器与光路">
@@ -65,7 +70,7 @@ function OpticsExplore({ instrumentId, onStart }: { instrumentId: OpticsInstrume
             <div className="mic-explore__error" role="alert">
               <img src={`${assetBase}poster.png`} alt={`${info.name}模型静态预览`} />
               <p>三维模型载入失败：{snapshot.error}。上图为静态预览。</p>
-              <button type="button" onClick={() => window.location.reload()}>重新载入</button>
+              <button type="button" className="iu-button" onClick={() => setAttempt((n) => n + 1)} data-testid="optics-retry">重新载入</button>
             </div>
           )}
           {ready && <div className="mic-explore__help"><small>拖动旋转 · 滚轮缩放 · 箭头表示传播方向</small><p data-testid="optics-case-caption"><strong>{ready.currentCase.label}</strong></p></div>}
@@ -75,7 +80,8 @@ function OpticsExplore({ instrumentId, onStart }: { instrumentId: OpticsInstrume
           {course && <section className="mic-explore__block" aria-label={course.title}>
             <h2>{course.title} <span>约 {course.minutes} 分钟</span></h2>
             <p className="mic-explore__note">{course.intro}</p>
-            <div className="mic-explore__row"><button type="button" onClick={() => onStart('student')}>开始学习（学员）</button><button type="button" onClick={() => onStart('teacher')}>讲师演示</button></div>
+            {/* 同偏光镜：讲师演示为主要按钮。 */}
+            <div className="mic-explore__row"><button type="button" className="iu-button iu-button--primary" onClick={() => onStart('teacher')}>讲师演示</button><button type="button" className="iu-button" onClick={() => onStart('student')}>开始学习（学员）</button></div>
           </section>}
           <section className="mic-explore__block" aria-label="光路示例">
             <h2>光路示例 <span>{instrumentId === 'refractometer' ? 'paper-optics-v2' : 'paper-optics-v1'}</span></h2>
@@ -97,10 +103,9 @@ function OpticsExplore({ instrumentId, onStart }: { instrumentId: OpticsInstrume
 
           <section className="mic-explore__block" aria-label="结构与部件">
             <h2>结构与部件 <span>{ready ? `${ready.parts.length} 个` : ''}</span></h2>
-            <label className="mic-explore__range">
-              <span>连续拆解<output>{Math.round((ready?.state.explode ?? 0) * 100)}%</output></span>
-              <input type="range" min={0} max={100} step={1} aria-label="连续拆解" disabled={!ready} value={Math.round((ready?.state.explode ?? 0) * 100)} onChange={event => viewer()?.setExplode(Number(event.target.value) / 100)} />
-            </label>
+            <fieldset className="mic-explore__range-field" disabled={!ready}>
+              <RangeControl label="连续拆解" min={0} max={100} value={Math.round((ready?.state.explode ?? 0) * 100)} display={`${Math.round((ready?.state.explode ?? 0) * 100)}%`} ends={['装配', '拆开']} onChange={(value) => viewer()?.setExplode(value / 100)} />
+            </fieldset>
             <div className="mic-explore__row">
               <button type="button" disabled={!ready} onClick={() => viewer()?.reset()}>全部复位</button>
               <button type="button" disabled={!ready} onClick={() => viewer()?.fit()}>完整视野</button>

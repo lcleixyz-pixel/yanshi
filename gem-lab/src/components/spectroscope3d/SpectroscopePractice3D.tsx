@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import Header from '../shared/Header';
+import RangeControl from '../shared/RangeControl';
+import { useMediaQuery } from '../shared/useMediaQuery';
+import { useResponsiveViewport } from '../shared/useResponsiveViewport';
 import SpectrumStrip from '../spectroscope/SpectrumStrip';
 import { SAMPLES, SAMPLES_BY_ID } from '../../data/samples';
 import { BENCH_METHOD_LABELS, benchMethodSetup, createBenchState, evaluateBench, type BenchMethod, type BenchState } from '../../domain/spectroscopeBench';
@@ -45,6 +49,12 @@ export default function SpectroscopePractice3D({ sampleId, onDetectionComplete, 
   const [notes, setNotes] = useState('');
   const [confirmation, setConfirmation] = useState(false);
   const [saved, setSaved] = useState<RecordSnapshot | null>(null);
+  // 载入失败时原地重试：换一次 attempt 就重新创建查看器，不刷新整页（同偏光镜）。
+  const [attempt, setAttempt] = useState(0);
+  // 手机上三维区吸附顶部，并叠一条只读小光谱：拖滑杆时模型与谱线同时可见（同课程停靠窗）。
+  const phone = useMediaQuery('(max-width: 760px)');
+  // 三维页面使用响应式视口（同课程与自由探索页），手机上才会按手机布局显示。
+  useResponsiveViewport();
   const hostRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<ReturnType<typeof createSpectroscopeBenchViewer> | null>(null);
   const evaluation = useMemo(() => evaluateBench(sample, state), [sample, state]);
@@ -58,13 +68,14 @@ export default function SpectroscopePractice3D({ sampleId, onDetectionComplete, 
         onSelect: (part) => setSelectedPart(PARTS[part] ?? part),
       });
       viewerRef.current = viewer;
+      setStatus('loading');
       return () => { viewer.dispose(); viewerRef.current = null; };
     } catch (cause) {
       setStatus('error');
       setError(cause instanceof Error ? cause.message : '三维视图未能初始化');
     }
-  }, []);
-  useEffect(() => { viewerRef.current?.update(state, evaluation, specimen); }, [state, evaluation, specimen]);
+  }, [attempt]);
+  useEffect(() => { viewerRef.current?.update(state, evaluation, specimen); }, [state, evaluation, specimen, attempt]);
   useEffect(() => { viewerRef.current?.setBeams(showBeams); }, [showBeams]);
 
   const invalidate = () => {
@@ -111,11 +122,8 @@ export default function SpectroscopePractice3D({ sampleId, onDetectionComplete, 
   const signalLabel = { off: '光源未就绪', missed: '需要重新对光', bypass: '当前是旁路白光', blocked: '当前方法无法观察', aligned: '可以开始观察', weak: '收光偏弱 · 需复核' }[evaluation.lightPath];
   const setup = benchMethodSetup(state.method);
 
-  return <div className="spectro-bench" data-testid="spectroscope-practice-3d" data-light-path={evaluation.lightPath} data-reference-status={evaluation.referenceStatus}>
-    <header className="sb-topbar">
-      <Link to="/" className="sb-brand"><span className="sb-brand-mark">◈</span><span>宝石检测实训<span className="sb-brand-sub">GEM LAB / PRACTICE</span></span></Link>
-      <div className="sb-toplinks"><Link to="/knowledge/spectroscope">仪器知识</Link>{onUse2D ? <button onClick={onUse2D} data-testid="detection-use-2d">改用 2D 版本</button> : <Link to="/demo/spectroscope">2D 演示</Link>}</div>
-    </header>
+  return <div className="spectro-bench iu" data-instrument="spectroscope" data-testid="spectroscope-practice-3d" data-light-path={evaluation.lightPath} data-reference-status={evaluation.referenceStatus}>
+    <Header title="分光镜" subtitle={detection ? '检测练习' : '照明与夹样练习'} right={<div className="sb-toplinks"><Link to="/knowledge/spectroscope">← 仪器知识库</Link>{onUse2D ? <button className="iu-button" onClick={onUse2D} data-testid="detection-use-2d">改用 2D 版本</button> : <Link to="/demo/spectroscope">2D 演示</Link>}</div>} />
     <main className="sb-main">
       <div className="sb-title-row">
         <div><div className="sb-eyebrow">SPECTROSCOPE PRACTICE <span>03</span></div><h1>摆好样品，找到合适的光路。</h1><p>分光镜观察练习 · {detection ? '检测模式，独立记录未知样品' : '光源、镊子与黑色放置台面'}</p></div>
@@ -127,7 +135,8 @@ export default function SpectroscopePractice3D({ sampleId, onDetectionComplete, 
             <div className="sb-view-heading"><div className="sb-segment" aria-label="分光镜机型">{(['prism', 'grating'] as const).map((kind) => <button key={kind} aria-pressed={state.dispersion === kind} onClick={() => update({ dispersion: kind })}>{kind === 'prism' ? '棱镜式' : '光栅式'}</button>)}</div><span className="sb-live"><i className={state.power ? 'is-on' : ''} />{state.power ? 'LIGHT ON' : 'LIGHT OFF'}</span></div>
             <div className="sb-scene" ref={hostRef} aria-label="光源、镊子与手持分光镜三维场景" data-testid="bench-scene" />
             {status === 'loading' && <div className="sb-scene-message" role="status"><span className="sb-loader" />正在准备三维观察场景…</div>}
-            {status === 'error' && <div className="sb-scene-message sb-scene-error" role="alert"><strong>三维视图暂不可用</strong><p>{error || '可以继续使用 2D 演示进行观察练习。'}</p>{onUse2D ? <button className="sb-primary" onClick={onUse2D}>改用 2D 检测</button> : <Link to="/demo/spectroscope" className="sb-primary">进入 2D 演示</Link>}</div>}
+            {status === 'error' && <div className="sb-scene-message sb-scene-error" role="alert"><strong>三维视图暂不可用</strong><p>{error || '可以继续使用 2D 演示进行观察练习。'}</p><button className="iu-button sb-retry" onClick={() => setAttempt((n) => n + 1)} data-testid="bench-retry">重新载入</button>{onUse2D ? <button className="sb-primary" onClick={onUse2D}>改用 2D 检测</button> : <Link to="/demo/spectroscope" className="sb-primary">进入 2D 演示</Link>}</div>}
+            {phone && !pending && <div className="sb-mini-spectrum" data-testid="bench-mini-spectrum" aria-hidden="true"><SpectrumStrip features={evaluation.display.features} display={evaluation.display} dispersion={state.dispersion} interactive={false} showFeatureDescriptions={false} height={30} /></div>}
             <div className="sb-scene-caption"><span>{selectedPart || '拖动旋转 · 滚轮缩放 · 点击查看部件'}</span><span>手持操作与尺寸示意</span></div>
             <div className="sb-camera-bar"><div aria-label="观察视角">{([['whole', '全景'], ['lamp', '灯头'], ['sample', '样品'], ['instrument', '分光镜']] as const).map(([key, label]) => <button key={key} aria-pressed={view === key} onClick={() => changeView(key)}>{label}</button>)}</div><label><input type="checkbox" checked={showBeams} onChange={(event) => setShowBeams(event.target.checked)} />光路示意</label></div>
           </div>
@@ -154,10 +163,10 @@ export default function SpectroscopePractice3D({ sampleId, onDetectionComplete, 
         </section>
         <aside className="sb-controls" aria-label="照明与持样操作">
           <div className="sb-section-title"><div><span className="sb-step">01</span><h2>照明与持样</h2></div><button className="sb-text-button" onClick={() => { invalidate(); setState(createBenchState(state.dispersion)); changeView('whole'); }} data-testid="bench-reset">复位</button></div>
-          <section className="sb-control-section"><div className="sb-control-heading"><h3>光源</h3><button role="switch" aria-label="光源电源" aria-checked={state.power} className={`sb-switch ${state.power ? 'is-on' : ''}`} onClick={() => update({ power: !state.power })}><i />{state.power ? '已开启' : '未开启'}</button></div><Slider label="光源亮度" value={state.brightness} onChange={(brightness) => update({ brightness })} display={`${Math.round(state.brightness * 100)}%`} /><p className="sb-control-note">连续可见光源示意。亮度滑杆表示相对光量。</p></section>
-          <section className="sb-control-section"><h3>观察方式</h3><div className="sb-methods">{METHODS.map((method, index) => <button key={method} aria-pressed={state.method === method} onClick={() => update({ method, ...benchMethodSetup(method) })}><span>0{index + 1}</span>{BENCH_METHOD_LABELS[method]}</button>)}</div><Slider label="灯头横移" value={state.lampLateral} min={-1} max={1} step={0.01} onChange={(lampLateral) => update({ lampLateral })} display={`${Math.round(state.lampLateral * 110)} mm`} /><Slider label={setupOnly ? '灯头俯角（相对台面）' : '灯头角度'} value={state.lampAngle} min={setupOnly ? 5 : -75} max={75} step={1} onChange={(lampAngle) => update({ lampAngle })} display={`${state.lampAngle}°`} /><details className="sb-hint"><summary>对光提示</summary><p>先让灯头照中样品，再确认样品出光区域对着入光口。{state.method === 'transmission' ? '透射示意从直向照明开始。' : '灯头从一侧上方俯照，分光镜从另一侧上方斜向观察。'}</p><p>照明示意起点：横移约 {Math.round(setup.lampLateral * 110)} mm、{setupOnly ? '相对台面俯角' : '水平偏转'} {setup.lampAngle}°；实际样品需逐步寻找合适位置。{setupOnly && '图示约 45° 是常见起点，需按样品形状与明亮区域微调，并非统一测量条件。'}</p>{!detection && <button onClick={() => update(setup)}>摆到示意起点</button>}</details></section>
-          <section className="sb-control-section"><div className="sb-control-heading"><h3>样品</h3><button aria-pressed={state.samplePlaced} className="sb-place" onClick={() => update({ samplePlaced: !state.samplePlaced })} data-testid="bench-place-sample">{state.samplePlaced ? '取下样品' : setupOnly ? '放到黑色台面' : '镊子夹样'}</button></div><Slider label="样品横移" value={state.sampleOffset} min={-1} max={1} step={0.01} onChange={(sampleOffset) => update({ sampleOffset })} display={`${Math.round(state.sampleOffset * 35)} mm`} /><Slider label="样品转角" value={state.sampleRotation} min={0} max={360} step={1} onChange={(sampleRotation) => update({ sampleRotation })} display={`${state.sampleRotation}°`} /><p className="sb-control-note">{state.method === 'internal-reflection' ? '较大平面向下放稳；刻面石台面朝下、亭部朝上，寻找另一侧亭部的出射亮区。' : state.method === 'surface-reflection' ? '较平的支承面朝下放稳；弧面石弧面朝上，分光镜对准被照亮的表面区域。' : '用镊子夹持样品，保持样品与分光镜入光口对准。'}</p></section>
-          <section className="sb-control-section"><h3>{state.dispersion === 'prism' ? '狭缝与调焦' : '固定光学结构'}</h3>{state.dispersion === 'prism' ? <><Slider label="狭缝宽度" value={state.slit} onChange={(slit) => update({ slit })} display={`${Math.round(state.slit * 100)}%`} /><Slider label="调焦位置" value={state.focus} onChange={(focus) => update({ focus })} display={`${Math.round(state.focus * 100)}%`} /><p className="sb-control-note">狭缝过宽会模糊，过窄会变暗；抽拉调焦让谱线清晰。</p></> : <p className="sb-control-note">本袖珍光栅式机型的狭缝与焦距固定。请通过照明、摆样改善观察。</p>}</section>
+          <section className="sb-control-section"><div className="sb-control-heading"><h3>光源</h3><button role="switch" aria-label="光源电源" aria-checked={state.power} className={`sb-switch ${state.power ? 'is-on' : ''}`} onClick={() => update({ power: !state.power })}><i />{state.power ? '已开启' : '未开启'}</button></div><Slider label="光源亮度" value={state.brightness} onChange={(brightness) => update({ brightness })} display={`${Math.round(state.brightness * 100)}%`} ends={['暗', '亮']} /><p className="sb-control-note">连续可见光源示意。亮度滑杆表示相对光量。</p></section>
+          <section className="sb-control-section"><h3>观察方式</h3><div className="sb-methods">{METHODS.map((method, index) => <button key={method} aria-pressed={state.method === method} onClick={() => update({ method, ...benchMethodSetup(method) })}><span>0{index + 1}</span>{BENCH_METHOD_LABELS[method]}</button>)}</div><Slider label="灯头横移" value={state.lampLateral} min={-1} max={1} step={0.01} onChange={(lampLateral) => update({ lampLateral })} display={`${Math.round(state.lampLateral * 110)} mm`} ends={['左', '右']} /><Slider label={setupOnly ? '灯头俯角（相对台面）' : '灯头角度'} value={state.lampAngle} min={setupOnly ? 5 : -75} max={75} step={1} onChange={(lampAngle) => update({ lampAngle })} display={`${state.lampAngle}°`} ends={setupOnly ? ['5°', '75°'] : ['−75°', '75°']} /><details className="sb-hint"><summary>对光提示</summary><p>先让灯头照中样品，再确认样品出光区域对着入光口。{state.method === 'transmission' ? '透射示意从直向照明开始。' : '灯头从一侧上方俯照，分光镜从另一侧上方斜向观察。'}</p><p>照明示意起点：横移约 {Math.round(setup.lampLateral * 110)} mm、{setupOnly ? '相对台面俯角' : '水平偏转'} {setup.lampAngle}°；实际样品需逐步寻找合适位置。{setupOnly && '图示约 45° 是常见起点，需按样品形状与明亮区域微调，并非统一测量条件。'}</p>{!detection && <button onClick={() => update(setup)}>摆到示意起点</button>}</details></section>
+          <section className="sb-control-section"><div className="sb-control-heading"><h3>样品</h3><button aria-pressed={state.samplePlaced} className="sb-place" onClick={() => update({ samplePlaced: !state.samplePlaced })} data-testid="bench-place-sample">{state.samplePlaced ? '取下样品' : setupOnly ? '放到黑色台面' : '镊子夹样'}</button></div><Slider label="样品横移" value={state.sampleOffset} min={-1} max={1} step={0.01} onChange={(sampleOffset) => update({ sampleOffset })} display={`${Math.round(state.sampleOffset * 35)} mm`} ends={['左', '右']} /><Slider label="样品转角" value={state.sampleRotation} min={0} max={360} step={1} onChange={(sampleRotation) => update({ sampleRotation })} display={`${state.sampleRotation}°`} ends={['0°', '360°']} /><p className="sb-control-note">{state.method === 'internal-reflection' ? '较大平面向下放稳；刻面石台面朝下、亭部朝上，寻找另一侧亭部的出射亮区。' : state.method === 'surface-reflection' ? '较平的支承面朝下放稳；弧面石弧面朝上，分光镜对准被照亮的表面区域。' : '用镊子夹持样品，保持样品与分光镜入光口对准。'}</p></section>
+          <section className="sb-control-section"><h3>{state.dispersion === 'prism' ? '狭缝与调焦' : '固定光学结构'}</h3>{state.dispersion === 'prism' ? <><Slider label="狭缝宽度" value={state.slit} onChange={(slit) => update({ slit })} display={`${Math.round(state.slit * 100)}%`} ends={['窄', '宽']} /><Slider label="调焦位置" value={state.focus} onChange={(focus) => update({ focus })} display={`${Math.round(state.focus * 100)}%`} ends={['缩回', '拉出']} /><p className="sb-control-note">狭缝过宽会模糊，过窄会变暗；抽拉调焦让谱线清晰。</p></> : <p className="sb-control-note">本袖珍光栅式机型的狭缝与焦距固定。请通过照明、摆样改善观察。</p>}</section>
         </aside>
       </div>
       <footer className="sb-footer"><span>从操作 → 观察 → 记录 → 复核</span><p>基于资料参考谱的教学模拟。三维光源、镊子和台面为教学示意；光量与可见性未作实物标定。记录观察不等同于掌握鉴定技能。</p></footer>
@@ -165,6 +174,7 @@ export default function SpectroscopePractice3D({ sampleId, onDetectionComplete, 
   </div>;
 }
 
-function Slider({ label, value, onChange, display, min = 0, max = 1, step = .01 }: { label: string; value: number; onChange: (value: number) => void; display: string; min?: number; max?: number; step?: number }) {
-  return <label className="sb-slider"><span>{label}<output>{display}</output></span><input aria-label={label} type="range" min={min} max={max} step={step} value={value} onChange={(event) => onChange(Number(event.target.value))} /></label>;
+/** 工作台滑杆：共用 RangeControl（标签、读数、两端刻度），数值仍按状态原单位传递。 */
+function Slider({ label, value, onChange, display, ends, min = 0, max = 1, step = .01 }: { label: string; value: number; onChange: (value: number) => void; display: string; ends: readonly [string, string]; min?: number; max?: number; step?: number }) {
+  return <RangeControl label={label} value={value} min={min} max={max} step={step} display={display} ends={ends} onChange={onChange} />;
 }

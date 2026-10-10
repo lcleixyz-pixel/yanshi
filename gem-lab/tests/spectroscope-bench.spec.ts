@@ -212,7 +212,8 @@ test('窄屏可以看到场景、视场与操作，页面没有横向溢出', as
   await page.setViewportSize({ width: 390, height: 844 });
   await openBench(page);
   await prepare(page);
-  await expect(page.getByTestId('spectroscope-spectrum-strip')).toBeVisible();
+  // 手机上三维区另叠一条只读小光谱；这里检查可标记的完整光谱。
+  await expect(page.getByRole('region', { name: '目镜观察与波长标记' }).getByTestId('spectroscope-spectrum-strip')).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.getByTestId('bench-no-absorption').check();
   await expect(page.getByTestId('bench-review-record')).toBeEnabled();

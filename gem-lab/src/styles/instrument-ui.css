@@ -45,6 +45,15 @@
   --iu-accent-soft: #f0f9ff;
   --iu-accent-line: #bae6fd;
 }
+/* 显微镜在 instruments.ts 中没有主题色，取项目品牌蓝。 */
+.iu[data-instrument="microscope"] {
+  --iu-accent: #3d7ed0;
+  --iu-accent-strong: #1f5ba8;
+  --iu-accent-ink: #174685;
+  --iu-accent-soft: #eef5fd;
+  --iu-accent-line: #c7dbf3;
+}
+.mic-explore__range-field { border: 0; margin: 0; padding: 0; min-width: 0; }
 .iu *, .iu *::before, .iu *::after { box-sizing: border-box; }
 .iu button, .iu input, .iu select, .iu textarea { font: inherit; }
 .iu button { touch-action: manipulation; }

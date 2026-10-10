@@ -8,6 +8,7 @@ import RefractometerDemo from '@/components/refractometer/RefractometerDemo';
 import PolariscopeDemo from '@/components/polariscope/PolariscopeDemo';
 // 偏光镜检测默认使用 3D；三维依赖按需加载，WebGL 不可用或加载失败时回退到 2D 检测模式。
 const PolariscopeDetection3D = lazy(() => import('@/components/polariscope3d/PolariscopeDetection3D'));
+const SpectroscopePractice3D = lazy(() => import('@/components/spectroscope3d/SpectroscopePractice3D'));
 function supportsWebGL() {
   try { const canvas = document.createElement('canvas'); return !!(canvas.getContext('webgl2') ?? canvas.getContext('webgl')); } catch { return false; }
 }
@@ -16,7 +17,7 @@ import { INSTRUMENT_LIST, INSTRUMENTS } from '@/data/instruments';
 import { SAMPLES_BY_DIFFICULTY, SAMPLES_BY_ID } from '@/data/samples';
 import type { Difficulty, InstrumentId } from '@/data/types';
 import { selectPracticeSample } from '@/domain/practice';
-import { useDetection } from '@/store/detectionStore';
+import { countValidObservations, isLegacyDetectionSample, isSpectroscopeObservationPending, useDetection } from '@/store/detectionStore';
 import { useProgress } from '@/store/progressStore';
 import { formatDR, OPTICAL_LABEL } from '@/utils/format';
 import clsx from '@/utils/clsx';
@@ -46,9 +47,12 @@ export default function DetectionWorkflowPage() {
   const chooseDifficulty = useDetection((s) => s.chooseDifficulty);
   const startSession = useDetection((s) => s.startSession);
   const resetSession = useDetection((s) => s.resetSession);
+  const legacySample = isLegacyDetectionSample(session.sampleId);
+  const validObservationCount = countValidObservations(session);
+  const spectrumUnverified = isSpectroscopeObservationPending(session);
 
   const [step, setStep] = useState(() =>
-    session.sampleId ? (session.instrumentsUsed.length > 0 ? 5 : 3) : session.difficulty ? 2 : 1,
+    legacySample ? 5 : session.sampleId ? (session.instrumentsUsed.length > 0 ? 5 : 3) : session.difficulty ? 2 : 1,
   );
   const [activeInstrument, setActiveInstrument] = useState<InstrumentId | null>(null);
   const drawnSample = session.sampleId;
@@ -72,30 +76,41 @@ export default function DetectionWorkflowPage() {
   };
 
   const handleSelectInstrument = (id: InstrumentId) => {
+    if (legacySample) return;
     setActiveInstrument(id);
     setStep(4);
   };
 
   const [polariscope2D, setPolariscope2D] = useState(() => !supportsWebGL());
+  const [spectroscope2D, setSpectroscope2D] = useState(() => !supportsWebGL());
   const handleDetectionComplete = () => {
     setActiveInstrument(null);
-    setStep(useDetection.getState().instrumentsUsed.length >= 2 ? 5 : 3);
+    setStep(countValidObservations(useDetection.getState()) >= 2 ? 5 : 3);
   };
 
   const handleReset = () => {
-    if (drawnSample && !window.confirm('确定清空当前检测并重新开始吗？')) return;
+    if (drawnSample && !window.confirm(legacySample
+      ? '重新练习将清空这次旧版会话的检测记录；历史成绩仍保留。确定使用已拆分的新样品重新开始吗？'
+      : '确定清空当前检测并重新开始吗？')) return;
     resetSession();
     setActiveInstrument(null);
     setStep(1);
   };
 
-  const allDone = session.instrumentsUsed.length >= 2;
+  const allDone = validObservationCount >= 2;
 
   // 检测模式下打开演示，全屏渲染（覆盖 Stepper）
   if (step === 4 && activeInstrument === 'polariscope' && drawnSample && !polariscope2D) {
     return (
       <Suspense fallback={<div className="grid min-h-screen place-items-center text-sm text-ink-3">正在载入 3D 偏光镜…</div>}>
         <PolariscopeDetection3D sampleId={drawnSample} onDetectionComplete={handleDetectionComplete} onUse2D={() => setPolariscope2D(true)} />
+      </Suspense>
+    );
+  }
+  if (step === 4 && activeInstrument === 'spectroscope' && drawnSample && !spectroscope2D) {
+    return (
+      <Suspense fallback={<div className="grid min-h-screen place-items-center text-sm text-ink-3">正在载入分光镜三维工作台…</div>}>
+        <SpectroscopePractice3D sampleId={drawnSample} onDetectionComplete={handleDetectionComplete} onUse2D={() => setSpectroscope2D(true)} />
       </Suspense>
     );
   }
@@ -137,6 +152,13 @@ export default function DetectionWorkflowPage() {
 
       <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-6 px-4 py-8 sm:px-8 lg:grid-cols-[1fr_320px] lg:px-10">
         <main className="space-y-6">
+          {legacySample && (
+            <section className="rounded-2xl border border-amber-200 bg-amber-50 p-5" data-testid="legacy-sample-notice">
+              <h2 className="font-semibold text-amber-900">旧版石榴石记录已保留</h2>
+              <p className="mt-2 text-sm leading-6 text-amber-900">旧版混合数据已拆分为铁铝榴石和镁铝榴石。本次记录仅供查看；已有评估可复盘，尚未评估的记录不再评分，也不会转为新样品的掌握度。</p>
+              <button type="button" onClick={handleReset} className="btn-ghost mt-3 text-xs">使用新样品重新练习</button>
+            </section>
+          )}
           {/* Step 1 */}
           {step === 1 && (
             <Card stepNo={1} title="选择检测难度">
@@ -178,7 +200,7 @@ export default function DetectionWorkflowPage() {
           )}
 
           {/* Step 2: 抽样 */}
-          {step >= 2 && (
+          {step >= 2 && !legacySample && (
             <Card stepNo={2} title="抽取未知样品" disabled={step < 2}>
               {!drawnSample ? (
                 <div className="flex flex-col items-center justify-center gap-4 py-6">
@@ -244,14 +266,15 @@ export default function DetectionWorkflowPage() {
           )}
 
           {/* Step 3: 选择仪器 */}
-          {step >= 3 && drawnSample && (
+          {step >= 3 && drawnSample && !legacySample && (
             <Card stepNo={3} title="选择检测仪器">
               <p className="mb-4 text-sm text-ink-3">
-                建议至少使用两种仪器以获得可靠判定。已使用仪器会标记为绿色。
+                请完成至少两项有效仪器观察再进入命名评估。待核定的教学谱只保留尝试记录，不计入有效观察。
               </p>
               <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                 {INSTRUMENT_LIST.map((it) => {
                   const used = session.instrumentsUsed.includes(it.id);
+                  const pending = used && it.id === 'spectroscope' && spectrumUnverified;
                   return (
                     <button
                       key={it.id}
@@ -259,12 +282,12 @@ export default function DetectionWorkflowPage() {
                       onClick={() => handleSelectInstrument(it.id)}
                       className={clsx(
                         'group relative flex flex-col gap-2 rounded-2xl border-2 p-4 text-left transition-all',
-                        used
+                        pending ? 'border-amber-300 bg-amber-50/40' : used
                           ? 'border-emerald-400 bg-emerald-50/40'
                           : 'border-line bg-white hover:-translate-y-1 hover:border-brand-400 hover:shadow-lift',
                       )}
                     >
-                      {used && (
+                      {used && !pending && (
                         <span className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500 text-sm text-white shadow-card">
                           ✓
                         </span>
@@ -287,6 +310,7 @@ export default function DetectionWorkflowPage() {
                         </span>
                       </div>
                       <div className="text-xs text-ink-3">{it.intro.tagline}</div>
+                      {pending && <p className="text-xs text-amber-800">已记录尝试 · 教学谱图待核定</p>}
                     </button>
                   );
                 })}
@@ -296,7 +320,7 @@ export default function DetectionWorkflowPage() {
                 <div className="mt-5 flex items-center justify-between rounded-xl bg-brand-50/60 px-4 py-3">
                   <div className="text-sm">
                     <span className="font-semibold text-brand-700">
-                      已完成 {session.instrumentsUsed.length} / 3 项检测
+                      已完成 {validObservationCount} / 3 项有效观察
                     </span>
                     <span className="ml-2 text-xs text-ink-3">
                       可继续使用其他仪器，或进入数据汇总
@@ -322,7 +346,7 @@ export default function DetectionWorkflowPage() {
                   instrumentId="refractometer"
                   title="折射仪数据"
                   used={session.instrumentsUsed.includes('refractometer')}
-                  onJumpBack={handleSelectInstrument}
+                  onJumpBack={legacySample ? undefined : handleSelectInstrument}
                   body={
                     <div className="space-y-1">
                       <DataLine
@@ -360,7 +384,7 @@ export default function DetectionWorkflowPage() {
                   instrumentId="polariscope"
                   title="偏光镜数据"
                   used={session.instrumentsUsed.includes('polariscope')}
-                  onJumpBack={handleSelectInstrument}
+                  onJumpBack={legacySample ? undefined : handleSelectInstrument}
                   body={
                     <div className="space-y-1">
                       <DataLine
@@ -390,7 +414,7 @@ export default function DetectionWorkflowPage() {
                   instrumentId="spectroscope"
                   title="分光镜数据"
                   used={session.instrumentsUsed.includes('spectroscope')}
-                  onJumpBack={handleSelectInstrument}
+                  onJumpBack={legacySample ? undefined : handleSelectInstrument}
                   body={
                     <div className="space-y-1">
                       <DataLine
@@ -408,27 +432,39 @@ export default function DetectionWorkflowPage() {
                 />
               </div>
 
+              {legacySample && (
+                <div className="mt-4 space-y-2 rounded-xl bg-brand-50/50 p-4 text-xs leading-6" data-testid="legacy-record-details">
+                  <p>记录样品：{sample?.name}；开始时间：{session.startedAt ? new Date(session.startedAt).toLocaleString('zh-CN') : '未记录'}；已评估次数：{session.assessmentAttemptCount}</p>
+                  <p>折射仪：方法 {session.refractometer.method === 'facet' ? '刻面法' : session.refractometer.method === 'spot' ? '点测法' : '未记录'}；备注：{session.refractometer.notes || '无'}</p>
+                  <p>偏光镜：旋转 {session.polariscope.rotation}°；备注：{session.polariscope.notes || '无'}</p>
+                  <p>分光镜：方法 {session.spectroscope.method === 'transmission' ? '透射法' : session.spectroscope.method === 'internal-reflection' ? '内反射法' : session.spectroscope.method === 'surface-reflection' ? '表面反射法' : '未记录'}；吸收带：{session.spectroscope.bandRanges.map((band) => `${band.start}–${band.end} nm`).join(' / ') || '未标记'}；备注：{session.spectroscope.notes || '无'}</p>
+                </div>
+              )}
+
               <div className="mt-6 flex items-center justify-between rounded-xl border border-line bg-white p-4">
                 <div className="text-sm text-ink-2">
-                  {allDone
-                    ? '✓ 已完成至少两项检测，可以进入命名评估了'
-                    : `还需完成 ${2 - session.instrumentsUsed.length} 项检测才建议进入评估`}
+                  {legacySample ? '旧版记录仅供查看，不再产生新的评分或掌握度。' : allDone
+                    ? '✓ 已完成至少两项有效观察，可以进入命名评估了'
+                    : `还需完成 ${2 - validObservationCount} 项有效观察才能进入评估`}
+                  {!legacySample && spectrumUnverified && session.instrumentsUsed.includes('spectroscope') && (
+                    <p className="mt-1 text-xs text-amber-800">本次方法的教学谱图未核定：已保留分光镜尝试记录，不计入有效观察。</p>
+                  )}
                 </div>
                 <div className="flex gap-2">
-                  <button
+                  {!legacySample && <button
                     type="button"
                     onClick={() => setStep(3)}
                     className="btn-ghost text-xs"
                   >
                     继续检测其他仪器
-                  </button>
+                  </button>}
                   <button
                     type="button"
                     onClick={() => navigate('/assessment')}
-                    disabled={!allDone}
+                    disabled={legacySample ? !session.assessment : !allDone}
                     className="btn-primary text-xs disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    进入命名评估 →
+                    {legacySample ? '查看已有评估 →' : '进入命名评估 →'}
                   </button>
                 </div>
               </div>
@@ -469,13 +505,14 @@ export default function DetectionWorkflowPage() {
             <div className="space-y-2">
               {INSTRUMENT_LIST.map((it) => {
                 const used = session.instrumentsUsed.includes(it.id);
+                const pending = used && it.id === 'spectroscope' && spectrumUnverified;
                 return (
                   <div
                     key={it.id}
                     className="flex items-center justify-between rounded-lg bg-brand-50/30 px-3 py-2 text-xs"
                   >
                     <span>{it.name}</span>
-                    {used ? (
+                    {pending ? <span className="text-amber-800">已记录，待核定</span> : used ? (
                       <span className="flex items-center gap-1 text-emerald-600">
                         <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                         已完成

@@ -1,0 +1,52 @@
+{
+  "id": "spectroscope-workbench",
+  "date": "2026-10-10",
+  "version": "simple-2",
+  "method": "Original parametric hard-surface teaching design; no cloud triangles, manufacturer CAD or photographic pixels copied into GLB.",
+  "modelSha256": "7b463996f6e104566c1fa3bf54bdb1201c524e2c0f9fa491224acb8d27e96fbd",
+  "byteLength": 1881892,
+  "scriptSha256": "e35deccf970c7f6ab009e465bdfab0ebc2e2f1bd75196fa4aab63c9c1e062470",
+  "rebuildScript": "gem-lab/tools/3d-assets/spectroscope-workbench/build_simple.py",
+  "dimensionsCalibrated": false,
+  "manufacturerAuthorizedDigitalTwin": false,
+  "opticalSimulation": false,
+  "photometrySimulated": false,
+  "sources": [
+    {
+      "url": "https://www.szfable.com/product/optical-fiber-light-fcl-100/",
+      "title": "FABLE Optical Fiber Light FCL-100",
+      "use": "White single-guide enclosure, shared off/brightness knob, front red indicator and thin metal probe visual reference. Dimensions remain teaching design, no logo copied.",
+      "retrieved": "2026-10-10"
+    },
+    {
+      "url": "http://bgyq.cn/iw/iw.html",
+      "title": "南京宝光 光纤冷光源 GI-I50WE/50W",
+      "use": "Corroboration of plain light-colour source enclosure, optical outlet, adjustable lamp and suitability for gemstone absorption observation.",
+      "retrieved": "2026-10-10"
+    },
+    {
+      "url": "https://www.szfable.com/product/gem-tweezers-dt-m/",
+      "title": "FABLE Gem Tweezers DT-M",
+      "use": "Fine twin-arm non-locking gem-tweezer form only; no branding or manufacturer pixels copied.",
+      "retrieved": "2026-10-10"
+    }
+  ],
+  "cloudCandidateUsage": "Separate external appearance comparison if supplied; not used as this asset geometry.",
+  "verification": {
+    "meshChecks": "validation/mesh-check.json",
+    "gltfValidator": {
+      "errors": 0,
+      "warnings": 0,
+      "pass": true,
+      "modelSha256": "7b463996f6e104566c1fa3bf54bdb1201c524e2c0f9fa491224acb8d27e96fbd"
+    },
+    "browserAcceptance": false,
+    "userAppearanceAcceptance": false
+  },
+  "geometryBuildScriptSha256": "5c6f04eabbcf1a84ae47f51698e2256dfec49298fb783164646c097913a7ac16",
+  "runtimeMetadataRevision": {
+    "date": "2026-10-10",
+    "scope": "Labels and runtime placement metadata corrected from FABLE usage diagrams; GLB geometry and editable Blender geometry unchanged.",
+    "source": "https://gemtesting-en.com/3-gem-spectroscope.html"
+  }
+}

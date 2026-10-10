@@ -10,6 +10,7 @@ const ProgressPage = lazy(() => import('./pages/ProgressPage'));
 const PolariscopeExplorePage = lazy(() => import('./pages/PolariscopeExplorePage'));
 const MicroscopeExplorePage = lazy(() => import('./pages/MicroscopeExplorePage'));
 const OpticsExplorePage = lazy(() => import('./pages/OpticsExplorePage'));
+const SpectroscopePractice3D = lazy(() => import('./components/spectroscope3d/SpectroscopePractice3D'));
 
 function PageFallback() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
         <Route path="/explore/polariscope" element={<PolariscopeExplorePage />} />
         <Route path="/explore/microscope" element={<MicroscopeExplorePage />} />
         <Route path="/explore/optics/:instrumentId" element={<OpticsExplorePage />} />
+        <Route path="/explore/spectroscope-bench" element={<SpectroscopePractice3D />} />
         <Route path="/detection" element={<DetectionWorkflowPage />} />
         <Route path="/assessment" element={<NamingAssessmentPage />} />
         <Route path="/progress" element={<ProgressPage />} />

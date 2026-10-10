@@ -5,9 +5,10 @@ import Header from '@/components/shared/Header';
 import Pill from '@/components/shared/Pill';
 import PracticeReport from '@/components/report/PracticeReport';
 import { SAMPLES, SAMPLES_BY_DIFFICULTY, SAMPLES_BY_ID } from '@/data/samples';
+import type { SpectrumFeatures } from '@/data/types';
 import { computeScore } from '@/domain/assessment';
 import { checkRI, formatRIReference } from '@/domain/refractometerAssessment';
-import { useDetection } from '@/store/detectionStore';
+import { countValidObservations, isLegacyDetectionSample, isSpectroscopeObservationPending, useDetection } from '@/store/detectionStore';
 import { useProgress } from '@/store/progressStore';
 import { formatDR, formatRI, OPTICAL_LABEL } from '@/utils/format';
 import clsx from '@/utils/clsx';
@@ -35,6 +36,10 @@ export default function NamingAssessmentPage() {
   const [hintUsed, setHintUsed] = useState(false);
 
   const correctSample = session.sampleId ? SAMPLES_BY_ID[session.sampleId] : null;
+  const legacySample = isLegacyDetectionSample(session.sampleId);
+  const validObservationCount = countValidObservations(session);
+  const spectrumUnverified = isSpectroscopeObservationPending(session);
+  const spectrumNonDiagnostic = correctSample?.spectrum.diagnosticStatus === 'non-diagnostic' || correctSample?.spectrum.features.length === 0;
   const assessment = session.assessment;
   const attempts = assessment?.attemptNumber ?? session.assessmentAttemptCount + 1;
 
@@ -46,6 +51,10 @@ export default function NamingAssessmentPage() {
       return () => clearTimeout(t);
     }
   }, [correctSample, navigate]);
+
+  useEffect(() => {
+    if (spectrumUnverified && evidence === 'spectrum') setEvidence(null);
+  }, [spectrumUnverified, evidence]);
 
   // 6 个候选项：正确答案 + 5 个干扰项（同难度池中随机）
   const options = useMemo(() => {
@@ -68,7 +77,8 @@ export default function NamingAssessmentPage() {
   const isCorrect = answerId !== null && answerId === correctSample?.id;
 
   const handleSubmit = () => {
-    if (!selected || !evidence || !correctSample || !session.difficulty || assessment) return;
+    if (!selected || !evidence || !correctSample || !session.difficulty || assessment || legacySample || validObservationCount < 2) return;
+    if (evidence === 'spectrum' && spectrumUnverified) return;
     const score = computeScore(
       isCorrect,
       session.difficulty,
@@ -100,12 +110,14 @@ export default function NamingAssessmentPage() {
   };
 
   const handleRetry = () => {
+    if (legacySample) return;
     clearAssessment();
     setSelected(null);
     setEvidence(null);
   };
 
   const handleNext = () => {
+    if (legacySample && !window.confirm('重新练习将清空这次旧版会话的检测记录；历史成绩仍保留。确定使用已拆分的新样品重新开始吗？')) return;
     resetSession();
     navigate('/detection');
   };
@@ -125,13 +137,14 @@ export default function NamingAssessmentPage() {
     );
   }
 
-  if (session.instrumentsUsed.length < 2 && !assessment) {
+  if (validObservationCount < 2 && !assessment && !legacySample) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-brand-50/40 px-4">
         <div className="max-w-md rounded-2xl bg-white p-8 text-center shadow-card">
           <div className="text-3xl">🔎</div>
           <h2 className="mt-2 font-display text-lg font-semibold">检测数据尚不充分</h2>
-          <p className="mt-2 text-sm leading-6 text-ink-3">请先完成至少两项仪器观察，再根据记录进行命名。</p>
+          <p className="mt-2 text-sm leading-6 text-ink-3">当前已完成 {validObservationCount} 项有效观察，请先完成至少两项，再根据记录进行命名。</p>
+          {spectrumUnverified && session.instrumentsUsed.includes('spectroscope') && <p className="mt-2 text-sm leading-6 text-amber-800">本次方法的教学谱图未核定：已保留分光镜尝试记录，不计入有效观察。请补充其他仪器的观察。</p>}
           <Link to="/detection" className="btn-primary mt-5 inline-flex text-xs">返回检测流程</Link>
         </div>
       </div>
@@ -152,6 +165,16 @@ export default function NamingAssessmentPage() {
       />
 
       <div className="mx-auto max-w-[1100px] space-y-6 px-10 py-8">
+        {legacySample && (
+          <section className="rounded-2xl border border-amber-200 bg-amber-50 p-5" data-testid="legacy-sample-notice">
+            <h2 className="font-semibold text-amber-900">旧版石榴石记录已保留</h2>
+            <p className="mt-2 text-sm leading-6 text-amber-900">旧版混合数据已拆分为铁铝榴石和镁铝榴石。已有评估保留作历史复盘；尚未评估的记录不再评分，也不会转为新样品的掌握度。</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Link to="/detection" className="btn-ghost text-xs">查看原始检测记录</Link>
+              <button type="button" onClick={handleNext} className="btn-ghost text-xs">使用新样品重新练习</button>
+            </div>
+          </section>
+        )}
         {/* Stage 1: 数据回顾 */}
         <section className="rounded-3xl border border-line bg-white p-6 shadow-soft">
           <div className="mb-4 flex items-center gap-3">
@@ -229,7 +252,7 @@ export default function NamingAssessmentPage() {
         </section>
 
         {/* Stage 2: 命名 */}
-        {!assessment && (
+        {!assessment && !legacySample && (
           <section className="rounded-3xl border border-line bg-white p-6 shadow-soft">
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -256,11 +279,12 @@ export default function NamingAssessmentPage() {
               <div className="grid gap-2 sm:grid-cols-3">
                 {EVIDENCE.filter((item) => session.instrumentsUsed.includes(item.instrument)).map((item) => (
                   <label key={item.id} className={clsx('flex cursor-pointer gap-2 rounded-lg border p-3 text-left transition-colors', evidence === item.id ? 'border-brand bg-white shadow-soft' : 'border-line bg-white/70 hover:border-brand-300')}>
-                    <input type="radio" name="evidence" value={item.id} checked={evidence === item.id} onChange={() => setEvidence(item.id)} className="mt-0.5 accent-brand" />
-                    <span><strong className="block text-xs text-ink">{item.title}</strong><span className="mt-1 block text-[11px] leading-4 text-ink-3">{item.detail}</span></span>
+                    <input type="radio" name="evidence" value={item.id} checked={evidence === item.id} disabled={item.id === 'spectrum' && spectrumUnverified} onChange={() => setEvidence(item.id)} className="mt-0.5 accent-brand" />
+                    <span><strong className="block text-xs text-ink">{item.title}</strong><span className="mt-1 block text-[11px] leading-4 text-ink-3">{item.id === 'spectrum' && spectrumUnverified ? '教学谱图未核定，不能作为主要诊断依据' : item.id === 'spectrum' && spectrumNonDiagnostic ? '不特征也是观察信息，但该项不足以单独判断' : item.detail}</span></span>
                   </label>
                 ))}
               </div>
+              {spectrumUnverified && <p className="mt-3 text-xs leading-5 text-amber-800">本次观察所需的教学谱图尚未核定，不能将待核状态当作已观察到无吸收。请选用本次其他仪器的有效记录作为主要依据。</p>}
             </fieldset>
 
             {showHint && (
@@ -442,7 +466,7 @@ export default function NamingAssessmentPage() {
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-sm font-semibold text-white">
                 3
               </span>
-              <h2 className="font-display text-lg font-semibold">反馈结果</h2>
+              <h2 className="font-display text-lg font-semibold">{legacySample ? '历史评估结果（旧版数据）' : '反馈结果'}</h2>
             </div>
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -576,14 +600,7 @@ export default function NamingAssessmentPage() {
                             ? session.spectroscope.notes
                           : '—'
                       }
-                      standardValue={
-                        correctSample.spectrum.features.length > 0
-                          ? correctSample.spectrum.features
-                              .filter((f) => f.intensity === 'strong')
-                              .map((f) => `${f.wavelength}nm`)
-                              .join(',') || '无显著'
-                          : '无显著'
-                      }
+                      standardValue={formatSpectrumReference(correctSample.spectrum)}
                       ok={null}
                       onRetry={
                         session.spectroscope.markedLines.length === 0 && !session.spectroscope.notes
@@ -611,7 +628,7 @@ export default function NamingAssessmentPage() {
                 <button type="button" onClick={() => window.print()} className="btn-ghost text-xs">
                   打印练习记录
                 </button>
-                {!isCorrect && (
+                {!isCorrect && !legacySample && (
                   <button type="button" onClick={handleRetry} className="btn-ghost text-xs">
                     🔄 原题复盘（不计分）
                   </button>
@@ -732,6 +749,15 @@ function CompareRow({
 }
 
 // ===== 工具函数 =====
+function formatSpectrumReference(spectrum: SpectrumFeatures): string {
+  if (spectrum.diagnosticStatus === 'unverified') return '教学谱图未核定';
+  if (spectrum.features.length === 0) return '不特征';
+  const intensity = { strong: '强', medium: '中等', weak: '弱' };
+  const features = spectrum.features.map((feature) =>
+    `${feature.wavelength} nm ${intensity[feature.intensity]}吸收${feature.type === 'band' ? '带' : '线'}`).join('，');
+  return spectrum.diagnosticStatus === 'non-diagnostic' ? `${features}（不单独作诊断）` : features;
+}
+
 function formatDuration(start: number | null): string {
   if (!start) return '00:00';
   const sec = Math.floor((Date.now() - start) / 1000);
@@ -778,10 +804,12 @@ function generateConfusionAnalysis(userId: string, correctId: string): string {
       );
     }
   }
-  if (reasons.length === 0) {
-    reasons.push(
-      `两者外观或部分特征相似，但${c.name}的特征光谱和${u.name}有明显不同，建议下次重点关注分光镜数据`,
-    );
+  const spectrumInsufficient = [u.spectrum, c.spectrum].some((spectrum) =>
+    spectrum.features.length === 0 || spectrum.diagnosticStatus === 'non-diagnostic' || spectrum.diagnosticStatus === 'unverified');
+  if (spectrumInsufficient) {
+    reasons.push('其中至少一个样品的光谱不特征或尚未核定，仅该项不足以区分；请结合折射率、光性及其他检测信息');
+  } else if (reasons.length === 0) {
+    reasons.push('两者外观或部分特征相似，请核对具体吸收位置、带形和观察条件，并结合其他检测信息；不能仅凭参考谱图认定两者可被明确区分');
   }
   return reasons.join('；') + '。';
 }

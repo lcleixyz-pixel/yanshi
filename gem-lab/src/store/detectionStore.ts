@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import { SAMPLES_BY_ID } from '@/data/samples';
+import { LEGACY_SAMPLES_BY_ID, SAMPLES_BY_ID } from '@/data/samples';
 import type { Difficulty, InstrumentId, OpticalCharacter } from '@/data/types';
 
 export interface RefractometerData {
@@ -22,6 +22,8 @@ export interface PolariscopeData {
 export type SpectroscopeMethod = 'transmission' | 'internal-reflection' | 'surface-reflection';
 
 export interface SpectroscopeData {
+  /** 新观察明确区分有效记录、参考谱待核与仅布置练习；旧记录兼容缺省。 */
+  observationStatus?: 'observed' | 'pending-reference' | 'setup-only';
   /** 选用的照明方法 */
   method: SpectroscopeMethod | null;
   markedLines: number[]; // 用户标记的吸收线波长
@@ -110,6 +112,22 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
 
+/** 历史混合样品只供查看原记录，不能沿用旧数据产生新的检测或评分。 */
+export function isLegacyDetectionSample(sampleId: string | null): boolean {
+  return sampleId !== null && Object.prototype.hasOwnProperty.call(LEGACY_SAMPLES_BY_ID, sampleId);
+}
+
+/** 保留仪器尝试记录，但未核定的教学谱不能充当已完成的有效观察。 */
+export function isSpectroscopeObservationPending(session: Pick<DetectionSession, 'sampleId'> & Partial<Pick<DetectionSession, 'spectroscope'>>): boolean {
+  return (session.sampleId !== null && SAMPLES_BY_ID[session.sampleId]?.spectrum.diagnosticStatus === 'unverified') ||
+    session.spectroscope?.observationStatus === 'pending-reference' || session.spectroscope?.observationStatus === 'setup-only';
+}
+
+export function countValidObservations(session: Pick<DetectionSession, 'sampleId' | 'instrumentsUsed'> & Partial<Pick<DetectionSession, 'spectroscope'>>): number {
+  const spectrumUnverified = isSpectroscopeObservationPending(session);
+  return new Set(session.instrumentsUsed.filter((id) => id !== 'spectroscope' || !spectrumUnverified)).size;
+}
+
 function isSavedSession(value: unknown): value is DetectionSession {
   if (!isRecord(value)) return false;
   const { difficulty, sampleId, instrumentsUsed, refractometer, polariscope, spectroscope, startedAt, assessment, assessmentAttemptCount } = value;
@@ -120,6 +138,7 @@ function isSavedSession(value: unknown): value is DetectionSession {
     id === 'refractometer' || id === 'polariscope' || id === 'spectroscope')) return false;
   if (!isRecord(refractometer) || !isRecord(polariscope) || !isRecord(spectroscope)) return false;
   if (!Array.isArray(spectroscope.markedLines) || !Array.isArray(spectroscope.bandRanges)) return false;
+  if (spectroscope.observationStatus !== undefined && !['observed', 'pending-reference', 'setup-only'].includes(String(spectroscope.observationStatus))) return false;
   if (typeof refractometer.notes !== 'string' || typeof polariscope.notes !== 'string' || typeof spectroscope.notes !== 'string') return false;
   if (startedAt !== null && (typeof startedAt !== 'number' || !Number.isFinite(startedAt))) return false;
   if (typeof assessmentAttemptCount !== 'number' || !Number.isInteger(assessmentAttemptCount) || assessmentAttemptCount < 0) return false;
@@ -137,27 +156,32 @@ export const useDetection = create<DetectionState>()(
     (set, get) => ({
       ...blank,
       chooseDifficulty: (difficulty) => set({ ...blank, difficulty }),
-      startSession: (difficulty, sampleId) =>
-        set({ ...blank, difficulty, sampleId, startedAt: Date.now() }),
+      startSession: (difficulty, sampleId) => {
+        if (!SAMPLES_BY_ID[sampleId] || isLegacyDetectionSample(sampleId)) return;
+        set({ ...blank, difficulty, sampleId, startedAt: Date.now() });
+      },
       resetSession: () => set({ ...blank }),
       markInstrument: (id) =>
-        set((s) => ({
+        set((s) => isLegacyDetectionSample(s.sampleId) ? s : ({
           instrumentsUsed: s.instrumentsUsed.includes(id)
             ? s.instrumentsUsed
             : [...s.instrumentsUsed, id],
           assessment: null,
         })),
       setRefractometer: (data) =>
-        set((s) => ({ refractometer: { ...s.refractometer, ...data }, assessment: null })),
-      setPolariscope: (data) => set((s) => ({ polariscope: { ...s.polariscope, ...data }, assessment: null })),
+        set((s) => isLegacyDetectionSample(s.sampleId) ? s : ({ refractometer: { ...s.refractometer, ...data }, assessment: null })),
+      setPolariscope: (data) => set((s) => isLegacyDetectionSample(s.sampleId) ? s : ({ polariscope: { ...s.polariscope, ...data }, assessment: null })),
       setSpectroscope: (data) =>
-        set((s) => ({ spectroscope: { ...s.spectroscope, ...data }, assessment: null })),
+        set((s) => isLegacyDetectionSample(s.sampleId) ? s : ({ spectroscope: { ...s.spectroscope, ...data }, assessment: null })),
       recordAssessment: (attempt) => {
-        if (get().assessment) return false;
+        if (get().assessment || isLegacyDetectionSample(get().sampleId) || countValidObservations(get()) < 2) return false;
+        if (attempt.evidence === 'spectrum' && isSpectroscopeObservationPending(get())) return false;
         set((s) => ({ assessment: attempt, assessmentAttemptCount: s.assessmentAttemptCount + 1 }));
         return true;
       },
-      clearAssessment: () => set({ assessment: null }),
+      clearAssessment: () => {
+        if (!isLegacyDetectionSample(get().sampleId)) set({ assessment: null });
+      },
     }),
     {
       name: 'gem-lab-detection-v1',

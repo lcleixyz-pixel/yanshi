@@ -6,6 +6,10 @@
 
 `gem-lab` 是本仓库实际运行的前端应用，基于 Vite + React + TypeScript + Tailwind CSS 构建。它面向宝石检测教学场景，提供仪器知识库、交互式演示、检测流程和命名评估。
 
+分光镜的三维照明与夹样练习位于 `/explore/spectroscope-bench`，采用光源、镊子及反射观察放置台面，共用两种分光镜和全部样品；资产与观察边界见[制作说明](../docs/分光镜照明与夹样场景-2026-10-10.md)。
+
+仪器外形通常优先参考[飞博尔](https://www.szfable.cn/)、[南京宝光](http://bgyq.cn/M/M.html)和 GIA 的官方资料；用户提供实物或指定型号时，以该对象为准。外形参考不等于内部结构与光学参数已获厂商确认。
+
 偏光镜网页运行资产保留在普通 Git 中，`npm run build` 无需恢复制作素材。需要编辑 Blender 母版或重建模型时，见[资产归档与恢复](../docs/资产归档与恢复.md)；当前母版位于归档中的 `repair-v2/repaired.blend`。
 
 ## 运行环境
@@ -56,7 +60,7 @@ npm run preview         # 预览 dist 构建产物，默认端口 4173
 npm run prepare-assets  # 从仓库根目录复制/切分运行时素材
 npm run test:smoke      # Playwright 核心路由烟测
 npm run test:types      # 浏览器与单元测试源码的 TypeScript 检查
-npm run test:matrix     # Playwright 28 样品 × 3 仪器检测矩阵
+npm run test:matrix     # Playwright 当前全部样品 × 3 仪器检测矩阵
 npm run test:unit       # 抽样、掌握度和计分纯逻辑测试
 ```
 
@@ -85,7 +89,7 @@ gem-lab/
 │   └── utils/                  # 小工具函数
 ├── tests/                      # Playwright 测试
 │   ├── smoke.spec.ts           # 核心路由烟测
-│   ├── matrix.spec.ts          # 28 样品 × 3 仪器检测矩阵
+│   ├── matrix.spec.ts          # 当前全部样品 × 3 仪器检测矩阵
 │   ├── learning-loop.spec.ts   # 会话恢复、图鉴迁移、评估闭环
 │   └── unit/                   # 纯逻辑测试
 ├── index.html
@@ -175,7 +179,7 @@ npm run prepare-assets
 ```bash
 npm run build        # tsc 项目引用类型检查 + Vite 生产构建
 npm run test:smoke   # 核心路由烟测（自动启动 vite preview:4173）
-npm run test:matrix  # 28 样品 × 3 仪器检测矩阵（较慢，交互/数据改动后运行）
+npm run test:matrix  # 当前全部样品 × 3 仪器检测矩阵（较慢，交互/数据改动后运行）
 npm run test:unit    # 练习抽样、掌握度和计分纯逻辑
 ```
 

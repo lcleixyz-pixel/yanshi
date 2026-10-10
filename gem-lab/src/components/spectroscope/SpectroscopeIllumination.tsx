@@ -5,8 +5,8 @@ import type { SpectroscopeMethod } from '@/store/detectionStore';
  * 三种照明方法的 SVG 光路示意图（共用同一画板）。
  *
  * - transmission         透射光法：黑板 + 中央小孔，光源从下方垂直入射，分光镜从上方收光
- * - internal-reflection  内反射法：黑色背景 + 样品台面向下，光源以 ≈ 45° 入射，光在亭部反射后从冠部出射
- * - surface-reflection   表面反射法：黑色背景 + 样品抛光面朝上，光源斜射在表面反射后被分光镜接收
+ * - internal-reflection  内反射法：黑色背景 + 样品台面向下，光源与收光方向各同台面约 45°，光经底部台面内侧反射后从对侧亭部出射
+ * - surface-reflection   表面反射法：黑色背景 + 样品待测面朝上，光源与分光镜在两侧斜上方照明和收光
  */
 export default function SpectroscopeIllumination({
   method,
@@ -16,7 +16,7 @@ export default function SpectroscopeIllumination({
   className,
 }: {
   method: SpectroscopeMethod;
-  /** 0–90，仅用于 internal-reflection / surface-reflection 显示入射角 */
+  /** 0–90，反射场景中光线与水平台面的夹角，非统一最佳角度 */
   angleDeg: number;
   lightOn: boolean;
   sampleOn: boolean;
@@ -50,6 +50,9 @@ export default function SpectroscopeIllumination({
         <marker id="rayArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
           <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b" />
         </marker>
+        <marker id="reflectionArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" markerUnits="userSpaceOnUse" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b" />
+        </marker>
       </defs>
 
       {/* 背景 */}
@@ -68,8 +71,8 @@ export default function SpectroscopeIllumination({
         <SurfaceReflectionScene W={W} H={H} lightOn={lightOn} sampleOn={sampleOn} angleDeg={angleDeg} />
       )}
 
-      {/* 顶部分光镜（共用） */}
-      <Spectroscope x={W * 0.78} y={H * 0.18} angleDeg={90} />
+      {/* 透射场景沿用原仪器；反射场景各自将入光口与出射光同轴。 */}
+      {method === 'transmission' && <Spectroscope x={W * 0.78} y={H * 0.18} angleDeg={90} />}
 
       {/* 角标 */}
       <text x="10" y="16" fontSize="11" fill="#475569" fontFamily="ui-monospace, monospace">
@@ -145,98 +148,55 @@ function TransmissionScene({
 function InternalReflectionScene({
   W, H, lightOn, sampleOn, angleDeg,
 }: { W: number; H: number; lightOn: boolean; sampleOn: boolean; angleDeg: number }) {
-  const cx = W * 0.42;
-  const tableY = H * 0.62;
-  const sampleY = tableY - 4;
-
-  // 入射角：以"垂直方向"为 0°，向左偏离 angleDeg
+  const cx = W * 0.47;
+  const tableY = H * 0.66;
   const a = (angleDeg * Math.PI) / 180;
-  const len = 80;
-  const startX = cx - Math.sin(a) * len;
-  const startY = sampleY - Math.cos(a) * len;
-  // 出射光：向右上方偏出，分光镜在右上
-  const outAng = (-angleDeg * Math.PI) / 180;
-  const outLen = 60;
-  const outX = cx - Math.sin(outAng) * outLen;
-  const outY = sampleY - Math.cos(outAng) * outLen;
-
-  // 角度合格区间（35°–55°）
-  const angleOk = angleDeg >= 35 && angleDeg <= 55;
+  // 对称截面示意：亭部朝上，较小的台面在底部接触黑底。
+  const entry = { x: cx - 13, y: tableY - 38 + 26 * 13 / 22 };
+  const exit = { x: cx + 13, y: entry.y };
+  const lamp = { x: entry.x - Math.cos(a) * 70, y: entry.y - Math.sin(a) * 70 };
+  const mouth = { x: exit.x + Math.cos(a) * 62, y: exit.y - Math.sin(a) * 62 };
 
   return (
     <>
-      {/* 黑色背景 */}
-      <rect x={cx - 70} y={tableY} width={140} height={8} fill="url(#bgFloor)" />
-      <text x={cx + 18} y={tableY + 6} fontSize="9" fill="#475569">黑色背景</text>
-
-      {/* 样品（台面向下，亭部朝上） */}
-      {sampleOn && <Gem cx={cx} cy={sampleY - 6} kind="table-down" />}
+      <rect x={cx - 76} y={tableY} width={152} height={8} fill="url(#bgFloor)" />
       {sampleOn && (
-        <text x={cx + 14} y={sampleY - 14} fontSize="9" fill="#0c4a6e" fontWeight="600">台面 ↓</text>
+        <>
+          <Gem cx={cx} cy={tableY - 10} kind="table-down" />
+          <line x1={cx - 10} y1={tableY - 0.8} x2={cx + 10} y2={tableY - 0.8} stroke="#831843" strokeWidth="1.2" />
+        </>
       )}
 
-      {/* 法线（虚线） */}
-      {sampleOn && (
-        <line
-          x1={cx} y1={sampleY - 8} x2={cx} y2={sampleY - 50}
-          stroke="#94a3b8" strokeDasharray="2 2" strokeWidth="0.8"
-        />
-      )}
+      {/* 入射和出射都在背景上方；约 45° 是教学起点，不作角度合格判断。 */}
+      <Bulb x={lamp.x} y={lamp.y} on={lightOn} />
+      <text x={lamp.x - 20} y={lamp.y - 16} fontSize="9" fill="#475569">光纤灯</text>
+      <Spectroscope x={mouth.x} y={mouth.y} angleDeg={180 - angleDeg} showLabel={false} />
+      <text x={mouth.x + Math.cos(a) * 50 + 12} y={mouth.y - Math.sin(a) * 50 + 8} fontSize="9" fill="#1e293b" fontWeight="600">分光镜</text>
 
-      {/* 光纤灯（左上斜入射） */}
-      <Bulb x={startX} y={startY} on={lightOn} />
-      <text x={startX - 28} y={startY - 10} fontSize="9" fill="#475569">光纤灯</text>
-
-      {/* 入射光线 */}
-      {lightOn && sampleOn && (
-        <line
-          x1={startX + 4} y1={startY + 4}
-          x2={cx - 6} y2={sampleY - 8}
-          stroke="url(#rayGrad)" strokeWidth="5" strokeLinecap="round" opacity="0.95"
-          markerEnd="url(#rayArrow)"
-        />
-      )}
-
-      {/* 样品内部折线（光程示意：进入冠部 → 亭部反射 → 冠部出射） */}
       {lightOn && sampleOn && (
         <>
+          <line
+            x1={lamp.x} y1={lamp.y} x2={entry.x} y2={entry.y}
+            stroke="#fbbf24" strokeWidth="2.4" strokeLinecap="round" opacity="0.95"
+            markerEnd="url(#reflectionArrow)"
+          />
+          {/* 折线始终在石内，底部转向点位于台面内侧，不进入桌面。 */}
           <polyline
-            points={`${cx - 6},${sampleY - 8} ${cx - 1},${sampleY + 4} ${cx + 6},${sampleY - 8}`}
-            stroke="#fbbf24" strokeWidth="2" fill="none" strokeDasharray="3 2" opacity="0.95"
+            points={`${entry.x},${entry.y} ${cx},${tableY - 0.8} ${exit.x},${exit.y}`}
+            stroke="#f59e0b" strokeWidth="1.6" fill="none" strokeDasharray="2 1.5"
           />
-          {/* 亭部反射"V"标注 */}
-          <text x={cx - 4} y={sampleY + 18} fontSize="8" fill="#0c4a6e">亭部内反射</text>
-
-          {/* 出射光线 */}
+          {/* 从样品出射点到狭缝是一条直线，与镜筒轴线一致。 */}
           <line
-            x1={cx + 6} y1={sampleY - 10}
-            x2={outX} y2={outY}
-            stroke="url(#rayGrad)" strokeWidth="5" strokeLinecap="round" opacity="0.95"
-          />
-          {/* 续射至分光镜 */}
-          <line
-            x1={outX} y1={outY}
-            x2={W * 0.78} y2={H * 0.30}
-            stroke="url(#rayGrad)" strokeWidth="5" strokeLinecap="round" opacity="0.9"
-            markerEnd="url(#rayArrow)"
+            x1={exit.x} y1={exit.y} x2={mouth.x} y2={mouth.y}
+            stroke="#fbbf24" strokeWidth="2.4" strokeLinecap="round" opacity="0.95"
+            markerEnd="url(#reflectionArrow)"
           />
         </>
       )}
 
-      {/* 角度标注 */}
-      {sampleOn && (
-        <text
-          x={cx - 24} y={sampleY - 36}
-          fontSize="10"
-          fill={angleOk ? '#059669' : '#d97706'}
-          fontWeight="700"
-        >
-          {angleDeg.toFixed(0)}°
-          {angleOk ? ' ✓' : ' ⚠'}
-        </text>
-      )}
-
-      <text x={cx - 70} y={tableY + 22} fontSize="9" fill="#64748b">推荐 35°–55° · 光程被延长</text>
+      <text x={cx} y={tableY + 23} textAnchor="middle" fontSize="10" fill="#0c4a6e" fontWeight="600">台面向下贴黑底 · 亭部朝上</text>
+      <text x={cx} y={tableY + 39} textAnchor="middle" fontSize="9" fill="#64748b">两侧光线各与台面 {angleDeg.toFixed(0)}° · 按亮点微调</text>
+      <text x={cx} y={tableY + 54} textAnchor="middle" fontSize="9" fill="#64748b">石内路径为示意，不代表精确光线追迹</text>
     </>
   );
 }
@@ -245,106 +205,50 @@ function InternalReflectionScene({
 function SurfaceReflectionScene({
   W, H, lightOn, sampleOn, angleDeg,
 }: { W: number; H: number; lightOn: boolean; sampleOn: boolean; angleDeg: number }) {
-  const cx = W * 0.42;
-  const tableY = H * 0.62;
-  const sampleY = tableY - 4;
-
-  // 镜面反射：入射角 = 反射角
+  const cx = W * 0.47;
+  const tableY = H * 0.66;
+  const surfaceY = tableY - 24;
   const a = (angleDeg * Math.PI) / 180;
-  const len = 75;
-  const startX = cx - Math.sin(a) * len;
-  const startY = sampleY - Math.cos(a) * len;
-  const reflX = cx + Math.sin(a) * len;
-  const reflY = sampleY - Math.cos(a) * len;
-
-  // 角度合格区间（25°–65°）
-  const angleOk = angleDeg >= 25 && angleDeg <= 65;
+  const lamp = { x: cx - Math.cos(a) * 76, y: surfaceY - Math.sin(a) * 76 };
+  const mouth = { x: cx + Math.cos(a) * 70, y: surfaceY - Math.sin(a) * 70 };
 
   return (
     <>
-      {/* 黑色背景 */}
-      <rect x={cx - 70} y={tableY} width={140} height={8} fill="url(#bgFloor)" />
-      <text x={cx + 18} y={tableY + 6} fontSize="9" fill="#475569">黑色背景</text>
-
-      {/* 样品（玉石抛光面朝上） */}
+      <rect x={cx - 76} y={tableY} width={152} height={8} fill="url(#bgFloor)" />
+      {/* 弧面样品底部接触黑底，反射点取实际上表面的最高点。 */}
       {sampleOn && (
-        <g>
-          <ellipse cx={cx} cy={sampleY - 4} rx={26} ry={6} fill="#10b981" stroke="#065f46" strokeWidth="1" />
-          <ellipse cx={cx} cy={sampleY - 6} rx={24} ry={4} fill="#34d399" opacity="0.85" />
-          <text x={cx + 28} y={sampleY - 6} fontSize="9" fill="#0c4a6e" fontWeight="600">抛光面</text>
-        </g>
+        <>
+          <path
+            d={`M ${cx - 28},${tableY} A 28 24 0 0 1 ${cx + 28},${tableY} Z`}
+            fill="#34d399" stroke="#065f46" strokeWidth="1"
+          />
+          <line x1={cx} y1={surfaceY} x2={cx} y2={surfaceY - 33} stroke="#94a3b8" strokeDasharray="2 2" strokeWidth="0.8" />
+        </>
       )}
 
-      {/* 法线（虚线） */}
-      {sampleOn && (
-        <line
-          x1={cx} y1={sampleY - 6} x2={cx} y2={sampleY - 56}
-          stroke="#94a3b8" strokeDasharray="2 2" strokeWidth="0.8"
-        />
-      )}
+      <Bulb x={lamp.x} y={lamp.y} on={lightOn} />
+      <text x={lamp.x - 20} y={lamp.y - 16} fontSize="9" fill="#475569">光纤灯</text>
+      <Spectroscope x={mouth.x} y={mouth.y} angleDeg={180 - angleDeg} showLabel={false} />
+      <text x={mouth.x + Math.cos(a) * 50 + 12} y={mouth.y - Math.sin(a) * 50 + 8} fontSize="9" fill="#1e293b" fontWeight="600">分光镜</text>
 
-      {/* 光纤灯（左上） */}
-      <Bulb x={startX} y={startY} on={lightOn} />
-      <text x={startX - 28} y={startY - 10} fontSize="9" fill="#475569">光纤灯</text>
-
-      {/* 入射光 → 表面 */}
-      {lightOn && sampleOn && (
-        <line
-          x1={startX + 4} y1={startY + 4}
-          x2={cx - 4} y2={sampleY - 6}
-          stroke="url(#rayGrad)" strokeWidth="5" strokeLinecap="round" opacity="0.95"
-          markerEnd="url(#rayArrow)"
-        />
-      )}
-
-      {/* 反射光 → 分光镜 */}
       {lightOn && sampleOn && (
         <>
           <line
-            x1={cx + 4} y1={sampleY - 6}
-            x2={reflX} y2={reflY}
-            stroke="url(#rayGrad)" strokeWidth="5" strokeLinecap="round" opacity="0.95"
+            x1={lamp.x} y1={lamp.y} x2={cx} y2={surfaceY}
+            stroke="#fbbf24" strokeWidth="2.4" strokeLinecap="round" opacity="0.95"
+            markerEnd="url(#reflectionArrow)"
           />
           <line
-            x1={reflX} y1={reflY}
-            x2={W * 0.78} y2={H * 0.30}
-            stroke="url(#rayGrad)" strokeWidth="5" strokeLinecap="round" opacity="0.9"
-            markerEnd="url(#rayArrow)"
+            x1={cx} y1={surfaceY} x2={mouth.x} y2={mouth.y}
+            stroke="#fbbf24" strokeWidth="2.4" strokeLinecap="round" opacity="0.95"
+            markerEnd="url(#reflectionArrow)"
           />
         </>
       )}
 
-      {/* 入射角 / 反射角 标注弧 */}
-      {sampleOn && (
-        <>
-          <path
-            d={`M ${cx - Math.sin(a) * 22},${sampleY - Math.cos(a) * 22}
-               A 22 22 0 0 1 ${cx},${sampleY - 22}`}
-            stroke="#0c4a6e"
-            strokeWidth="0.9"
-            fill="none"
-          />
-          <path
-            d={`M ${cx},${sampleY - 22}
-               A 22 22 0 0 1 ${cx + Math.sin(a) * 22},${sampleY - Math.cos(a) * 22}`}
-            stroke="#0c4a6e"
-            strokeWidth="0.9"
-            fill="none"
-          />
-          <text
-            x={cx} y={sampleY - 36}
-            fontSize="10"
-            textAnchor="middle"
-            fill={angleOk ? '#059669' : '#d97706'}
-            fontWeight="700"
-          >
-            ±{angleDeg.toFixed(0)}°
-            {angleOk ? ' ✓' : ' ⚠'}
-          </text>
-        </>
-      )}
-
-      <text x={cx - 70} y={tableY + 22} fontSize="9" fill="#64748b">入射角 = 反射角 · 推荐 25°–65°</text>
+      <text x={cx} y={tableY + 23} textAnchor="middle" fontSize="10" fill="#0c4a6e" fontWeight="600">样品放在黑底 · 待测上表面受照</text>
+      <text x={cx} y={tableY + 39} textAnchor="middle" fontSize="9" fill="#64748b">两侧光线各与台面 {angleDeg.toFixed(0)}° · 收集最亮区域</text>
+      <text x={cx} y={tableY + 54} textAnchor="middle" fontSize="9" fill="#64748b">约 45° 起调，实际方向随表面与亮点调整</text>
     </>
   );
 }
@@ -379,18 +283,18 @@ function Gem({ cx, cy, kind }: { cx: number; cy: number; kind: 'faceted-up' | 't
   return (
     <g>
       <polygon
-        points={`${cx - 14},${cy + 10} ${cx + 14},${cy + 10} ${cx + 10},${cy + 2} ${cx - 10},${cy + 2}`}
+        points={`${cx - 10},${cy + 10} ${cx + 10},${cy + 10} ${cx + 22},${cy - 2} ${cx - 22},${cy - 2}`}
         fill="#fbcfe8" stroke="#9d174d" strokeWidth="1"
       />
       <polygon
-        points={`${cx - 10},${cy + 2} ${cx + 10},${cy + 2} ${cx},${cy - 12}`}
+        points={`${cx - 22},${cy - 2} ${cx + 22},${cy - 2} ${cx},${cy - 28}`}
         fill="#f9a8d4" stroke="#9d174d" strokeWidth="1"
       />
     </g>
   );
 }
 
-function Spectroscope({ x, y, angleDeg }: { x: number; y: number; angleDeg: number }) {
+function Spectroscope({ x, y, angleDeg, showLabel = true }: { x: number; y: number; angleDeg: number; showLabel?: boolean }) {
   return (
     <g transform={`translate(${x},${y}) rotate(${angleDeg - 90})`}>
       {/* 镜筒 */}
@@ -399,7 +303,7 @@ function Spectroscope({ x, y, angleDeg }: { x: number; y: number; angleDeg: numb
       <rect x="-14" y="-4" width="28" height="6" rx="2" fill="#0f172a" />
       {/* 目镜端 */}
       <rect x="-8" y="-50" width="16" height="6" rx="2" fill="#475569" />
-      <text x="-26" y="-54" fontSize="9" fill="#1e293b" fontWeight="600">分光镜</text>
+      {showLabel && <text x="-26" y="-54" fontSize="9" fill="#1e293b" fontWeight="600">分光镜</text>}
     </g>
   );
 }

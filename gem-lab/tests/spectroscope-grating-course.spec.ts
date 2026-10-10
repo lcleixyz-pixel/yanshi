@@ -6,8 +6,12 @@ const field = (page: Page) => page.getByTestId("course-observation");
 const canvas = (page: Page) => page.getByTestId("optics3d-canvas");
 const bench = (page: Page) => page.getByTestId("spectroscope-bench-canvas");
 const button = (page: Page, name: string) => page.getByRole("button", { name, exact: true });
-const next = (page: Page) => button(page, "下一步").click();
-const question = (page: Page, id: string, option: number) => page.getByTestId(`question-${id}`).getByRole("button").nth(option).click();
+const next = (page: Page) => page.getByTestId("course-next").click();
+const question = async (page: Page, id: string, option: number) => {
+  const q = page.getByTestId(`question-${id}`);
+  await q.getByRole("radio").nth(option).check();
+  await q.getByRole("button", { name: "提交" }).click();
+};
 const progress = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem("gem-lab-progress-v1") ?? "{}").state?.completedDemos ?? []);
 
 /** 光栅式刻度：x = 1 - (wl - 400) / 300，红端在左，近似线性。 */
@@ -61,7 +65,7 @@ async function runCourse(page: Page) {
   await question(page, "scale", 0);
   await question(page, "dark", 1);
   await question(page, "evidence", 1);
-  await button(page, "完成课程").click();
+  await page.getByTestId("course-finish").click();
 }
 
 test.beforeEach(async ({ page }) => {

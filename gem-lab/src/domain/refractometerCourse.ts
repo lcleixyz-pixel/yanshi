@@ -1,7 +1,7 @@
 import { SAMPLES_BY_ID } from "../data/samples";
 import { checkRI } from "./refractometerAssessment";
 import type { RefractometerView } from "../components/refractometer/ObservationWindow";
-import { mayRecordLearning, type ChoiceQuestion, type CourseMode, type CourseStep } from "./course";
+import { mayRecordLearning, type ChoiceQuestion, type CourseCheckItem, type CourseMode, type CourseStep } from "./course";
 
 export const COURSE_SAMPLE = SAMPLES_BY_ID.spinel;
 export const COURSE_RI = COURSE_SAMPLE.characteristics
@@ -21,41 +21,49 @@ export const STEPS: readonly CourseStep<StepId>[] = [
     id: "parts",
     title: "认识部件",
     task: "点选六个关键部件，看清接触窗口和仪器内部的关系。",
+    why: "明暗边界产生在测台棱镜与样品的接触面上；光源、分划刻度和目镜都在机身内，从外面只看得到接触窗口。",
   },
   {
     id: "path",
     title: "跟随光路",
     task: "跟随七段光路，再回答明暗边界的来源。此步展示预置的良好接触示例。",
+    why: "光在棱镜与样品界面上超过临界角时全反射，低于临界角时部分折射出去；两侧亮度不同形成的分界，经光学系统映射成刻度上的折射率。",
   },
   {
     id: "prepare",
     title: "开灯与放样",
     task: "先开灯看空载刻度，再滴一小滴接触液，把样品平整台面朝下放在窗口中部。",
+    why: "接触液排掉样品与棱镜之间的空气；台面朝下、放在窗口中部，接触面才完整，边界才对应样品。",
   },
   {
     id: "contact",
     title: "恢复光学接触",
     task: "本次故意保留空气间隙。先记录不能读数、判断原因，再轻推贴合。",
+    why: "有空气间隙时，光先在玻璃—空气界面全反射，探测不到样品；看到的边界不是样品读数，必须恢复光学接触。",
   },
   {
     id: "observe",
     title: "第一次读数",
     task: "从目镜窗口估读明暗边界，输入你的读数，然后核对。",
+    why: "先独立估读再核对，才能检验是否真正看懂了边界，而不是照着答案找边界。",
   },
   {
     id: "verify",
     title: "换方向复核",
     task: "取下并转到另一方向，重新贴合，再独立读数。观察边界是否移动。",
+    why: "本课尖晶石是均质体，换方向边界不动；双折射样品转动时边界会移动或出现两条，所以实际检测要多方向复核。",
   },
   {
     id: "explain",
     title: "解释与适用条件",
     task: "回答三道问题，说明读数的依据和限制。",
+    why: "读数来自给定波长与接触条件下的临界角；空气间隙使读数无效，超过接触液上限只能记为超量程。",
   },
   {
     id: "cleanup",
     title: "清理复位",
     task: "取下样品，分别擦净测台和样品，关灯并合上翻盖。",
+    why: "接触液残留会污染棱镜并影响下一次读数；擦净测台与样品、关灯合盖，才能交给下一位使用。",
   },
 ];
 export const KEY_PARTS = [
@@ -357,6 +365,22 @@ export function isComplete(s: CourseState, id: StepId): boolean {
       );
   }
 }
+/** 课程条上的本步完成清单；与 isComplete 使用同一组条件。 */
+export function courseChecklist(s: CourseState): CourseCheckItem[] {
+  const answered = (id: string, label: string): CourseCheckItem => ({ id, label, done: answerCorrect(s, id) });
+  const first = s.readings.find((r) => r.correct);
+  switch (s.step) {
+    case "parts": return [{ id: "parts", label: `点选关键部件 ${KEY_PARTS.filter((p) => s.partsSeen.includes(p.id)).length} / ${KEY_PARTS.length}`, done: isComplete(s, "parts") }];
+    case "path": return [{ id: "stages", label: `跟随光路 ${PATH_STAGES.filter((_, i) => s.pathSeen.includes(i)).length} / ${PATH_STAGES.length}`, done: PATH_STAGES.every((_, i) => s.pathSeen.includes(i)) }, answered("boundary", "回答：明暗边界从哪里来")];
+    case "prepare": return [{ id: "scale", label: "开灯看空载刻度", done: s.scaleSeen }, { id: "placed", label: "滴接触液、台面朝下放样", done: s.placedCorrectly }];
+    case "contact": return [{ id: "invalid", label: "记录：不能读数", done: s.invalidRecorded }, answered("gap", "回答：为什么不能读"), { id: "recovered", label: "轻推恢复贴合", done: s.recovered }];
+    case "observe": return [{ id: "reading", label: "独立读数并核对正确", done: !!first }];
+    case "verify": return [{ id: "turned", label: "换方向后读数正确", done: !!first && s.readings.some((r) => r.correct && directionDistance(r.angle, first.angle) >= 45) }, answered("repeat", "回答：边界为什么不动")];
+    case "explain": return [answered("critical", "边界对应什么"), answered("air", "接触不良怎么办"), answered("limit", "超过上限怎么记")];
+    case "cleanup": return [{ id: "removed", label: "取下样品、擦去接触液", done: s.sample === "none" && s.liquid === "none" }, { id: "clean", label: "擦净测台与样品", done: s.stageClean && s.sampleClean }, { id: "off", label: "关灯并合上翻盖", done: !s.power && s.cover === "closed" }];
+  }
+}
+
 export const allComplete = (s: CourseState) =>
   STEPS.every((step) => isComplete(s, step.id));
 export const maySaveProgress = (s: CourseState) =>

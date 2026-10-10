@@ -24,7 +24,8 @@ export default function OpticsExplorePage() {
   const setCourseMode = (mode: 'student' | 'teacher' | null) => setSearchParams(mode ? { course: 'basic', mode } : {}, { replace: !mode });
   if (!isOpticsInstrument(instrumentId)) return <Navigate to="/" replace />;
   const course = courseFor(instrumentId);
-  if (course && courseMode) return <course.Course key={`${instrumentId}-${courseMode}`} mode={courseMode} onExit={() => setCourseMode(null)} />;
+  // 课程内切换讲师 / 学员只改地址，不重新挂载，进度保留（同偏光镜）；?step= 直达某一步。
+  if (course && courseMode) return <course.Course key={instrumentId} mode={courseMode} onMode={(mode) => setSearchParams({ course: 'basic', mode }, { replace: true })} onExit={() => setCourseMode(null)} initialStep={searchParams.get('step')} />;
   // Remount per instrument so each viewer owns exactly one model.
   return <OpticsExplore key={instrumentId} instrumentId={instrumentId} onStart={setCourseMode} />;
 }

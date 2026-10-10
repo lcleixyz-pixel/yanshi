@@ -25,5 +25,10 @@ export function useLearningRecord(instrumentId: InstrumentId, mode: CourseMode) 
       saving.current = false;
     }
   }
-  return { status, failed: status.includes('失败'), record };
+  /** 再学一遍：清除本轮保存状态，下一次完成可以重新判断是否写入。 */
+  function reset() {
+    saving.current = false;
+    setStatus('');
+  }
+  return { status, failed: status.includes('失败'), record, reset };
 }

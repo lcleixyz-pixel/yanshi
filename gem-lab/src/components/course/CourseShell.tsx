@@ -1,103 +1,150 @@
-import type { ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import Header from '../shared/Header';
-import { stepLocked, type ChoiceQuestion, type CourseMode, type CourseStep } from '../../domain/course';
+import { stepLocked, type ChoiceQuestion, type CourseCheckItem, type CourseMode, type CourseStep } from '../../domain/course';
+import type { InstrumentId } from '../../data/types';
+import { INSTRUMENTS } from '../../data/instruments';
+import '../../styles/instrument-ui.css';
 import '../../styles/course-shell.css';
 
-interface StepProps<Id extends string> {
-  steps: readonly CourseStep<Id>[];
-  current: Id;
-  mode: CourseMode;
-  isComplete: (id: Id) => boolean;
+export function formatDuration(ms: number) {
+  const seconds = Math.max(0, Math.round(ms / 1000));
+  return `${Math.floor(seconds / 60)} 分 ${String(seconds % 60).padStart(2, '0')} 秒`;
 }
 
-/** 课程页骨架：页眉、步骤条与退出、左侧三维区（由课程自己渲染）、右侧操作面板。 */
-export function CourseShell<Id extends string>({ title, minutes, testId, steps, current, mode, isComplete, onGo, onExit, model, children }: StepProps<Id> & {
+export interface CourseFinishInfo {
+  status: string;
+  failed: boolean;
+  summary: string;
+  onRetry: () => void;
+  onRestart: () => void;
+}
+
+/**
+ * 课程页骨架，结构与偏光镜课程一致：顶部课程条（步骤、讲师 / 学员切换、退出；任务、为什么、本步清单、上一步 / 下一步 / 跳过），
+ * 下方三维区与本步操作面板。步骤条只能回到已到达过的最远一步；完成后在三维区上方显示各步用时（只显示、不保存）。
+ */
+export function CourseShell<Id extends string>({ instrument, title, minutes, testId, steps, current, mode, onMode, isComplete, checklist, allComplete, hasSkipped, onGo, onFinish, onExit, finish, model, children }: {
+  instrument: InstrumentId;
   title: string;
   minutes: number;
   testId: string;
-  onGo: (id: Id) => void;
+  steps: readonly CourseStep<Id>[];
+  current: Id;
+  mode: CourseMode;
+  onMode: (mode: CourseMode) => void;
+  isComplete: (id: Id) => boolean;
+  checklist: readonly CourseCheckItem[];
+  allComplete: boolean;
+  hasSkipped: boolean;
+  onGo: (id: Id, skip?: boolean) => void;
+  onFinish: () => void;
   onExit: () => void;
+  /** 完成后提供：保存状态、重试与再学一遍。 */
+  finish: CourseFinishInfo | null;
   model: ReactNode;
   children: ReactNode;
 }) {
-  const currentIndex = steps.findIndex((step) => step.id === current);
+  const index = steps.findIndex((step) => step.id === current);
+  const [reached, setReached] = useState(index);
+  useEffect(() => setReached((previous) => Math.max(previous, index)), [index]);
+  // 各步用时：离开一步时累加；完成后停表。
+  const times = useRef<number[]>(steps.map(() => 0));
+  const entered = useRef({ index, at: Date.now() });
+  const [stepTimes, setStepTimes] = useState<number[] | null>(null);
+  useEffect(() => {
+    const now = Date.now();
+    if (entered.current.index !== index) {
+      times.current[entered.current.index] += now - entered.current.at;
+      entered.current = { index, at: now };
+    }
+  }, [index]);
+  const finished = finish !== null;
+  useEffect(() => {
+    if (!finished) { setStepTimes(null); return; }
+    const now = Date.now();
+    times.current[entered.current.index] += now - entered.current.at;
+    entered.current = { index: entered.current.index, at: now };
+    setStepTimes([...times.current]);
+  }, [finished]);
+
+  const step = steps[index];
+  const complete = isComplete(current);
+  const last = index === steps.length - 1;
+  const total = stepTimes?.reduce((sum, value) => sum + value, 0) ?? 0;
   return (
-    <div className="course-shell" data-testid={testId} data-step={current} data-mode={mode}>
-      <Header title={title} subtitle={`${mode === 'student' ? '学员练习' : '讲师演示'} · 约 ${minutes} 分钟`} />
-      <div className="course-shell__bar">
-        <nav aria-label="课程步骤">
-          {steps.map((item, i) => (
-            <button key={item.id} type="button" aria-current={current === item.id ? 'step' : undefined} disabled={stepLocked(steps, i, currentIndex, mode, isComplete)} onClick={() => onGo(item.id)}>
-              <span>{isComplete(item.id) ? '✓' : i + 1}</span>
-              {item.title}
-            </button>
-          ))}
-        </nav>
-        <button type="button" onClick={onExit}>返回自由探索</button>
-      </div>
+    <div className="course-shell iu" data-instrument={instrument} data-testid={testId} data-step={current} data-mode={mode}>
+      <Header title={INSTRUMENTS[instrument]?.name ?? title} subtitle="3D 仪器教学" />
+      <section className="course-shell__guide" aria-label="引导课程" data-testid="course-guide" data-complete={complete}>
+        <div className="course-shell__rail">
+          <span className="course-shell__title"><strong>{title}</strong><span>{mode === 'student' ? '学员自学' : '讲师演示'} · 约 {minutes} 分钟</span></span>
+          <nav className="course-shell__steps-nav" aria-label="课程步骤"><ol className="course-shell__steps">{steps.map((item, i) => {
+            const done = isComplete(item.id);
+            return <li key={item.id}><button type="button" aria-current={i === index ? 'step' : undefined} data-done={done} disabled={stepLocked(i, reached)} aria-label={`${i + 1} ${item.title}${done ? '（已完成）' : ''}`} onClick={() => onGo(item.id)} data-testid={`course-step-${item.id}`}><span>{done ? '✓' : i + 1}</span><em>{item.title}</em></button></li>;
+          })}</ol></nav>
+          <div className="course-shell__mode" role="group" aria-label="使用方式">{(['teacher', 'student'] as const).map((value) => <button key={value} type="button" aria-pressed={mode === value} onClick={() => onMode(value)} data-testid={`course-mode-${value}`}>{value === 'teacher' ? '讲师演示' : '学员自学'}</button>)}</div>
+          <button type="button" className="iu-button iu-button--quiet course-shell__exit" onClick={onExit} data-testid="course-exit">退出课程</button>
+        </div>
+        <div className="course-shell__body">
+          <div className="course-shell__task">
+            <h1><span>{index + 1} / {steps.length}</span>{step.title}</h1>
+            <p>{step.task}</p>
+            {complete && step.why && <p className="iu-why" data-testid="course-why"><strong>为什么：</strong>{step.why}</p>}
+          </div>
+          <ul className="course-shell__checklist" aria-label="本步完成情况">{checklist.map((item) => (
+            <li key={item.id} data-done={item.done}><span aria-hidden="true">{item.done ? '✓' : '○'}</span>{item.label}<span className="iu-sr">{item.done ? '（已完成）' : '（未完成）'}</span></li>
+          ))}</ul>
+          <div className="course-shell__nav">
+            <button type="button" className="iu-button" disabled={index === 0} onClick={() => onGo(steps[index - 1].id)} data-testid="course-prev">← 上一步</button>
+            {last
+              ? <button type="button" className="iu-button iu-button--primary" disabled={!allComplete || !!finish} onClick={onFinish} data-testid="course-finish">完成课程</button>
+              : <button type="button" className="iu-button iu-button--primary" disabled={!complete} onClick={() => onGo(steps[index + 1].id)} data-testid="course-next">下一步 →</button>}
+            {!complete && !last && <button type="button" className="iu-button iu-button--quiet" onClick={() => onGo(steps[index + 1].id, mode === 'student')} data-testid="course-skip">跳过</button>}
+            {hasSkipped && <small className="course-shell__skipped">本次有跳过的步骤，完成后不记录学习进度。</small>}
+          </div>
+        </div>
+      </section>
       <main className="course-shell__main">
         {model}
-        <aside className="course-shell__panel" aria-label="课程操作与观察">{children}</aside>
+        <aside className="course-shell__panel" aria-label="本步操作与观察">{children}</aside>
+        {finish && stepTimes && (
+          <div className="course-shell__overlay">
+            <div className="course-shell__card" role="region" aria-label="课程完成" data-testid="course-complete">
+              <span className="iu-eyebrow">COURSE COMPLETE</span>
+              <h2>本课完成 · 用时 {formatDuration(total)}</h2>
+              <ol className="course-shell__times">{steps.map((item, i) => <li key={item.id}><span>{item.title}</span><output>{formatDuration(stepTimes[i] ?? 0)}</output></li>)}</ol>
+              <p className="course-shell__small">用时只在本页显示，不保存、不计分。</p>
+              <p role="status" data-testid="course-save-status">{finish.status || '正在保存学习记录…'}</p>
+              <p>{finish.summary}</p>
+              <div className="course-shell__nav">
+                {finish.failed && <button type="button" className="iu-button" onClick={finish.onRetry}>重试保存</button>}
+                <button type="button" className="iu-button" onClick={finish.onRestart} data-testid="course-restart">再学一遍</button>
+                <button type="button" className="iu-button iu-button--primary" onClick={onExit}>进入自由探索</button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
 }
 
-/** 当前步骤的标题与任务。 */
-export function CourseStepHeading<Id extends string>({ steps, current }: { steps: readonly CourseStep<Id>[]; current: Id }) {
-  const index = steps.findIndex((step) => step.id === current);
-  return (
-    <div className="course-shell__step">
-      <small>第 {index + 1} / {steps.length} 步</small>
-      <h1>{steps[index].title}</h1>
-      <p>{steps[index].task}</p>
-    </div>
-  );
-}
-
-/** 上一步 / 下一步 / 跳步 / 完成课程。学员跳步会被记下，完成后不写入学习进度。 */
-export function CourseStepFooter<Id extends string>({ steps, current, mode, isComplete, allComplete, hasSkipped, onGo, onFinish }: StepProps<Id> & {
-  allComplete: boolean;
-  hasSkipped: boolean;
-  onGo: (id: Id, skip?: boolean) => void;
-  onFinish: () => void;
-}) {
-  const index = steps.findIndex((step) => step.id === current);
-  return (
-    <footer className="course-shell__navigation">
-      <p>{isComplete(current) ? '✓ 本步已完成' : '请完成本步操作与判断'}</p>
-      <div>
-        {index > 0 && <button onClick={() => onGo(steps[index - 1].id)}>上一步</button>}
-        {index < steps.length - 1 ? <>
-          <button disabled={!isComplete(current)} onClick={() => onGo(steps[index + 1].id)}>下一步</button>
-          <button className="course-shell__skip" onClick={() => onGo(steps[index + 1].id, mode === 'student')}>{mode === 'teacher' ? '跳到下一步' : '跳步复习'}</button>
-        </> : <button disabled={!allComplete} onClick={onFinish}>完成课程</button>}
-      </div>
-      {hasSkipped && <small>本次已使用跳步；完成后不记录学习进度。</small>}
-    </footer>
-  );
-}
-
-/** 课程完成：保存状态、失败重试和返回。 */
-export function CourseFinish({ status, failed, summary, onRetry, onExit }: { status: string; failed: boolean; summary: string; onRetry: () => void; onExit: () => void }) {
-  return (
-    <section className="course-shell__finish">
-      <h1>本课完成</h1>
-      <p>{status || '正在保存学习记录…'}</p>
-      <p>{summary}</p>
-      {failed && <button onClick={onRetry}>重试保存</button>}
-      <button onClick={onExit}>返回自由探索</button>
-    </section>
-  );
-}
-
-/** 单选问答：选中即判断，并显示解释。 */
+/** 单选问答（同偏光镜）：先选择再提交，逐项显示 ✓ / ✗；答对后锁定。答错不直接给出正确答案。 */
 export function ChoiceQuestionField({ question, answer, onAnswer }: { question: ChoiceQuestion; answer: number | undefined; onAnswer: (option: number) => void }) {
+  const [selected, setSelected] = useState<number | undefined>(answer);
+  const right = answer === question.correct;
+  const shown = answer !== undefined && answer === selected;
   return (
-    <fieldset className="course-shell__question" data-testid={`question-${question.id}`}>
+    <fieldset className="course-shell__question" data-testid={`question-${question.id}`} data-correct={right}>
       <legend>{question.prompt}</legend>
-      {question.options.map((text, i) => <button type="button" key={text} aria-pressed={answer === i} onClick={() => onAnswer(i)}>{text}</button>)}
-      {answer !== undefined && <p role="status">{answer === question.correct ? '判断正确。' : '再想一想。'} {question.feedback}</p>}
+      {question.options.map((text, i) => (
+        <label key={text} className="course-shell__option" data-result={shown && selected === i ? (i === question.correct ? 'right' : 'wrong') : undefined}>
+          <input type="radio" name={question.id} checked={selected === i} disabled={right} onChange={() => setSelected(i)} />
+          <span>{text}{shown && selected === i && <small>{i === question.correct ? `✓ ${question.feedback}` : '✗ 这个选项不对，再想一想。'}</small>}</span>
+        </label>
+      ))}
+      {right
+        ? <p className="course-shell__result" role="status">回答正确。</p>
+        : <div className="course-shell__submit"><button type="button" className="iu-button" disabled={selected === undefined || shown} onClick={() => selected !== undefined && onAnswer(selected)}>提交</button></div>}
     </fieldset>
   );
 }

@@ -1,6 +1,6 @@
 import { SAMPLES_BY_ID } from '../data/samples';
 import type { AbsorptionFeature, SampleDef } from '../data/types';
-import { mayRecordLearning, type ChoiceQuestion, type CourseMode, type CourseStep } from './course';
+import { mayRecordLearning, type ChoiceQuestion, type CourseCheckItem, type CourseMode, type CourseStep } from './course';
 import { createBenchState, evaluateBench, type BenchState } from './spectroscopeBench';
 import { markMatches, spectrumProblems, type Dispersion, type SpectrumConditions } from './spectrumDisplay';
 
@@ -17,22 +17,22 @@ export type StepId = 'parts' | 'path' | 'light' | 'tune' | 'observe' | 'explain'
 export type CourseVariant = Dispersion;
 
 const PRISM_STEPS: readonly CourseStep<StepId>[] = [
-  { id: 'parts', title: '认识部件', task: '点选五个关键部件，看清光从狭缝进入、经准直和棱镜分光、到目镜观察的顺序。' },
-  { id: 'path', title: '跟随光路', task: '依次查看白光和 400 / 550 / 700 nm 单色光的路径，再回答光谱从哪里来。' },
-  { id: 'light', title: '对光与照明', task: '光源已开，镊子上还没有样品，灯光直接射入狭缝。记录看到的现象，再用镊子把样品夹到灯头与入光端之间，让光穿过样品。' },
-  { id: 'tune', title: '调节狭缝与焦距', task: '狭缝开得太宽、焦距也偏了。先慢慢收紧狭缝，再调焦，直到谱线变锐、弱线重新出现。' },
-  { id: 'observe', title: '标记吸收特征', task: '在光谱条上点出你看到的吸收线和吸收带，然后核对。点已有标记可以删除。' },
-  { id: 'explain', title: '解释与适用条件', task: '回答三道问题，说明观察结果的依据和限制。' },
+  { id: 'parts', title: '认识部件', task: '点选五个关键部件，看清光从狭缝进入、经准直和棱镜分光、到目镜观察的顺序。', why: '光依次经过狭缝、准直透镜、直视棱镜组到目镜；能调的只有狭缝宽度和目镜焦距。' },
+  { id: 'path', title: '跟随光路', task: '依次查看白光和 400 / 550 / 700 nm 单色光的路径，再回答光谱从哪里来。', why: '不同波长折射程度不同，棱镜把白光按波长展开；样品吸收掉的波长在光谱上留下暗线或暗带。' },
+  { id: 'light', title: '对光与照明', task: '光源已开，镊子上还没有样品，灯光直接射入狭缝。记录看到的现象，再用镊子把样品夹到灯头与入光端之间，让光穿过样品。', why: '只有光穿过样品，光谱里才有样品的吸收；光绕过样品时看到的只是光源的连续光谱，不能据此下结论。' },
+  { id: 'tune', title: '调节狭缝与焦距', task: '狭缝开得太宽、焦距也偏了。先慢慢收紧狭缝，再调焦，直到谱线变锐、弱线重新出现。', why: '狭缝越窄谱线越锐、但越暗；焦距对准后谱线才清楚。合适的设置在锐度和亮度之间取平衡。' },
+  { id: 'observe', title: '标记吸收特征', task: '在光谱条上点出你看到的吸收线和吸收带，然后核对。点已有标记可以删除。', why: '按诊断特征成组核对：红区细线、黄绿区宽带、蓝区细线同时出现，才支持铬致色的判断。' },
+  { id: 'explain', title: '解释与适用条件', task: '回答三道问题，说明观察结果的依据和限制。', why: '吸收谱说明致色元素，不能单独区分天然、合成或其他含同种元素的宝石，要结合其他检测综合判断。' },
 ];
 
 /** 手持光栅式：狭缝与焦距固定，排查只剩对光位置与光强；刻度近似线性，整体比棱镜式暗。 */
 const GRATING_STEPS: readonly CourseStep<StepId>[] = [
-  { id: 'parts', title: '认识部件', task: '点选四个关键部件，看清光从固定狭缝进入、经准直到光栅衍射分光、再到固定目镜的顺序。' },
-  { id: 'path', title: '跟随光路', task: '依次查看零级与 ±1 级光谱，再回答光栅式的光谱从哪里来。' },
+  { id: 'parts', title: '认识部件', task: '点选四个关键部件，看清光从固定狭缝进入、经准直到光栅衍射分光、再到固定目镜的顺序。', why: '狭缝和目镜焦距出厂固定，光栅靠衍射分光；手上能调的只有照明和对光。' },
+  { id: 'path', title: '跟随光路', task: '依次查看零级与 ±1 级光谱，再回答光栅式的光谱从哪里来。', why: '光栅刻线使不同波长衍射到不同角度：零级仍是白光，一级光谱按波长近似均匀展开，目镜对准的是一级光谱。' },
   PRISM_STEPS[2],
-  { id: 'tune', title: '对准与亮度', task: '光栅式没有狭缝环和调焦套筒。现在灯头偏离光轴、亮度也偏低，谱线发暗、蓝紫区看不清：调亮光源，把灯头移回光轴，直到亮度足够。' },
-  { id: 'observe', title: '在线性刻度上标记', task: '光栅式刻度近似等距。在光谱条上点出你看到的吸收线和吸收带，然后核对。点已有标记可以删除。' },
-  { id: 'explain', title: '解释与适用条件', task: '对照同一份光谱在两种刻度上的位置，回答三道问题。' },
+  { id: 'tune', title: '对准与亮度', task: '光栅式没有狭缝环和调焦套筒。现在灯头偏离光轴、亮度也偏低，谱线发暗、蓝紫区看不清：调亮光源，把灯头移回光轴，直到亮度足够。', why: '固定狭缝和焦距时，视场偏暗多半是光不够或没对准；先改善照明和对光，不把“暗”当成吸收。' },
+  { id: 'observe', title: '在线性刻度上标记', task: '光栅式刻度近似等距。在光谱条上点出你看到的吸收线和吸收带，然后核对。点已有标记可以删除。', why: '线性刻度上各波段间距近似均匀，红区几条线比棱镜式分得更开，更容易读出波长。' },
+  { id: 'explain', title: '解释与适用条件', task: '对照同一份光谱在两种刻度上的位置，回答三道问题。', why: '两种机型读的是同一组波长，只是刻度疏密不同；吸收谱仍只说明致色元素，要结合其他检测判断。' },
 ];
 
 const PRISM_PARTS = [
@@ -227,6 +227,24 @@ export function isComplete(s: CourseState, id: StepId): boolean {
     case 'tune': return throughSample(s) && spectrumProblems(conditions(s)).length === 0 && answerCorrect(s, c.stepQuestions.tune);
     case 'observe': return s.checked && checkMarks(s.marks).foundCount >= REQUIRED_GROUPS;
     case 'explain': return c.explainQuestions.every((q) => answerCorrect(s, q));
+  }
+}
+
+/** 课程条上的本步完成清单；与 isComplete 使用同一组条件。 */
+export function courseChecklist(s: CourseState): CourseCheckItem[] {
+  const c = configOf(s);
+  const answered = (id: string, label: string): CourseCheckItem => ({ id, label, done: answerCorrect(s, id) });
+  const problems = spectrumProblems(conditions(s));
+  const short: Record<string, string> = { dark: '透光太弱怎么处理', grating: '光栅式有何不同', evidence: '能下什么结论', scale: '两种刻度有何不同' };
+  switch (s.step) {
+    case 'parts': return [{ id: 'parts', label: `点选关键部件 ${c.parts.filter((p) => s.partsSeen.includes(p.id)).length} / ${c.parts.length}`, done: isComplete(s, 'parts') }];
+    case 'path': return [{ id: 'cases', label: `查看光路 ${c.cases.filter((x) => s.casesSeen.includes(x.id)).length} / ${c.cases.length}`, done: c.cases.every((x) => s.casesSeen.includes(x.id)) }, answered(c.stepQuestions.path, '回答：光谱怎样形成')];
+    case 'light': return [{ id: 'continuous', label: '记录：只见连续光谱', done: s.continuousRecorded }, { id: 'placed', label: '用镊子夹样放入光路', done: throughSample(s) }, answered(c.stepQuestions.light, '回答：连续光谱说明什么')];
+    case 'tune': return s.variant === 'prism'
+      ? [{ id: 'slit', label: '狭缝宽度合适', done: throughSample(s) && !problems.some((p) => p === 'slit-wide' || p === 'slit-narrow') }, { id: 'focus', label: '焦距清晰', done: throughSample(s) && !problems.includes('defocus') }, answered(c.stepQuestions.tune, '回答：狭缝过宽会怎样')]
+      : [{ id: 'light', label: '亮度足够、灯头对准', done: throughSample(s) && problems.length === 0 }, answered(c.stepQuestions.tune, '回答：偏暗先怎么做')];
+    case 'observe': return [{ id: 'groups', label: `核对后找到诊断特征 ${s.checked ? Math.min(checkMarks(s.marks).foundCount, REQUIRED_GROUPS) : 0} / ${REQUIRED_GROUPS} 组`, done: isComplete(s, 'observe') }];
+    case 'explain': return c.explainQuestions.map((id) => answered(id, short[id] ?? id));
   }
 }
 

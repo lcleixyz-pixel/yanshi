@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useResponsiveViewport } from '../shared/useResponsiveViewport';
-import { ChoiceQuestionField, CourseFinish, CourseShell, CourseStepFooter, CourseStepHeading } from '../course/CourseShell';
+import { ChoiceQuestionField, CourseShell } from '../course/CourseShell';
+import RangeControl from '../shared/RangeControl';
 import { useLearningRecord } from '../course/useLearningRecord';
 import { createOpticsViewer, type OpticsSnapshot, type OpticsViewer } from '../optics3d/opticsViewer.js';
 import { opticsAssetBase } from '../optics3d/opticsInstruments';
 import { benchSpecimenAppearance, createSpectroscopeBenchViewer, type SpectroscopeBenchViewer } from '../spectroscope3d/spectroscopeBenchViewer';
 import '../../styles/spectroscope-bench.css';
 import SpectrumStrip from './SpectrumStrip';
-import { allComplete, checkMarks, COURSE_CONFIG, COURSE_SAMPLE, display, FEATURE_GROUPS, initialCourse, isComplete, navigateCourse, operate, QUESTIONS, REQUIRED_GROUPS, type CourseState, type CourseVariant, type Operation, type StepId } from '../../domain/spectroscopeCourse';
-import { evaluateBench } from '../../domain/spectroscopeBench';
+import { allComplete, checkMarks, COURSE_CONFIG, COURSE_SAMPLE, courseChecklist, display, FEATURE_GROUPS, initialCourse, isComplete, navigateCourse, operate, QUESTIONS, REQUIRED_GROUPS, type CourseState, type CourseVariant, type Operation, type StepId } from '../../domain/spectroscopeCourse';
+import { BENCH_GEOMETRY, evaluateBench } from '../../domain/spectroscopeBench';
 import { displaySpectrum, IDEAL_CONDITIONS, type SpectrumProblem } from '../../domain/spectrumDisplay';
 
 const PROBLEM_TEXT: Record<SpectrumProblem, string> = {
@@ -45,16 +46,30 @@ const VARIANT_TEXT = {
   },
 } as const;
 
-export function GratingSpectroscopeCourse(props: { mode: CourseState['mode']; onExit: () => void }) {
+type CourseProps = { mode: CourseState['mode']; onMode: (mode: CourseState['mode']) => void; onExit: () => void; initialStep?: string | null };
+
+export function GratingSpectroscopeCourse(props: CourseProps) {
   return <SpectroscopeCourse {...props} variant="grating" />;
 }
 
-export default function SpectroscopeCourse({ mode, onExit, variant = 'prism' }: { mode: CourseState['mode']; onExit: () => void; variant?: CourseVariant }) {
-  const [s, setS] = useState(() => initialCourse(mode, variant));
+/** 从地址直达中间步骤开课：与偏光镜一致记为跳步。 */
+function startCourse(mode: CourseState['mode'], variant: CourseVariant, initialStep?: string | null) {
+  const start = initialCourse(mode, variant);
+  const index = COURSE_CONFIG[variant].steps.findIndex((step) => step.id === initialStep);
+  return index > 0 ? navigateCourse(start, COURSE_CONFIG[variant].steps[index].id, true) : start;
+}
+
+export default function SpectroscopeCourse({ mode, onMode, onExit, initialStep, variant = 'prism' }: CourseProps & { variant?: CourseVariant }) {
+  const [s, setS] = useState(() => startCourse(mode, variant, initialStep));
   const config = COURSE_CONFIG[variant], text = VARIANT_TEXT[variant];
   const [snapshot, setSnapshot] = useState<OpticsSnapshot>({ status: 'loading' });
   const [finished, setFinished] = useState(false);
-  const learning = useLearningRecord('spectroscope', mode);
+  // 切换讲师 / 学员不重置进度；本轮只要用过讲师演示，就不写入学习记录（同偏光镜）。
+  const teacherUsed = useRef(mode === 'teacher');
+  if (mode === 'teacher') teacherUsed.current = true;
+  useEffect(() => setS((prev) => (prev.mode === mode ? prev : { ...prev, mode })), [mode]);
+  const learning = useLearningRecord('spectroscope', teacherUsed.current ? 'teacher' : 'student');
+  const [benchView, setBenchView] = useState<(typeof BENCH_VIEWS)[number][0]>('whole');
   const [benchStatus, setBenchStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [slitGapMm, setSlitGapMm] = useState<string | null>(null);
   const viewport = useRef<HTMLDivElement>(null), viewer = useRef<OpticsViewer | null>(null);
@@ -96,6 +111,7 @@ export default function SpectroscopeCourse({ mode, onExit, variant = 'prism' }: 
   // 窄屏上课程布局在模型载入后才定下尺寸，载入完成后按最终画幅重新取一次整体视角。
   useEffect(() => {
     if (onInstrument || benchStatus !== 'ready') return;
+    setBenchView('whole');
     const frame = requestAnimationFrame(() => bench.current?.focus('whole'));
     return () => cancelAnimationFrame(frame);
   }, [onInstrument, benchStatus]);
@@ -119,6 +135,12 @@ export default function SpectroscopeCourse({ mode, onExit, variant = 'prism' }: 
     setFinished(true);
     void learning.record(s.hasSkipped, true);
   }
+  function restart() {
+    learning.reset();
+    teacherUsed.current = mode === 'teacher';
+    setFinished(false);
+    setS(initialCourse(mode, variant));
+  }
   const question = (id: string) => <ChoiceQuestionField key={id} question={QUESTIONS.find((q) => q.id === id)!} answer={s.answers[id]} onAnswer={(option) => op({ type: 'answer', id, option })} />;
   const observing = ['light', 'tune', 'observe'].includes(s.step);
   const placed = s.bench.samplePlaced;
@@ -126,7 +148,7 @@ export default function SpectroscopeCourse({ mode, onExit, variant = 'prism' }: 
   const model = !onInstrument ? (
     <section className="course-shell__model" key="bench" ref={benchHost} aria-label="照明与夹样工作台" data-testid="course-bench">
       <div className="course-shell__views">
-        {BENCH_VIEWS.map(([id, label]) => <button key={id} type="button" disabled={!ready} onClick={() => bench.current?.focus(id)}>{label}</button>)}
+        {BENCH_VIEWS.map(([id, label]) => <button key={id} type="button" aria-pressed={benchView === id} disabled={!ready} onClick={() => { setBenchView(id); bench.current?.focus(id); }}>{label}</button>)}
       </div>
       {benchStatus === 'loading' && <p className="course-shell__loading" role="status">正在载入照明与夹样工作台…</p>}
       {benchStatus === 'error' && (
@@ -157,13 +179,15 @@ export default function SpectroscopeCourse({ mode, onExit, variant = 'prism' }: 
   );
 
   return (
-    <CourseShell title={text.title} minutes={text.minutes} testId="spectroscope-course" steps={config.steps} current={s.step} mode={mode} isComplete={(id) => isComplete(s, id)} onGo={go} onExit={onExit} model={model}>
-      {finished ? (
-        <CourseFinish status={learning.status} failed={learning.failed} summary={text.finish} onRetry={() => void learning.record(s.hasSkipped, allComplete(s))} onExit={onExit} />
-      ) : (
-        <>
-          <CourseStepHeading steps={config.steps} current={s.step} />
-          {!ready && onInstrument && <p>模型就绪后开始操作。</p>}
+    <CourseShell
+      instrument="spectroscope" title={text.title} minutes={text.minutes} testId="spectroscope-course"
+      steps={config.steps} current={s.step} mode={mode} onMode={onMode} isComplete={(id) => isComplete(s, id)}
+      checklist={courseChecklist(s)} allComplete={allComplete(s)} hasSkipped={s.hasSkipped} onGo={go} onFinish={finish} onExit={onExit}
+      finish={finished ? { status: learning.status, failed: learning.failed, summary: text.finish, onRetry: () => void learning.record(s.hasSkipped, allComplete(s)), onRestart: restart } : null}
+      model={model}
+    >
+      <>
+          {!ready && onInstrument && <p className="course-shell__state">模型就绪后开始操作。</p>}
           <fieldset className="course-shell__content" disabled={!ready && onInstrument}>
             {s.step === 'parts' && <>
               <div className="course-shell__parts">
@@ -213,15 +237,14 @@ export default function SpectroscopeCourse({ mode, onExit, variant = 'prism' }: 
                 {question(config.stepQuestions.light)}
               </>}
               {(s.step === 'tune' || s.step === 'observe') && variant === 'grating' && <div className="course-shell__tuning">
-                <label>光源亮度<input type="range" aria-label="光源亮度" min={0} max={100} value={Math.round(s.bench.brightness * 100)} onChange={(e) => op({ type: 'brightness', value: Number(e.target.value) / 100 })} /></label>
-                <label>灯头横移<input type="range" aria-label="灯头横移" min={-100} max={100} value={Math.round(s.bench.lampLateral * 100)} onChange={(e) => op({ type: 'lamp-lateral', value: Number(e.target.value) / 100 })} /></label>
+                <RangeControl label="光源亮度" min={0} max={100} value={Math.round(s.bench.brightness * 100)} display={`${Math.round(s.bench.brightness * 100)}%`} ends={['暗', '亮']} onChange={(v) => op({ type: 'brightness', value: v / 100 })} />
+                <RangeControl label="灯头横移" min={-100} max={100} value={Math.round(s.bench.lampLateral * 100)} display={`${(s.bench.lampLateral * BENCH_GEOMETRY.lateralScale * 1000).toFixed(1)} mm`} valueText={`偏离光轴 ${Math.abs(s.bench.lampLateral * BENCH_GEOMETRY.lateralScale * 1000).toFixed(1)} 毫米`} ends={['左', '右']} onChange={(v) => op({ type: 'lamp-lateral', value: v / 100 })} />
                 <p className="course-shell__note" data-testid="grating-fixed">本机狭缝与焦距固定：模型上没有狭缝调节环和抽拉套筒，只能调照明与对光。</p>
                 <small>改变夹样、亮度或灯头位置会清除已有标记。亮度档位与对准范围为教学设定，未经实物标定；点“灯头”“分光镜”可近看。</small>
               </div>}
               {(s.step === 'tune' || s.step === 'observe') && variant === 'prism' && <div className="course-shell__tuning">
-                <label>狭缝宽度<input type="range" aria-label="狭缝宽度" min={0} max={100} value={Math.round(s.bench.slit * 100)} onChange={(e) => op({ type: 'slit', value: Number(e.target.value) / 100 })} /></label>
-                <label>目镜焦距<input type="range" aria-label="目镜焦距" min={0} max={100} value={Math.round(s.bench.focus * 100)} onChange={(e) => op({ type: 'focus', value: Number(e.target.value) / 100 })} /></label>
-                {slitGapMm && <p className="course-shell__note" data-testid="model-motion">模型：狭缝刃口间距 {slitGapMm} mm（调节环带动左右刃口对称开合，目镜套筒随焦距抽拉）</p>}
+                <RangeControl label="狭缝宽度" testId="slit-control" min={0} max={100} value={Math.round(s.bench.slit * 100)} display={slitGapMm ? `${slitGapMm} mm` : `${Math.round(s.bench.slit * 100)}%`} valueText={slitGapMm ? `刃口间距 ${slitGapMm} 毫米` : undefined} ends={['窄', '宽']} onChange={(v) => op({ type: 'slit', value: v / 100 })} />
+                <RangeControl label="目镜焦距" min={0} max={100} value={Math.round(s.bench.focus * 100)} display={`套筒 ${Math.round(s.bench.focus * 20)} mm`} valueText={`目镜套筒拉出 ${Math.round(s.bench.focus * 20)} 毫米`} ends={['缩回', '拉出']} onChange={(v) => op({ type: 'focus', value: v / 100 })} />
                 <small>改变夹样、狭缝或焦距会清除已有标记。模型中的转角、行程和缝宽为教学联动示意，未经实物标定；点“分光镜”可近看。</small>
               </div>}
               {s.step === 'tune' && question(config.stepQuestions.tune)}
@@ -252,10 +275,8 @@ export default function SpectroscopeCourse({ mode, onExit, variant = 'prism' }: 
               </div>
               {config.explainQuestions.map(question)}
             </>}
-            <CourseStepFooter steps={config.steps} current={s.step} mode={mode} isComplete={(id) => isComplete(s, id)} allComplete={allComplete(s)} hasSkipped={s.hasSkipped} onGo={go} onFinish={finish} />
           </fieldset>
-        </>
-      )}
+      </>
       <details className="course-shell__sources">
         <summary>依据与范围</summary>
         <p>固定一颗透明的红宝石教学样品（品种透明度为透明至半透明，本课选用可清楚透射的一颗）；吸收特征波长与 GB/T 16553-2010 一致，见 docs/分光镜吸收光谱数据核对-2026-10-09.md。{text.scope}本课不覆盖其他样品。</p>

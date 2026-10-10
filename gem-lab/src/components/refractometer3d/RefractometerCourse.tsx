@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useResponsiveViewport } from "../shared/useResponsiveViewport";
-import { ChoiceQuestionField, CourseFinish, CourseShell, CourseStepFooter, CourseStepHeading } from "../course/CourseShell";
+import { ChoiceQuestionField, CourseShell } from "../course/CourseShell";
+import RangeControl from "../shared/RangeControl";
 import { useLearningRecord } from "../course/useLearningRecord";
 import {
   createOpticsViewer,
@@ -11,6 +12,7 @@ import { opticsAssetBase } from "../optics3d/opticsInstruments";
 import ObservationWindow from "../refractometer/ObservationWindow";
 import {
   allComplete,
+  courseChecklist,
   COURSE_RI,
   COURSE_SAMPLE,
   deriveCourse,
@@ -28,20 +30,34 @@ import {
   type Operation,
 } from "../../domain/refractometerCourse";
 
+/** 从地址直达中间步骤开课：与偏光镜一致记为跳步。 */
+function startCourse(mode: CourseState["mode"], initialStep?: string | null) {
+  const index = STEPS.findIndex((step) => step.id === initialStep);
+  return index > 0 ? navigateCourse(initialCourse(mode), STEPS[index].id, true) : initialCourse(mode);
+}
+
 export default function RefractometerCourse({
   mode,
+  onMode,
   onExit,
+  initialStep,
 }: {
   mode: CourseState["mode"];
+  onMode: (mode: CourseState["mode"]) => void;
   onExit: () => void;
+  initialStep?: string | null;
 }) {
-  const [s, setS] = useState(() => initialCourse(mode));
+  const [s, setS] = useState(() => startCourse(mode, initialStep));
+  // 切换讲师 / 学员不重置进度；本轮只要用过讲师演示，就不写入学习记录（同偏光镜）。
+  const teacherUsed = useRef(mode === "teacher");
+  if (mode === "teacher") teacherUsed.current = true;
+  useEffect(() => setS((prev) => (prev.mode === mode ? prev : { ...prev, mode })), [mode]);
   const [snapshot, setSnapshot] = useState<OpticsSnapshot>({
     status: "loading",
   });
   const [input, setInput] = useState("");
   const [finished, setFinished] = useState(false);
-  const learning = useLearningRecord("refractometer", mode);
+  const learning = useLearningRecord("refractometer", teacherUsed.current ? "teacher" : "student");
   const viewport = useRef<HTMLDivElement>(null),
     viewer = useRef<OpticsViewer | null>(null);
   const derived = deriveCourse(s),
@@ -101,6 +117,13 @@ export default function RefractometerCourse({
     if (!allComplete(s)) return;
     setFinished(true);
     void learning.record(s.hasSkipped, true);
+  }
+  function restart() {
+    learning.reset();
+    teacherUsed.current = mode === "teacher";
+    setFinished(false);
+    setInput("");
+    setS(initialCourse(mode));
   }
   function question(id: string) {
     return (
@@ -173,29 +196,26 @@ export default function RefractometerCourse({
   );
   return (
     <CourseShell
+      instrument="refractometer"
       title="折射仪基础读数课"
       minutes={9}
       testId="refractometer-course"
       steps={STEPS}
       current={s.step}
       mode={mode}
+      onMode={onMode}
       isComplete={(id) => isComplete(s, id)}
+      checklist={courseChecklist(s)}
+      allComplete={allComplete(s)}
+      hasSkipped={s.hasSkipped}
       onGo={go}
+      onFinish={finish}
       onExit={onExit}
+      finish={finished ? { status: learning.status, failed: learning.failed, summary: "你已完成接触恢复、两次读数、解释与清洁复位。学习完成与独立检测掌握分别记录。", onRetry: () => void learning.record(s.hasSkipped, allComplete(s)), onRestart: restart } : null}
       model={model}
     >
-          {finished ? (
-            <CourseFinish
-              status={learning.status}
-              failed={learning.failed}
-              summary="你已完成接触恢复、两次读数、解释与清洁复位。学习完成与独立检测掌握分别记录。"
-              onRetry={() => void learning.record(s.hasSkipped, allComplete(s))}
-              onExit={onExit}
-            />
-          ) : (
             <>
-              <CourseStepHeading steps={STEPS} current={s.step} />
-              {!ready && <p>模型就绪后开始操作。</p>}
+              {!ready && <p className="course-shell__state">模型就绪后开始操作。</p>}
               <fieldset className="course-shell__content" disabled={!ready}>
                 {s.step === "parts" && (
                   <>
@@ -490,21 +510,19 @@ export default function RefractometerCourse({
                     )}
                     <details className="course-shell__structure">
                       <summary>部件与装配辅助</summary>
-                      <label>
-                        连续拆解
-                        <input
-                          aria-label="连续拆解"
-                          type="range"
-                          min="0"
-                          max="100"
-                          value={s.explode * 100}
-                          onChange={(e) => {
-                            const value = Number(e.target.value) / 100;
-                            setS((prev) => ({ ...prev, explode: value }));
-                            viewer.current?.setExplode(value);
-                          }}
-                        />
-                      </label>
+                      <RangeControl
+                        label="连续拆解"
+                        min={0}
+                        max={100}
+                        value={Math.round(s.explode * 100)}
+                        display={`${Math.round(s.explode * 100)}%`}
+                        ends={["装配", "拆开"]}
+                        onChange={(v) => {
+                          const value = v / 100;
+                          setS((prev) => ({ ...prev, explode: value }));
+                          viewer.current?.setExplode(value);
+                        }}
+                      />
                       <button
                         onClick={() => {
                           setS((prev) => ({
@@ -525,19 +543,8 @@ export default function RefractometerCourse({
                     </details>
                   </>
                 )}
-                <CourseStepFooter
-                  steps={STEPS}
-                  current={s.step}
-                  mode={mode}
-                  isComplete={(id) => isComplete(s, id)}
-                  allComplete={allComplete(s)}
-                  hasSkipped={s.hasSkipped}
-                  onGo={go}
-                  onFinish={finish}
-                />
               </fieldset>
             </>
-          )}
           <details className="course-shell__sources">
             <summary>依据与范围</summary>
             <p>

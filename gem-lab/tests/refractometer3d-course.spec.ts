@@ -11,9 +11,13 @@ const field = (page: Page) => page.getByTestId("course-observation");
 const canvas = (page: Page) => page.getByTestId("optics3d-canvas");
 const button = (page: Page, name: string) =>
   page.getByRole("button", { name, exact: true });
-const question = async (page: Page, id: string, option: number) =>
-  page.getByTestId(`question-${id}`).getByRole("button").nth(option).click();
-const next = async (page: Page) => button(page, "下一步").click();
+const question = async (page: Page, id: string, option: number) => {
+  const q = page.getByTestId(`question-${id}`);
+  await q.getByRole("radio").nth(option).check();
+  await q.getByRole("button", { name: "提交" }).click();
+};
+const nextButton = (page: Page) => page.getByTestId("course-next");
+const next = async (page: Page) => nextButton(page).click();
 const audits = async (page: Page) =>
   page.evaluate(() =>
     window.__refStorage.filter((x) => x.key === "gem-lab-progress-v1"),
@@ -39,6 +43,11 @@ test.beforeEach(async ({ page }) => {
     }
   });
 });
+/** 用 ?step= 直达某一步（讲师演示）。 */
+async function openAt(page: Page, step: string) {
+  await page.goto(`${route}?course=basic&mode=teacher&step=${step}`);
+  await expect(canvas(page)).toHaveAttribute("data-loaded", "true", { timeout: 60_000 });
+}
 async function open(page: Page, mode: "student" | "teacher" = "student") {
   await page.goto(route);
   await button(
@@ -169,11 +178,10 @@ test("完整学员课程：恢复、先输入后核对、换向复核、清洁�
 test("无效条件和拆解不能提交，恢复装配与接触后才恢复；两次读数各自通过", async ({
   page,
 }) => {
-  await open(page, "teacher");
-  await page
-    .getByRole("navigation", { name: "课程步骤" })
-    .getByRole("button", { name: "第一次读数" })
-    .click();
+  // 讲师用 ?step= 直达第一次读数。
+  await page.goto(`${route}?course=basic&mode=teacher&step=observe`);
+  await expect(canvas(page)).toHaveAttribute("data-loaded", "true", { timeout: 60_000 });
+  await expect(page.getByTestId("refractometer-course")).toHaveAttribute("data-step", "observe");
   const submit = button(page, "提交读数");
   await expect(submit).toBeDisabled();
   await button(page, "打开电源").click();
@@ -189,9 +197,9 @@ test("无效条件和拆解不能提交，恢复装配与接触后才恢复；�
   await expect(page.getByTestId("reading-feedback")).toContainText(
     "请重新观察",
   );
-  await expect(button(page, "下一步")).toBeDisabled();
+  await expect(nextButton(page)).toBeDisabled();
   await read(page, "1.723");
-  await expect(button(page, "下一步")).toBeEnabled();
+  await expect(nextButton(page)).toBeEnabled();
   await page.getByText("部件与装配辅助", { exact: true }).click();
   await page.getByRole("slider", { name: "连续拆解" }).fill("50");
   await expect(submit).toBeDisabled();
@@ -202,18 +210,18 @@ test("无效条件和拆解不能提交，恢复装配与接触后才恢复；�
   await next(page);
   await question(page, "repeat", 0);
   await read(page);
-  await expect(button(page, "下一步")).toBeDisabled();
+  await expect(nextButton(page)).toBeDisabled();
   await button(page, "取下转向 90° 并放回").click();
   await button(page, "轻推贴合").click();
   await read(page, "1.700");
-  await expect(button(page, "下一步")).toBeDisabled();
+  await expect(nextButton(page)).toBeDisabled();
   await read(page, "1.713");
-  await expect(button(page, "下一步")).toBeEnabled();
+  await expect(nextButton(page)).toBeEnabled();
   expect(await audits(page)).toEqual([]);
 });
 test("跳步后返回补完，仍不写入进度", async ({ page }) => {
   await open(page);
-  await button(page, "跳步复习").click();
+  await page.getByTestId("course-skip").click();
   await page
     .getByRole("navigation", { name: "课程步骤" })
     .getByRole("button", { name: "认识部件" })
@@ -226,12 +234,13 @@ test("跳步后返回补完，仍不写入进度", async ({ page }) => {
   ).toBeVisible();
   expect(await audits(page)).toEqual([]);
 });
-test("讲师可以自由跳转，完整演示也不访问学习存储", async ({ page }) => {
+test("讲师用跳过快速前进，再从步骤条回到已到达的步骤；完整演示也不访问学习存储", async ({ page }) => {
   await open(page, "teacher");
-  await page
-    .getByRole("navigation", { name: "课程步骤" })
-    .getByRole("button", { name: "解释与适用条件" })
-    .click();
+  const steps = page.getByRole("navigation", { name: "课程步骤" });
+  // 与偏光镜一致：步骤条只能去已到达过的步骤。
+  await expect(steps.getByRole("button", { name: /解释与适用条件/ })).toBeDisabled();
+  for (let i = 0; i < 6; i++) await page.getByTestId("course-skip").click();
+  await expect(page.getByTestId("refractometer-course")).toHaveAttribute("data-step", "explain");
   await page
     .getByRole("navigation", { name: "课程步骤" })
     .getByRole("button", { name: "认识部件" })
@@ -255,7 +264,7 @@ test("自由探索与未完成课程不访问存储；重复进入不累积 canv
       timeout: 60_000,
     });
     await expect(page.locator("canvas")).toHaveCount(1);
-    await button(page, "返回自由探索").first().click();
+    await page.getByTestId("course-exit").click();
     await expect(canvas(page)).toHaveAttribute("data-loaded", "true", {
       timeout: 60_000,
     });
@@ -265,11 +274,7 @@ test("自由探索与未完成课程不访问存储；重复进入不累积 canv
 });
 test("窄屏课程无横向溢出，3D 与观察上下排列", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await open(page, "teacher");
-  await page
-    .getByRole("navigation", { name: "课程步骤" })
-    .getByRole("button", { name: "开灯与放样" })
-    .click();
+  await openAt(page, "prepare");
   await button(page, "打开电源").click();
   const model = await page.locator(".course-shell__model").boundingBox(),
     panel = await page.locator(".course-shell__panel").boundingBox();
@@ -287,7 +292,7 @@ test("模型加载失败显示静态回退，不能伪造完成课程", async ({
   await page.goto(route);
   await button(page, "开始学习（学员）").click();
   await expect(page.getByRole("alert")).toContainText("模型载入失败");
-  await expect(button(page, "下一步")).toBeDisabled();
+  await expect(nextButton(page)).toBeDisabled();
   await expect(page.getByAltText("折射仪静态预览")).toBeVisible();
   expect(await audits(page)).toEqual([]);
 });
@@ -298,8 +303,7 @@ test('桌面教学画面与手机操作留存，窄条测台和既有 2D 参考�
   const out = path.resolve('assets-source/refractometer/course-v2/visual');
   await fs.mkdir(out, {recursive:true});
   await page.setViewportSize({width:1440,height:950});
-  await open(page, 'teacher');
-  await page.getByRole('navigation', {name:'课程步骤'}).getByRole('button', {name:'第一次读数'}).click();
+  await openAt(page, 'observe');
   await button(page,'打开电源').click();
   await button(page,'滴一小滴接触液').click();
   await button(page,'台面朝下放样').click();
@@ -334,7 +338,7 @@ test("知识库以 3D 读数课为主线，地址可直接打开学员或讲师�
   await page.getByTestId("knowledge-start-course").click();
   await expect(course(page)).toHaveAttribute("data-mode", "student");
   await expect(canvas(page)).toHaveAttribute("data-loaded", "true", { timeout: 60_000 });
-  await button(page, "返回自由探索").first().click();
+  await page.getByTestId("course-exit").click();
   await expect(page).not.toHaveURL(/course=/);
   await expect(page.getByTestId("optics-explore-page")).toBeVisible();
   await page.goto(`${route}?course=basic&mode=teacher`);

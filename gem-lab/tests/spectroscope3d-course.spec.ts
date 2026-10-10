@@ -6,8 +6,12 @@ const field = (page: Page) => page.getByTestId("course-observation");
 const canvas = (page: Page) => page.getByTestId("optics3d-canvas");
 const bench = (page: Page) => page.getByTestId("spectroscope-bench-canvas");
 const button = (page: Page, name: string) => page.getByRole("button", { name, exact: true });
-const next = (page: Page) => button(page, "下一步").click();
-const question = (page: Page, id: string, option: number) => page.getByTestId(`question-${id}`).getByRole("button").nth(option).click();
+const next = (page: Page) => page.getByTestId("course-next").click();
+const question = async (page: Page, id: string, option: number) => {
+  const q = page.getByTestId(`question-${id}`);
+  await q.getByRole("radio").nth(option).check();
+  await q.getByRole("button", { name: "提交" }).click();
+};
 const progress = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem("gem-lab-progress-v1") ?? "{}").state?.completedDemos ?? []);
 
 /** 棱镜式刻度：x = 1 - sqrt((wl - 400) / 300)，红端在左。 */
@@ -75,7 +79,7 @@ async function runCourse(page: Page) {
   await question(page, "dark", 1);
   await question(page, "grating", 0);
   await question(page, "evidence", 1);
-  await button(page, "完成课程").click();
+  await page.getByTestId("course-finish").click();
 }
 
 test.beforeEach(async ({ page }) => {
@@ -111,18 +115,18 @@ test("学员模式未完成的步骤不能点选；跳过的步骤没补完时�
   await open(page, "student");
   const steps = page.getByRole("navigation", { name: "课程步骤" });
   await expect(steps.getByRole("button", { name: /标记吸收特征/ })).toBeDisabled();
-  for (let i = 0; i < 5; i++) await button(page, "跳步复习").click();
+  for (let i = 0; i < 5; i++) await page.getByTestId("course-skip").click();
   await expect(course(page)).toHaveAttribute("data-step", "explain");
   await question(page, "dark", 1);
   await question(page, "grating", 0);
   await question(page, "evidence", 1);
-  await expect(button(page, "完成课程")).toBeDisabled();
+  await expect(page.getByTestId("course-finish")).toBeDisabled();
 });
 
 test("课程从对光起换到照明与夹样工作台：夹样改变光路，狭缝滑杆带动刃口，焦距滑杆抽拉目镜套筒", async ({ page }) => {
   await open(page, "teacher");
   await expect(bench(page)).toHaveCount(0);
-  for (let i = 0; i < 2; i++) await button(page, "跳到下一步").click();
+  for (let i = 0; i < 2; i++) await page.getByTestId("course-skip").click();
   await expect(course(page)).toHaveAttribute("data-step", "light");
   await expect(bench(page)).toHaveAttribute("data-loaded", "true", { timeout: 60_000 });
   await expect(canvas(page)).toHaveCount(0);
@@ -134,7 +138,7 @@ test("课程从对光起换到照明与夹样工作台：夹样改变光路，�
   await expect(bench(page)).toHaveAttribute("data-sample-placed", "true");
   await expect(bench(page)).toHaveAttribute("data-light-path", "aligned");
 
-  await button(page, "跳到下一步").click();
+  await page.getByTestId("course-skip").click();
   const focusZ = async () => Number(await bench(page).getAttribute("data-focus-z"));
   await page.getByLabel("目镜焦距").fill("0");
   const near = await focusZ();
@@ -144,7 +148,8 @@ test("课程从对光起换到照明与夹样工作台：夹样改变光路，�
   await expect(bench(page)).toHaveAttribute("data-slit-gap", "0.0008000");
   await page.getByLabel("狭缝宽度").fill("0");
   await expect(bench(page)).toHaveAttribute("data-slit-gap", "0.0000400");
-  await expect(page.getByTestId("model-motion")).toContainText("狭缝刃口间距 0.04 mm");
+  // 滑杆读数取自模型刃口实测间距。
+  await expect(page.getByTestId("slit-control").locator("output")).toHaveText("0.04 mm");
   await button(page, "分光镜").click();
   await expect(bench(page)).toHaveAttribute("data-focus-view", "instrument");
 

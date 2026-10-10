@@ -2,20 +2,13 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { mayRecordLearning, noRecordReason, stepLocked } from "../../src/domain/course";
 
-const steps = [
-  { id: "a", title: "A", task: "" },
-  { id: "b", title: "B", task: "" },
-  { id: "c", title: "C", task: "" },
-] as const;
-
-test("学员模式只能进入前面都已完成的步骤，讲师可以自由跳转", () => {
-  const done = new Set(["a"]);
-  const isComplete = (id: string) => done.has(id);
-  assert.equal(stepLocked(steps, 1, 0, "student", isComplete), false);
-  assert.equal(stepLocked(steps, 2, 0, "student", isComplete), true);
-  assert.equal(stepLocked(steps, 2, 0, "teacher", isComplete), false);
-  // 已经到达的步骤（不在当前步之后）不锁定，便于回看。
-  assert.equal(stepLocked(steps, 2, 2, "student", isComplete), false);
+test("与偏光镜一致：步骤条只能回到已到达过的最远一步，两种模式相同", () => {
+  assert.equal(stepLocked(0, 0), false);
+  assert.equal(stepLocked(1, 0), true);
+  // 已经到达过的步骤可以回看。
+  assert.equal(stepLocked(2, 3), false);
+  assert.equal(stepLocked(3, 3), false);
+  assert.equal(stepLocked(4, 3), true);
 });
 
 test("只有学员、未跳步、全部完成才写入学习进度", () => {

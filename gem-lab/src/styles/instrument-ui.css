@@ -1,0 +1,82 @@
+/*
+ * 仪器页共用设计变量与控件：中性色、字体、按钮、焦点环、反馈色取自偏光镜（polariscope-explore.css）。
+ * 主色按 data-instrument 切换，取 src/data/instruments.ts 的主题色；琥珀、天蓝作白字底色对比度不足，
+ * 按钮与文字用同色系加深一档（--iu-accent-strong / --iu-accent-ink）。
+ */
+.iu {
+  --iu-ink: #1a2332;
+  --iu-ink-2: #3d4a5e;
+  --iu-muted: #5b6b80;
+  --iu-faint: #8a97ab;
+  --iu-line: #e3ebf5;
+  --iu-line-2: #d4dfee;
+  --iu-rail: #e8eff8;
+  --iu-paper: #eef4fb;
+  --iu-brand: #174685;
+  --iu-success: #22a86a;
+  --iu-warn: #b45309;
+  --iu-warn-soft: #fffbeb;
+  --iu-info: #1d5fa8;
+  --iu-info-soft: #eef5fd;
+  --iu-danger: #b4403f;
+  --iu-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+  --iu-accent: #7c3aed;
+  --iu-accent-strong: #6d28d9;
+  --iu-accent-ink: #5b21b6;
+  --iu-accent-soft: #f5f3ff;
+  --iu-accent-line: #ddd6fe;
+  color: var(--iu-ink);
+  background: var(--iu-paper);
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.iu[data-instrument="refractometer"] {
+  --iu-accent: #e8a93a;
+  --iu-accent-strong: #b45309;
+  --iu-accent-ink: #92400e;
+  --iu-accent-soft: #fffbeb;
+  --iu-accent-line: #fde68a;
+}
+.iu[data-instrument="spectroscope"] {
+  --iu-accent: #0ea5e9;
+  --iu-accent-strong: #0369a1;
+  --iu-accent-ink: #075985;
+  --iu-accent-soft: #f0f9ff;
+  --iu-accent-line: #bae6fd;
+}
+.iu *, .iu *::before, .iu *::after { box-sizing: border-box; }
+.iu button, .iu input, .iu select, .iu textarea { font: inherit; }
+.iu button { touch-action: manipulation; }
+.iu button:focus-visible, .iu a:focus-visible, .iu input:focus-visible, .iu summary:focus-visible, .iu select:focus-visible, .iu textarea:focus-visible {
+  outline: 2px solid var(--iu-accent-strong);
+  outline-offset: 3px;
+}
+.iu input[type="range"], .iu input[type="radio"], .iu input[type="checkbox"] { accent-color: var(--iu-accent-strong); }
+
+.iu-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 38px; padding: 8px 14px; border: 1px solid var(--iu-line-2); border-radius: 6px; color: var(--iu-ink); background: #fff; font-size: 12px; font-weight: 500; line-height: 1.4; text-align: center; text-decoration: none; cursor: pointer; transition: background .16s, border-color .16s; }
+.iu-button:hover:not(:disabled) { border-color: var(--iu-faint); background: var(--iu-accent-soft); }
+.iu-button:disabled { cursor: not-allowed; opacity: .42; }
+.iu-button[aria-pressed="true"] { border-color: var(--iu-accent-strong); background: var(--iu-accent-soft); color: var(--iu-accent-ink); }
+.iu-button--primary { border-color: var(--iu-accent-strong); color: #fff; background: var(--iu-accent-strong); }
+.iu-button--primary:hover:not(:disabled) { border-color: var(--iu-accent-ink); background: var(--iu-accent-ink); }
+.iu-button--quiet { border-color: transparent; background: transparent; padding-inline: 8px; color: var(--iu-muted); }
+.iu-eyebrow { display: block; color: var(--iu-muted); font-family: var(--iu-mono); font-size: 10px; letter-spacing: .18em; line-height: 1.6; }
+
+/* 滑杆：标签与读数一行，下方两端刻度（同偏光镜 AngleControl）。 */
+.iu-range { display: grid; gap: 4px; }
+.iu-range__head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.iu-range__head label { color: var(--iu-ink-2); font-size: 12px; font-weight: 500; }
+.iu-range__head output { color: var(--iu-accent-ink); font-family: var(--iu-mono); font-size: 15px; }
+.iu-range input { width: 100%; margin: 0; }
+.iu-range__labels { display: flex; justify-content: space-between; color: var(--iu-faint); font-family: var(--iu-mono); font-size: 10px; }
+
+/* 反馈：完成绿、提示琥珀、说明蓝、错误红、「为什么」主题色。 */
+.iu-note { padding: 10px 12px; border-left: 3px solid var(--iu-info); border-radius: 0 6px 6px 0; background: var(--iu-info-soft); color: var(--iu-ink-2); font-size: 12px; }
+.iu-blocked { padding: 10px 12px; border-left: 3px solid var(--iu-warn); border-radius: 0 6px 6px 0; background: var(--iu-warn-soft); color: #7c3d0b; font-size: 12px; }
+.iu-why { padding: 6px 10px; border-left: 3px solid var(--iu-accent-strong); background: var(--iu-accent-soft); color: var(--iu-accent-ink); }
+.iu-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .iu *, .iu *::before, .iu *::after { transition-duration: 0s !important; animation-duration: 0s !important; scroll-behavior: auto !important; }
+}

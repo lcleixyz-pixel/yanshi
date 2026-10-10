@@ -130,13 +130,15 @@ def main(argv=None):
     parser.add_argument("--snapshot-dir", type=Path, required=True,
                         help="Snapshot directory containing workspace/")
     parser.add_argument("--group", choices=GROUPS, default="current-rebuild")
+    parser.add_argument("--catalog", type=Path, default=CATALOG,
+                        help="Archive catalog matching the snapshot; defaults to archive-catalog.json")
     parser.add_argument("--destination", type=Path, default=REPOSITORY,
                         help="Repository root to restore into; defaults to this checkout")
     parser.add_argument("--dry-run", action="store_true",
                         help="Verify sources and destinations without creating files/directories")
     args = parser.parse_args(argv)
     try:
-        catalog = read_catalog(CATALOG)
+        catalog = read_catalog(args.catalog)
         selected = [entry for entry in catalog["entries"]
                     if args.group == "all" or args.group in entry["groups"]]
         if not selected:

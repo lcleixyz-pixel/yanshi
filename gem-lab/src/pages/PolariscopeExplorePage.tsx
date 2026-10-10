@@ -159,6 +159,8 @@ export default function PolariscopeExplorePage() {
   const progressRecorded = useRef(false);
   /** 本轮课程中是否用过讲师模式：讲师演示（含中途切换）不计入学员的学习进度。 */
   const teacherUsed = useRef(false);
+  /** 本轮课程中是否跳过未完成的步骤：之后返回补齐也仍算跳步，与另外两课一致。 */
+  const hasSkipped = useRef(false);
   const [saveNote, setSaveNote] = useState('');
   const mainRef = useRef<HTMLElement>(null);
   const projectionExit = useRef<HTMLButtonElement>(null);
@@ -286,7 +288,7 @@ export default function PolariscopeExplorePage() {
   /** mode 省略时保留地址中的使用方式（直接打开 ?course=basic&mode=student 时）。 */
   /** start 为起始步骤：知识库「使用方法」可以直接跳到对应步骤（地址参数 step）。 */
   const startCourse = (mode?: 'teacher' | 'student', start = 0) => {
-    setCourseStep(start); setCourseReached(start); setCourseProgress(EMPTY_COURSE_PROGRESS); setCourseFinished(false); progressRecorded.current = false; teacherUsed.current = (mode ?? (studentMode ? 'student' : 'teacher')) === 'teacher'; setSaveNote('');
+    setCourseStep(start); setCourseReached(start); setCourseProgress(EMPTY_COURSE_PROGRESS); setCourseFinished(false); progressRecorded.current = false; teacherUsed.current = (mode ?? (studentMode ? 'student' : 'teacher')) === 'teacher'; hasSkipped.current = start > 0; setSaveNote('');
     setStepTimes(COURSE_STEPS.map(() => 0)); stepEnteredAt.current = performance.now(); doneItems.current = null;
     enterCourseStep(start, mode);
   };
@@ -296,6 +298,7 @@ export default function PolariscopeExplorePage() {
   const changeCourseStep = (index: number) => {
     if (index < 0 || index >= COURSE_STEPS.length) return;
     leaveCurrentStep();
+    if (index > courseStep && !COURSE_STEPS.slice(0, index).every((item) => isStepComplete(item.id, courseProgress))) hasSkipped.current = true;
     setCourseStep(index); setCourseReached((previous) => Math.max(previous, index));
     enterCourseStep(index);
   };
@@ -304,8 +307,8 @@ export default function PolariscopeExplorePage() {
     // 学员全程自学、每一步都实际完成（没有跳过）时，记为偏光镜的一次学习完成，与 2D 学习模式使用同一条记录。
     if (progressRecorded.current) return;
     const mode = teacherUsed.current || !studentMode ? 'teacher' : 'student';
-    // 偏光镜的跳步不单独记录：完成时仍有未完成的步骤即视为跳过。
-    const skipped = !COURSE_STEPS.every((item) => isStepComplete(item.id, courseProgress));
+    // 用过跳步（即使之后补齐），或完成时仍有未完成的步骤，都视为跳过。
+    const skipped = hasSkipped.current || !COURSE_STEPS.every((item) => isStepComplete(item.id, courseProgress));
     if (!mayRecordLearning(mode, skipped, !skipped)) { setSaveNote(noRecordReason(mode)); return; }
     progressRecorded.current = true;
     // 按需加载进度存储：自由探索、讲师演示和未完成的课程都不读写学习记录。

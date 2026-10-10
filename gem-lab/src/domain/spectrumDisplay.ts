@@ -5,7 +5,8 @@ import type { AbsorptionFeature } from '../data/types';
  *
  * 参考光谱只有一份（样品数据里的吸收特征）；条件变化只作为显示时的变换叠加上去，不另画一套光谱。
  * 依据：docs/仪器课程素材清单-2026-10-08.md「条件不合适时的对照」（用户 10-08 确认先用合理模拟）。
- * - 狭缝过宽：分辨率下降，相邻细线并成一条，对比度降低，弱线先消失；
+ * - 合适设置：手持分光镜分辨率有限，相距不到 3 nm 的细线（如红宝石 694 / 692、476 / 475）本来就看成一条细线；
+ * - 狭缝过宽：分辨率下降，相距更远的细线也并成模糊的带，对比度降低，弱线先消失；
  * - 狭缝过窄：整体变暗、紫端先暗，弱线看不清；
  * - 焦距偏离（仅棱镜式）：随偏离量变模糊，弱线先消失；
  * - 透光太弱：整体变暗、蓝紫端先变黑，「暗」不等于吸收；
@@ -47,8 +48,8 @@ export type SpectrumProblem = 'not-through-sample' | 'weak-light' | 'slit-wide' 
 
 export const SLIT_OK: readonly [number, number] = [0.22, 0.42];
 export const FOCUS_TOLERANCE = 0.06;
-/** 合适设置下能分开的最小波长间隔（nm），足以分开红宝石 694 / 692。 */
-const BASE_RESOLUTION = 1;
+/** 合适设置下能分开的最小波长间隔（nm）：红宝石 694 / 692、476 / 475 在手持分光镜下各呈一条细线（用户 10-09 确认）。 */
+const BASE_RESOLUTION = 3;
 /** 低于此黑度的特征视为看不见。 */
 const VISIBLE = 0.25;
 const BASE_OPACITY = { strong: 0.95, medium: 0.7, weak: 0.45 } as const;
@@ -92,7 +93,7 @@ export function displaySpectrum(reference: readonly AbsorptionFeature[], c: Spec
   return { features, blurPx, brightness, violetDim, problems };
 }
 
-/** 间隔小于分辨率的相邻吸收线并成一条，强度取较强者。吸收带不参与合并。 */
+/** 间隔小于分辨率的相邻吸收线并成一条，强度取较强者：本来就分不开的仍是一条细线，因狭缝或失焦才并在一起的显示为模糊的带。吸收带不参与合并。 */
 function mergeUnresolved(reference: readonly AbsorptionFeature[], resolution: number): AbsorptionFeature[] {
   const order = { weak: 0, medium: 1, strong: 2 } as const;
   const lines = reference.filter((f) => f.type === 'line').sort((a, b) => a.wavelength - b.wavelength);
@@ -102,9 +103,11 @@ function mergeUnresolved(reference: readonly AbsorptionFeature[], resolution: nu
     if (!group.length) return;
     if (group.length === 1) out.push(group[0]);
     else {
-      const strongest = group.reduce((a, b) => (order[b.intensity] > order[a.intensity] ? b : a));
+      // 同样强时取数据中先列出的主线（如 476 / 475 取 476）。
+      const strongest = group.reduce((a, b) => (order[b.intensity] > order[a.intensity] || (order[b.intensity] === order[a.intensity] && reference.indexOf(b) < reference.indexOf(a)) ? b : a));
       const low = group[0].wavelength, high = group[group.length - 1].wavelength;
-      out.push({ ...strongest, type: 'band', wavelength: (low + high) / 2, width: high - low + resolution });
+      if (high - low < BASE_RESOLUTION) out.push(strongest);
+      else out.push({ ...strongest, type: 'band', wavelength: (low + high) / 2, width: high - low + resolution });
     }
     group = [];
   };

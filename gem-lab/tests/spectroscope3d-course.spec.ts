@@ -17,6 +17,16 @@ async function mark(page: Page, wavelength: number) {
   await strip.click({ position: { x: box.width * x, y: box.height / 2 } });
 }
 
+/** 画面验收：694 / 692 只画成一条细线；画出来的每条细线在画面上都互不重叠（看得见的线数与讲解一致）。 */
+async function expectLinesApart(page: Page) {
+  const strip = field(page).getByTestId("spectroscope-spectrum-visual");
+  await expect(strip.locator('[data-wavelength="694"]')).toHaveCount(1);
+  await expect(strip.locator('[data-wavelength="692"]')).toHaveCount(0);
+  const boxes = await strip.locator("[data-wavelength]").evaluateAll((els) =>
+    els.map((el) => ({ wl: Number(el.getAttribute("data-wavelength")), ...el.getBoundingClientRect().toJSON() })).filter((b) => b.width < 8).sort((a, b) => a.left - b.left));
+  for (let i = 1; i < boxes.length; i++) expect(boxes[i].left, `${boxes[i - 1].wl} / ${boxes[i].wl} nm 在画面上重叠`).toBeGreaterThanOrEqual(boxes[i - 1].right);
+}
+
 async function open(page: Page, mode: "student" | "teacher") {
   await page.goto(`${route}?course=basic&mode=${mode}`);
   await expect(course(page)).toHaveAttribute("data-mode", mode);
@@ -44,6 +54,7 @@ async function runCourse(page: Page) {
   await page.getByLabel("目镜焦距").fill("50");
   await expect(field(page)).toHaveAttribute("data-problems", "");
   await expect(field(page).locator('[data-wavelength="468"]')).toHaveCount(1);
+  await expectLinesApart(page);
   await question(page, "slit", 1);
   await next(page);
 

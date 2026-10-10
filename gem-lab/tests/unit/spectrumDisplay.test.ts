@@ -7,21 +7,28 @@ const ruby = SAMPLES_BY_ID.ruby.spectrum.features;
 const show = (patch: Partial<typeof IDEAL_CONDITIONS>) => displaySpectrum(ruby, { ...IDEAL_CONDITIONS, ...patch });
 const weakCount = (d: ReturnType<typeof show>) => d.features.filter((f) => f.intensity === "weak").length;
 
-test("合适设置下与参考光谱一致：所有特征可见，694 / 692 分得开", () => {
+// 参考光谱里相距不到 3 nm 的两对线：694 / 692、476 / 475，手持分光镜下各呈一条细线。
+const IDEAL_COUNT = ruby.length - 2;
+
+test("合适设置下与参考光谱一致：694 / 692、476 / 475 各显示为一条细线，其余特征都在", () => {
   const d = show({});
   assert.deepEqual(d.problems, []);
-  assert.equal(d.features.length, ruby.length);
-  assert.ok(resolvedApart(d, 694, 692));
+  assert.equal(d.features.length, IDEAL_COUNT);
+  assert.deepEqual(d.features.filter((f) => f.wavelength >= 690).map((f) => [f.type, f.wavelength, f.intensity]), [["line", 694, "strong"]]);
+  assert.deepEqual(d.features.filter((f) => f.wavelength >= 474 && f.wavelength <= 477).map((f) => [f.type, f.wavelength]), [["line", 476]]);
+  assert.ok(!resolvedApart(d, 694, 692));
+  assert.ok(resolvedApart(d, 668, 659));
   assert.equal(d.blurPx, 0);
 });
 
-test("狭缝过宽：694 / 692 并成一条，弱线先消失，恢复后与参考一致", () => {
+test("狭缝过宽：668 / 659 也并成模糊的带，弱线先消失，恢复后与参考一致", () => {
   const d = show({ slit: 0.72 });
   assert.deepEqual(d.problems, ["slit-wide"]);
-  assert.ok(!resolvedApart(d, 694, 692));
+  assert.ok(!resolvedApart(d, 668, 659));
+  assert.ok(d.features.some((f) => f.type === "band" && f.wavelength > 659 && f.wavelength < 668));
   assert.equal(weakCount(d), 0);
   assert.ok(d.features.some((f) => f.intensity === "strong"));
-  assert.equal(show({ slit: 0.32 }).features.length, ruby.length);
+  assert.equal(show({ slit: 0.32 }).features.length, IDEAL_COUNT);
 });
 
 test("狭缝过窄：整体变暗、紫端更暗，弱线看不清", () => {
@@ -39,7 +46,7 @@ test("焦距偏离只影响棱镜式：变模糊、弱线先消失；光栅式�
   assert.equal(weakCount(d), 0);
   const grating = show({ dispersion: "grating", focus: 0.2, slit: 0.9 });
   assert.deepEqual(grating.problems, []);
-  assert.equal(grating.features.length, ruby.length);
+  assert.equal(grating.features.length, IDEAL_COUNT);
   assert.ok(grating.brightness < show({}).brightness);
 });
 

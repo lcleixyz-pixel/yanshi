@@ -115,8 +115,15 @@ test('student mode on a 390 px phone keeps the stacked layout without horizontal
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
 });
 
-test('student mode: a full run without skipping records one polariscope learning completion', async ({ page }) => {
+/** 学员完整走完整课；skipFirst 时先跳过第一步、再返回补齐。 */
+async function runFullCourse(page: Page, { skipFirst = false } = {}) {
   await openStudent(page);
+  if (skipFirst) {
+    await page.getByTestId('course-skip').click();
+    await expect(guide(page)).toHaveAttribute('data-step', 'path');
+    await page.getByTestId('course-prev').click();
+    await expect(guide(page)).toHaveAttribute('data-step', 'parts');
+  }
   for (const part of ['polarizer', 'stage', 'analyzer']) await page.locator(`.polariscope-hotspot[data-part-id="${part}"]`).click();
   await page.getByTestId('course-next').click();
 
@@ -154,9 +161,18 @@ test('student mode: a full run without skipping records one polariscope learning
   await question('no-conclusion').getByRole('button', { name: '提交' }).click();
   expect(await page.evaluate(() => localStorage.getItem('gem-lab-progress-v1'))).toBeNull();
   await page.getByTestId('course-finish').click();
+}
 
+test('student mode: a full run without skipping records one polariscope learning completion', async ({ page }) => {
+  await runFullCourse(page);
   await expect(page.getByTestId('course-complete')).toHaveAttribute('data-skipped', '0');
   await expect(page.getByTestId('course-save-status')).toHaveText('已记录本次学习完成。');
   await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('gem-lab-progress-v1') ?? '{}').state?.completedDemos ?? []))
     .toEqual([expect.objectContaining({ instrumentId: 'polariscope', mode: 'learning' })]);
+});
+
+test('student mode: skipping a step and coming back to finish it still counts as review, not a learning record', async ({ page }) => {
+  await runFullCourse(page, { skipFirst: true });
+  await expect(page.getByTestId('course-save-status')).toHaveText('本次使用过跳步，已完成复习，不写入学习进度。');
+  expect(await page.evaluate(() => localStorage.getItem('gem-lab-progress-v1'))).toBeNull();
 });

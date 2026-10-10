@@ -48,10 +48,10 @@ export const QUESTIONS = [
   },
   {
     id: 'slit',
-    prompt: '狭缝开得太宽时，红宝石红区的 694 / 692 nm 会怎样？',
-    options: ['变得更清楚', '并成一条模糊的线，弱线先消失', '移动到别的波长'],
+    prompt: '狭缝开得太宽时，红宝石红区的细吸收线会怎样？',
+    options: ['变得更清楚', '变宽变模糊、相邻的线并在一起，弱线先消失', '移动到别的波长'],
     correct: 1,
-    feedback: '狭缝越宽分辨率越低，相邻细线并在一起、弱线消失；位置不会变，但细节会丢失。实物上这对红区双线本来就很靠近，常看成一条。',
+    feedback: '狭缝越宽分辨率越低，相邻细线并在一起、弱线消失；位置不会变，但细节会丢失。红区 694 / 692 nm 本来就只差约 2 nm，手持分光镜在合适设置下也只看到一条细线。',
   },
   {
     id: 'dark',
@@ -83,10 +83,10 @@ export const REQUIRED_GROUPS = 3;
 function groupFeatures(features: readonly AbsorptionFeature[]) {
   const pick = (...wls: number[]) => features.filter((f) => wls.includes(f.wavelength));
   return [
-    { label: '红区 694 / 692 nm 双线', features: pick(694, 692) },
+    { label: '红区 694 nm 细线（694 / 692 双线，手持镜下呈一条）', features: pick(694, 692) },
     { label: '红区 668 / 659 nm 吸收线', features: pick(668, 659) },
     { label: '黄绿区宽吸收带（约 620–540 nm）', features: pick(580) },
-    { label: '蓝区 476 / 475 nm 吸收线', features: pick(476, 475) },
+    { label: '蓝区 476 nm 细线（476 / 475，手持镜下呈一条）', features: pick(476, 475) },
     { label: '紫区吸收', features: pick(410) },
   ].filter((group) => group.features.length);
 }

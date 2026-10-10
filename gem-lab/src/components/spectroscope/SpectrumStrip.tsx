@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import clsx from '@/utils/clsx';
 import type { AbsorptionFeature } from '@/data/types';
+import { IDEAL_CONDITIONS } from '@/domain/spectrumDisplay';
 
 const MIN_WL = 400;
 const MAX_WL = 700;
@@ -57,13 +58,18 @@ export default function SpectrumStrip({
   const [hoverWL, setHoverWL] = useState<number | null>(null);
   const isInteractive = interactive && !locked;
 
+  // 光栅式狭缝、焦距固定（GIA 产品说明）：按合适设置显示，忽略从棱镜式带过来的旧值。
+  const fixedOptics = dispersion === 'grating';
+  const slit = fixedOptics ? IDEAL_CONDITIONS.slit : slitWidth;
+  const focusPos = fixedOptics ? IDEAL_CONDITIONS.focus : focus;
+
   // 综合模糊
-  const focusBlur = Math.abs(focus - 0.5) * 6;
+  const focusBlur = Math.abs(focusPos - 0.5) * 6;
   const noiseBlur = noise * 4;
   const blur = display ? display.blurPx : focusBlur + noiseBlur;
 
   // 综合亮度：狭缝越宽越亮（基础亮度），但 noise 会降低对比度
-  const brightness = display ? display.brightness : (0.6 + slitWidth * 0.6) * (1 - noise * 0.25);
+  const brightness = display ? display.brightness : (0.6 + slit * 0.6) * (1 - noise * 0.25);
 
   // 吸收线对比度：noise 越大越衰减
   const featureContrast = 1 - noise * 0.5;

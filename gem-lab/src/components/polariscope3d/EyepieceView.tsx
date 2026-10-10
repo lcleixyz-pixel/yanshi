@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { renderConoscopicFigure, type CrystalOptics, type Rgb } from '../../domain/polarizedLight';
 import { renderEyepieceField, type SampleFieldMap } from '../../domain/eyepieceField';
 
@@ -42,10 +42,12 @@ export default function EyepieceView({ content, stageDeg, analyzerDeg, active, l
     });
     return () => cancelAnimationFrame(frame);
   }, [content, effectiveStage, analyzerDeg, active, renderToken]);
+  // ref 回调保持稳定：行内函数每次渲染都会先传 null 再传画布，触发父组件更新，画面持续变化时可能陷入无限更新（React #185）。
+  const canvasRef = useCallback((element: HTMLCanvasElement | null) => { own.current = element; onCanvas?.(element); }, [onCanvas]);
   return (
     <figure className="pol-eyepiece" data-testid="eyepiece-view" data-kind={content.kind}>
       <div className="pol-eyepiece__ring">
-        <canvas ref={(element) => { own.current = element; onCanvas?.(element); }} data-requested-frame={renderToken} width={EYEPIECE_RESOLUTION} height={EYEPIECE_RESOLUTION} role="img" aria-label={label} />
+        <canvas ref={canvasRef} data-requested-frame={renderToken} width={EYEPIECE_RESOLUTION} height={EYEPIECE_RESOLUTION} role="img" aria-label={label} />
         <span className="pol-eyepiece__mark pol-eyepiece__mark--p" aria-hidden="true">P</span>
         <span className="pol-eyepiece__mark pol-eyepiece__mark--a" aria-hidden="true" style={{ transform: `rotate(${-analyzerDeg}deg)` }}><i>A</i></span>
       </div>

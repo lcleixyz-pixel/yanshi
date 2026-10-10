@@ -1,16 +1,23 @@
 import { SAMPLES_BY_ID } from '../data/samples';
-import type { AbsorptionFeature } from '../data/types';
+import type { AbsorptionFeature, SampleDef } from '../data/types';
 import { mayRecordLearning, type ChoiceQuestion, type CourseMode, type CourseStep } from './course';
-import { displaySpectrum, markMatches, spectrumProblems, type SpectrumConditions } from './spectrumDisplay';
+import { createBenchState, evaluateBench, type BenchState } from './spectroscopeBench';
+import { markMatches, spectrumProblems, type SpectrumConditions } from './spectrumDisplay';
 
-/** 棱镜式分光镜基础课：固定红宝石教学样品（Cr 吸收谱特征明显，资料一致）。 */
-export const COURSE_SAMPLE = SAMPLES_BY_ID.ruby;
+/**
+ * 棱镜式分光镜基础课：固定红宝石教学样品（Cr 吸收谱特征明显，资料一致）。
+ * 品种透明度为“透明-半透明”；本课选定一颗透明刻面样品，使透射对光后能看清谱线。工作台练习仍按品种范围演示有限透光。
+ */
+export const COURSE_SAMPLE: SampleDef = {
+  ...SAMPLES_BY_ID.ruby,
+  characteristics: { ...SAMPLES_BY_ID.ruby.characteristics, transparency: '透明' },
+};
 
 export type StepId = 'parts' | 'path' | 'light' | 'tune' | 'observe' | 'explain';
 export const STEPS: readonly CourseStep<StepId>[] = [
   { id: 'parts', title: '认识部件', task: '点选五个关键部件，看清光从狭缝进入、经准直和棱镜分光、到目镜观察的顺序。' },
   { id: 'path', title: '跟随光路', task: '依次查看白光和 400 / 550 / 700 nm 单色光的路径，再回答光谱从哪里来。' },
-  { id: 'light', title: '对光与照明', task: '本次先让光绕过样品直接进入狭缝。记录看到的现象，再改为透射照明，让光穿过样品。' },
+  { id: 'light', title: '对光与照明', task: '光源已开，镊子上还没有样品，灯光直接射入狭缝。记录看到的现象，再用镊子把样品夹到灯头与入光端之间，让光穿过样品。' },
   { id: 'tune', title: '调节狭缝与焦距', task: '狭缝开得太宽、焦距也偏了。先慢慢收紧狭缝，再调焦，直到谱线变锐、弱线重新出现。' },
   { id: 'observe', title: '标记吸收特征', task: '在光谱条上点出你看到的吸收线和吸收带，然后核对。点已有标记可以删除。' },
   { id: 'explain', title: '解释与适用条件', task: '回答三道问题，说明观察结果的依据和限制。' },
@@ -98,24 +105,23 @@ export interface CourseState {
   partsSeen: string[];
   casesSeen: string[];
   answers: Record<string, number>;
-  throughSample: boolean;
+  /** 对光、狭缝与焦距共用照明与夹样工作台的状态与判断，课程只固定样品和机型。 */
+  bench: BenchState;
   continuousRecorded: boolean;
-  slit: number;
-  focus: number;
   marks: number[];
   checked: boolean;
 }
 
-/** 初始故意设置不合适：光绕过样品、狭缝过宽、焦距偏离。 */
+/** 初始故意设置不合适：光源已开但未放样（光直接进入狭缝）、狭缝过宽、焦距偏离；灯头已对准入光端。 */
 export function initialCourse(mode: CourseMode): CourseState {
-  return { mode, step: 'parts', hasSkipped: false, partsSeen: [], casesSeen: [], answers: {}, throughSample: false, continuousRecorded: false, slit: 0.72, focus: 0.2, marks: [], checked: false };
+  const bench = { ...createBenchState('prism'), power: true, samplePlaced: false, slit: 0.72, focus: 0.2 };
+  return { mode, step: 'parts', hasSkipped: false, partsSeen: [], casesSeen: [], answers: {}, bench, continuousRecorded: false, marks: [], checked: false };
 }
 
-export function conditions(s: CourseState): SpectrumConditions {
-  return { dispersion: 'prism', slit: s.slit, focus: s.focus, light: 'ok', throughSample: s.throughSample };
-}
-
-export const display = (s: CourseState) => displaySpectrum(COURSE_SAMPLE.spectrum.features, conditions(s));
+export const evaluation = (s: CourseState) => evaluateBench(COURSE_SAMPLE, s.bench);
+export const conditions = (s: CourseState): SpectrumConditions => evaluation(s).conditions;
+export const throughSample = (s: CourseState) => conditions(s).throughSample;
+export const display = (s: CourseState) => evaluation(s).display;
 export const answerCorrect = (s: CourseState, id: string) => {
   const q = QUESTIONS.find((item) => item.id === id);
   return !!q && s.answers[id] === q.correct;
@@ -132,8 +138,8 @@ export function isComplete(s: CourseState, id: StepId): boolean {
   switch (id) {
     case 'parts': return KEY_PARTS.every((p) => s.partsSeen.includes(p.id));
     case 'path': return PATH_CASES.every((c) => s.casesSeen.includes(c.id)) && answerCorrect(s, 'dispersion');
-    case 'light': return s.continuousRecorded && s.throughSample && answerCorrect(s, 'continuous');
-    case 'tune': return s.throughSample && spectrumProblems(conditions(s)).length === 0 && answerCorrect(s, 'slit');
+    case 'light': return s.continuousRecorded && throughSample(s) && answerCorrect(s, 'continuous');
+    case 'tune': return throughSample(s) && spectrumProblems(conditions(s)).length === 0 && answerCorrect(s, 'slit');
     case 'observe': return s.checked && checkMarks(s.marks).foundCount >= REQUIRED_GROUPS;
     case 'explain': return ['dark', 'grating', 'evidence'].every((q) => answerCorrect(s, q));
   }
@@ -151,7 +157,7 @@ export type Operation =
   | { type: 'see-case'; id: string }
   | { type: 'answer'; id: string; option: number }
   | { type: 'record-continuous' }
-  | { type: 'through-sample'; on: boolean }
+  | { type: 'place-sample'; on: boolean }
   | { type: 'slit'; value: number }
   | { type: 'focus'; value: number }
   | { type: 'mark'; wavelength: number }
@@ -159,16 +165,17 @@ export type Operation =
   | { type: 'check' };
 
 export function operate(s: CourseState, op: Operation): CourseState {
+  // 观察条件变了，之前的标记不再对应当前视场，需要重新标记、重新核对。
+  const adjust = (patch: Partial<BenchState>): CourseState => ({ ...s, bench: { ...s.bench, ...patch }, marks: [], checked: false });
   switch (op.type) {
     case 'see-part': return s.partsSeen.includes(op.id) || !KEY_PARTS.some((p) => p.id === op.id) ? s : { ...s, partsSeen: [...s.partsSeen, op.id] };
     case 'see-case': return s.casesSeen.includes(op.id) ? s : { ...s, casesSeen: [...s.casesSeen, op.id] };
     case 'answer': return { ...s, answers: { ...s.answers, [op.id]: op.option } };
-    // 只有光确实绕过样品、看到连续光谱时才能记录这一现象。
-    case 'record-continuous': return s.throughSample ? s : { ...s, continuousRecorded: true };
-    // 观察条件变了，之前的标记不再对应当前视场，需要重新标记、重新核对。
-    case 'through-sample': return { ...s, throughSample: op.on, marks: [], checked: false };
-    case 'slit': return { ...s, slit: clamp(op.value), marks: [], checked: false };
-    case 'focus': return { ...s, focus: clamp(op.value), marks: [], checked: false };
+    // 只有光未经样品直接进入狭缝、看到连续光谱时才能记录这一现象。
+    case 'record-continuous': return evaluation(s).spectrumMode === 'continuous-light' ? { ...s, continuousRecorded: true } : s;
+    case 'place-sample': return adjust({ samplePlaced: op.on });
+    case 'slit': return adjust({ slit: clamp(op.value) });
+    case 'focus': return adjust({ focus: clamp(op.value) });
     case 'mark': return s.marks.includes(op.wavelength) ? s : { ...s, marks: [...s.marks, op.wavelength].sort((a, b) => b - a), checked: false };
     case 'unmark': return { ...s, marks: s.marks.filter((m) => m !== op.wavelength), checked: false };
     case 'check': return s.marks.length && display(s).problems.length === 0 ? { ...s, checked: true } : s;

@@ -2,10 +2,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import SpectrumStrip from '../spectroscope/SpectrumStrip';
 import { SAMPLES, SAMPLES_BY_ID } from '../../data/samples';
-import { getPolariscopeProfile } from '../../domain/polariscopeSamples';
 import { BENCH_METHOD_LABELS, benchMethodSetup, createBenchState, evaluateBench, type BenchMethod, type BenchState } from '../../domain/spectroscopeBench';
 import { useDetection, type SpectroscopeData } from '../../store/detectionStore';
-import { createSpectroscopeBenchViewer } from './spectroscopeBenchViewer';
+import { benchSpecimenAppearance, createSpectroscopeBenchViewer } from './spectroscopeBenchViewer';
 import '../../styles/spectroscope-bench.css';
 
 type RecordSnapshot = { data: SpectroscopeData; state: BenchState; stale: boolean; pending: boolean };
@@ -49,10 +48,7 @@ export default function SpectroscopePractice3D({ sampleId, onDetectionComplete, 
   const hostRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<ReturnType<typeof createSpectroscopeBenchViewer> | null>(null);
   const evaluation = useMemo(() => evaluateBench(sample, state), [sample, state]);
-  const specimen = useMemo(() => {
-    const rgb = getPolariscopeProfile(sample.id)?.bodyColor ?? [0.65, 0.24, 0.2];
-    return { color: `#${rgb.map((v) => Math.round(Math.pow(v, 1 / 2.2) * 255).toString(16).padStart(2, '0')).join('')}`, shape: sample.refractometerShape };
-  }, [sample]);
+  const specimen = useMemo(() => benchSpecimenAppearance(sample), [sample]);
 
   useEffect(() => {
     if (!hostRef.current) return;

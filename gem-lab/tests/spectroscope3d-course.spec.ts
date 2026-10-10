@@ -4,6 +4,7 @@ const route = "/explore/optics/prism-spectroscope";
 const course = (page: Page) => page.getByTestId("spectroscope-course");
 const field = (page: Page) => page.getByTestId("course-observation");
 const canvas = (page: Page) => page.getByTestId("optics3d-canvas");
+const bench = (page: Page) => page.getByTestId("spectroscope-bench-canvas");
 const button = (page: Page, name: string) => page.getByRole("button", { name, exact: true });
 const next = (page: Page) => button(page, "下一步").click();
 const question = (page: Page, id: string, option: number) => page.getByTestId(`question-${id}`).getByRole("button").nth(option).click();
@@ -40,12 +41,13 @@ async function runCourse(page: Page) {
   await question(page, "dispersion", 0);
   await next(page);
 
-  // 光绕过样品：连续光谱，不能下结论；改为透射后出现吸收特征，但狭缝过宽、失焦。
+  // 换到照明与夹样工作台。镊子上没有样品时灯光直接进入狭缝：连续光谱，不能下结论；夹样后出现吸收特征，但狭缝过宽、失焦。
+  await expect(bench(page)).toHaveAttribute("data-loaded", "true", { timeout: 60_000 });
   await expect(field(page)).toHaveAttribute("data-problems", "not-through-sample");
   await expect(field(page).locator("[data-wavelength]")).toHaveCount(0);
   await button(page, "记录：只见连续光谱").click();
   await question(page, "continuous", 1);
-  await button(page, "透射：光穿过样品").click();
+  await button(page, "用镊子夹样品放入光路").click();
   await expect(field(page)).toHaveAttribute("data-problems", "slit-wide defocus");
   await next(page);
 
@@ -117,34 +119,39 @@ test("学员模式未完成的步骤不能点选；跳过的步骤没补完时�
   await expect(button(page, "完成课程")).toBeDisabled();
 });
 
-test("3D 联动：对光移动样品，狭缝滑杆转动调节环并带动刃口，焦距滑杆抽拉目镜套筒", async ({ page }) => {
+test("课程从对光起换到照明与夹样工作台：夹样改变光路，狭缝滑杆带动刃口，焦距滑杆抽拉目镜套筒", async ({ page }) => {
   await open(page, "teacher");
-  // 数值从模型部件的实际姿态测出（不是滑杆读数），按清单：调节环 0–90°，缝宽 0.04–0.8 mm，套筒行程 0–20 mm。
-  const motion = async () => JSON.parse((await canvas(page).getAttribute("data-controls")) ?? "{}");
-  await expect.poll(async () => (await motion()).sample).toBeUndefined();
+  await expect(bench(page)).toHaveCount(0);
   for (let i = 0; i < 2; i++) await button(page, "跳到下一步").click();
   await expect(course(page)).toHaveAttribute("data-step", "light");
-  await expect.poll(async () => (await motion()).sample).toBe("aside");
-  await button(page, "透射：光穿过样品").click();
-  await expect.poll(async () => (await motion()).sample).toBe("through");
-  expect(await motion()).toMatchObject({ slitControlDegrees: 64.8, slitGapMm: 0.587, focusTubeMm: 4 });
+  await expect(bench(page)).toHaveAttribute("data-loaded", "true", { timeout: 60_000 });
+  await expect(canvas(page)).toHaveCount(0);
+  // 数值从工作台部件的实际位置测出（不是滑杆读数）：清单缝宽 0.04–0.8 mm，初始狭缝 0.72。
+  await expect(bench(page)).toHaveAttribute("data-sample-placed", "false");
+  await expect(bench(page)).toHaveAttribute("data-light-path", "bypass");
+  await expect(bench(page)).toHaveAttribute("data-slit-gap", "0.0005872");
+  await button(page, "用镊子夹样品放入光路").click();
+  await expect(bench(page)).toHaveAttribute("data-sample-placed", "true");
+  await expect(bench(page)).toHaveAttribute("data-light-path", "aligned");
 
   await button(page, "跳到下一步").click();
-  await page.getByLabel("狭缝宽度").fill("100");
+  const focusZ = async () => Number(await bench(page).getAttribute("data-focus-z"));
   await page.getByLabel("目镜焦距").fill("0");
-  await expect.poll(motion).toMatchObject({ slitControlDegrees: 90, slitGapMm: 0.8, focusTubeMm: 0 });
+  const near = await focusZ();
+  await page.getByLabel("目镜焦距").fill("100");
+  await expect.poll(focusZ).toBeGreaterThan(near + 0.015);
+  await page.getByLabel("狭缝宽度").fill("100");
+  await expect(bench(page)).toHaveAttribute("data-slit-gap", "0.0008000");
   await page.getByLabel("狭缝宽度").fill("0");
-  await page.getByLabel("目镜焦距").fill("50");
-  await expect.poll(motion).toMatchObject({ slitControlDegrees: 0, slitGapMm: 0.04, focusTubeMm: 10 });
-  await expect(page.getByTestId("model-motion")).toHaveText("模型：调节环转 0°，狭缝宽 0.04 mm；目镜套筒拉出 10 mm");
+  await expect(bench(page)).toHaveAttribute("data-slit-gap", "0.0000400");
+  await expect(page.getByTestId("model-motion")).toContainText("狭缝刃口间距 0.04 mm");
+  await button(page, "分光镜").click();
+  await expect(bench(page)).toHaveAttribute("data-focus-view", "instrument");
 
-  // 近看狭缝改用内部光路视图；离开观察步骤后样品与入射光不再显示。
-  await button(page, "近看狭缝刃口").click();
-  await expect.poll(async () => JSON.parse((await canvas(page).getAttribute("data-state")) ?? "{}").view).toBe("optics");
-  await button(page, "跳到下一步").click();
-  await button(page, "跳到下一步").click();
-  await expect(course(page)).toHaveAttribute("data-step", "explain");
-  await expect.poll(async () => (await motion()).sample).toBeUndefined();
+  // 回到认识部件，换回仪器内部视图。
+  await page.getByRole("navigation", { name: "课程步骤" }).getByRole("button", { name: /认识部件/ }).click();
+  await expect(canvas(page)).toHaveAttribute("data-loaded", "true", { timeout: 60_000 });
+  await expect(bench(page)).toHaveCount(0);
 });
 
 test("窄屏课程无横向溢出", async ({ page }) => {

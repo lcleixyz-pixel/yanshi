@@ -52,9 +52,6 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
   const materials = new Map(), originalPoses = new Map();
   scene.add(helpers);
   let external = null;
-  // 课程联动：可动部件按清单的转角 / 行程取 0–1 位置；样品与入射光为教学示意（红宝石固定样品）。
-  let positions = {}, sample = null;
-  const SAMPLE_Z = -.068, SOURCE_Z = -.1, ENTRY_Z = -.0475, SAMPLE_ASIDE_X = .013;
   let state = { view: 'optics', caseId: null, rays: true, explode: 0, selectedId: null, isolated: false };
   const currentCase = () => caseFile?.cases.find(c => c.id === state.caseId);
   const chosen = () => parts.find(p => p.id === state.selectedId);
@@ -75,54 +72,6 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
     }
     const local = new THREE.Matrix4().copy(o.parent.matrixWorld).invert().multiply(transform).multiply(o.matrixWorld);
     local.decompose(o.position, o.quaternion, o.scale); o.updateWorldMatrix(true, true);
-  }
-  /** 按 positions 摆放可动部件；被联动的部件（drivenBy）跟随其控制部件的位置。 */
-  function applyControls() {
-    const linkedValue = part => positions[part.id] ?? (part.drivenBy ? positions[part.drivenBy] : undefined);
-    for (const part of parts) {
-      const value = linkedValue(part);
-      if (value === undefined) continue;
-      const t = Math.min(1, Math.max(0, value));
-      if (part.rotatable && part.rotationRangeDegrees) {
-        const [from, to] = part.rotationRangeDegrees, angle = THREE.MathUtils.degToRad(from + (to - from) * t);
-        applyPose(part, [0, 0, 0], new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(...part.rotationAxisLocal), angle).toArray(), part.pivot);
-      }
-      if (part.translatable && part.translationRange) {
-        const [from, to] = part.translationRange, travel = from + (to - from) * t;
-        applyPose(part, part.translationAxisLocal.map(n => n * travel));
-      }
-    }
-  }
-  /** 从部件实际姿态测出的控制量，供页面与测试核对动作确实发生。 */
-  function measureControls() {
-    const out = {};
-    // 可动部件都是模型根节点的直接子节点，位置即模型坐标。
-    const moved = part => part.object.position.distanceTo(originalPoses.get(part.object).position);
-    const byId = id => parts.find(p => p.id === id);
-    for (const link of manifest.controlLinkages || []) {
-      if (link.type !== 'symmetricSlit') continue;
-      const control = byId(link.controlPart), [left, right] = link.drivenParts.map(byId);
-      if (!control || !left || !right) continue;
-      const pose = originalPoses.get(control.object), now = control.object.quaternion;
-      out[link.controlPart + 'Degrees'] = Number(THREE.MathUtils.radToDeg(pose.quaternion.angleTo(now)).toFixed(1));
-      const opened = moved(left) + moved(right);
-      out.slitGapMm = Number(((link.closedStopGapMeters + opened) * 1000).toFixed(3));
-    }
-    for (const part of parts.filter(p => p.translatable && !p.drivenBy)) out[part.id + 'Mm'] = Number((moved(part) * 1000).toFixed(2));
-    if (sample) out.sample = sample.position;
-    return out;
-  }
-  /** 样品与入射光（只在设置了 sample 时出现）：光源在入光端外侧，光束沿光轴进入狭缝。 */
-  function makeSampleOverlay() {
-    const through = sample.position === 'through';
-    makeTeachingMesh({ id: 'teaching_sample', shape: 'gem', color: '#b3203a', opacity: .85, position: [through ? 0 : SAMPLE_ASIDE_X, 0, SAMPLE_Z], scale: [.0042, .0042, .0032] });
-    makeTeachingMesh({ id: 'teaching_light', shape: 'sphere', color: '#f3d27a', opacity: .9, position: [0, 0, SOURCE_Z], scale: [.003, .003, .003] });
-    const white = '#f2e6c4', red = '#c8324a';
-    const beams = through
-      ? [{ id: 'beam-to-sample', color: white, points: [[0, 0, SOURCE_Z], [0, 0, SAMPLE_Z - .004]] }, { id: 'beam-through-sample', color: red, arrow: false, points: [[0, 0, SAMPLE_Z + .004], [0, 0, ENTRY_Z]] }]
-      : [{ id: 'beam-bypass', color: white, arrowAt: .3, points: [[0, 0, SOURCE_Z], [0, 0, ENTRY_Z]] }];
-    // 箭头只放在靠光源一侧，近看狭缝时不遮挡刃口。
-    for (const beam of beams) makeLine({ ...beam, lineWidth: 3.2 });
   }
   function isShown(o) { for (let p = o; p; p = p.parent) if (!p.visible) return false; return true; }
   function bounds(objects) {
@@ -152,7 +101,6 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
     if (!root) return;
     if (state.isolated && chosen()) return fitBox(bounds([chosen().object]));
     const box = bounds([root]);
-    if (sample && !state.explode) box.expandByPoint(new THREE.Vector3(0, 0, SOURCE_Z - .004).applyMatrix4(root.matrixWorld));
     if (state.view === 'optics' && !state.explode) {
       const rayBox = new THREE.Box3();
       for (const path of currentCase()?.paths || []) for (const p of path.points || []) rayBox.expandByPoint(new THREE.Vector3(...p).applyMatrix4(root.matrixWorld));
@@ -174,11 +122,11 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
     const line = new Line2(new LineGeometry().setPositions(pts.flatMap(p => p.toArray())), material);
     line.name = path.id; line.renderOrder = 10; line.computeLineDistances(); helpers.add(line);
     const a = pts[pts.length - 2], b = pts[pts.length - 1], length = a.distanceTo(b);
-    if (length > 1e-7 && path.arrow !== false) {
+    if (length > 1e-7) {
       const direction = b.clone().sub(a).normalize(), size = Math.min(length * .13, modelExtent * .014);
       const arrow = new THREE.Mesh(new THREE.ConeGeometry(size * .24, size, 8), new THREE.MeshBasicMaterial({ color: path.color || '#c29642', transparent: true,
         opacity: typeof path.opacity === 'number' ? Math.max(.4, path.opacity) : 1, depthTest: state.view !== 'optics', depthWrite: false }));
-      arrow.position.copy(a).lerp(b, path.arrowAt ?? .72); arrow.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction); arrow.renderOrder = 11; helpers.add(arrow);
+      arrow.position.copy(a).lerp(b, .72); arrow.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction); arrow.renderOrder = 11; helpers.add(arrow);
     }
   }
   function makeTeachingMesh(data) {
@@ -204,7 +152,7 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
       if (seen.size >= 8) break;
     }
     const part = chosen();
-    return { status: 'ready', state: { ...state }, suspended, controls: measureControls(),
+    return { status: 'ready', state: { ...state }, suspended,
       cases: caseFile.cases.map(item => ({ id: item.id, label: item.label })),
       currentCase: { label: c?.label || '', description: c?.description || '', readout, conditionNote, legend },
       parts: parts.filter(p => !p.teachingOverlay).map(p => ({ id: p.id, label: p.label })),
@@ -225,7 +173,6 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
         if (part.id === 'isotropic_sample' && external.angle) applyPose(part, [0, 0, 0], new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(...manifest.contactWindow.normal), THREE.MathUtils.degToRad(external.angle)).toArray(), part.pivot);
       }
     }
-    applyControls();
     root.updateMatrixWorld(true);
     for (const part of parts) part.object.visible = (external?.partVisibility?.[part.id] ?? c?.partVisibility?.[part.id] ?? part.defaultVisible) !== false && !part.teachingOverlay
       && (!state.isolated || part.id === state.selectedId || chosen()?.object.parent === part.object);
@@ -251,9 +198,7 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
     if (!suspended) {
       for (const m of c?.teachingMeshes || []) makeTeachingMesh(m);
       if (state.rays) for (const path of displayPaths(instrument, c?.paths)) makeLine(path);
-      if (sample) makeSampleOverlay();
     }
-    canvas.dataset.controls = JSON.stringify(measureControls());
     canvas.dataset.displayPaths = JSON.stringify(suspended || !state.rays ? [] : displayPaths(instrument, c?.paths).map(p => ({ id: p.id, kind: p.kind, color: p.color })));
     if (external) canvas.dataset.operation = JSON.stringify({ power: external.power, cover: external.cover, angle: external.angle, partVisibility: external.partVisibility });
     else delete canvas.dataset.operation;
@@ -340,13 +285,6 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
     setExplode: explode => update({ explode }, true),
     toggleIsolate: () => update({ isolated: !state.isolated }, true),
     select, focusSelected: () => { if (chosen()) fitBox(bounds([chosen().object])); },
-    setControls: patch => { positions = { ...positions, ...patch }; apply(); },
-    setSample: next => { const refit = !!next !== !!sample; sample = next; apply(); if (refit) fit(); },
-    focusParts: (ids, view = state.view, direction = null) => {
-      update({ view });
-      const objects = parts.filter(p => ids.includes(p.id)).map(p => p.object);
-      if (objects.length) fitBox(bounds(objects), direction && new THREE.Vector3(...direction).transformDirection(root.matrixWorld));
-    },
     fit, reset: () => { external = null; update({ view: 'optics', caseId: caseFile.defaultCaseId || caseFile.cases[0].id, rays: true, explode: 0, selectedId: null, isolated: false }, true); },
     dispose,
   };

@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import type { SampleDef } from '../../data/types';
+import { getPolariscopeProfile } from '../../domain/polariscopeSamples';
 import { BENCH_GEOMETRY, benchLampPose, benchScopePose, normalizeBenchState, type BenchEvaluation, type BenchState } from '../../domain/spectroscopeBench';
 
 export interface BenchViewerCallbacks {
@@ -9,6 +11,12 @@ export interface BenchViewerCallbacks {
   onSelect?(part: string): void;
 }
 export interface BenchSpecimenAppearance { color: string; shape: string }
+
+/** 场景中样品的体色与形态：体色取偏光镜样品档案的线性透过率，转为 sRGB。 */
+export function benchSpecimenAppearance(sample: SampleDef): BenchSpecimenAppearance {
+  const rgb = getPolariscopeProfile(sample.id)?.bodyColor ?? [0.65, 0.24, 0.2];
+  return { color: `#${rgb.map((v) => Math.round(Math.pow(v, 1 / 2.2) * 255).toString(16).padStart(2, '0')).join('')}`, shape: sample.refractometerShape };
+}
 export interface SpectroscopeBenchViewer {
   update(state: BenchState, evaluation: BenchEvaluation, specimen: BenchSpecimenAppearance): void;
   focus(view: 'whole' | 'lamp' | 'sample' | 'instrument'): void;

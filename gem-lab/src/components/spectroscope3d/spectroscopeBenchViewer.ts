@@ -47,6 +47,7 @@ interface LoadedAsset { root: THREE.Group; manifest: AssetManifest }
 interface Pose { position: THREE.Vector3; quaternion: THREE.Quaternion; scale: THREE.Vector3 }
 
 const AXIS_Y = BENCH_GEOMETRY.sampleCenterY;
+const VERTICAL_GRIP = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 1), new THREE.Vector3(1, 0, 0)));
 const BASE = import.meta.env.BASE_URL;
 const assetPath = (path: string) => `${BASE.endsWith('/') ? BASE : `${BASE}/`}assets/3d/${path}`;
 const vec = (values: number[]) => new THREE.Vector3(values[0], values[1], values[2]);
@@ -453,7 +454,10 @@ export function createSpectroscopeBenchViewer(host: HTMLElement, callbacks: Benc
     canvas.dataset.sampleBottomY = new THREE.Box3().setFromObject(specimenGroup).min.y.toFixed(6);
     const tipA = getNode('Bench_tweezerTipA');
     const tipB = getNode('Bench_tweezerTipB');
-    if (tipA && tipB) canvas.dataset.tweezerGap = (new THREE.Box3().setFromObject(tipA).min.z - new THREE.Box3().setFromObject(tipB).max.z).toFixed(6);
+    if (tipA && tipB) {
+      const axis = canvas.dataset.tweezerGrip === 'vertical' ? 'x' : 'z';
+      canvas.dataset.tweezerGap = (new THREE.Box3().setFromObject(tipA).min[axis] - new THREE.Box3().setFromObject(tipB).max[axis]).toFixed(6);
+    }
     canvas.dataset.assetVersion = 'simple-v2';
     canvas.dataset.renderedInstrument = state.dispersion;
     const byId = (id: string) => {
@@ -470,8 +474,23 @@ export function createSpectroscopeBenchViewer(host: HTMLElement, callbacks: Benc
       }, 0);
       canvas.dataset.slitGap = (link.closedStopGapMeters + opened).toFixed(7);
     } else canvas.dataset.slitGap = 'fixed';
+    canvas.dataset.tweezersInBeam = String(tweezersInBeam(state));
     canvas.dataset.lightPath = current?.evaluation.lightPath ?? '';
     canvas.dataset.beamsVisible = String(beamsEnabled);
+  }
+  /** 透射时从灯口到入光口取光束中心与四周 3 mm 的五条线，检查镊子是否挡在光路上。 */
+  function tweezersInBeam(state: BenchState) {
+    const tweezers = getNode('Bench_tweezers');
+    if (state.method !== 'transmission' || !state.samplePlaced || !tweezers?.visible || !optics) return false;
+    const start = getNode('Bench_lampEmitter')!.getWorldPosition(new THREE.Vector3());
+    const span = optics.entry.clone().sub(start);
+    const along = span.clone().normalize();
+    const side = new THREE.Vector3(0, 1, 0).cross(along).normalize();
+    const up = along.clone().cross(side).normalize();
+    return [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]].some(([a, b]) => {
+      const origin = start.clone().addScaledVector(side, a * 0.003).addScaledVector(up, b * 0.003);
+      return new THREE.Raycaster(origin, along, 0, span.length()).intersectObject(tweezers, true).length > 0;
+    });
   }
   function apply() {
     if (!ready || !current || !bench || failed || disposed) return;
@@ -507,9 +526,16 @@ export function createSpectroscopeBenchViewer(host: HTMLElement, callbacks: Benc
     resetNode(tweezers);
     tweezers.visible = state.method === 'transmission';
     tweezers.position.set(state.samplePlaced ? evaluation.sampleX : 0.09, state.samplePlaced ? AXIS_Y : 0.018, state.samplePlaced ? 0 : 0.02);
-    const contactRay = new THREE.Raycaster(new THREE.Vector3(specimenGroup.position.x, specimenGroup.position.y, specimenGroup.position.z + 0.05), new THREE.Vector3(0, 0, -1), 0, 0.1);
+    // 透射夹样时镊子竖起、手柄朝上，镊尖从左右两侧夹住腰棱，夹持方向与光轴垂直，光路从两镊尖之间穿过。
+    // 资产中镊子沿 +X 伸出、沿 Z 夹合；竖持即把局部 X 转到 +Y、局部 Z 转到 +X。未夹样时平放在台面上。
+    const vertical = state.samplePlaced && tweezers.visible;
+    if (vertical) tweezers.quaternion.premultiply(VERTICAL_GRIP);
+    const grip = vertical ? new THREE.Vector3(1, 0, 0) : new THREE.Vector3(0, 0, 1);
+    const contactRay = new THREE.Raycaster(specimenGroup.position.clone().addScaledVector(grip, 0.05), grip.clone().negate(), 0, 0.1);
     const contact = contactRay.intersectObject(specimenGroup, true)[0];
-    const halfDepth = contact ? Math.abs(contact.point.z - specimenGroup.position.z) : (sampleBounds.max.z - sampleBounds.min.z) / 2;
+    const halfDepth = contact ? Math.abs(contact.point.clone().sub(specimenGroup.position).dot(grip))
+      : (vertical ? sampleBounds.max.x - sampleBounds.min.x : sampleBounds.max.z - sampleBounds.min.z) / 2;
+    canvas.dataset.tweezerGrip = vertical ? 'vertical' : tweezers.visible ? 'resting' : 'hidden';
     for (const [name, sign] of [['Bench_tweezerJawA', 1], ['Bench_tweezerJawB', -1]] as const) {
       const jaw = getNode(name);
       resetNode(jaw);

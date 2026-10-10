@@ -259,3 +259,18 @@ for (const instrument of ['prism', 'grating']) {
     }
   });
 }
+
+test('透射时镊子竖向夹住腰棱两侧，不挡灯口到入光口的光路', async ({ page }) => {
+  // 每种外形各取一颗：刻面、弧面、异形、雕件。
+  for (const id of ['ruby', 'opal', 'jadeite', 'amber']) {
+    await openBench(page, `?sample=${id}`);
+    await prepare(page);
+    await expect(canvas(page)).toHaveAttribute('data-sample-placed', 'true');
+    await expect(canvas(page), id).toHaveAttribute('data-tweezers-in-beam', 'false');
+    await expect(canvas(page)).toHaveAttribute('data-tweezer-grip', 'vertical');
+    const gap = Number(await canvas(page).getAttribute('data-tweezer-gap'));
+    expect(gap, `${id} 镊尖应贴住样品`).toBeGreaterThan(0.004);
+  }
+  await page.getByTestId('bench-place-sample').click();
+  await expect(canvas(page)).toHaveAttribute('data-tweezer-grip', 'resting');
+});

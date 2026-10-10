@@ -7,7 +7,7 @@ import { opticsAssetBase } from '../optics3d/opticsInstruments';
 import { benchSpecimenAppearance, createSpectroscopeBenchViewer, type SpectroscopeBenchViewer } from '../spectroscope3d/spectroscopeBenchViewer';
 import '../../styles/spectroscope-bench.css';
 import SpectrumStrip from './SpectrumStrip';
-import { allComplete, checkMarks, COURSE_SAMPLE, display, FEATURE_GROUPS, initialCourse, isComplete, KEY_PARTS, navigateCourse, operate, PATH_CASES, QUESTIONS, REQUIRED_GROUPS, STEPS, type CourseState, type Operation, type StepId } from '../../domain/spectroscopeCourse';
+import { allComplete, checkMarks, COURSE_CONFIG, COURSE_SAMPLE, display, FEATURE_GROUPS, initialCourse, isComplete, navigateCourse, operate, QUESTIONS, REQUIRED_GROUPS, type CourseState, type CourseVariant, type Operation, type StepId } from '../../domain/spectroscopeCourse';
 import { evaluateBench } from '../../domain/spectroscopeBench';
 import { displaySpectrum, IDEAL_CONDITIONS, type SpectrumProblem } from '../../domain/spectrumDisplay';
 
@@ -25,10 +25,33 @@ const SPECIMEN = benchSpecimenAppearance(COURSE_SAMPLE);
 const BENCH_VIEWS = [['whole', '整体'], ['lamp', '灯头'], ['sample', '样品与镊子'], ['instrument', '分光镜']] as const;
 
 /** 用于「透光太弱」问题的对照：同一份参考光谱，只把光强降下来。 */
-const WEAK_LIGHT = displaySpectrum(COURSE_SAMPLE.spectrum.features, { ...IDEAL_CONDITIONS, light: 'weak' });
+const WEAK_LIGHT = { prism: displaySpectrum(COURSE_SAMPLE.spectrum.features, { ...IDEAL_CONDITIONS, light: 'weak' }), grating: displaySpectrum(COURSE_SAMPLE.spectrum.features, { ...IDEAL_CONDITIONS, dispersion: 'grating', light: 'weak' }) };
+/** 光栅课对照：同一份参考光谱在两种刻度上的位置。 */
+const IDEAL = { prism: displaySpectrum(COURSE_SAMPLE.spectrum.features, IDEAL_CONDITIONS), grating: displaySpectrum(COURSE_SAMPLE.spectrum.features, { ...IDEAL_CONDITIONS, dispersion: 'grating' }) };
 
-export default function SpectroscopeCourse({ mode, onExit }: { mode: CourseState['mode']; onExit: () => void }) {
-  const [s, setS] = useState(() => initialCourse(mode));
+/** 两种机型共用课程流程，差别集中在这里与 COURSE_CONFIG。 */
+const VARIANT_TEXT = {
+  prism: {
+    instrument: 'prism-spectroscope', title: '分光镜基础观察课', minutes: 8, scale: '棱镜式刻度', poster: '棱镜式分光镜静态预览',
+    opticsParts: ['collimator', 'prismTrain'], ok: '光穿过样品，狭缝与焦距合适。',
+    finish: '你已完成对光、调节狭缝与焦距、标记吸收特征和解释。学习完成与独立检测掌握分别记录。',
+    scope: '狭缝、焦距、对光与透光条件对光谱的影响为显示变换模拟，不是实拍；三维模型的内部处方和尺寸未经实物标定。光栅式另有观察课。',
+  },
+  grating: {
+    instrument: 'grating-spectroscope', title: '光栅式分光镜观察课', minutes: 7, scale: '光栅式刻度（近似线性）', poster: '光栅式分光镜静态预览',
+    opticsParts: ['collimator', 'grating'], ok: '光穿过样品，光强与对准足够。',
+    finish: '你已完成对光、调整亮度与对准、在线性刻度上标记吸收特征和解释。学习完成与独立检测掌握分别记录。',
+    scope: '手持光栅式按固定狭缝、固定焦距处理；对光与光强对光谱的影响为显示变换模拟，不是实拍；刻度为教学用线性映射，未按某台仪器标定。三维模型的光栅线密度与尺寸未经实物标定。',
+  },
+} as const;
+
+export function GratingSpectroscopeCourse(props: { mode: CourseState['mode']; onExit: () => void }) {
+  return <SpectroscopeCourse {...props} variant="grating" />;
+}
+
+export default function SpectroscopeCourse({ mode, onExit, variant = 'prism' }: { mode: CourseState['mode']; onExit: () => void; variant?: CourseVariant }) {
+  const [s, setS] = useState(() => initialCourse(mode, variant));
+  const config = COURSE_CONFIG[variant], text = VARIANT_TEXT[variant];
   const [snapshot, setSnapshot] = useState<OpticsSnapshot>({ status: 'loading' });
   const [finished, setFinished] = useState(false);
   const learning = useLearningRecord('spectroscope', mode);
@@ -38,14 +61,14 @@ export default function SpectroscopeCourse({ mode, onExit }: { mode: CourseState
   const benchHost = useRef<HTMLDivElement>(null), bench = useRef<SpectroscopeBenchViewer | null>(null);
   const onInstrument = INSTRUMENT_STEPS.includes(s.step);
   const ready = onInstrument ? snapshot.status === 'ready' : benchStatus === 'ready';
-  const assetBase = opticsAssetBase('prism-spectroscope');
+  const assetBase = opticsAssetBase(text.instrument);
   useResponsiveViewport();
   useEffect(() => {
     if (!onInstrument || !viewport.current) return;
     setSnapshot({ status: 'loading' });
     const v = createOpticsViewer({
       container: viewport.current,
-      instrument: 'prism-spectroscope',
+      instrument: text.instrument,
       assetBase,
       onChange: (snap) => {
         setSnapshot(snap);
@@ -56,7 +79,7 @@ export default function SpectroscopeCourse({ mode, onExit }: { mode: CourseState
     viewer.current = v;
     v.setView('whole');
     return () => { v.dispose(); viewer.current = null; };
-  }, [onInstrument, assetBase]);
+  }, [onInstrument, assetBase, text.instrument]);
   useEffect(() => {
     if (!onInstrument || snapshot.status !== 'ready') return;
     viewer.current?.setView(s.step === 'path' ? 'optics' : 'whole');
@@ -124,7 +147,7 @@ export default function SpectroscopeCourse({ mode, onExit }: { mode: CourseState
       {snapshot.status === 'loading' && <p className="course-shell__loading" role="status">正在载入教学模型…</p>}
       {snapshot.status === 'error' && (
         <div className="course-shell__fallback" role="alert">
-          <img src={`${assetBase}poster.png`} alt="棱镜式分光镜静态预览" />
+          <img src={`${assetBase}poster.png`} alt={text.poster} />
           <p>模型载入失败，部件与光路两步需要三维模型；光谱观察仍可练习。</p>
           <button onClick={() => window.location.reload()}>重新载入</button>
         </div>
@@ -134,42 +157,42 @@ export default function SpectroscopeCourse({ mode, onExit }: { mode: CourseState
   );
 
   return (
-    <CourseShell title="分光镜基础观察课" minutes={8} testId="spectroscope-course" steps={STEPS} current={s.step} mode={mode} isComplete={(id) => isComplete(s, id)} onGo={go} onExit={onExit} model={model}>
+    <CourseShell title={text.title} minutes={text.minutes} testId="spectroscope-course" steps={config.steps} current={s.step} mode={mode} isComplete={(id) => isComplete(s, id)} onGo={go} onExit={onExit} model={model}>
       {finished ? (
-        <CourseFinish status={learning.status} failed={learning.failed} summary="你已完成对光、调节狭缝与焦距、标记吸收特征和解释。学习完成与独立检测掌握分别记录。" onRetry={() => void learning.record(s.hasSkipped, allComplete(s))} onExit={onExit} />
+        <CourseFinish status={learning.status} failed={learning.failed} summary={text.finish} onRetry={() => void learning.record(s.hasSkipped, allComplete(s))} onExit={onExit} />
       ) : (
         <>
-          <CourseStepHeading steps={STEPS} current={s.step} />
+          <CourseStepHeading steps={config.steps} current={s.step} />
           {!ready && onInstrument && <p>模型就绪后开始操作。</p>}
           <fieldset className="course-shell__content" disabled={!ready && onInstrument}>
             {s.step === 'parts' && <>
               <div className="course-shell__parts">
-                {KEY_PARTS.map((p) => (
-                  <button key={p.id} type="button" aria-pressed={selected?.id === p.id} onClick={() => { viewer.current?.setView(p.id === 'collimator' || p.id === 'prismTrain' ? 'optics' : 'whole'); viewer.current?.select(p.id); }}>
+                {config.parts.map((p) => (
+                  <button key={p.id} type="button" aria-pressed={selected?.id === p.id} onClick={() => { viewer.current?.setView((text.opticsParts as readonly string[]).includes(p.id) ? 'optics' : 'whole'); viewer.current?.select(p.id); }}>
                     {s.partsSeen.includes(p.id) ? '✓ ' : ''}{p.label}
                   </button>
                 ))}
               </div>
-              <p className="course-shell__note">{KEY_PARTS.find((p) => p.id === selected?.id)?.note || '点选部件，模型会自动聚焦。'}</p>
+              <p className="course-shell__note">{config.parts.find((p) => p.id === selected?.id)?.note || '点选部件，模型会自动聚焦。'}</p>
             </>}
             {s.step === 'path' && <>
               <ol className="course-shell__path">
-                {PATH_CASES.map((c) => (
+                {config.cases.map((c) => (
                   <li key={c.id}><button type="button" aria-pressed={snapshot.status === 'ready' && snapshot.state.caseId === c.id} onClick={() => { viewer.current?.setCase(c.id); op({ type: 'see-case', id: c.id }); }}>
                     {s.casesSeen.includes(c.id) ? '✓ ' : ''}{c.label}
                   </button></li>
                 ))}
               </ol>
               {snapshot.status === 'ready' && <p className="course-shell__note">{snapshot.currentCase.description}</p>}
-              {question('dispersion')}
+              {question(config.stepQuestions.path)}
             </>}
             {observing && <>
               <div className="course-shell__observation" data-testid="course-observation" data-problems={shown.problems.join(' ')}>
-                <h2>目镜观察 <span>教学模拟 · 棱镜式刻度</span></h2>
+                <h2>目镜观察 <span>教学模拟 · {text.scale}</span></h2>
                 <div className="course-shell__spectrum"><SpectrumStrip
                   features={shown.features}
                   display={shown}
-                  dispersion="prism"
+                  dispersion={variant}
                   userMarks={s.step === 'observe' ? s.marks : []}
                   onAddMark={(wavelength) => op({ type: 'mark', wavelength })}
                   onRemoveMark={(wavelength) => op({ type: 'unmark', wavelength })}
@@ -177,7 +200,7 @@ export default function SpectroscopeCourse({ mode, onExit }: { mode: CourseState
                   showFeatureDescriptions={false}
                   height={84}
                 /></div>
-                <p role="status">{shown.problems.length ? shown.problems.map((p) => PROBLEM_TEXT[p]).join(' ') : '光穿过样品，狭缝与焦距合适。'}</p>
+                <p role="status">{shown.problems.length ? shown.problems.map((p) => PROBLEM_TEXT[p]).join(' ') : text.ok}</p>
                 <small>参考光谱来自项目样品数据（与 GB/T 16553-2010 一致）；条件不合适时的变化为教学模拟。</small>
               </div>
               <div className="course-shell__operations" aria-label="夹样">
@@ -187,15 +210,21 @@ export default function SpectroscopeCourse({ mode, onExit }: { mode: CourseState
               {s.step === 'light' && <>
                 <button type="button" disabled={current.spectrumMode !== 'continuous-light'} onClick={() => op({ type: 'record-continuous' })}>记录：只见连续光谱</button>
                 {s.continuousRecorded && <p>✓ 已记录：光没有穿过样品，不能据此下结论</p>}
-                {question('continuous')}
+                {question(config.stepQuestions.light)}
               </>}
-              {(s.step === 'tune' || s.step === 'observe') && <div className="course-shell__tuning">
+              {(s.step === 'tune' || s.step === 'observe') && variant === 'grating' && <div className="course-shell__tuning">
+                <label>光源亮度<input type="range" aria-label="光源亮度" min={0} max={100} value={Math.round(s.bench.brightness * 100)} onChange={(e) => op({ type: 'brightness', value: Number(e.target.value) / 100 })} /></label>
+                <label>灯头横移<input type="range" aria-label="灯头横移" min={-100} max={100} value={Math.round(s.bench.lampLateral * 100)} onChange={(e) => op({ type: 'lamp-lateral', value: Number(e.target.value) / 100 })} /></label>
+                <p className="course-shell__note" data-testid="grating-fixed">本机狭缝与焦距固定：模型上没有狭缝调节环和抽拉套筒，只能调照明与对光。</p>
+                <small>改变夹样、亮度或灯头位置会清除已有标记。亮度档位与对准范围为教学设定，未经实物标定；点“灯头”“分光镜”可近看。</small>
+              </div>}
+              {(s.step === 'tune' || s.step === 'observe') && variant === 'prism' && <div className="course-shell__tuning">
                 <label>狭缝宽度<input type="range" aria-label="狭缝宽度" min={0} max={100} value={Math.round(s.bench.slit * 100)} onChange={(e) => op({ type: 'slit', value: Number(e.target.value) / 100 })} /></label>
                 <label>目镜焦距<input type="range" aria-label="目镜焦距" min={0} max={100} value={Math.round(s.bench.focus * 100)} onChange={(e) => op({ type: 'focus', value: Number(e.target.value) / 100 })} /></label>
                 {slitGapMm && <p className="course-shell__note" data-testid="model-motion">模型：狭缝刃口间距 {slitGapMm} mm（调节环带动左右刃口对称开合，目镜套筒随焦距抽拉）</p>}
                 <small>改变夹样、狭缝或焦距会清除已有标记。模型中的转角、行程和缝宽为教学联动示意，未经实物标定；点“分光镜”可近看。</small>
               </div>}
-              {s.step === 'tune' && question('slit')}
+              {s.step === 'tune' && question(config.stepQuestions.tune)}
               {s.step === 'observe' && <>
                 <p className="course-shell__note">已标记：{s.marks.length ? s.marks.map((m) => `${m} nm`).join('、') : '无'}</p>
                 <button type="button" disabled={!s.marks.length || shown.problems.length > 0} onClick={() => op({ type: 'check' })}>核对标记</button>
@@ -210,19 +239,26 @@ export default function SpectroscopeCourse({ mode, onExit }: { mode: CourseState
               </>}
             </>}
             {s.step === 'explain' && <>
+              {variant === 'grating' && <div className="course-shell__observation" data-testid="scale-comparison">
+                <h2>对照：同一颗红宝石，两种刻度 <span>教学模拟</span></h2>
+                {(['grating', 'prism'] as const).map((d) => <div key={d} className="course-shell__spectrum" data-dispersion={d}>
+                  <small>{d === 'grating' ? '光栅式（近似线性）' : '棱镜式（红端压缩、紫端展开）'}</small>
+                  <SpectrumStrip features={IDEAL[d].features} display={IDEAL[d]} dispersion={d} interactive={false} showFeatureDescriptions={false} height={48} />
+                </div>)}
+              </div>}
               <div className="course-shell__observation" data-testid="weak-light-comparison">
                 <h2>对照：透光太弱时 <span>教学模拟</span></h2>
-                <div className="course-shell__spectrum"><SpectrumStrip features={WEAK_LIGHT.features} display={WEAK_LIGHT} dispersion="prism" interactive={false} showFeatureDescriptions={false} height={56} /></div>
+                <div className="course-shell__spectrum"><SpectrumStrip features={WEAK_LIGHT[variant].features} display={WEAK_LIGHT[variant]} dispersion={variant} interactive={false} showFeatureDescriptions={false} height={56} /></div>
               </div>
-              {['dark', 'grating', 'evidence'].map(question)}
+              {config.explainQuestions.map(question)}
             </>}
-            <CourseStepFooter steps={STEPS} current={s.step} mode={mode} isComplete={(id) => isComplete(s, id)} allComplete={allComplete(s)} hasSkipped={s.hasSkipped} onGo={go} onFinish={finish} />
+            <CourseStepFooter steps={config.steps} current={s.step} mode={mode} isComplete={(id) => isComplete(s, id)} allComplete={allComplete(s)} hasSkipped={s.hasSkipped} onGo={go} onFinish={finish} />
           </fieldset>
         </>
       )}
       <details className="course-shell__sources">
         <summary>依据与范围</summary>
-        <p>固定一颗透明的红宝石教学样品（品种透明度为透明至半透明，本课选用可清楚透射的一颗）；吸收特征波长与 GB/T 16553-2010 一致，见 docs/分光镜吸收光谱数据核对-2026-10-09.md。狭缝、焦距、对光与透光条件对光谱的影响为显示变换模拟，不是实拍；三维模型的内部处方和尺寸未经实物标定。本课不覆盖光栅式操作和其他样品。</p>
+        <p>固定一颗透明的红宝石教学样品（品种透明度为透明至半透明，本课选用可清楚透射的一颗）；吸收特征波长与 GB/T 16553-2010 一致，见 docs/分光镜吸收光谱数据核对-2026-10-09.md。{text.scope}本课不覆盖其他样品。</p>
         {snapshot.status === 'ready' && snapshot.sources.map((x) => <p key={x.title}><a href={x.url || undefined} target="_blank" rel="noreferrer">{x.title}</a></p>)}
       </details>
     </CourseShell>

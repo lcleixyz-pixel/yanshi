@@ -26,6 +26,6 @@ export const INSTRUMENT_COURSES: Partial<Record<InstrumentId, InstrumentCourse>>
     student: '/explore/optics/prism-spectroscope?course=basic&mode=student',
     teacher: '/explore/optics/prism-spectroscope?course=basic&mode=teacher',
     title: '在 3D 棱镜式分光镜上完成基础观察课',
-    summary: '约 8 分钟：认识部件、跟随光路、对光与照明、调节狭缝与焦距、标记红宝石的吸收特征、解释。学员可以自学，讲师可以投屏演示；学完后到检测练习中独立观察。',
+    summary: '约 8 分钟：认识部件、跟随光路、对光与照明、调节狭缝与焦距、标记红宝石的吸收特征、解释。学员可以自学，讲师可以投屏演示；学完后可再上光栅式观察课，或到检测练习中独立观察。',
   },
 };

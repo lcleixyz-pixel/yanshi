@@ -258,6 +258,7 @@ export default function KnowledgeBasePage() {
                     {course ? course.summary : '跟随提示完成完整的检测流程，系统会即时反馈每一步操作是否正确，并显示对应的观察现象。'}
                   </p>
                   {course && <Link to={`/demo/${instrument.id}`} className="mt-3 inline-block text-xs underline opacity-80 hover:opacity-100" data-testid="knowledge-classic-demo">经典 2D 演示（设备较旧或 3D 无法加载时使用）</Link>}
+                  {instrument.id === 'spectroscope' && <Link to="/explore/optics/grating-spectroscope?course=basic&mode=student" className="mt-3 block text-sm font-semibold underline underline-offset-4" data-testid="knowledge-grating-course">光栅式分光镜观察课 · 固定狭缝与焦距、线性刻度 →</Link>}
                   {instrument.id === 'spectroscope' && <Link to="/explore/spectroscope-bench" className="mt-3 block text-sm font-semibold underline underline-offset-4" data-testid="knowledge-spectroscope-bench">三维照明与夹样练习 · 两种机型 / 全部样品 →</Link>}
                 </div>
                 <div className="flex flex-col gap-2 lg:flex-row">

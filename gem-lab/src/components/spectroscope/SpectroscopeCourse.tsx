@@ -50,12 +50,21 @@ export default function SpectroscopeCourse({ mode, onExit }: { mode: CourseState
     viewer.current?.setRays(s.step === 'path');
     viewer.current?.fit();
   }, [ready, s.step]);
+  // 3D 联动：狭缝滑杆转动调节环、带动刃口开合；焦距滑杆抽拉目镜套筒；对光时样品在光路中或移开。
+  const showSample = ['light', 'tune', 'observe'].includes(s.step);
+  useEffect(() => {
+    if (ready) viewer.current?.setControls({ slitControl: s.slit, focusTube: s.focus });
+  }, [ready, s.slit, s.focus]);
+  useEffect(() => {
+    if (ready) viewer.current?.setSample(showSample ? { position: s.throughSample ? 'through' : 'aside' } : null);
+  }, [ready, showSample, s.throughSample]);
 
   const op = (operation: Operation) => setS((prev) => operate(prev, operation));
   const go = (id: StepId, skip = false) => setS((prev) => navigateCourse(prev, id, skip));
   const shown = display(s);
   const marks = checkMarks(s.marks);
   const selected = snapshot.status === 'ready' ? snapshot.selected : null;
+  const motion = snapshot.status === 'ready' ? snapshot.controls : null;
   function finish() {
     if (!allComplete(s)) return;
     setFinished(true);
@@ -142,7 +151,13 @@ export default function SpectroscopeCourse({ mode, onExit }: { mode: CourseState
               {(s.step === 'tune' || s.step === 'observe') && <div className="course-shell__tuning">
                 <label>狭缝宽度<input type="range" aria-label="狭缝宽度" min={0} max={100} value={Math.round(s.slit * 100)} onChange={(e) => op({ type: 'slit', value: Number(e.target.value) / 100 })} /></label>
                 <label>目镜焦距<input type="range" aria-label="目镜焦距" min={0} max={100} value={Math.round(s.focus * 100)} onChange={(e) => op({ type: 'focus', value: Number(e.target.value) / 100 })} /></label>
-                <small>改变照明、狭缝或焦距会清除已有标记。</small>
+                {motion && <p className="course-shell__note" data-testid="model-motion">模型：调节环转 {motion.slitControlDegrees}°，狭缝宽 {motion.slitGapMm} mm；目镜套筒拉出 {motion.focusTubeMm} mm</p>}
+                <div className="course-shell__operations" aria-label="看模型">
+                  <button type="button" disabled={!ready} onClick={() => viewer.current?.focusParts(['slitLeft', 'slitRight'], 'optics', [0.12, 0.2, -1])}>近看狭缝刃口</button>
+                  <button type="button" disabled={!ready} onClick={() => viewer.current?.focusParts(['focusTube', 'eyepiece'], 'whole', [0.45, 1, 0.15])}>近看目镜套筒</button>
+                  <button type="button" disabled={!ready} onClick={() => { viewer.current?.setView('whole'); viewer.current?.fit(); }}>整机与样品</button>
+                </div>
+                <small>改变照明、狭缝或焦距会清除已有标记。模型中的转角、行程和缝宽为教学联动示意，未经实物标定。</small>
               </div>}
               {s.step === 'tune' && question('slit')}
               {s.step === 'observe' && <>

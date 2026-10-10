@@ -117,6 +117,36 @@ test("学员模式未完成的步骤不能点选；跳过的步骤没补完时�
   await expect(button(page, "完成课程")).toBeDisabled();
 });
 
+test("3D 联动：对光移动样品，狭缝滑杆转动调节环并带动刃口，焦距滑杆抽拉目镜套筒", async ({ page }) => {
+  await open(page, "teacher");
+  // 数值从模型部件的实际姿态测出（不是滑杆读数），按清单：调节环 0–90°，缝宽 0.04–0.8 mm，套筒行程 0–20 mm。
+  const motion = async () => JSON.parse((await canvas(page).getAttribute("data-controls")) ?? "{}");
+  await expect.poll(async () => (await motion()).sample).toBeUndefined();
+  for (let i = 0; i < 2; i++) await button(page, "跳到下一步").click();
+  await expect(course(page)).toHaveAttribute("data-step", "light");
+  await expect.poll(async () => (await motion()).sample).toBe("aside");
+  await button(page, "透射：光穿过样品").click();
+  await expect.poll(async () => (await motion()).sample).toBe("through");
+  expect(await motion()).toMatchObject({ slitControlDegrees: 64.8, slitGapMm: 0.587, focusTubeMm: 4 });
+
+  await button(page, "跳到下一步").click();
+  await page.getByLabel("狭缝宽度").fill("100");
+  await page.getByLabel("目镜焦距").fill("0");
+  await expect.poll(motion).toMatchObject({ slitControlDegrees: 90, slitGapMm: 0.8, focusTubeMm: 0 });
+  await page.getByLabel("狭缝宽度").fill("0");
+  await page.getByLabel("目镜焦距").fill("50");
+  await expect.poll(motion).toMatchObject({ slitControlDegrees: 0, slitGapMm: 0.04, focusTubeMm: 10 });
+  await expect(page.getByTestId("model-motion")).toHaveText("模型：调节环转 0°，狭缝宽 0.04 mm；目镜套筒拉出 10 mm");
+
+  // 近看狭缝改用内部光路视图；离开观察步骤后样品与入射光不再显示。
+  await button(page, "近看狭缝刃口").click();
+  await expect.poll(async () => JSON.parse((await canvas(page).getAttribute("data-state")) ?? "{}").view).toBe("optics");
+  await button(page, "跳到下一步").click();
+  await button(page, "跳到下一步").click();
+  await expect(course(page)).toHaveAttribute("data-step", "explain");
+  await expect.poll(async () => (await motion()).sample).toBeUndefined();
+});
+
 test("窄屏课程无横向溢出", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await open(page, "student");

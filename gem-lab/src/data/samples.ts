@@ -1,7 +1,8 @@
 import type { SampleDef } from './types';
 
 /**
- * 28 个常见宝石样品数据。
+ * 30 个当前教学样品；旧版未分种石榴石仅供历史记录回看。
+ * 本次修订依据与示意参数边界见 docs/样品库与吸收光谱修订-2026-10-10.md。
  * 折射率/双折射率/光谱等数据来自通用宝石学参考（GIA、《系统宝石学》），
  * 红宝石、祖母绿、尖晶石等的光谱细节摘自项目内 PDF 讲义。
  */
@@ -159,12 +160,47 @@ export const SAMPLES: SampleDef[] = [
     ],
   },
   {
-    id: 'garnet',
-    name: '石榴石',
-    nameEn: 'Garnet',
+    id: 'almandine',
+    name: '铁铝榴石',
+    nameEn: 'Almandine',
     category: '石榴石族',
     difficulty: 'beginner',
-    image: '/assets/samples/garnet.png',
+    image: '/assets/samples/almandine.png',
+    refractometerShape: 'faceted',
+    characteristics: {
+      refractiveIndex: 1.79,
+      birefringence: 0,
+      opticalCharacter: 'isotropic',
+      color: '深红色',
+      transparency: '透明',
+    },
+    spectrum: {
+      diagnosticStatus: 'characteristic',
+      features: [
+        { type: 'band', wavelength: 504, width: 10, intensity: 'strong' },
+        { type: 'band', wavelength: 520, width: 10, intensity: 'strong' },
+        { type: 'band', wavelength: 573, width: 10, intensity: 'strong' },
+        { type: 'band', wavelength: 423, width: 4, intensity: 'weak' },
+        { type: 'band', wavelength: 460, width: 4, intensity: 'weak' },
+        { type: 'band', wavelength: 610, width: 4, intensity: 'weak' },
+        { type: 'band', wavelength: 685, width: 10, intensity: 'weak', description: '680–690 nm 弱吸收带' },
+      ],
+      description: '504/520/573 nm 强吸收带，423/460/610/680–690 nm 弱吸收带（GB/T 16553-2017）。',
+      observationNote: '典型谱示意；除来源明确的范围外，绘图带宽与深浅是教学参数，不是实测曲线。',
+    },
+    detectionTips: [
+      '标准 RI 1.790（±0.030）；本教学样品取 1.790，在本仪器上只能记录 > 1.780，不能外推全部铁铝榴石都超量程',
+      '均质体；本教学样品模拟应变引起的异常消光，并非所有铁铝榴石必现',
+      '504/520/573 nm 强吸收带须结合其他项目综合判断',
+    ],
+  },
+  {
+    id: 'pyrope',
+    name: '镁铝榴石',
+    nameEn: 'Pyrope',
+    category: '石榴石族',
+    difficulty: 'intermediate',
+    image: '/assets/samples/pyrope.png',
     refractometerShape: 'faceted',
     characteristics: {
       refractiveIndex: 1.74,
@@ -174,20 +210,17 @@ export const SAMPLES: SampleDef[] = [
       transparency: '透明',
     },
     spectrum: {
+      diagnosticStatus: 'characteristic',
       features: [
-        { type: 'band', wavelength: 504, width: 10, intensity: 'strong', description: 'Fe²⁺ 强吸收带' },
-        { type: 'band', wavelength: 520, width: 10, intensity: 'strong' },
-        { type: 'band', wavelength: 573, width: 10, intensity: 'strong' },
-        { type: 'line', wavelength: 423, intensity: 'weak' },
-        { type: 'line', wavelength: 460, intensity: 'weak' },
-        { type: 'line', wavelength: 610, intensity: 'weak' },
+        { type: 'band', wavelength: 564, width: 30, intensity: 'medium', description: '宽吸收带' },
+        { type: 'line', wavelength: 505, intensity: 'medium' },
       ],
-      description: '504/520/573 nm 强吸收带（铁铝榴石特征），423/460/610/680–690 nm 弱吸收带。',
+      description: '564 nm 宽吸收带、505 nm 吸收线；含铁者可有 440/445 nm 吸收，部分样品可有红区铬吸收。本例未叠加这些条件性特征。',
+      observationNote: '标准未量化本例的强度、带宽；绘图值仅为教学示意。石榴石存在过渡成分，不能仅凭红色把所有样品归为纯端元。',
     },
     detectionTips: [
-      '均质体，单折射率约 1.74',
-      '偏光镜下通常呈现异常消光',
-      '光谱中的 504/520/573 nm 三线是铁铝榴石的"指纹"',
+      '标准 RI 1.714–1.742，常为 1.740；本教学样品取单值 1.740，均质体 DR 为 0',
+      '与铁铝榴石分别比较 RI 和吸收谱，不能套用铁铝榴石的三条强带',
     ],
   },
   {
@@ -208,11 +241,13 @@ export const SAMPLES: SampleDef[] = [
     },
     spectrum: {
       features: [
-        { type: 'line', wavelength: 493, intensity: 'medium' },
-        { type: 'line', wavelength: 473, intensity: 'medium' },
-        { type: 'line', wavelength: 453, intensity: 'strong', description: 'Fe²⁺ 三联线' },
+        { type: 'band', wavelength: 453, width: 8, intensity: 'strong' },
+        { type: 'band', wavelength: 477, width: 8, intensity: 'strong' },
+        { type: 'band', wavelength: 497, width: 8, intensity: 'strong' },
       ],
-      description: '蓝区 453/473/493 nm 三联线（铁致色）。',
+      diagnosticStatus: 'characteristic',
+      description: 'GB/T 16553-2017：453/477/497 nm 强吸收带。',
+      observationNote: '标准中的相对吸收强度不等于实际目视清晰度；蓝紫区较难观察，清晰度还受样品、方向、照明与观察条件影响。看不清时先改善条件再复核，不凭未见谱线排除。带宽为教学示意。',
     },
     detectionTips: [
       'DR ≈ 0.036 较大，肉眼可见双折射重影',
@@ -263,15 +298,46 @@ export const SAMPLES: SampleDef[] = [
       transparency: '透明',
     },
     spectrum: {
-      features: [
-        { type: 'band', wavelength: 640, width: 30, intensity: 'medium', description: '随颜色变化' },
-      ],
-      description: '吸收光谱随颜色变化较大，蓝色碧玺常见 730/498 nm 吸收。',
+      features: [],
+      diagnosticStatus: 'unverified',
+      description: '本通用碧玺条目未指定颜色和个体，暂不提供固定诊断谱；不代表所有碧玺均无特征吸收。',
+      observationNote: '红／粉红、蓝／绿碧玺在标准中分别有谱线描述。请用已核实的分色样品练习识谱；本条目保留供其他仪器练习，光谱空白不等于一次有效的“未见吸收”实测。',
     },
     detectionTips: [
       'DR 较大（0.018–0.040）是关键鉴别特征',
       '强多色性',
       '一轴晶（-）',
+    ],
+  },
+  {
+    id: 'red-tourmaline',
+    name: '红色碧玺',
+    nameEn: 'Red Tourmaline',
+    category: '电气石族',
+    difficulty: 'intermediate',
+    image: '/assets/samples/red-tourmaline.png',
+    refractometerShape: 'faceted',
+    characteristics: {
+      refractiveIndex: [1.624, 1.644],
+      birefringence: 0.02,
+      opticalCharacter: 'uniaxial-negative',
+      pleochroism: '强',
+      color: '红色',
+      transparency: '透明',
+    },
+    spectrum: {
+      diagnosticStatus: 'characteristic',
+      features: [
+        { type: 'band', wavelength: 525, width: 60, intensity: 'medium', description: '绿光区宽吸收带，范围为教学示意' },
+        { type: 'line', wavelength: 451, intensity: 'weak' },
+        { type: 'line', wavelength: 458, intensity: 'weak' },
+      ],
+      description: '红／粉红碧玺绿光区宽吸收带，有时可见 525 nm 窄带及 451/458 nm 吸收。本例据《宝石鉴定仪器教程》图 5-18 示意宽带与两条蓝区线，不另叠加条件性 525 nm 窄带。',
+      observationNote: '这是有该组特征的典型教学样品，不保证每颗红／粉红碧玺都可见。具体带宽、深浅以及本例 RI 是示意参数，尚无该虚拟样品的实物测量。',
+    },
+    detectionTips: [
+      '一轴晶（-），结合折射率、双折射和多色性综合判断',
+      '此谱只用于所选红色教学样品，不可套给全部碧玺',
     ],
   },
   {
@@ -566,11 +632,9 @@ export const SAMPLES: SampleDef[] = [
       transparency: '透明-不透明',
     },
     spectrum: {
-      features: [
-        { type: 'line', wavelength: 700, intensity: 'weak' },
-        { type: 'line', wavelength: 660, intensity: 'weak' },
-      ],
-      description: '一般无特征光谱。',
+      features: [],
+      diagnosticStatus: 'non-diagnostic',
+      description: '本变彩欧泊教学样品不特征。标准另列绿色欧泊 660/470 nm 吸收，不应推广为全部欧泊无特征。',
     },
     detectionTips: [
       'RI 1.42–1.47 极低',
@@ -678,7 +742,12 @@ export const SAMPLES: SampleDef[] = [
       color: '黄绿',
       transparency: '半透明',
     },
-    spectrum: { features: [], description: '一般无明显吸收。' },
+    spectrum: {
+      diagnosticStatus: 'non-diagnostic',
+      features: [{ type: 'band', wavelength: 438, width: 8, intensity: 'weak' }],
+      description: '438 nm 弱吸收带；弱、不单独作诊断。',
+      observationNote: '438 nm 弱带来自 GB/T 16553-2017；不单独作诊断是教学限定，带宽为示意值。未观察到弱带也不能单独排除葡萄石。',
+    },
     detectionTips: [
       '点测 RI 约 1.61–1.67（矿物主折射率范围）',
       '本例为放射状纤维集合体：偏光镜下呈集合体反应（转动始终亮）',
@@ -727,9 +796,46 @@ export const SAMPLES: SampleDef[] = [
   },
 ];
 
-export const SAMPLES_BY_ID = Object.fromEntries(
-  SAMPLES.map((s) => [s.id, s]),
-) as Record<string, SampleDef>;
+/** 仅解析旧记录：不进入新抽样池，不向新物种转移成绩。保留旧参数供原记录回看。 */
+export const LEGACY_SAMPLES_BY_ID: Record<string, SampleDef> = {
+  garnet: {
+    id: 'garnet',
+    name: '石榴石（旧版未分种）',
+    nameEn: 'Garnet',
+    category: '石榴石族',
+    difficulty: 'beginner',
+    image: '/assets/samples/garnet.png',
+    refractometerShape: 'faceted',
+    characteristics: {
+      refractiveIndex: 1.74,
+      birefringence: 0,
+      opticalCharacter: 'isotropic',
+      color: '红色',
+      transparency: '透明',
+    },
+    spectrum: {
+      features: [
+        { type: 'band', wavelength: 504, width: 10, intensity: 'strong', description: 'Fe²⁺ 强吸收带' },
+        { type: 'band', wavelength: 520, width: 10, intensity: 'strong' },
+        { type: 'band', wavelength: 573, width: 10, intensity: 'strong' },
+        { type: 'line', wavelength: 423, intensity: 'weak' },
+        { type: 'line', wavelength: 460, intensity: 'weak' },
+        { type: 'line', wavelength: 610, intensity: 'weak' },
+      ],
+      description: '504/520/573 nm 强吸收带（铁铝榴石特征），423/460/610/680–690 nm 弱吸收带。',
+    },
+    detectionTips: [
+      '均质体，单折射率约 1.74',
+      '偏光镜下通常呈现异常消光',
+      '光谱中的 504/520/573 nm 三线是铁铝榴石的"指纹"',
+    ],
+  },
+};
+
+export const SAMPLES_BY_ID: Record<string, SampleDef> = {
+  ...LEGACY_SAMPLES_BY_ID,
+  ...Object.fromEntries(SAMPLES.map((s) => [s.id, s])),
+};
 
 export const SAMPLES_BY_DIFFICULTY: Record<'beginner' | 'intermediate' | 'advanced', SampleDef[]> = {
   beginner: SAMPLES.filter((s) => s.difficulty === 'beginner'),

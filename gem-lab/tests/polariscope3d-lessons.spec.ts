@@ -115,7 +115,7 @@ test('sample lesson: singly refractive spinel stays dark while tourmaline blinks
 
 test('sample lesson: the ADR parallel check separates strain from true double refraction', async ({ page }) => {
   await openLesson(page, 'sample');
-  await page.getByTestId('explore-sample-garnet').click();
+  await page.getByTestId('explore-sample-almandine').click();
   await page.getByTestId('sample-adr-check').click();
   await expect(page.getByTestId('sample-adr-result')).toContainText('异常双折射');
   await expect(page.getByRole('slider', { name: '上偏光片角度', exact: true })).toHaveValue('0');

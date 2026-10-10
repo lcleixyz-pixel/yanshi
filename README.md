@@ -75,7 +75,7 @@ npm run dev           # 启动开发服务器
 npm run build         # 生产构建
 npm run preview       # 预览构建产物
 npm run test:smoke    # 运行核心页面烟测
-npm run test:matrix   # 运行 28 样品 x 3 仪器检测矩阵
+npm run test:matrix   # 运行 当前全部样品 x 3 仪器检测矩阵
 npm run test:unit     # 运行抽样、掌握度和计分纯逻辑测试
 ```
 
@@ -99,7 +99,7 @@ npm run prepare-assets
 - `npm run build` 会执行 TypeScript 项目引用构建和 Vite 生产构建。
 - `npm run preview` 默认使用 Vite preview，端口为 `4173`。
 - `npm run test:smoke` 会通过 Playwright 启动生产预览，检查核心路由、会话恢复和练习反馈闭环。
-- `npm run test:matrix` 会遍历 28 个样品和 3 台仪器的检测模式，检查未知样品遮蔽、页面错误和可提交状态；该检查较烟测更慢，适合交付前或交互改动后运行。
+- `npm run test:matrix` 会遍历当前全部样品和 3 台仪器的检测模式，检查未知样品遮蔽、页面错误和可提交状态；该检查较烟测更慢，适合交付前或交互改动后运行。
 - `npm run prepare-assets` 会把根目录中文素材规范化复制到 `gem-lab/public/assets/`，并切分步骤/状态图标。
 
 ## 项目结构

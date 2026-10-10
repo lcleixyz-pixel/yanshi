@@ -2,9 +2,7 @@ import { useRef, useState } from 'react';
 import clsx from '@/utils/clsx';
 import type { AbsorptionFeature } from '@/data/types';
 import { IDEAL_CONDITIONS } from '@/domain/spectrumDisplay';
-
-const MIN_WL = 400;
-const MAX_WL = 700;
+import { positionToWavelength, wavelengthToPosition, wavelengthRangeToPositions, SPECTRUM_MIN_NM, SPECTRUM_MAX_NM } from '@/domain/spectrumCoordinates';
 
 /**
  * 光谱条：背景为连续光谱（CSS 渐变模拟），叠加吸收特征（黑线/黑带）。
@@ -76,20 +74,8 @@ export default function SpectrumStrip({
 
   // 波长↔位置 映射
   // 注意红区在左、紫区在右（教学常用方向）
-  const wlToX = (wl: number): number => {
-    const t = (wl - MIN_WL) / (MAX_WL - MIN_WL); // 0 紫 → 1 红
-    if (dispersion === 'grating') return 1 - t; // 线性
-    // prism：用平方根弯曲，使蓝紫端（小 t）位置变化更快 → 视觉上扩展
-    // 红区（大 t）变化变慢 → 视觉上压缩
-    const bent = Math.sqrt(t);
-    return 1 - bent;
-  };
-  const xToWL = (xRatio: number): number => {
-    // 反向求解，xRatio 已经是 0(左,红)–1(右,紫)
-    const tBent = 1 - xRatio;
-    const t = dispersion === 'grating' ? tBent : tBent * tBent;
-    return Math.round(MIN_WL + t * (MAX_WL - MIN_WL));
-  };
+  const wlToX = (wl: number): number => wavelengthToPosition(wl, dispersion);
+  const xToWL = (xRatio: number): number => Math.round(positionToWavelength(xRatio, dispersion));
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isInteractive || !onAddMark) return;
@@ -120,6 +106,7 @@ export default function SpectrumStrip({
       className="select-none"
       data-testid="spectroscope-spectrum-strip"
       data-spectrum-state={locked ? 'locked' : 'ready'}
+      data-dispersion={dispersion}
     >
       <div
         ref={containerRef}
@@ -150,12 +137,12 @@ export default function SpectrumStrip({
         {/* 吸收特征 */}
         {!locked && showFeatures &&
           features.map((f, i) => {
-            const xCenter = wlToX(f.wavelength) * 100;
-            // band 宽度按棱镜映射换算
-            const widthPct =
-              f.type === 'band'
-                ? Math.abs(wlToX(f.wavelength + (f.width ?? 10) / 2) - wlToX(f.wavelength - (f.width ?? 10) / 2)) * 100
-                : 0.4;
+            const band = f.type === 'band'
+              ? wavelengthRangeToPositions(f.wavelength - (f.width ?? 10) / 2, f.wavelength + (f.width ?? 10) / 2, dispersion)
+              : null;
+            if (f.type === 'band' ? !band : f.wavelength < SPECTRUM_MIN_NM || f.wavelength > SPECTRUM_MAX_NM) return null;
+            const widthPct = band ? band.width * 100 : 0.4;
+            const leftPct = band ? band.left * 100 : wlToX(f.wavelength) * 100 - widthPct / 2;
             const baseOpacity =
               f.intensity === 'strong' ? 0.95 : f.intensity === 'medium' ? 0.7 : 0.45;
             const opacity = f.opacity ?? baseOpacity * featureContrast;
@@ -165,7 +152,7 @@ export default function SpectrumStrip({
                 data-wavelength={f.wavelength}
                 className="absolute top-0 h-full"
                 style={{
-                  left: `${xCenter - widthPct / 2}%`,
+                  left: `${leftPct}%`,
                   width: `${widthPct}%`,
                   background: '#000',
                   opacity,

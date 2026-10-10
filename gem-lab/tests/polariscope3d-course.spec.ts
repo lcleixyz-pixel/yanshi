@@ -92,7 +92,7 @@ test('basic guided course: parts → path → crossed → rotate → reorient �
   await page.getByTestId('course-advanced-adr').click();
   await expect(page).not.toHaveURL(/course=/);
   await expect(page.getByTestId('course-guide')).toHaveCount(0);
-  await expect(canvas(page)).toHaveAttribute('data-sample', 'garnet');
+  await expect(canvas(page)).toHaveAttribute('data-sample', 'almandine');
   await expect(page.getByTestId('explore-lesson-sample')).toHaveAttribute('aria-pressed', 'true');
 });
 

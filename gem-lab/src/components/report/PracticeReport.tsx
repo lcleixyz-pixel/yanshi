@@ -1,6 +1,6 @@
 import type { SampleDef } from '@/data/types';
 import { reactionLabel } from '@/domain/polariscopeRules';
-import { SAMPLES_BY_ID } from '@/data/samples';
+import { LEGACY_SAMPLES_BY_ID, SAMPLES_BY_ID } from '@/data/samples';
 import type { AssessmentAttempt, DetectionSession } from '@/store/detectionStore';
 import { formatDR } from '@/utils/format';
 
@@ -26,15 +26,18 @@ export default function PracticeReport({
     (session.polariscope.optical === 'isotropic' ? '均质体'
       : session.polariscope.optical === 'anisotropic' ? '非均质体'
         : session.polariscope.optical === 'aggregate' ? '多晶质集合体' : '未测');
-  const spectrum = session.spectroscope.markedLines.length > 0
-    ? session.spectroscope.markedLines.map((line) => `${line} nm`).join('、')
-    : session.spectroscope.notes || '未观察';
+  const spectrum = [
+    session.spectroscope.markedLines.map((line) => `${line} nm 线`).join('、'),
+    session.spectroscope.bandRanges.map((band) => `${band.start}–${band.end} nm 带`).join('、'),
+    session.spectroscope.notes,
+  ].filter(Boolean).join('；') || '未观察';
 
   return (
     <section className="print-only practice-report" data-testid="practice-print-report">
       <div className="report-kicker">GEM LAB · LEARNING RECORD</div>
       <h1>宝石检测课堂练习记录</h1>
       <p className="report-notice">教学模拟资料，仅用于课堂练习与复盘，不作为真实宝石鉴定结论或证书。</p>
+      {LEGACY_SAMPLES_BY_ID[sample.id] && <p className="report-notice">历史记录：该旧版未分种样品混用了不同石榴石的数据，已停止新练习。以下原记录与旧参考仅供追溯，不代表修订后的专业数据，也不计入新品种掌握度。</p>}
       <div className="report-meta">
         <span>练习时间：{new Date(attempt.completedAt).toLocaleString('zh-CN')}</span>
         <span>难度：{DIFFICULTY_LABEL[session.difficulty ?? 'beginner']}</span>

@@ -125,7 +125,7 @@ const COURSE_SETUP: Record<CourseStepId, [Lesson, Partial<PolariscopeStructureSt
 const ADVANCED_TOPICS: (AdvancedTopic & { lesson: Lesson; patch: Partial<PolariscopeStructureState> })[] = [
   { id: 'quartz', title: '水晶旋光', text: '黄晶沿光轴放置：不暗也不闪。', lesson: 'sample', patch: { sampleId: 'citrine', orientation: 'optic-axis', strain: null, brazilTwin: false } },
   { id: 'twin', title: '巴西律双晶', text: '紫晶双层旋光互相抵消。', lesson: 'sample', patch: { sampleId: 'amethyst', orientation: 'optic-axis', strain: null, brazilTwin: true } },
-  { id: 'adr', title: '异常双折射与平行复核', text: '石榴石的应变明暗，如何区分。', lesson: 'sample', patch: { sampleId: 'garnet', orientation: 'general', strain: null, brazilTwin: false } },
+  { id: 'adr', title: '异常双折射与平行复核', text: '本铁铝榴石教学样品的应变明暗，如何区分。', lesson: 'sample', patch: { sampleId: 'almandine', orientation: 'general', strain: null, brazilTwin: false } },
   { id: 'conoscope', title: '锥光干涉图', text: '放上干涉球，区分一轴晶与二轴晶。', lesson: 'conoscope', patch: { sampleId: 'tourmaline', brazilTwin: false } },
 ];
 

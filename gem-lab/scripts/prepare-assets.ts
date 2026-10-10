@@ -112,7 +112,7 @@ async function main() {
     ['分光镜/分光镜_无样品光谱窗口.png', 'observations/spectroscope/empty.png'],
   ]);
 
-  console.log('\n▶ 复制样品库（28 个）');
+  console.log('\n▶ 复制样品库（31 张，含旧版石榴石）');
   // [中文文件名（不含 .png）, 英文 id]
   const samples: Array<[string, string]> = [
     ['红宝石', 'ruby'],
@@ -121,6 +121,9 @@ async function main() {
     ['紫水晶', 'amethyst'],
     ['黄水晶', 'citrine'],
     ['石榴石', 'garnet'],
+    ['铁铝榴石', 'almandine'],
+    ['镁铝榴石', 'pyrope'],
+    ['红色碧玺', 'red-tourmaline'],
     ['橄榄石', 'peridot'],
     ['托帕石', 'topaz'],
     ['碧玺', 'tourmaline'],

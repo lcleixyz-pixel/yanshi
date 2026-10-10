@@ -798,6 +798,9 @@ export default function PolariscopeDemo({
                   className="mx-auto h-44 w-44 rounded-xl bg-brand-50/40 object-contain p-2 ring-1 ring-line"
                   draggable={false}
                 />
+                {SAMPLES_BY_ID[previewSampleId]?.imageNote && (
+                  <p className="mt-2 text-[10px] leading-relaxed text-ink-3">{SAMPLES_BY_ID[previewSampleId].imageNote}</p>
+                )}
                 {SAMPLES_BY_ID[previewSampleId]?.characteristics.opticalCharacter && (
                   <div className="mt-3 rounded-lg bg-violet-50 px-3 py-2 text-[11px] text-violet-800 ring-1 ring-violet-200">
                     光性：{OPTICAL_LABEL[SAMPLES_BY_ID[previewSampleId]!.characteristics.opticalCharacter]}
@@ -1178,6 +1181,7 @@ function PolariscopeLearningExperience({
                 />
                 <div className="min-w-0">
                   <div className="truncate text-xs font-semibold text-ink">{sampleLabel}</div>
+                  {sample.imageNote && <p className="mt-1 text-[10px] text-ink-3">{sample.imageNote}</p>}
                   <div className="mt-0.5 text-[10px] text-ink-3">
                     {OPTICAL_LABEL[sample.characteristics.opticalCharacter]}
                   </div>

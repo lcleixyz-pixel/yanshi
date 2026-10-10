@@ -18,7 +18,7 @@ export type ObservationClass = 'isotropic' | 'anisotropic' | 'aggregate' | 'opaq
 /** 体色（线性 sRGB 透过率），按样品库颜色描述取代表色。 */
 const BODY_COLOR: Record<string, Rgb> = {
   ruby: [0.78, 0.05, 0.09], sapphire: [0.08, 0.17, 0.72], emerald: [0.08, 0.58, 0.24], amethyst: [0.48, 0.18, 0.7],
-  citrine: [0.95, 0.66, 0.16], garnet: [0.58, 0.04, 0.07], peridot: [0.52, 0.74, 0.1], topaz: [0.55, 0.76, 0.95],
+  citrine: [0.95, 0.66, 0.16], garnet: [0.58, 0.04, 0.07], almandine: [0.58, 0.04, 0.07], pyrope: [0.67, 0.05, 0.13], 'red-tourmaline': [0.8, 0.12, 0.28], peridot: [0.52, 0.74, 0.1], topaz: [0.55, 0.76, 0.95],
   tourmaline: [0.18, 0.58, 0.32], spinel: [0.84, 0.14, 0.34], tanzanite: [0.34, 0.28, 0.86], aquamarine: [0.55, 0.85, 0.95],
   zircon: [0.58, 0.85, 0.92], moonstone: [0.9, 0.93, 0.98], amber: [0.95, 0.52, 0.07], pearl: [0.94, 0.9, 0.86],
   turquoise: [0.22, 0.72, 0.72], jadeite: [0.33, 0.78, 0.38], nephrite: [0.86, 0.86, 0.72], 'nephrite-jasper': [0.13, 0.42, 0.18],
@@ -30,7 +30,7 @@ const BODY_COLOR: Record<string, Rgb> = {
 const OPTIC_AXIAL_ANGLE: Record<string, number> = { peridot: 86, topaz: 56, tanzanite: 40, moonstone: 60 };
 
 /** 教学默认的应变强度：样品库已注明「常见异常消光」者默认开启。 */
-const DEFAULT_STRAIN: Record<string, number> = { garnet: 0.55, amber: 0.85 };
+const DEFAULT_STRAIN: Record<string, number> = { garnet: 0.55, almandine: 0.55, amber: 0.85 };
 
 const DEPOLARIZATION: Record<SampleDef['characteristics']['transparency'], number> = {
   '透明': 0.03, '透明-半透明': 0.14, '半透明': 0.38, '透明-不透明': 0.3, '半透明-不透明': 0.55, '不透明': 1,
@@ -95,7 +95,7 @@ export const POLARISCOPE_PROFILES_BY_ID: Record<string, PolariscopeSampleProfile
 export const getPolariscopeProfile = (id: string | null | undefined) => (id ? POLARISCOPE_PROFILES_BY_ID[id] ?? (SAMPLES_BY_ID[id] ? polariscopeProfile(SAMPLES_BY_ID[id]) : null) : null);
 
 /** 课堂首选样品：每类现象一颗，便于对比。 */
-export const FEATURED_SAMPLE_IDS = ['spinel', 'tourmaline', 'peridot', 'jadeite', 'garnet', 'amber', 'citrine', 'turquoise'] as const;
+export const FEATURED_SAMPLE_IDS = ['spinel', 'tourmaline', 'peridot', 'jadeite', 'almandine', 'amber', 'citrine', 'turquoise'] as const;
 
 export interface SampleViewSettings {
   /** 样品放置取向（沿光轴时普通非均质体全暗，水晶因旋光呈不随转动改变的颜色）。 */

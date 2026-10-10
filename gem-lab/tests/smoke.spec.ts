@@ -773,7 +773,7 @@ test('polariscope learning mode requires a full turn before the observation can 
 });
 
 test('polariscope learning mode explains isotropic samples as continuously dark', async ({ page }) => {
-  await enterPolariscopeLiveUse(page, 'garnet', 90);
+  await enterPolariscopeLiveUse(page, 'almandine', 90);
 
   await expect(page.getByTestId('polariscope-live-observation')).toHaveAttribute(
     'data-sample-shape',

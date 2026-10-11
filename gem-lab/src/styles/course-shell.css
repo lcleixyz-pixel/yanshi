@@ -26,13 +26,16 @@
 .course-shell__mode button[aria-pressed="true"] { color: #fff; background: var(--iu-accent-strong); }
 .course-shell__exit { margin-left: 2px; }
 .course-shell__body { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 22px; padding: 12px 18px; border: 1px solid var(--iu-line); border-radius: 0 0 9px 9px; background: #fff; }
-.course-shell__task h1 { display: flex; align-items: baseline; gap: 12px; font-size: 17px; font-weight: 500; }
+/* 课程条用在其他页面（偏光镜）时不受页面级 h1 样式影响。 */
+.course-shell__guide .course-shell__task h1 { display: flex; align-items: baseline; gap: 12px; margin: 0; font-size: 17px; font-weight: 500; line-height: 1.5; letter-spacing: normal; }
 .course-shell__task h1 > span { color: var(--iu-muted); font-family: var(--iu-mono); font-size: 11px; }
 .course-shell__task p { margin-top: 4px; color: var(--iu-ink-2); font-size: 13px; line-height: 1.7; }
 .course-shell__task .iu-why { margin-top: 6px; }
 .course-shell__checklist { display: flex; flex-direction: column; gap: 3px; margin: 0; padding: 0; list-style: none; color: var(--iu-muted); font-size: 12px; }
 .course-shell__checklist li { display: flex; gap: 7px; white-space: nowrap; }
 .course-shell__checklist li[data-done="true"] { color: var(--iu-success); font-weight: 500; }
+.course-shell__check-button { display: inline-flex; align-items: center; gap: 7px; padding: 2px 8px; border: 1px dashed #bcd3ed; border-radius: 5px; color: var(--iu-muted); background: transparent; font-size: 12px; cursor: pointer; }
+.course-shell__check-button:hover { border-color: var(--iu-accent-strong); color: var(--iu-accent-strong); }
 .course-shell__nav { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .course-shell__skipped { flex-basis: 100%; color: var(--iu-warn); font-size: 11px; }
 
@@ -116,12 +119,21 @@
 .course-shell__times li { display: flex; justify-content: space-between; gap: 8px; padding: 3px 0; border-bottom: 1px dotted var(--iu-line-2); }
 .course-shell__times output { color: var(--iu-muted); font-family: var(--iu-mono); }
 .course-shell__small { color: var(--iu-muted); font-size: 11px; }
+.course-shell__card h3 { margin: 6px 0 0; font-size: 14px; font-weight: 500; }
+.course-shell__times em { margin-left: 6px; color: var(--iu-danger); font-size: 11px; font-style: normal; }
+.course-shell__topics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.course-shell__topic { display: flex; flex-direction: column; gap: 3px; padding: 10px 12px; border: 1px solid var(--iu-line); border-radius: 7px; background: #fff; text-align: left; cursor: pointer; }
+.course-shell__topic:hover { border-color: var(--iu-accent-strong); }
+.course-shell__topic strong { font-size: 13px; font-weight: 500; }
+.course-shell__topic span { color: var(--iu-muted); font-size: 12px; }
+.course-shell__submit { display: flex; align-items: center; gap: 12px; font-size: 12px; }
+.course-shell__submit [data-result="wrong"] { color: var(--iu-danger); }
 
 /* 投屏模式：隐藏站点页眉，三维区占满剩余高度，字号放大便于投影观看。 */
 .course-shell--projection { font-size: 15px; }
 .course-shell--projection > header { display: none; }
 .course-shell--projection .course-shell__guide { padding-top: 10px; padding-right: 168px; }
-.course-shell--projection .course-shell__task h1 { font-size: 20px; }
+.course-shell--projection .course-shell__guide .course-shell__task h1 { font-size: 20px; }
 .course-shell--projection .course-shell__task p { font-size: 15px; }
 .course-shell--projection .course-shell__main { grid-template-columns: minmax(0, 1fr) 340px; }
 .course-shell__projection-exit { position: fixed; top: 16px; right: 20px; z-index: 20; box-shadow: 0 4px 14px #1a233218; }

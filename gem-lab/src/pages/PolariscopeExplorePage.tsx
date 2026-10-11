@@ -441,7 +441,7 @@ export default function PolariscopeExplorePage() {
   const moreChoices = state.lesson === 'conoscope' ? PROFILES_BY_GROUP.anisotropic : POLARISCOPE_PROFILES;
 
   return (
-    <main ref={mainRef} className={`pol-explore${projection ? ' pol-explore--projection' : ''}${courseActive ? ' pol-explore--course' : ''}${courseOverlay ? ' pol-explore--course-card' : ''}${studentMode ? ' pol-explore--student' : ''}${studentObserve ? ' pol-explore--student-observe' : ''}`} data-testid="polariscope-explore-page" data-lesson={state.lesson} data-course={courseActive ? courseStepId : undefined}>
+    <main ref={mainRef} data-instrument="polariscope" className={`pol-explore iu${projection ? ' pol-explore--projection' : ''}${courseActive ? ' pol-explore--course' : ''}${courseOverlay ? ' pol-explore--course-card' : ''}${studentMode ? ' pol-explore--student' : ''}${studentObserve ? ' pol-explore--student-observe' : ''}`} data-testid="polariscope-explore-page" data-lesson={state.lesson} data-course={courseActive ? courseStepId : undefined}>
       <div className="pol-explore__header">
         <Header title="偏光镜" subtitle="3D 仪器教学" right={<>
           <Link to={`/knowledge/polariscope#${state.lesson === 'principle' ? 'introduction' : 'structure'}`} className="pol-explore__back" data-testid="explore-back-to-knowledge">← 仪器知识库</Link>

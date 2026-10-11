@@ -198,7 +198,8 @@
   .pol-explore__mode { flex: 1; }
   .pol-explore__workbench { display: flex; flex-direction: column; padding: 0 12px; }
   .pol-explore__parts { order: 1; padding-bottom: 12px; }
-  .pol-explore__viewport { order: 2; min-height: 430px; height: 59dvh; max-height: 580px; }
+  /* 与课程外壳一致：手机上三维区（连同目镜视场）吸附在顶部，下方面板操作时模型保持可见。 */
+  .pol-explore__viewport { order: 2; position: sticky; top: 0; z-index: 4; min-height: 360px; height: 52dvh; max-height: 520px; box-shadow: 0 6px 14px #1a23320f; }
   .pol-explore__scene-caption { top: 16px; left: 16px; right: 16px; }
   .pol-explore__scene-caption h2 { font-size: 11px; }
   .pol-explore__isolation { top: 57px; left: 16px; }
@@ -362,53 +363,8 @@
 .pol-explore__intro-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: flex-end; }
 .pol-explore--course .pol-explore__intro { display: none; }
 .pol-explore--course .pol-explore__workbench { height: min(760px, calc(100dvh - 262px)); min-height: 520px; }
-.pol-course { max-width: 1680px; margin: 0 auto; padding: 14px 24px 14px 26px; }
-.pol-course__title { display: flex; flex-direction: column; padding-right: 8px; line-height: 1.3; }
-.pol-course__title strong { font-size: 15px; font-weight: 500; }
-.pol-course__title span { color: var(--pe-muted); font-size: 10px; white-space: nowrap; }
-.pol-course__rail { display: flex; align-items: center; gap: 16px; padding: 8px 12px; border: 1px solid var(--pe-line); border-bottom: 0; border-radius: 9px 9px 0 0; background: #e8eff8; }
-.pol-course__steps { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 0; list-style: none; flex: 1; }
-.pol-course__steps button { display: flex; align-items: center; gap: 7px; min-height: 34px; padding: 5px 11px; border: 0; border-radius: 5px; color: #5b6b80; background: transparent; font-size: 12px; }
-.pol-course__steps button > span { display: inline-grid; place-items: center; width: 19px; height: 19px; border-radius: 50%; border: 1px solid #bcd3ed; font-size: 10px; font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace; }
-.pol-course__steps button[data-done="true"] > span { border-color: var(--pe-success); color: #fff; background: var(--pe-success); }
-.pol-course__steps button[aria-current="step"] { color: var(--pe-accent-ink); background: #fff; box-shadow: 0 1px 4px #1a233210; font-weight: 500; }
-.pol-course__exit { margin-left: auto; }
-.pol-course__body { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 22px; padding: 14px 18px; border: 1px solid var(--pe-line); border-radius: 0 0 9px 9px; background: #fff; }
-.pol-course__task h2 { display: flex; align-items: baseline; gap: 12px; margin: 0; font-size: 17px; font-weight: 500; }
-.pol-course__task h2 > span { color: var(--pe-muted); font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace; font-size: 11px; }
-.pol-course__task p { margin: 4px 0 0; color: var(--pe-ink-2); font-size: 13px; line-height: 1.7; }
-.pol-course__task .pol-course__why { margin-top: 6px; padding: 6px 10px; border-left: 3px solid var(--pe-accent); background: #f5f3ff; color: var(--pe-accent-ink); }
-.pol-course__checklist { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: 12px; }
-.pol-course__check, .pol-course__check-button { display: inline-flex; align-items: center; gap: 7px; color: #5b6b80; }
-.pol-course__checklist li[data-done="true"] .pol-course__check { color: var(--pe-success); font-weight: 500; }
-.pol-course__check-button { padding: 2px 8px; border: 1px dashed #bcd3ed; border-radius: 5px; background: transparent; font-size: 12px; cursor: pointer; }
-.pol-course__check-button:hover { border-color: var(--pe-accent); color: var(--pe-accent); }
-.pol-course__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-.pol-course__nav { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.pol-explore .pol-course { max-width: 1680px; margin: 0 auto; padding: 14px 24px 14px 26px; }
 .pol-course-overlay { position: absolute; inset: 0; z-index: 6; display: flex; justify-content: center; align-items: flex-start; overflow-y: auto; padding: 22px; background: #eef4fbd9; backdrop-filter: blur(2px); }
-.pol-course-card { width: min(640px, 100%); padding: 20px 24px; border: 1px solid #d4dfee; border-radius: 10px; background: #fff; box-shadow: 0 8px 30px #1a233214; }
-.pol-course-card h2 { margin: 6px 0 14px; font-size: 20px; font-weight: 500; }
-.pol-course-card h3 { margin: 18px 0 8px; font-size: 14px; font-weight: 500; }
-.pol-course-quiz__question { margin: 0 0 14px; padding: 12px 14px; border: 1px solid var(--pe-line); border-radius: 8px; }
-.pol-course-quiz__question[data-correct="true"] { border-color: #8a97ab; background: #f7f9fd; }
-.pol-course-quiz__question legend { padding: 0 4px; font-size: 14px; font-weight: 500; }
-.pol-course-quiz__option { display: flex; gap: 9px; align-items: flex-start; padding: 6px 4px; font-size: 13px; line-height: 1.6; cursor: pointer; }
-.pol-course-quiz__option input { margin-top: 4px; accent-color: var(--pe-accent); }
-.pol-course-quiz__option small { display: block; margin-top: 2px; color: #3d4a5e; font-size: 12px; }
-.pol-course-quiz__option[data-result="wrong"] small { color: #b4403f; }
-.pol-course-quiz__submit { display: flex; align-items: center; gap: 12px; margin-top: 6px; font-size: 12px; }
-.pol-course-quiz__submit [data-result="wrong"] { color: #b4403f; }
-.pol-course-quiz__result { margin: 6px 0 0; color: var(--pe-success); font-size: 12px; font-weight: 500; }
-.pol-course-complete__times { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px 18px; margin: 0; padding: 0; list-style: none; font-size: 12px; }
-.pol-course-complete__times li { display: flex; justify-content: space-between; border-bottom: 1px dotted #d4dfee; padding: 3px 0; }
-.pol-course-complete__times output { font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace; color: var(--pe-muted); }
-.pol-course-complete__times em { margin-left: 6px; color: #b4403f; font-size: 11px; font-style: normal; }
-.pol-course-complete__note { margin: 8px 0 0; color: var(--pe-muted); font-size: 11px; }
-.pol-course-complete__topics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 16px; }
-.pol-course-complete__topic { display: flex; flex-direction: column; gap: 3px; padding: 10px 12px; border: 1px solid var(--pe-line); border-radius: 7px; background: #ffffff; text-align: left; cursor: pointer; }
-.pol-course-complete__topic:hover { border-color: var(--pe-accent); }
-.pol-course-complete__topic strong { font-size: 13px; font-weight: 500; }
-.pol-course-complete__topic span { color: var(--pe-muted); font-size: 12px; }
 /* 投屏窄屏：两侧放不下时课程条占满宽度，解释卡与目镜视场移到课程条下方。 */
 @media (max-width: 1279px) {
   .pol-explore--projection .pol-course { width: calc(100vw - 220px); left: 20px; transform: none; }
@@ -421,46 +377,29 @@
 .pol-explore--course-card .pol-explore__viewport { min-height: 520px; }
 /* 投屏：课程条固定在画面顶部居中，替代左上角的场景标题。 */
 .pol-explore--projection.pol-explore--course .pol-explore__workbench { height: 100dvh; min-height: 520px; }
-.pol-explore--projection .pol-course__steps { flex-wrap: nowrap; }
-.pol-explore--projection .pol-course__steps button { padding-inline: 8px; }
+.pol-explore--projection .course-shell__steps { flex-wrap: nowrap; }
+.pol-explore--projection .course-shell__steps button { padding-inline: 8px; }
 .pol-explore--projection .pol-course { position: fixed; z-index: 7; top: 18px; left: 50%; transform: translateX(-50%); width: min(1000px, calc(100vw - 740px)); margin: 0; padding: 0; box-shadow: 0 6px 28px #1a233214; }
 .pol-explore--projection.pol-explore--course .pol-explore__scene-caption { display: none; }
-.pol-explore--projection .pol-course__body { grid-template-columns: minmax(0, 1fr) auto; padding: 10px 14px; gap: 12px 16px; }
-.pol-explore--projection .pol-course__nav { grid-column: 1 / -1; justify-content: flex-end; }
-.pol-explore--projection .pol-course__task h2 { font-size: 20px; }
-.pol-explore--projection .pol-course__task p { font-size: 16px; }
-.pol-explore--projection .pol-course__steps button { font-size: 13px; }
-.pol-explore--projection .pol-course__checklist, .pol-explore--projection .pol-course__check-button { font-size: 14px; }
+.pol-explore--projection .course-shell__body { grid-template-columns: minmax(0, 1fr) auto; padding: 10px 14px; gap: 12px 16px; }
+.pol-explore--projection .course-shell__nav { grid-column: 1 / -1; justify-content: flex-end; }
+.pol-explore--projection .course-shell__guide .course-shell__task h1 { font-size: 20px; }
+.pol-explore--projection .course-shell__task p { font-size: 16px; }
+.pol-explore--projection .course-shell__steps button { font-size: 13px; }
+.pol-explore--projection .course-shell__checklist, .pol-explore--projection .course-shell__check-button { font-size: 14px; }
 .pol-explore--projection .pol-course-overlay { padding-top: 220px; }
 @media (max-width: 1180px) {
-  .pol-course { padding: 0 16px; }
-  .pol-course__body { grid-template-columns: minmax(0, 1fr) auto; }
-  .pol-course__nav { grid-column: 1 / -1; justify-content: flex-end; }
+  .pol-explore .pol-course { padding: 0 16px; }
 
 }
 @media (max-width: 680px) {
   .pol-explore__intro-actions { justify-content: flex-start; margin-top: 14px; }
-  .pol-course { padding: 0 12px; }
-  .pol-course__rail { flex-wrap: wrap; gap: 6px; }
-  .pol-course__title { display: none; }
-  .pol-course__steps { flex-wrap: nowrap; }
-  .pol-course__steps button { padding: 4px 6px; font-size: 11px; }
+  .pol-explore .pol-course { padding: 0 12px; }
   /* 手机上只有当前步骤显示名称，其余只留编号。 */
-  .pol-course__steps button:not([aria-current]) { font-size: 0; gap: 0; }
-  .pol-course__exit { padding-inline: 4px; font-size: 11px; }
-  .pol-course__body { padding: 10px 12px; }
-  .pol-course__task h2 { font-size: 15px; }
-  .pol-course__task p { font-size: 12px; }
-  .pol-course__checklist { flex-direction: row; flex-wrap: wrap; gap: 4px 12px; }
-  .pol-course__body { grid-template-columns: 1fr; gap: 10px; }
   .pol-explore--course .pol-explore__workbench { height: auto; min-height: 0; }
-  .pol-course-complete__times, .pol-course-complete__topics { grid-template-columns: 1fr; }
 }
 
 /* ── 学员自学模式：提示与控件集中在中间展台 ── */
-.pol-course__mode { display: flex; gap: 2px; padding: 3px; border: 1px solid var(--pe-line-2); border-radius: 8px; background: #fff; }
-.pol-course__mode button { min-height: 30px; padding: 3px 11px; border: 0; border-radius: 6px; color: var(--pe-muted); background: transparent; font-size: 12px; }
-.pol-course__mode button[aria-pressed="true"] { color: #fff; background: var(--pe-accent); }
 .polariscope-coach { position: absolute; left: 0; top: 0; z-index: 4; display: flex; gap: 8px; align-items: flex-start; max-width: 250px; padding: 9px 13px; border: 1px solid var(--pe-accent-line); border-radius: 10px; color: var(--pe-ink); background: #fffffff2; box-shadow: 0 8px 24px #1a233218; font-size: 13px; font-weight: 500; line-height: 1.55; pointer-events: none; }
 .polariscope-coach > span { flex: none; display: grid; place-items: center; width: 20px; height: 20px; margin-top: 1px; border-radius: 50%; color: #fff; background: var(--pe-accent); font-size: 11px; }
 .polariscope-coach[data-tone="done"] { border-color: #bfe8d3; }

@@ -160,7 +160,7 @@ jobs:
       - name: Run instrument browser regression
         run: |
           xvfb-run --auto-servernum glxinfo -B
-          xvfb-run --auto-servernum npx playwright test tests/optics3d.spec.ts tests/microscope3d.spec.ts tests/refractometer3d-course.spec.ts tests/spectroscope3d-course.spec.ts tests/spectroscope-grating.spec.ts tests/spectroscope-library.spec.ts tests/spectroscope-bench.spec.ts tests/spectroscope-grating-course.spec.ts tests/instrument-ui.spec.ts \
+          xvfb-run --auto-servernum npx playwright test tests/optics3d.spec.ts tests/microscope3d.spec.ts tests/refractometer3d-course.spec.ts tests/spectroscope3d-course.spec.ts tests/spectroscope-grating.spec.ts tests/spectroscope-library.spec.ts tests/spectroscope-bench.spec.ts tests/spectroscope-grating-course.spec.ts tests/instrument-ui.spec.ts tests/sim-shell.spec.ts \
             --workers=1 --max-failures=1 --output=test-results/instruments
 
       - name: Save instrument browser evidence

@@ -11,6 +11,7 @@ const PolariscopeExplorePage = lazy(() => import('./pages/PolariscopeExplorePage
 const MicroscopeExplorePage = lazy(() => import('./pages/MicroscopeExplorePage'));
 const OpticsExplorePage = lazy(() => import('./pages/OpticsExplorePage'));
 const SpectroscopePractice3D = lazy(() => import('./components/spectroscope3d/SpectroscopePractice3D'));
+const SimPage = lazy(() => import('./pages/SimPage'));
 
 function PageFallback() {
   return (
@@ -34,6 +35,8 @@ export default function App() {
         <Route path="/explore/microscope" element={<MicroscopeExplorePage />} />
         <Route path="/explore/optics/:instrumentId" element={<OpticsExplorePage />} />
         <Route path="/explore/spectroscope-bench" element={<SpectroscopePractice3D />} />
+        {/* PhET 式仿真（阶段 1 新外壳）：旧入口逐台迁完后才重定向，现阶段并存。 */}
+        <Route path="/sim/:simId/:screen?" element={<SimPage />} />
         <Route path="/detection" element={<DetectionWorkflowPage />} />
         <Route path="/assessment" element={<NamingAssessmentPage />} />
         <Route path="/progress" element={<ProgressPage />} />

@@ -24,8 +24,8 @@ export interface OpticsViewer {
   toggleIsolate(): void;
   /** focus 为 false 时只选中、不移动镜头。 */
   select(id: string, focus?: boolean): void;
-  /** 部件编号热点：ids 依次编号；done 为已查看；coach 为「点这里」指引的部件；null 关闭。 */
-  setHotspots(hotspots: { ids: string[]; done?: string[]; coach?: string | null; labels?: Record<string, string> } | null): void;
+  /** 部件编号热点：ids 依次编号；done 为已查看；selected 为当前选中；hideOccluded 时被不透明部件挡住的热点隐藏；coach 为「点这里」指引的部件；null 关闭。 */
+  setHotspots(hotspots: { ids: string[]; done?: string[]; coach?: string | null; selected?: string | null; labels?: Record<string, string>; hideOccluded?: boolean } | null): void;
   focusSelected(): void;
   fit(): void;
   reset(): void;

@@ -95,6 +95,7 @@
 .opt-hotspot { position: absolute; left: 0; top: 0; display: grid; place-items: center; width: 34px; height: 34px; padding: 0; border: 1px solid var(--iu-accent-line, #ddd6fe); border-radius: 50%; color: var(--iu-accent-ink, #5b21b6); background: #ffffffe6; box-shadow: 0 0 0 5px color-mix(in srgb, var(--iu-accent, #7c3aed) 14%, transparent); font-family: var(--iu-mono, monospace); font-size: 11px; cursor: pointer; pointer-events: auto; }
 .opt-hotspot:hover { border-color: var(--iu-accent-strong, #6d28d9); }
 .opt-hotspot[data-done="true"] { border-color: var(--iu-success, #22a86a); color: #fff; background: var(--iu-success, #22a86a); box-shadow: none; }
+.opt-hotspot[data-selected="true"] { border-color: var(--iu-accent-strong, #6d28d9); color: #fff; background: var(--iu-accent-strong, #6d28d9); box-shadow: 0 0 0 5px color-mix(in srgb, var(--iu-accent, #7c3aed) 22%, transparent); }
 .opt-hotspot[hidden], .opt-coach[hidden] { display: none; }
 .opt-coach { position: absolute; left: 0; top: 0; padding: 7px 12px; border: 1px solid var(--iu-line-2, #d4dfee); border-radius: 8px; color: var(--iu-ink, #1a2332); background: #fff; box-shadow: 0 6px 18px #1a233218; font-size: 13px; white-space: nowrap; pointer-events: none; }
 .opt-coach::before { content: "→"; display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 8px; border-radius: 50%; color: #fff; background: var(--iu-accent-strong, #6d28d9); font-size: 11px; }

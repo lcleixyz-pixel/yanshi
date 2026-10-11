@@ -52,6 +52,15 @@ function OpticsExplore({ instrumentId, onStart }: { instrumentId: OpticsInstrume
   }, [instrumentId, assetBase, attempt]);
 
   const ready = snapshot.status === 'ready' ? snapshot : null;
+  // 部件编号热点（同偏光镜自由探索）：编号与部件目录一致，选中的部件高亮；可关闭以免画面拥挤。
+  const [showHotspots, setShowHotspots] = useState(true);
+  const partIds = ready ? ready.parts.map((part) => part.id).join(' ') : '';
+  const selectedPart = ready?.state.selectedId ?? null;
+  useEffect(() => {
+    if (!partIds) return;
+    // 自由探索按遮挡隐藏：整机外观只标外部部件，切到内部光路（外壳透明）再显示内部部件。
+    viewerRef.current?.setHotspots(showHotspots ? { ids: partIds.split(' '), selected: selectedPart, hideOccluded: true } : null);
+  }, [partIds, selectedPart, showHotspots]);
   const viewer = () => viewerRef.current;
   const siblings = (Object.keys(OPTICS_INSTRUMENTS) as OpticsInstrumentId[]).filter(id => id !== instrumentId);
 
@@ -115,9 +124,10 @@ function OpticsExplore({ instrumentId, onStart }: { instrumentId: OpticsInstrume
               <button type="button" disabled={!ready?.selected} onClick={() => viewer()?.focusSelected()}>聚焦所选</button>
             </div>
             <div className="mic-explore__parts" style={{ marginTop: 12 }}>
-              {ready?.parts.map(part => <button key={part.id} type="button" aria-pressed={ready.state.selectedId === part.id} onClick={() => viewer()?.select(part.id)}>{part.label}</button>)}
+              {ready?.parts.map((part, index) => <button key={part.id} type="button" aria-pressed={ready.state.selectedId === part.id} onClick={() => viewer()?.select(part.id)}><span className="mic-explore__part-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>{part.label}</button>)}
             </div>
-            <p className="mic-explore__note">{ready?.selected ? ready.selected.note : '选择部件查看作用。'}</p>
+            <label className="mic-explore__check"><input type="checkbox" checked={showHotspots} disabled={!ready} onChange={event => setShowHotspots(event.target.checked)} data-testid="optics-show-hotspots" />在模型上显示部件编号</label>
+            <p className="mic-explore__note">{ready?.selected ? ready.selected.note : '点模型上的编号或下面的部件，查看作用。'}</p>
           </section>
 
           <section className="mic-explore__block">

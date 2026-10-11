@@ -75,3 +75,5 @@
 /* 课程入口的主要按钮（同偏光镜：讲师演示为主要按钮），优先于面板内通用按钮样式。 */
 .mic-explore .mic-explore__row .iu-button--primary{border-color:var(--iu-accent-strong);background:var(--iu-accent-strong);color:#fff}
 .mic-explore .mic-explore__row .iu-button--primary:hover:not(:disabled){border-color:var(--iu-accent-ink);background:var(--iu-accent-ink)}
+.mic-explore__part-number{margin-right:6px;color:var(--iu-faint);font-family:var(--iu-mono);font-size:10px}
+.mic-explore__parts button[aria-pressed="true"] .mic-explore__part-number{color:var(--iu-accent-ink)}

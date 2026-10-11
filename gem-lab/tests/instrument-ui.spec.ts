@@ -118,3 +118,26 @@ test("手机上三维场景默认流畅画质", async ({ page }) => {
   await page.goto("/explore/optics/refractometer?course=basic&mode=student");
   await expect(page.getByTestId("optics3d-canvas")).toHaveAttribute("data-quality", "smooth", { timeout: 60_000 });
 });
+
+test("自由探索页显示部件编号热点：编号与目录一致，点热点选中并高亮，整机外观隐藏被挡住的内部部件，可关闭", async ({ page }) => {
+  await page.goto("/explore/optics/refractometer");
+  await expect(page.getByTestId("optics3d-canvas")).toHaveAttribute("data-loaded", "true", { timeout: 60_000 });
+  await page.getByRole("button", { name: "整机结构", exact: true }).click();
+  const hotspot = (id: string) => page.getByTestId(`hotspot-${id}`);
+  // 机身内的光源在整机外观下被外壳挡住；切到内部光路（外壳透明）后出现。
+  await expect(hotspot("internal_light")).toBeHidden();
+  await page.getByRole("button", { name: "内部光路", exact: true }).click();
+  await expect(hotspot("internal_light")).toBeVisible();
+  // 编号与部件目录一致。
+  const parts = page.locator(".mic-explore__parts button");
+  const firstLabel = (await parts.first().innerText()).replace(/^\d+\s*/, "");
+  await expect(parts.first().locator(".mic-explore__part-number")).toHaveText("01");
+  const first = page.locator(".opt-hotspot").first();
+  await expect(first).toHaveText("01");
+  await expect(first).toHaveAttribute("aria-label", new RegExp(`模型热点 01：${firstLabel}`));
+  await hotspot("internal_light").click();
+  await expect(hotspot("internal_light")).toHaveAttribute("data-selected", "true");
+  await expect(page.getByTestId("optics3d-canvas")).toHaveAttribute("data-selected-part", "internal_light");
+  await page.getByTestId("optics-show-hotspots").uncheck();
+  await expect(page.locator(".opt-hotspot")).toHaveCount(0);
+});

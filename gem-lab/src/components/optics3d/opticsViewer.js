@@ -263,7 +263,7 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
     hotspots.ids.forEach((id, index) => {
       const part = parts.find(p => p.id === id); if (!part?.hotspotLocal) return;
       const button = document.createElement('button');
-      button.type = 'button'; button.className = 'opt-hotspot'; button.dataset.testid = 'hotspot-' + id; button.dataset.done = String(hotspots.done?.includes(id) ?? false);
+      button.type = 'button'; button.className = 'opt-hotspot'; button.dataset.testid = 'hotspot-' + id; button.dataset.done = String(hotspots.done?.includes(id) ?? false); button.dataset.selected = String(hotspots.selected === id); button.setAttribute('aria-pressed', String(hotspots.selected === id));
       button.textContent = String(index + 1).padStart(2, '0'); button.setAttribute('aria-label', `模型热点 ${button.textContent}：${hotspots.labels?.[id] || part.label}${button.dataset.done === 'true' ? '（已查看）' : ''}`);
       // 点热点只选中、不推近镜头，其余热点仍在画面中（同偏光镜学员模式）。
       button.addEventListener('click', () => select(id, false));
@@ -275,16 +275,33 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
       coachBubble.textContent = '点这里：' + (hotspots.labels?.[hotspots.coach] || parts.find(p => p.id === hotspots.coach).label);
       hotspotLayer.append(coachBubble);
     }
-    placeHotspots();
+    occlusionFrame = 0; placeHotspots();
   }
-  const projected = new THREE.Vector3();
+  const projected = new THREE.Vector3(), hotspotWorld = new THREE.Vector3(), occlusionRay = new THREE.Raycaster();
+  let occluded = new Set(), occlusionFrame = 0;
+  const within = (object, ancestor) => { for (let o = object; o; o = o.parent) if (o === ancestor) return true; return false; };
+  const opaque = mesh => (Array.isArray(mesh.material) ? mesh.material : [mesh.material]).some(m => m && !(m.transparent && m.opacity < .6));
+  /** 热点被其他不透明部件挡住时隐藏（例如整机外观下机身内的光源、反射镜）；透视外壳时重新出现。 */
+  function updateOcclusion() {
+    occluded = new Set();
+    for (const id of hotspotButtons.keys()) {
+      const part = parts.find(p => p.id === id);
+      hotspotWorld.copy(part.hotspotLocal); part.object.localToWorld(hotspotWorld);
+      const toPoint = hotspotWorld.clone().sub(camera.position), distance = toPoint.length();
+      occlusionRay.set(camera.position, toPoint.normalize()); occlusionRay.far = distance;
+      const blocker = occlusionRay.intersectObject(root, true).find(hit => hit.distance < distance * .985 && isShown(hit.object) && opaque(hit.object) && !within(hit.object, part.object));
+      if (blocker) occluded.add(id);
+    }
+  }
   function placeHotspots() {
     if (!hotspots || !root) return;
+    if (hotspots.hideOccluded && occlusionFrame++ % 6 === 0) updateOcclusion();
+    if (!hotspots.hideOccluded) occluded.clear();
     const w = container.clientWidth, h = container.clientHeight;
     for (const [id, button] of hotspotButtons) {
       const part = parts.find(p => p.id === id);
       projected.copy(part.hotspotLocal); part.object.localToWorld(projected); projected.project(camera);
-      const visible = isShown(part.object) && projected.z > -1 && projected.z < 1 && Math.abs(projected.x) < 1.02 && Math.abs(projected.y) < 1.02;
+      const visible = isShown(part.object) && !occluded.has(id) && projected.z > -1 && projected.z < 1 && Math.abs(projected.x) < 1.02 && Math.abs(projected.y) < 1.02;
       button.hidden = !visible;
       button.style.transform = `translate(${(projected.x * .5 + .5) * w}px, ${(-projected.y * .5 + .5) * h}px) translate(-50%, -50%)`;
       if (coachBubble && id === hotspots.coach) {

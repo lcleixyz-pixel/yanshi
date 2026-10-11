@@ -156,6 +156,30 @@ button:focus-visible, .chip:focus-visible { outline: 2px solid var(--spec); outl
   .home-page { padding: 16px; }
 }
 .drawer { display: none; }
+.rec-btn { justify-self: start; border: 1px solid var(--accent); color: var(--accent); background: var(--surface); border-radius: 6px; padding: 3px 10px; font: 500 12px var(--font); }
+.eyepiece { position: absolute; right: 12px; top: 12px; width: 150px; display: grid; justify-items: center; gap: 4px; padding: 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); font-size: 11px; color: var(--muted); box-shadow: 0 6px 16px #1a233214; }
+.eyepiece .view { width: 112px; height: 112px; border-radius: 50%; background: linear-gradient(180deg, #3a3a3a 0 46%, #e9d48a 46% 100%); border: 4px solid #1b1f26; position: relative; overflow: hidden; }
+.eyepiece .view::after { content: "1.70\A 1.72\A 1.74\A 1.76"; white-space: pre; position: absolute; right: 8px; top: 22px; font: 9px/1.6 var(--mono); color: #f4f0dd; }
+.eyepiece strong { color: var(--ink); font-weight: 500; }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; z-index: 5; border-top: 1px solid var(--line); border-radius: 14px 14px 0 0; background: var(--surface); padding: 10px 14px 12px; display: grid; gap: 8px; box-shadow: 0 -8px 24px #1a23321a; font-size: 12px; }
+.sheet .grip { justify-self: center; width: 38px; height: 4px; border-radius: 4px; background: var(--line); }
+.sheet h4 { margin: 0; display: flex; justify-content: space-between; font-size: 13px; }
+.sheet h4 span { color: var(--muted); font-weight: 400; font-size: 12px; }
+.marks { display: flex; flex-wrap: wrap; gap: 5px; }
+.mark { font: 11px var(--mono); padding: 2px 7px; border-radius: 4px; background: var(--soft); color: var(--accent); border: 1px solid var(--line); }
+.field { display: flex; gap: 6px; align-items: center; color: var(--muted); }
+.field span.input { flex: 1; border: 1px solid var(--line); border-radius: 5px; padding: 4px 8px; color: var(--ink); background: var(--sim); }
+.primary { justify-self: end; padding: 6px 14px; border-radius: 6px; background: var(--accent); color: var(--surface); font-weight: 500; }
+.taskline { position: absolute; left: 8px; right: 8px; top: 8px; z-index: 3; display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 8px; background: var(--surface); font-size: 12px; }
+.taphint { font-size: 11px; color: var(--muted); }
+.pending { height: 26px; border-radius: 4px; border: 1px dashed var(--muted); display: grid; place-items: center; font-size: 11px; color: var(--muted); background: var(--sim); }
+.fixed { font-size: 11px; color: var(--muted); padding: 6px 8px; border-radius: 6px; background: var(--sim); }
+.mini-seg span.dim { opacity: .55; }
+.banner { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; justify-content: space-between; padding: 7px 14px; background: var(--soft); border-bottom: 1px solid var(--line); font-size: 12px; }
+.steps3 { display: flex; gap: 10px; }
+.steps3 span { color: var(--muted); } .steps3 .ok { color: var(--ok); } .steps3 .now { color: var(--accent); font-weight: 500; }
+.unknown { position: absolute; left: 50%; top: 18%; transform: translateX(-50%); padding: 3px 10px; border-radius: 999px; background: var(--ink); color: var(--surface); font-size: 12px; }
+.sim.withbanner { grid-template-rows: auto auto minmax(0, 1fr) auto; }
 
 .refr { --accent: var(--refr); --soft: var(--refr-soft); }
 .pol { --accent: var(--pol); --soft: var(--pol-soft); }
@@ -173,7 +197,7 @@ button:focus-visible, .chip:focus-visible { outline: 2px solid var(--spec); outl
   <header>
     <div class="eyebrow">阶段 0 · 样稿 · 2026-10-11</div>
     <h1>宝石实训仿真样稿</h1>
-    <p class="lede">按 PhET 方式收拢：每台仪器一个仿真，底部切换「认识 · 实验 · 挑战」三屏，模型占主位，控制面板贴右侧，部件名称默认不显示，引导任务改为可收起的小卡片。下面三张是静态样稿，不是可运行页面。</p>
+    <p class="lede">按 PhET 方式收拢：每台仪器一个仿真，底部切换「认识 · 实验 · 挑战」三屏，模型占主位，控制面板贴右侧，部件名称默认不显示，引导任务改为可收起的小卡片。前三张是主屏样稿，后三张是 Codex 评审后补的状态样稿；都是静态的，不能操作。</p>
   </header>
 
   <div class="switch">
@@ -181,6 +205,9 @@ button:focus-visible, .chip:focus-visible { outline: 2px solid var(--spec); outl
       <button type="button" id="tab-home" aria-pressed="true" data-screen="home">首页</button>
       <button type="button" id="tab-spec" aria-pressed="false" data-screen="spec">分光镜 · 实验</button>
       <button type="button" id="tab-refr" aria-pressed="false" data-screen="refr">折射仪 · 认识</button>
+      <button type="button" id="tab-grating" aria-pressed="false" data-screen="grating">光栅式 · 反射待核</button>
+      <button type="button" id="tab-mobile" aria-pressed="false" data-screen="mobile">手机 · 任务与记录</button>
+      <button type="button" id="tab-challenge" aria-pressed="false" data-screen="challenge">挑战 · 接续同一样品</button>
     </div>
     <div class="seg" role="group" aria-label="尺寸">
       <button type="button" id="dev-desktop" aria-pressed="true" data-device="desktop">桌面</button>
@@ -256,15 +283,16 @@ button:focus-visible, .chip:focus-visible { outline: 2px solid var(--spec); outl
               <div class="spectrum"><i style="left:7%;width:1.4%"></i><i style="left:12%;width:1%"></i><i style="left:22%;width:28%;background:#000a"></i><i style="left:78%;width:1.2%"></i><i style="left:92%;width:8%;background:#0009"></i></div>
               <div class="scale"><span>700</span><span>600</span><span>500</span><span>450</span><span>400 nm</span></div>
               <div class="status">光穿过样品，狭缝与焦距合适</div>
+              <span class="rec-btn">记录观察 ▸</span>
             </div>
           </div>
           <div class="panels">
             <div class="drawer">控制 ▴</div>
             <div class="panel"><h3>仪器</h3><div class="mini-seg"><span class="on">棱镜式</span><span>光栅式</span></div></div>
             <div class="panel"><h3>光源</h3><div class="switchy"><span>开</span><span class="pill"></span></div><div class="ctl"><div class="row"><span>亮度</span><output>82%</output></div><div class="track"><b style="width:82%"></b><i style="left:82%"></i></div></div></div>
-            <div class="panel"><h3>狭缝与调焦 <span>可直接拖模型</span></h3>
-              <div class="ctl"><div class="row"><span>狭缝</span><output>0.28 mm</output></div><div class="track"><b style="width:32%"></b><i style="left:32%"></i></div></div>
-              <div class="ctl"><div class="row"><span>调焦</span><output>10 mm</output></div><div class="track"><b style="width:50%"></b><i style="left:50%"></i></div></div></div>
+            <div class="panel"><h3>狭缝与调焦 <span>相对刻度 · 可直接拖模型</span></h3>
+              <div class="ctl"><div class="row"><span>狭缝</span><output>3.2 / 10</output></div><div class="track"><b style="width:32%"></b><i style="left:32%"></i></div></div>
+              <div class="ctl"><div class="row"><span>调焦</span><output>5.0 / 10</output></div><div class="track"><b style="width:50%"></b><i style="left:50%"></i></div></div></div>
             <div class="panel"><h3>观察方式</h3><div class="mini-seg"><span class="on">透射</span><span>内反射</span><span>表面</span></div></div>
             <div class="checks"><label><span class="box on">✓</span>显示光路</label><label><span class="box"></span>显示名称</label><label><span class="box on">✓</span>显示数值</label></div>
             <div class="reset" aria-label="全部重置">↺</div>
@@ -296,8 +324,9 @@ button:focus-visible, .chip:focus-visible { outline: 2px solid var(--spec); outl
               <rect x="262" y="250" width="16" height="26" rx="2" fill="var(--metal-2)" transform="rotate(30 270 263)"/>
             </svg>
             <span class="label" style="left:54%;top:39%">测台棱镜</span>
+            <div class="eyepiece"><strong>目镜视场</strong><div class="view" aria-label="明暗边界在 1.72 附近"></div><span>明暗边界与刻度</span></div>
             <div class="readout" style="width:min(300px,52%)">
-              <header><strong>读数视场</strong><span>收起 ▾</span></header>
+              <header><strong>示例参数 · 原理计算</strong><span>收起 ▾</span></header>
               <div class="scale"><span>示例样品 RI</span><span>1.600</span></div>
               <div class="scale"><span>玻璃内临界角</span><span>58.33°</span></div>
             </div>
@@ -316,6 +345,138 @@ button:focus-visible, .chip:focus-visible { outline: 2px solid var(--spec); outl
           <div class="screen on"><svg viewBox="0 0 34 22"><path d="M4 18 L11 7 H25 L30 18 Z" fill="#8fa3bb"/></svg>认识</div>
           <div class="screen"><svg viewBox="0 0 34 22"><path d="M4 18 L11 7 H25 L30 18 Z" fill="#8fa3bb"/><rect x="13" y="4" width="8" height="3" fill="#e7c64f"/></svg>实验</div>
           <div class="screen"><svg viewBox="0 0 34 22"><text x="17" y="16" text-anchor="middle" font-size="12" fill="#c8d3e2">?</text></svg>挑战</div>
+          <span class="home">⌂ 首页</span>
+        </nav>
+      </section>
+
+      <!-- ===== 光栅式 · 反射待核 ===== -->
+      <section class="sim spec" data-view="grating" hidden>
+        <div class="sim-top"><div><strong>分光镜</strong><span class="sub">实验 · 光栅式 · 内反射</span></div><button type="button" class="task-btn"><i>●</i> 引导任务</button></div>
+        <div class="sim-main">
+          <div class="play">
+            <svg class="scene" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" aria-label="黑色台面上的样品，灯与光栅式分光镜从两侧上方斜向照明和收光">
+              <rect x="40" y="200" width="130" height="96" rx="10" fill="var(--body)" stroke="var(--metal-2)"/>
+              <path d="M150 222 C 200 150, 230 120, 252 132" fill="none" stroke="var(--metal)" stroke-width="9" stroke-linecap="round"/>
+              <rect x="246" y="124" width="40" height="12" rx="3" fill="var(--metal-2)" transform="rotate(40 266 130)"/>
+              <polygon points="282,150 322,236 296,244" fill="#fff6d6" opacity=".75"/>
+              <rect x="270" y="262" width="110" height="18" rx="3" fill="#20242c"/>
+              <rect x="314" y="280" width="22" height="70" fill="#20242c"/>
+              <polygon points="306,262 325,244 344,262" fill="var(--stone)"/>
+              <path d="M314 250 L 325 262 L 336 250" fill="none" stroke="#38b2ec" stroke-width="2"/>
+              <rect x="352" y="168" width="84" height="22" rx="11" fill="var(--metal)" transform="rotate(-40 394 179)"/>
+            </svg>
+            <div class="toolbox" aria-label="工具箱">
+              <div class="tool used"><svg viewBox="0 0 26 22"><polygon points="6,8 13,3 20,8 17,18 9,18" fill="var(--stone)"/></svg>样品</div>
+              <div class="tool"><svg viewBox="0 0 26 22"><path d="M10 2 L12 20 M16 2 L14 20" stroke="var(--metal)" stroke-width="2"/></svg>镊子</div>
+              <div class="tool used"><svg viewBox="0 0 26 22"><rect x="3" y="12" width="20" height="6" rx="1" fill="#2a2f38"/></svg>黑台</div>
+            </div>
+            <div class="readout">
+              <header><strong>目镜视场</strong><span>光栅式刻度（近似线性）</span></header>
+              <div class="pending">该样品的内反射谱图待核 · 本次只练布置</div>
+              <div class="status" style="color:var(--muted)">布置正确：灯从一侧上方照入，台面向下，镜口对准另一侧出光</div>
+              <span class="rec-btn">保存布置说明 ▸</span>
+            </div>
+          </div>
+          <div class="panels">
+            <div class="drawer">控制 ▴</div>
+            <div class="panel"><h3>仪器</h3><div class="mini-seg"><span>棱镜式</span><span class="on">光栅式</span></div></div>
+            <div class="panel"><h3>狭缝与调焦</h3><div class="fixed">本机狭缝与焦距固定，只能调照明与对光</div></div>
+            <div class="panel"><h3>光源</h3><div class="ctl"><div class="row"><span>灯头俯角（相对台面）</span><output>45°</output></div><div class="track"><b style="width:55%"></b><i style="left:55%"></i></div></div></div>
+            <div class="panel"><h3>观察方式</h3><div class="mini-seg"><span class="dim">透射</span><span class="on">内反射</span><span class="dim">表面</span></div><div class="fixed">反射法：谱图待核，不计有效观察，不能用于命名</div></div>
+            <div class="checks"><label><span class="box on">✓</span>显示光路</label><label><span class="box"></span>显示名称</label></div>
+            <div class="reset" aria-label="全部重置">↺</div>
+          </div>
+        </div>
+        <nav class="screens" aria-label="屏幕">
+          <div class="screen"><svg viewBox="0 0 34 22"><rect x="3" y="8" width="28" height="7" rx="3.5" fill="#8fa3bb"/><path d="M8 11 H26" stroke="#e7c64f" stroke-width="1.5"/></svg>认识</div>
+          <div class="screen on"><svg viewBox="0 0 34 22"><rect x="2" y="7" width="9" height="8" rx="1" fill="#8fa3bb"/><polygon points="14,10 18,7 22,10 20,15 16,15" fill="#e0546f"/><rect x="24" y="9" width="9" height="4" rx="2" fill="#8fa3bb"/></svg>实验</div>
+          <div class="screen"><svg viewBox="0 0 34 22"><polygon points="13,6 17,3 21,6 19,13 15,13" fill="#8fa3bb"/><text x="17" y="21" text-anchor="middle" font-size="7" fill="#c8d3e2">?</text></svg>挑战</div>
+          <span class="home">⌂ 首页</span>
+        </nav>
+      </section>
+
+      <!-- ===== 手机 · 任务与记录 ===== -->
+      <section class="sim spec" data-view="mobile" hidden>
+        <div class="sim-top"><div><strong>分光镜</strong><span class="sub">实验</span></div><span class="home" style="position:static;color:var(--muted)">⌂</span></div>
+        <div class="sim-main">
+          <div class="play">
+            <div class="taskline"><span><strong>引导任务 4/6</strong> · 调节狭缝与焦距</span><span>▸</span></div>
+            <svg class="scene" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" aria-label="光源、镊子夹持的样品与手持分光镜">
+              <rect x="70" y="150" width="150" height="110" rx="10" fill="var(--body)" stroke="var(--metal-2)"/>
+              <circle cx="110" cy="230" r="12" fill="var(--metal)"/>
+              <path d="M200 175 C 260 110, 310 130, 330 196" fill="none" stroke="var(--metal)" stroke-width="9" stroke-linecap="round"/>
+              <rect x="322" y="192" width="34" height="12" rx="3" fill="var(--metal-2)"/>
+              <polygon points="356,198 404,186 404,210" fill="#fff6d6" opacity=".8"/>
+              <rect x="416" y="80" width="5" height="108" rx="2" fill="var(--metal-2)" transform="rotate(-4 418 134)"/>
+              <rect x="432" y="80" width="5" height="108" rx="2" fill="var(--metal-2)" transform="rotate(4 434 134)"/>
+              <polygon points="411,186 426,178 441,186 434,206 418,206" fill="var(--stone)"/>
+              <rect x="470" y="186" width="130" height="24" rx="12" fill="var(--metal)"/>
+              <rect x="470" y="184" width="22" height="28" rx="4" fill="var(--metal-2)"/>
+            </svg>
+            <div class="sheet" aria-label="记录观察">
+              <div class="grip"></div>
+              <h4>记录观察 <span>收起 ▾</span></h4>
+              <div class="spectrum" style="height:22px"><i style="left:7%;width:1.4%"></i><i style="left:22%;width:28%;background:#000a"></i><i style="left:78%;width:1.2%"></i></div>
+              <div class="taphint">点光谱标线；或在下方输入</div>
+              <div class="marks"><span class="mark">694 nm 线 ×</span><span class="mark">580 nm 带 ×</span><span class="mark">476 nm 线 ×</span></div>
+              <div class="field">吸收线 <span class="input">400–700</span> nm</div>
+              <div class="field"><span class="box"></span> 本次条件下未见明显特征吸收</div>
+              <span class="primary">核对并保存</span>
+              <div class="taphint">保存后开放「对照资料」</div>
+            </div>
+          </div>
+          <div class="panels">
+            <div class="drawer">控制 ▴（工具：点选工具，再点放置位）</div>
+          </div>
+        </div>
+        <nav class="screens" aria-label="屏幕">
+          <div class="screen"><svg viewBox="0 0 34 22"><rect x="3" y="8" width="28" height="7" rx="3.5" fill="#8fa3bb"/><path d="M8 11 H26" stroke="#e7c64f" stroke-width="1.5"/></svg>认识</div>
+          <div class="screen on"><svg viewBox="0 0 34 22"><rect x="2" y="7" width="9" height="8" rx="1" fill="#8fa3bb"/><polygon points="14,10 18,7 22,10 20,15 16,15" fill="#e0546f"/><rect x="24" y="9" width="9" height="4" rx="2" fill="#8fa3bb"/></svg>实验</div>
+          <div class="screen"><svg viewBox="0 0 34 22"><polygon points="13,6 17,3 21,6 19,13 15,13" fill="#8fa3bb"/><text x="17" y="21" text-anchor="middle" font-size="7" fill="#c8d3e2">?</text></svg>挑战</div>
+          <span class="home">⌂ 首页</span>
+        </nav>
+      </section>
+
+      <!-- ===== 挑战 · 接续同一样品 ===== -->
+      <section class="sim spec withbanner" data-view="challenge" hidden>
+        <div class="sim-top"><div><strong>分光镜</strong><span class="sub">挑战 · 来自综合检测</span></div><span class="task-btn">返回综合检测</span></div>
+        <div class="banner"><span><strong>未知样品 A</strong> · 同一颗样品、同一份检测记录</span><span class="steps3"><span class="ok">✓ 折射仪</span><span class="ok">✓ 偏光镜</span><span class="now">● 分光镜</span><span>○ 命名</span></span></div>
+        <div class="sim-main">
+          <div class="play">
+            <svg class="scene" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" aria-label="光源、镊子夹持的样品与手持分光镜">
+              <rect x="70" y="150" width="150" height="110" rx="10" fill="var(--body)" stroke="var(--metal-2)"/>
+              <circle cx="110" cy="230" r="12" fill="var(--metal)"/>
+              <path d="M200 175 C 260 110, 310 130, 330 196" fill="none" stroke="var(--metal)" stroke-width="9" stroke-linecap="round"/>
+              <rect x="322" y="192" width="34" height="12" rx="3" fill="var(--metal-2)"/>
+              <polygon points="356,198 404,186 404,210" fill="#fff6d6" opacity=".8"/>
+              <rect x="416" y="80" width="5" height="108" rx="2" fill="var(--metal-2)" transform="rotate(-4 418 134)"/>
+              <rect x="432" y="80" width="5" height="108" rx="2" fill="var(--metal-2)" transform="rotate(4 434 134)"/>
+              <polygon points="411,186 426,178 441,186 434,206 418,206" fill="#8b6b9e"/>
+              <rect x="470" y="186" width="130" height="24" rx="12" fill="var(--metal)"/>
+              <rect x="470" y="184" width="22" height="28" rx="4" fill="var(--metal-2)"/>
+            </svg>
+            <span class="unknown">未知样品 A</span>
+            <div class="readout">
+              <header><strong>目镜视场</strong><span>棱镜式刻度</span></header>
+              <div class="spectrum"><i style="left:30%;width:3%"></i><i style="left:39%;width:3%"></i><i style="left:52%;width:4%"></i></div>
+              <div class="scale"><span>700</span><span>600</span><span>500</span><span>450</span><span>400 nm</span></div>
+              <span class="rec-btn">记录观察 ▸</span>
+            </div>
+          </div>
+          <div class="panels">
+            <div class="drawer">控制 ▴</div>
+            <div class="panel"><h3>仪器</h3><div class="mini-seg"><span class="on">棱镜式</span><span>光栅式</span></div></div>
+            <div class="panel"><h3>狭缝与调焦 <span>相对刻度</span></h3>
+              <div class="ctl"><div class="row"><span>狭缝</span><output>3.4 / 10</output></div><div class="track"><b style="width:34%"></b><i style="left:34%"></i></div></div>
+              <div class="ctl"><div class="row"><span>调焦</span><output>5.0 / 10</output></div><div class="track"><b style="width:50%"></b><i style="left:50%"></i></div></div></div>
+            <div class="panel"><h3>本次检测</h3><div style="font-size:12px;color:var(--muted)">不显示样品名称与参考资料；保存后回到综合检测，三台都完成才能命名。</div></div>
+            <div class="reset" aria-label="全部重置">↺</div>
+          </div>
+        </div>
+        <nav class="screens" aria-label="屏幕">
+          <div class="screen"><svg viewBox="0 0 34 22"><rect x="3" y="8" width="28" height="7" rx="3.5" fill="#8fa3bb"/><path d="M8 11 H26" stroke="#e7c64f" stroke-width="1.5"/></svg>认识</div>
+          <div class="screen"><svg viewBox="0 0 34 22"><rect x="2" y="7" width="9" height="8" rx="1" fill="#8fa3bb"/><polygon points="14,10 18,7 22,10 20,15 16,15" fill="#e0546f"/><rect x="24" y="9" width="9" height="4" rx="2" fill="#8fa3bb"/></svg>实验</div>
+          <div class="screen on"><svg viewBox="0 0 34 22"><polygon points="13,6 17,3 21,6 19,13 15,13" fill="#8fa3bb"/><text x="17" y="21" text-anchor="middle" font-size="7" fill="#c8d3e2">?</text></svg>挑战</div>
           <span class="home">⌂ 首页</span>
         </nav>
       </section>
@@ -339,19 +500,39 @@ const NOTES = {
     ['读数框', '目镜视场浮在操作区左下，可收起；不再放进右侧长面板'],
     ['工具箱', '样品、镊子、黑色台面从右下拖入；用过的变灰'],
     ['引导任务', '可收起的小卡，只写本步一句话和勾选；问答改为卡片末尾的「检查一下」'],
-    ['右下橙色按钮', '全部重置；「显示光路 / 显示名称 / 显示数值」用复选框'],
+    ['记录观察', '读数框里「记录观察 ▸」展开标线、标带、未见特征与核对保存，保存后才对照资料'],
+    ['相对刻度', '狭缝、调焦未经实物标定，显示 0–10 相对刻度，不写毫米'],
+    ['右下橙色按钮', '只重置当前屏场景；任务进度、学习记录不受影响'],
+  ]},
+  grating: { title: '光栅式与反射待核', items: [
+    ['机型切换', '同一实验屏切到光栅式；两机型共用 nm 数据，刻度按机型换算'],
+    ['固定结构', '光栅式没有狭缝、调焦控件，面板直接写明「固定」'],
+    ['反射待核', '内反射、表面反射只显示布置是否正确，视场里不画谱，记录只能存「布置说明」，不计有效观察'],
+    ['仍可练', '灯头俯角、台面、出光方向照常可调'],
+  ]},
+  mobile: { title: '手机：任务与记录展开', items: [
+    ['任务卡', '收成顶部一行「引导任务 4/6 ▸」，点开为底部抽屉'],
+    ['记录观察', '底部抽屉：点光谱标线、输入波长、未见明显特征、核对保存；保存后才能对照资料'],
+    ['不靠拖动', '工具「点选工具 → 点放置位」；所有拖动调节都有滑杆替代'],
+    ['首页', '顶栏保留 ⌂；底栏三屏切换始终在'],
+  ]},
+  challenge: { title: '挑战：接续同一颗未知样品', items: [
+    ['从综合检测进入', '三台仪器的挑战共用「未知样品 A」和同一份记录，顶部条显示进度'],
+    ['不泄露答案', '不显示名称与资料；保存后返回综合检测，三台完成才命名'],
+    ['独立挑战', '从仿真里直接点「挑战」是单独练习，另记结果，不清空进行中的综合检测'],
   ]},
   refr: { title: '折射仪 · 认识屏', items: [
     ['合并了', '折射仪 3D 自由探索 + 基础读数课的「认识部件」「跟随光路」'],
     ['部件名称', '默认不显示编号；点哪个部件，只高亮它并显示一个名称标签'],
     ['显示名称', '需要时勾选，一次显示全部短名称'],
     ['所选部件', '说明放在面板一张小卡里，不弹出长段文字'],
-    ['读数框', '示例 RI、临界角等收在可折叠的读数框'],
+    ['两种框分开', '右上「目镜视场」显示明暗边界与刻度；左下「示例参数 · 原理计算」显示 RI、临界角'],
   ]},
 };
 const frame = document.getElementById('frame');
 const notes = document.getElementById('notes');
 function show(screen) {
+  if (screen === 'mobile') device('phone');
   document.querySelectorAll('[data-view]').forEach((el) => { el.hidden = el.dataset.view !== screen; });
   document.querySelectorAll('[data-screen]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.screen === screen)));
   const n = NOTES[screen];
@@ -366,6 +547,7 @@ document.querySelectorAll('button[data-screen]').forEach((b) => b.addEventListen
 document.querySelectorAll('button[data-device]').forEach((b) => b.addEventListener('click', () => device(b.dataset.device)));
 let start = 'home';
 try { start = localStorage.getItem('mock-screen') || 'home'; } catch (e) {}
-if (location.hash === '#spec' || location.hash === '#refr') start = location.hash.slice(1);
+if (NOTES[location.hash.slice(1)]) start = location.hash.slice(1);
 show(NOTES[start] ? start : 'home');
+window.addEventListener('hashchange', () => { const id = location.hash.slice(1); if (NOTES[id]) show(id); });
 </script>

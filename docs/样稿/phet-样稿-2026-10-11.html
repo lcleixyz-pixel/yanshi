@@ -1,0 +1,371 @@
+<title>宝石实训仿真样稿</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: review gallery — switcher on top, one device frame (desktop 16:10 or phone 390) beside a short "what changed" column; the sim inside follows PhET structure: play area + edge panels + bottom screen bar. */
+:root {
+  --paper: #eef4fb;      /* page ground, project paper */
+  --surface: #ffffff;    /* panels, cards */
+  --sim: #f7faff;        /* play area */
+  --ink: #1a2332;
+  --muted: #5b6b80;
+  --line: #d4dfee;
+  --reset: #f08a24;      /* PhET reset-all orange */
+  --bar: #1a2332;        /* screen bar, dark in both themes */
+  --refr: #b45309; --refr-soft: #fff6e5;
+  --pol: #6d28d9;  --pol-soft: #f3efff;
+  --spec: #0369a1; --spec-soft: #eaf6fd;
+  --mic: #1f5ba8;  --mic-soft: #edf3fc;
+  --ok: #1f9d63;
+  --metal: #5e6b7a; --metal-2: #9aa6b5; --body: #e9eef5; --stone: #c22a4a;
+  --font: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #0e1520; --surface: #172131; --sim: #121b29; --ink: #e5ecf6; --muted: #9babbf; --line: #2a3a51;
+  --refr: #f0a43c; --refr-soft: #2b2112; --pol: #a78bfa; --pol-soft: #241c3a; --spec: #38b2ec; --spec-soft: #0f2534; --mic: #6aa3ec; --mic-soft: #142236;
+  --ok: #3cc488; --metal: #8794a5; --metal-2: #5d6a7b; --body: #253247; --stone: #e0546f; --bar: #070c14; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --paper: #0e1520; --surface: #172131; --sim: #121b29; --ink: #e5ecf6; --muted: #9babbf; --line: #2a3a51;
+  --refr: #f0a43c; --refr-soft: #2b2112; --pol: #a78bfa; --pol-soft: #241c3a; --spec: #38b2ec; --spec-soft: #0f2534; --mic: #6aa3ec; --mic-soft: #142236;
+  --ok: #3cc488; --metal: #8794a5; --metal-2: #5d6a7b; --body: #253247; --stone: #e0546f; --bar: #070c14; color-scheme: dark }
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 14px/1.65 var(--font); }
+.page { max-width: 1320px; margin: 0 auto; padding: 28px 20px 48px; display: grid; gap: 20px; }
+h1 { margin: 0; font-size: clamp(22px, 2.6vw, 30px); font-weight: 700; letter-spacing: -.01em; text-wrap: balance; }
+.lede { margin: 6px 0 0; color: var(--muted); max-width: 64ch; }
+.eyebrow { font: 500 11px/1.4 var(--mono); letter-spacing: .14em; color: var(--muted); text-transform: uppercase; }
+
+.switch { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+.seg { display: inline-flex; padding: 3px; gap: 2px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); flex-wrap: wrap; }
+.seg button { border: 0; background: transparent; color: var(--muted); font: 500 13px/1 var(--font); padding: 9px 14px; border-radius: 6px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+button:focus-visible, .chip:focus-visible { outline: 2px solid var(--spec); outline-offset: 2px; }
+
+.stage { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
+.notes { display: grid; gap: 12px; min-width: 0; }
+.notes h2 { margin: 0; font-size: 15px; }
+.notes ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; color: var(--ink); }
+.notes li span { color: var(--muted); }
+.notes .tag { display: inline-block; font: 500 11px var(--mono); padding: 2px 6px; border-radius: 4px; background: var(--surface); border: 1px solid var(--line); color: var(--muted); }
+
+/* Device frame: the sim inside uses container queries, so the same markup shows desktop or phone layout. */
+.frame { container-type: inline-size; margin: 0 auto; width: 100%; max-width: 100%; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); overflow: hidden; box-shadow: 0 10px 30px #1a23320f; }
+.frame[data-device="desktop"] { aspect-ratio: 16 / 10; }
+.frame[data-device="phone"] { width: 390px; height: 800px; border-radius: 30px; border-width: 8px; border-color: var(--ink); }
+
+/* ---------- Sim shell ---------- */
+.sim { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; background: var(--sim); }
+.sim-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 14px; border-bottom: 1px solid var(--line); background: var(--surface); }
+.sim-top strong { font-size: 15px; }
+.sim-top .sub { color: var(--muted); font-size: 12px; margin-left: 8px; }
+.task-btn { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 5px 12px; font: 500 12px var(--font); cursor: pointer; }
+.task-btn i { font-style: normal; color: var(--accent); }
+.sim-main { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 236px; gap: 10px; padding: 10px; min-height: 0; }
+.play { position: relative; min-width: 0; border-radius: 10px; overflow: hidden; background: radial-gradient(120% 90% at 40% 30%, var(--surface), var(--sim)); border: 1px solid var(--line); }
+.play svg.scene { position: absolute; inset: 0; width: 100%; height: 100%; }
+.panels { display: grid; gap: 8px; align-content: start; min-width: 0; overflow: auto; }
+.panel { border: 1px solid var(--line); border-radius: 9px; background: var(--surface); padding: 9px 11px; display: grid; gap: 7px; }
+.panel h3 { margin: 0; display: flex; justify-content: space-between; font-size: 12px; font-weight: 500; color: var(--ink); }
+.panel h3 span { color: var(--muted); font-weight: 400; }
+.ctl { display: grid; gap: 3px; font-size: 11px; color: var(--muted); }
+.ctl .row { display: flex; justify-content: space-between; }
+.ctl output { font: 500 12px var(--mono); color: var(--accent); font-variant-numeric: tabular-nums; }
+.track { height: 4px; border-radius: 4px; background: var(--line); position: relative; }
+.track b { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: var(--accent); }
+.track i { position: absolute; top: 50%; width: 14px; height: 14px; border-radius: 50%; background: var(--surface); border: 2px solid var(--accent); transform: translate(-50%, -50%); }
+.mini-seg { display: flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; font-size: 12px; }
+.mini-seg span { flex: 1; text-align: center; padding: 4px 0; color: var(--muted); }
+.mini-seg span.on { background: var(--accent); color: var(--surface); }
+.checks { display: grid; gap: 5px; font-size: 12px; }
+.checks label { display: flex; align-items: center; gap: 7px; }
+.box { width: 14px; height: 14px; border-radius: 3px; border: 1.5px solid var(--muted); display: inline-grid; place-items: center; font-size: 10px; color: var(--surface); }
+.box.on { background: var(--accent); border-color: var(--accent); }
+.reset { justify-self: end; width: 40px; height: 40px; border-radius: 50%; background: var(--reset); color: #fff; display: grid; place-items: center; font-size: 20px; box-shadow: 0 2px 0 #c86a12; }
+.switchy { display: flex; align-items: center; justify-content: space-between; font-size: 12px; }
+.pill { width: 30px; height: 17px; border-radius: 9px; background: var(--ok); position: relative; }
+.pill::after { content: ""; position: absolute; right: 2px; top: 2px; width: 13px; height: 13px; border-radius: 50%; background: var(--surface); }
+
+/* Readout box over the play area */
+.readout { position: absolute; left: 12px; bottom: 12px; width: min(380px, 60%); border: 1px solid var(--line); border-radius: 9px; background: var(--surface); padding: 7px 10px 8px; display: grid; gap: 5px; box-shadow: 0 6px 16px #1a233214; }
+.readout header { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
+.readout header strong { color: var(--ink); font-weight: 500; }
+.spectrum { position: relative; height: 26px; border-radius: 4px; background: linear-gradient(90deg, #6a0010 0%, #d4141e 10%, #e96b12 22%, #f5d21a 34%, #4fc72c 46%, #12a7a0 58%, #1350d6 72%, #4a1aa8 86%, #22093e 100%); overflow: hidden; }
+.spectrum i { position: absolute; top: 0; bottom: 0; background: #000c; }
+.scale { display: flex; justify-content: space-between; font: 10px var(--mono); color: var(--muted); }
+.status { font-size: 11px; color: var(--ok); }
+
+/* Toolbox */
+.toolbox { position: absolute; right: 12px; bottom: 12px; display: flex; gap: 6px; padding: 6px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.tool { display: grid; justify-items: center; gap: 2px; width: 50px; padding: 4px 0; border-radius: 6px; font-size: 10px; color: var(--muted); }
+.tool.used { opacity: .45; }
+.tool svg { width: 26px; height: 22px; }
+
+/* Task card (optional guided task) */
+.task { position: absolute; left: 12px; top: 12px; width: min(270px, 58%); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 8px; background: var(--surface); padding: 8px 10px; display: grid; gap: 5px; font-size: 12px; box-shadow: 0 6px 16px #1a233214; }
+.task header { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; }
+.task strong { font-size: 13px; }
+.task ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.task li.done { color: var(--ok); }
+
+/* Part name label */
+.label { position: absolute; padding: 3px 8px; border-radius: 5px; background: var(--accent); color: var(--surface); font-size: 12px; font-weight: 500; white-space: nowrap; transform: translate(-50%, -130%); }
+.label::after { content: ""; position: absolute; left: 50%; bottom: -5px; border: 5px solid transparent; border-top-color: var(--accent); border-bottom: 0; transform: translateX(-50%); }
+
+/* Screen bar */
+.screens { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 7px 12px; background: var(--bar); position: relative; }
+.screen { display: grid; justify-items: center; gap: 2px; padding: 4px 14px; border-radius: 7px; color: #c8d3e2; font-size: 11px; border: 2px solid transparent; }
+.screen.on { border-color: var(--accent); color: #fff; }
+.screen svg { width: 34px; height: 22px; }
+.screen.off { opacity: .35; }
+.home { position: absolute; right: 14px; color: #c8d3e2; font-size: 11px; display: flex; align-items: center; gap: 4px; }
+
+/* ---------- Home ---------- */
+.home-page { height: 100%; overflow: auto; padding: 22px 26px; background: var(--paper); display: grid; gap: 16px; align-content: start; }
+.home-page header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.home-page h2 { margin: 0; font-size: 20px; }
+.cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.card { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); overflow: hidden; display: grid; grid-template-rows: auto auto; }
+.card .thumb { aspect-ratio: 4 / 3; background: var(--soft); display: grid; place-items: center; border-bottom: 1px solid var(--line); }
+.card .thumb svg { width: 70%; height: 70%; }
+.card .body { padding: 10px 12px 12px; display: grid; gap: 6px; }
+.card strong { font-size: 15px; }
+.card .chips { display: flex; gap: 4px; flex-wrap: wrap; }
+.chip { white-space: nowrap; font-size: 11px; padding: 2px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+.chip.main { border-color: var(--accent); color: var(--accent); }
+.card .open { justify-self: start; margin-top: 2px; padding: 6px 14px; border-radius: 7px; background: var(--accent); color: var(--surface); font-size: 12px; font-weight: 500; }
+.row2 { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+.wide { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 12px 14px; display: flex; gap: 12px; align-items: center; justify-content: space-between; }
+.wide p { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
+.flow { font: 12px var(--mono); color: var(--muted); }
+
+/* ---------- Phone layout (container query on the frame) ---------- */
+@container (max-width: 560px) {
+  .sim-main { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) auto; padding: 8px; gap: 8px; }
+  .panels { grid-auto-flow: row; max-height: 210px; border-top: 1px solid var(--line); padding-top: 4px; }
+  .panels .drawer { display: flex; justify-content: center; font-size: 11px; color: var(--muted); }
+  .readout { width: auto; right: 12px; }
+  .toolbox { top: 12px; bottom: auto; }
+  .task { display: none; }
+  .screen { padding: 4px 8px; }
+  .home { display: none; }
+  .cards { grid-template-columns: 1fr 1fr; }
+  .row2 { grid-template-columns: 1fr; }
+  .home-page { padding: 16px; }
+}
+.drawer { display: none; }
+
+.refr { --accent: var(--refr); --soft: var(--refr-soft); }
+.pol { --accent: var(--pol); --soft: var(--pol-soft); }
+.spec { --accent: var(--spec); --soft: var(--spec-soft); }
+.mic { --accent: var(--mic); --soft: var(--mic-soft); }
+
+@media (max-width: 960px) {
+  .stage { grid-template-columns: 1fr; }
+  .frame[data-device="phone"] { width: min(390px, 100%); }
+}
+@media (prefers-reduced-motion: no-preference) { .seg button { transition: background .15s, color .15s; } }
+</style>
+
+<div class="page">
+  <header>
+    <div class="eyebrow">阶段 0 · 样稿 · 2026-10-11</div>
+    <h1>宝石实训仿真样稿</h1>
+    <p class="lede">按 PhET 方式收拢：每台仪器一个仿真，底部切换「认识 · 实验 · 挑战」三屏，模型占主位，控制面板贴右侧，部件名称默认不显示，引导任务改为可收起的小卡片。下面三张是静态样稿，不是可运行页面。</p>
+  </header>
+
+  <div class="switch">
+    <div class="seg" role="group" aria-label="样稿">
+      <button type="button" id="tab-home" aria-pressed="true" data-screen="home">首页</button>
+      <button type="button" id="tab-spec" aria-pressed="false" data-screen="spec">分光镜 · 实验</button>
+      <button type="button" id="tab-refr" aria-pressed="false" data-screen="refr">折射仪 · 认识</button>
+    </div>
+    <div class="seg" role="group" aria-label="尺寸">
+      <button type="button" id="dev-desktop" aria-pressed="true" data-device="desktop">桌面</button>
+      <button type="button" id="dev-phone" aria-pressed="false" data-device="phone">手机</button>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="frame" id="frame" data-device="desktop">
+
+      <!-- ===== 首页 ===== -->
+      <section class="home-page" data-view="home">
+        <header>
+          <h2>宝石检测实训</h2>
+          <span class="flow">认识 → 实验 → 挑战 → 综合检测</span>
+        </header>
+        <div class="cards">
+          <article class="card refr">
+            <div class="thumb"><svg viewBox="0 0 120 90" aria-hidden="true"><path d="M14 74 L40 34 H88 L102 74 Z" fill="var(--body)" stroke="var(--metal-2)"/><rect x="50" y="28" width="30" height="7" rx="1" fill="var(--metal-2)"/><rect x="62" y="6" width="26" height="24" rx="2" fill="var(--body)" stroke="var(--metal-2)"/><circle cx="30" cy="60" r="11" fill="var(--metal)"/></svg></div>
+            <div class="body"><strong>折射仪</strong><div class="chips"><span class="chip main">认识</span><span class="chip main">实验</span><span class="chip main">挑战</span></div><span class="open">打开仿真</span></div>
+          </article>
+          <article class="card pol">
+            <div class="thumb"><svg viewBox="0 0 120 90" aria-hidden="true"><rect x="22" y="52" width="76" height="28" rx="3" fill="var(--body)" stroke="var(--metal-2)"/><rect x="26" y="22" width="12" height="32" fill="var(--body)" stroke="var(--metal-2)"/><ellipse cx="66" cy="50" rx="20" ry="6" fill="var(--metal)"/><ellipse cx="66" cy="22" rx="20" ry="6" fill="var(--metal)"/><rect x="38" y="16" width="50" height="4" fill="var(--metal-2)"/></svg></div>
+            <div class="body"><strong>偏光镜</strong><div class="chips"><span class="chip main">认识</span><span class="chip main">实验</span><span class="chip main">挑战</span></div><span class="open">打开仿真</span></div>
+          </article>
+          <article class="card spec">
+            <div class="thumb"><svg viewBox="0 0 120 90" aria-hidden="true"><rect x="14" y="38" width="80" height="16" rx="8" fill="var(--metal)" transform="rotate(-14 54 46)"/><rect x="88" y="26" width="16" height="20" rx="3" fill="var(--metal-2)" transform="rotate(-14 96 36)"/><rect x="16" y="68" width="88" height="6" rx="2" fill="url(#rb)"/><defs><linearGradient id="rb"><stop offset="0" stop-color="#d4141e"/><stop offset=".35" stop-color="#f5d21a"/><stop offset=".6" stop-color="#12a7a0"/><stop offset="1" stop-color="#4a1aa8"/></linearGradient></defs></svg></div>
+            <div class="body"><strong>分光镜</strong><div class="chips"><span class="chip main">认识</span><span class="chip main">实验</span><span class="chip main">挑战</span></div><span class="open">打开仿真</span></div>
+          </article>
+          <article class="card mic">
+            <div class="thumb"><svg viewBox="0 0 120 90" aria-hidden="true"><rect x="24" y="72" width="72" height="8" rx="2" fill="var(--body)" stroke="var(--metal-2)"/><rect x="74" y="20" width="10" height="54" fill="var(--metal-2)"/><rect x="40" y="10" width="14" height="40" rx="3" fill="var(--metal)" transform="rotate(-18 47 30)"/><ellipse cx="54" cy="58" rx="22" ry="5" fill="var(--metal)"/></svg></div>
+            <div class="body"><strong>显微镜</strong><div class="chips"><span class="chip main">认识</span><span class="chip">实验 · 待建</span></div><span class="open">打开仿真</span></div>
+          </article>
+        </div>
+        <div class="row2">
+          <div class="wide"><div><strong>综合检测</strong><p>抽一颗未知样品，用三台仪器各自检测，最后命名。各仿真的「挑战」屏也从这里汇总。</p></div><span class="chip main spec">开始检测</span></div>
+          <div class="wide"><div><strong>学习进度</strong><p>引导任务与挑战结果分开记录。</p></div></div>
+        </div>
+      </section>
+
+      <!-- ===== 分光镜 · 实验 ===== -->
+      <section class="sim spec" data-view="spec" hidden>
+        <div class="sim-top"><div><strong>分光镜</strong><span class="sub">实验 · 照明与观察</span></div><button type="button" class="task-btn" id="task-spec"><i>●</i> 引导任务 3 / 6</button></div>
+        <div class="sim-main">
+          <div class="play">
+            <svg class="scene" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" aria-label="光源、镊子夹持的红宝石与手持分光镜">
+              <rect x="70" y="150" width="150" height="110" rx="10" fill="var(--body)" stroke="var(--metal-2)"/>
+              <circle cx="110" cy="230" r="12" fill="var(--metal)"/>
+              <circle cx="160" cy="232" r="5" fill="#e0465a"/>
+              <path d="M200 175 C 260 110, 310 130, 330 196" fill="none" stroke="var(--metal)" stroke-width="9" stroke-linecap="round"/>
+              <rect x="322" y="192" width="34" height="12" rx="3" fill="var(--metal-2)"/>
+              <polygon points="356,198 404,186 404,210" fill="#fff6d6" opacity=".8"/>
+              <rect x="416" y="80" width="5" height="108" rx="2" fill="var(--metal-2)" transform="rotate(-4 418 134)"/>
+              <rect x="432" y="80" width="5" height="108" rx="2" fill="var(--metal-2)" transform="rotate(4 434 134)"/>
+              <polygon points="411,186 426,178 441,186 434,206 418,206" fill="var(--stone)"/>
+              <polygon points="441,196 470,192 470,202" fill="#ff8597" opacity=".55"/>
+              <rect x="470" y="186" width="130" height="24" rx="12" fill="var(--metal)"/>
+              <rect x="470" y="184" width="22" height="28" rx="4" fill="var(--metal-2)"/>
+              <rect x="580" y="182" width="24" height="32" rx="5" fill="var(--metal-2)"/>
+            </svg>
+            <div class="task">
+              <header><span>引导任务 · 3 / 6</span><span>收起 ▾</span></header>
+              <strong>对光与照明</strong>
+              <ul><li class="done">✓ 记录：只见连续光谱</li><li class="done">✓ 用镊子把样品夹进光路</li><li>○ 检查一下：连续光谱说明什么</li></ul>
+            </div>
+            <div class="toolbox" aria-label="工具箱">
+              <div class="tool used"><svg viewBox="0 0 26 22"><polygon points="6,8 13,3 20,8 17,18 9,18" fill="var(--stone)"/></svg>样品</div>
+              <div class="tool used"><svg viewBox="0 0 26 22"><path d="M10 2 L12 20 M16 2 L14 20" stroke="var(--metal)" stroke-width="2"/></svg>镊子</div>
+              <div class="tool"><svg viewBox="0 0 26 22"><rect x="3" y="12" width="20" height="6" rx="1" fill="#2a2f38"/></svg>黑台</div>
+            </div>
+            <div class="readout">
+              <header><strong>目镜视场</strong><span>棱镜式刻度 ▾</span></header>
+              <div class="spectrum"><i style="left:7%;width:1.4%"></i><i style="left:12%;width:1%"></i><i style="left:22%;width:28%;background:#000a"></i><i style="left:78%;width:1.2%"></i><i style="left:92%;width:8%;background:#0009"></i></div>
+              <div class="scale"><span>700</span><span>600</span><span>500</span><span>450</span><span>400 nm</span></div>
+              <div class="status">光穿过样品，狭缝与焦距合适</div>
+            </div>
+          </div>
+          <div class="panels">
+            <div class="drawer">控制 ▴</div>
+            <div class="panel"><h3>仪器</h3><div class="mini-seg"><span class="on">棱镜式</span><span>光栅式</span></div></div>
+            <div class="panel"><h3>光源</h3><div class="switchy"><span>开</span><span class="pill"></span></div><div class="ctl"><div class="row"><span>亮度</span><output>82%</output></div><div class="track"><b style="width:82%"></b><i style="left:82%"></i></div></div></div>
+            <div class="panel"><h3>狭缝与调焦 <span>可直接拖模型</span></h3>
+              <div class="ctl"><div class="row"><span>狭缝</span><output>0.28 mm</output></div><div class="track"><b style="width:32%"></b><i style="left:32%"></i></div></div>
+              <div class="ctl"><div class="row"><span>调焦</span><output>10 mm</output></div><div class="track"><b style="width:50%"></b><i style="left:50%"></i></div></div></div>
+            <div class="panel"><h3>观察方式</h3><div class="mini-seg"><span class="on">透射</span><span>内反射</span><span>表面</span></div></div>
+            <div class="checks"><label><span class="box on">✓</span>显示光路</label><label><span class="box"></span>显示名称</label><label><span class="box on">✓</span>显示数值</label></div>
+            <div class="reset" aria-label="全部重置">↺</div>
+          </div>
+        </div>
+        <nav class="screens" aria-label="屏幕">
+          <div class="screen"><svg viewBox="0 0 34 22"><rect x="3" y="8" width="28" height="7" rx="3.5" fill="#8fa3bb"/><path d="M8 11 H26" stroke="#e7c64f" stroke-width="1.5"/></svg>认识</div>
+          <div class="screen on"><svg viewBox="0 0 34 22"><rect x="2" y="7" width="9" height="8" rx="1" fill="#8fa3bb"/><polygon points="14,10 18,7 22,10 20,15 16,15" fill="#e0546f"/><rect x="24" y="9" width="9" height="4" rx="2" fill="#8fa3bb"/></svg>实验</div>
+          <div class="screen"><svg viewBox="0 0 34 22"><polygon points="13,6 17,3 21,6 19,13 15,13" fill="#8fa3bb"/><text x="17" y="21" text-anchor="middle" font-size="7" fill="#c8d3e2">?</text></svg>挑战</div>
+          <span class="home">⌂ 首页</span>
+        </nav>
+      </section>
+
+      <!-- ===== 折射仪 · 认识 ===== -->
+      <section class="sim refr" data-view="refr" hidden>
+        <div class="sim-top"><div><strong>折射仪</strong><span class="sub">认识 · 结构与光路</span></div><button type="button" class="task-btn" id="task-refr"><i>●</i> 引导任务</button></div>
+        <div class="sim-main">
+          <div class="play">
+            <svg class="scene" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" aria-label="折射仪内部光路，外壳半透明">
+              <path d="M120 320 L230 170 H470 L520 320 Z" fill="var(--body)" opacity=".55" stroke="var(--metal-2)"/>
+              <rect x="300" y="64" width="120" height="104" rx="6" fill="var(--body)" opacity=".45" stroke="var(--metal-2)"/>
+              <rect x="270" y="156" width="150" height="16" rx="2" fill="#bfe3ea" stroke="var(--refr)" stroke-width="3"/>
+              <rect x="330" y="150" width="40" height="7" rx="1" fill="#7fd0e3"/>
+              <circle cx="200" cy="268" r="44" fill="var(--metal)"/>
+              <circle cx="200" cy="268" r="28" fill="#4c5f6e"/>
+              <path d="M410 300 L 340 172 L 270 262 L 220 268" fill="none" stroke="#e7c64f" stroke-width="2.5"/>
+              <path d="M410 300 L 352 172 L 282 262" fill="none" stroke="#5aaed0" stroke-width="2"/>
+              <rect x="400" y="290" width="22" height="22" rx="3" fill="#e7c64f"/>
+              <rect x="262" y="250" width="16" height="26" rx="2" fill="var(--metal-2)" transform="rotate(30 270 263)"/>
+            </svg>
+            <span class="label" style="left:54%;top:39%">测台棱镜</span>
+            <div class="readout" style="width:min(300px,52%)">
+              <header><strong>读数视场</strong><span>收起 ▾</span></header>
+              <div class="scale"><span>示例样品 RI</span><span>1.600</span></div>
+              <div class="scale"><span>玻璃内临界角</span><span>58.33°</span></div>
+            </div>
+          </div>
+          <div class="panels">
+            <div class="drawer">控制 ▴</div>
+            <div class="panel"><h3>视图</h3><div class="mini-seg"><span>整机</span><span class="on">内部光路</span></div></div>
+            <div class="panel"><h3>光路示例</h3><div class="mini-seg"><span class="on">均质 1.600</span><span>空气间隙</span></div></div>
+            <div class="panel"><h3>拆解</h3><div class="ctl"><div class="row"><span>装配 ↔ 拆开</span><output>0%</output></div><div class="track"><b style="width:0%"></b><i style="left:2%"></i></div></div></div>
+            <div class="panel"><h3>所选部件</h3><div style="font-size:12px"><strong>测台棱镜</strong><div style="color:var(--muted)">样品台面经接触液贴在棱镜平面上；边界由临界角决定。</div></div></div>
+            <div class="checks"><label><span class="box on">✓</span>显示光路</label><label><span class="box"></span>显示名称</label></div>
+            <div class="reset" aria-label="全部重置">↺</div>
+          </div>
+        </div>
+        <nav class="screens" aria-label="屏幕">
+          <div class="screen on"><svg viewBox="0 0 34 22"><path d="M4 18 L11 7 H25 L30 18 Z" fill="#8fa3bb"/></svg>认识</div>
+          <div class="screen"><svg viewBox="0 0 34 22"><path d="M4 18 L11 7 H25 L30 18 Z" fill="#8fa3bb"/><rect x="13" y="4" width="8" height="3" fill="#e7c64f"/></svg>实验</div>
+          <div class="screen"><svg viewBox="0 0 34 22"><text x="17" y="16" text-anchor="middle" font-size="12" fill="#c8d3e2">?</text></svg>挑战</div>
+          <span class="home">⌂ 首页</span>
+        </nav>
+      </section>
+    </div>
+
+    <aside class="notes" id="notes" aria-live="polite"></aside>
+  </div>
+</div>
+
+<script>
+const NOTES = {
+  home: { title: '首页：一台仪器一张卡', items: [
+    ['四张仿真卡', '每张只有一个按钮「打开仿真」，卡上用小标签写明有哪几屏'],
+    ['合并的入口', '原来分光镜 7 个入口（两门课、两个 3D 探索、工作台、2D、检测）收成一张卡'],
+    ['综合检测', '跨仪器的未知样品检测与命名单独一张，进度另放'],
+    ['2D 演示', '不再与 3D 并列，收进仿真内的「设备较旧时使用」小链接'],
+  ]},
+  spec: { title: '分光镜 · 实验屏', items: [
+    ['合并了', '照明夹样工作台 + 棱镜课、光栅课的操作部分；机型在右上面板切换'],
+    ['操作区为主', '模型占约四分之三；镊子竖持、灯头、狭缝环、套筒都可直接拖'],
+    ['读数框', '目镜视场浮在操作区左下，可收起；不再放进右侧长面板'],
+    ['工具箱', '样品、镊子、黑色台面从右下拖入；用过的变灰'],
+    ['引导任务', '可收起的小卡，只写本步一句话和勾选；问答改为卡片末尾的「检查一下」'],
+    ['右下橙色按钮', '全部重置；「显示光路 / 显示名称 / 显示数值」用复选框'],
+  ]},
+  refr: { title: '折射仪 · 认识屏', items: [
+    ['合并了', '折射仪 3D 自由探索 + 基础读数课的「认识部件」「跟随光路」'],
+    ['部件名称', '默认不显示编号；点哪个部件，只高亮它并显示一个名称标签'],
+    ['显示名称', '需要时勾选，一次显示全部短名称'],
+    ['所选部件', '说明放在面板一张小卡里，不弹出长段文字'],
+    ['读数框', '示例 RI、临界角等收在可折叠的读数框'],
+  ]},
+};
+const frame = document.getElementById('frame');
+const notes = document.getElementById('notes');
+function show(screen) {
+  document.querySelectorAll('[data-view]').forEach((el) => { el.hidden = el.dataset.view !== screen; });
+  document.querySelectorAll('[data-screen]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.screen === screen)));
+  const n = NOTES[screen];
+  notes.innerHTML = `<h2>${n.title}</h2><ul>${n.items.map(([k, v]) => `<li><strong>${k}</strong><br><span>${v}</span></li>`).join('')}</ul><p class="tag">静态样稿 · 交互与数值为示意</p>`;
+  try { localStorage.setItem('mock-screen', screen); } catch (e) {}
+}
+function device(d) {
+  frame.dataset.device = d;
+  document.querySelectorAll('[data-device]').forEach((b) => { if (b.tagName === 'BUTTON') b.setAttribute('aria-pressed', String(b.dataset.device === d)); });
+}
+document.querySelectorAll('button[data-screen]').forEach((b) => b.addEventListener('click', () => show(b.dataset.screen)));
+document.querySelectorAll('button[data-device]').forEach((b) => b.addEventListener('click', () => device(b.dataset.device)));
+let start = 'home';
+try { start = localStorage.getItem('mock-screen') || 'home'; } catch (e) {}
+if (location.hash === '#spec' || location.hash === '#refr') start = location.hash.slice(1);
+show(NOTES[start] ? start : 'home');
+</script>

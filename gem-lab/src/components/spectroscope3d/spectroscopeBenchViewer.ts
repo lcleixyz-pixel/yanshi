@@ -105,12 +105,15 @@ export function createSpectroscopeBenchViewer(host: HTMLElement, callbacks: Benc
     callbacks.onStatus('error', '当前浏览器无法启动 3D 图形；请使用二维观察区，或重新载入后再试。');
     return { update() {}, focus() {}, setBeams() {}, dispose() {} };
   }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  // 手机默认流畅画质（同偏光镜）：降低像素比与阴影开销；遵守系统「减少动效」。
+  const phone = window.matchMedia('(max-width: 680px)').matches;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, phone ? 1.5 : 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.12;
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.type = phone ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
   const canvas = renderer.domElement;
   canvas.style.cssText = 'display:block;width:100%;height:100%;touch-action:none;outline-offset:-3px;';
   canvas.dataset.testid = 'spectroscope-bench-canvas';
@@ -126,7 +129,7 @@ export function createSpectroscopeBenchViewer(host: HTMLElement, callbacks: Benc
 
   const controls = new OrbitControls(camera, canvas);
   controls.target.set(-0.055, 0.075, 0.006);
-  controls.enableDamping = true;
+  controls.enableDamping = !reducedMotion;
   controls.dampingFactor = 0.08;
   controls.minDistance = 0.035;
   controls.maxDistance = 1.65;
@@ -143,7 +146,7 @@ export function createSpectroscopeBenchViewer(host: HTMLElement, callbacks: Benc
   const key = new THREE.DirectionalLight(0xfff7e9, 3.5);
   key.position.set(-0.32, 0.8, 0.5);
   key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.mapSize.set(phone ? 1024 : 2048, phone ? 1024 : 2048);
   Object.assign(key.shadow.camera, { left: -0.55, right: 0.55, top: 0.5, bottom: -0.5, near: 0.05, far: 2.2 });
   key.shadow.bias = -0.00012;
   key.shadow.normalBias = 0.001;
@@ -624,11 +627,14 @@ export function createSpectroscopeBenchViewer(host: HTMLElement, callbacks: Benc
     }
     const horizontalFactor = view === 'whole' ? 1 : Math.max(1, 1.15 / Math.max(camera.aspect, 0.5));
     transition = {
-      start: performance.now(), fromPosition: camera.position.clone(), toPosition: chosen.at.clone().add(chosen.offset.multiplyScalar(horizontalFactor)),
+      // 减少动效时直接到位（起点设在过去，下一帧即完成过渡）。
+      start: performance.now() - (reducedMotion ? 10_000 : 0), fromPosition: camera.position.clone(), toPosition: chosen.at.clone().add(chosen.offset.multiplyScalar(horizontalFactor)),
       fromTarget: controls.target.clone(), toTarget: chosen.at,
     };
     canvas.dataset.focusView = view;
   }
+  canvas.dataset.quality = phone ? 'smooth' : 'high';
+  canvas.dataset.reducedMotion = String(reducedMotion);
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
   let pointerStart: { x: number; y: number } | null = null;

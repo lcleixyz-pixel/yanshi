@@ -117,6 +117,15 @@
 .course-shell__times output { color: var(--iu-muted); font-family: var(--iu-mono); }
 .course-shell__small { color: var(--iu-muted); font-size: 11px; }
 
+/* 投屏模式：隐藏站点页眉，三维区占满剩余高度，字号放大便于投影观看。 */
+.course-shell--projection { font-size: 15px; }
+.course-shell--projection > header { display: none; }
+.course-shell--projection .course-shell__guide { padding-top: 10px; padding-right: 168px; }
+.course-shell--projection .course-shell__task h1 { font-size: 20px; }
+.course-shell--projection .course-shell__task p { font-size: 15px; }
+.course-shell--projection .course-shell__main { grid-template-columns: minmax(0, 1fr) 340px; }
+.course-shell__projection-exit { position: fixed; top: 16px; right: 20px; z-index: 20; box-shadow: 0 4px 14px #1a233218; }
+
 @media (max-width: 1180px) {
   .course-shell__body { grid-template-columns: minmax(0, 1fr) auto; }
   .course-shell__nav { grid-column: 1 / -1; justify-content: flex-end; }

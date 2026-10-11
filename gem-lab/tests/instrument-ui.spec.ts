@@ -78,3 +78,43 @@ test("课程模型载入失败后原地重新载入，进度与地址保留", as
   await expect(page.locator("canvas")).toHaveCount(1);
   await expect(page.getByTestId("refractometer-course")).toHaveAttribute("data-mode", "student");
 });
+
+test("课程投屏模式：隐藏页眉、Esc 退出、焦点在页内循环并回到入口", async ({ page }) => {
+  await page.goto("/explore/optics/prism-spectroscope?course=basic&mode=teacher");
+  await expect(page.getByTestId("optics3d-canvas")).toHaveAttribute("data-loaded", "true", { timeout: 60_000 });
+  const course = page.getByTestId("spectroscope-course");
+  await page.getByTestId("course-projection").click();
+  await expect(course).toHaveAttribute("data-projection", "true");
+  await expect(course.locator(":scope > header")).toBeHidden();
+  await expect(page.getByTestId("course-projection-exit")).toBeFocused();
+  // Tab 在投屏页内循环，不会跑到页面外。
+  for (let i = 0; i < 40; i++) await page.keyboard.press("Tab");
+  expect(await page.evaluate(() => !!document.activeElement?.closest('[data-testid="spectroscope-course"]'))).toBe(true);
+  // 课程操作仍可用。
+  await page.getByTestId("course-skip").click();
+  await expect(course).toHaveAttribute("data-step", "path");
+  await page.keyboard.press("Escape");
+  await expect(course).toHaveAttribute("data-projection", "false");
+  await expect(page.getByTestId("course-projection")).toBeFocused();
+});
+
+test("三维查看器遵守减少动效；视图按钮标出当前视图", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/explore/optics/refractometer?course=basic&mode=teacher");
+  const canvas = page.getByTestId("optics3d-canvas");
+  await expect(canvas).toHaveAttribute("data-loaded", "true", { timeout: 60_000 });
+  await expect(canvas).toHaveAttribute("data-reduced-motion", "true");
+  await expect(page.getByRole("button", { name: "整机结构", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "内部光路", exact: true }).click();
+  await expect(page.getByRole("button", { name: "内部光路", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await page.goto("/explore/spectroscope-bench");
+  await expect(page.getByTestId("spectroscope-bench-canvas")).toHaveAttribute("data-reduced-motion", "true", { timeout: 60_000 });
+});
+
+test("手机上三维场景默认流畅画质", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/explore/spectroscope-bench");
+  await expect(page.getByTestId("spectroscope-bench-canvas")).toHaveAttribute("data-quality", "smooth", { timeout: 60_000 });
+  await page.goto("/explore/optics/refractometer?course=basic&mode=student");
+  await expect(page.getByTestId("optics3d-canvas")).toHaveAttribute("data-quality", "smooth", { timeout: 60_000 });
+});

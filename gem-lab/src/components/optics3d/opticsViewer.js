@@ -37,12 +37,15 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
   const scene = new THREE.Scene(); scene.background = new THREE.Color('#e7edef');
   const camera = new THREE.PerspectiveCamera(35, 1, .00001, 100);
   const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+  renderer.setPixelRatio(Math.min(devicePixelRatio, matchMedia('(max-width: 680px)').matches ? 1.25 : 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.15;
   container.prepend(renderer.domElement);
   const canvas = renderer.domElement; canvas.dataset.testid = 'optics3d-canvas'; canvas.dataset.instrument = instrument;
   canvas.setAttribute('aria-label', '仪器与光路三维模型'); canvas.tabIndex = 0; canvas.dataset.loaded = 'false'; canvas.className = 'opt-explore__canvas';
-  const controls = new OrbitControls(camera, canvas); controls.enableDamping = true;
+  // 遵守系统「减少动效」：关闭旋转惯性；手机默认流畅画质（同偏光镜）。
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches, phone = matchMedia('(max-width: 680px)').matches;
+  const controls = new OrbitControls(camera, canvas); controls.enableDamping = !reducedMotion;
+  canvas.dataset.reducedMotion = String(reducedMotion); canvas.dataset.quality = phone ? 'smooth' : 'high';
   const room = new RoomEnvironment(), pmrem = new THREE.PMREMGenerator(renderer), env = pmrem.fromScene(room, .04);
   scene.environment = env.texture; scene.environmentIntensity = .55; room.dispose(); pmrem.dispose();
   scene.add(new THREE.HemisphereLight(0xeaf4ff, 0x849097, 1.05));

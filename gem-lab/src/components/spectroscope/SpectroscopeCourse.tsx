@@ -200,8 +200,8 @@ export default function SpectroscopeCourse({ mode, onMode, onExit, initialStep, 
   ) : (
     <section className="course-shell__model" key="instrument" ref={viewport} aria-label="课程三维仪器">
       <div className="course-shell__views">
-        <button type="button" disabled={!ready} onClick={() => viewer.current?.setView('whole')}>整机结构</button>
-        <button type="button" disabled={!ready} onClick={() => { viewer.current?.setView('optics'); viewer.current?.setRays(true); }}>内部光路</button>
+        <button type="button" aria-pressed={snapshot.status === 'ready' && snapshot.state.view === 'whole'} disabled={!ready} onClick={() => viewer.current?.setView('whole')}>整机结构</button>
+        <button type="button" aria-pressed={snapshot.status === 'ready' && snapshot.state.view === 'optics'} disabled={!ready} onClick={() => { viewer.current?.setView('optics'); viewer.current?.setRays(true); }}>内部光路</button>
         <button type="button" disabled={!ready} onClick={() => viewer.current?.fit()}>完整视野</button>
       </div>
       {snapshot.status === 'loading' && <p className="course-shell__loading" role="status">正在载入教学模型…</p>}

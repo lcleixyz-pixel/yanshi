@@ -175,6 +175,7 @@ export default function RefractometerCourse({
           <div className="course-shell__views">
             <button
               type="button"
+              aria-pressed={snapshot.status === "ready" && snapshot.state.view === "whole"}
               disabled={!ready}
               onClick={() => viewer.current?.setView("whole")}
             >
@@ -182,6 +183,7 @@ export default function RefractometerCourse({
             </button>
             <button
               type="button"
+              aria-pressed={snapshot.status === "ready" && snapshot.state.view === "optics"}
               disabled={!ready}
               onClick={() => {
                 setS((prev) => ({ ...prev, rays: true }));

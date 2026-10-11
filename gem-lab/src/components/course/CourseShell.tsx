@@ -67,13 +67,35 @@ export function CourseShell<Id extends string>({ instrument, title, minutes, tes
     setStepTimes([...times.current]);
   }, [finished]);
 
+  // 投屏模式（同偏光镜）：隐藏页眉，三维区放大；课程条与本步操作保留。Esc 退出，焦点在页内循环，退出后回到入口按钮。
+  const [projection, setProjection] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null), enterRef = useRef<HTMLButtonElement>(null), exitRef = useRef<HTMLButtonElement>(null);
+  const wasProjection = useRef(false);
+  useEffect(() => {
+    if (projection) exitRef.current?.focus();
+    else if (wasProjection.current) enterRef.current?.focus();
+    wasProjection.current = projection;
+    if (!projection) return;
+    const keydown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { setProjection(false); return; }
+      if (event.key !== 'Tab') return;
+      const focusable = Array.from(rootRef.current?.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), [tabindex="0"]') ?? []).filter((element) => element.getClientRects().length > 0);
+      const first = focusable[0], lastItem = focusable.at(-1);
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); lastItem?.focus(); }
+      if (!event.shiftKey && document.activeElement === lastItem) { event.preventDefault(); first?.focus(); }
+    };
+    window.addEventListener('keydown', keydown);
+    return () => window.removeEventListener('keydown', keydown);
+  }, [projection]);
+
   const step = steps[index];
   const complete = isComplete(current);
   const last = index === steps.length - 1;
   const total = stepTimes?.reduce((sum, value) => sum + value, 0) ?? 0;
   return (
-    <div className="course-shell iu" data-instrument={instrument} data-testid={testId} data-step={current} data-mode={mode}>
-      <Header title={INSTRUMENTS[instrument]?.name ?? title} subtitle="3D 仪器教学" />
+    <div ref={rootRef} className={`course-shell iu${projection ? ' course-shell--projection' : ''}`} data-instrument={instrument} data-testid={testId} data-step={current} data-mode={mode} data-projection={projection}>
+      <Header title={INSTRUMENTS[instrument]?.name ?? title} subtitle="3D 仪器教学" right={<button ref={enterRef} type="button" className="iu-button" onClick={() => setProjection(true)} aria-label="进入投屏模式" data-testid="course-projection">投屏模式</button>} />
+      {projection && <button ref={exitRef} type="button" className="iu-button course-shell__projection-exit" onClick={() => setProjection(false)} aria-label="退出投屏模式" data-testid="course-projection-exit">退出投屏 · Esc</button>}
       <section className="course-shell__guide" aria-label="引导课程" data-testid="course-guide" data-complete={complete}>
         <div className="course-shell__rail">
           <span className="course-shell__title"><strong>{title}</strong><span>{mode === 'student' ? '学员自学' : '讲师演示'} · 约 {minutes} 分钟</span></span>

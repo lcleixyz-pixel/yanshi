@@ -174,6 +174,43 @@ test("手机上拖狭缝滑杆时，三维区与停靠的光谱条吸附在顶�
   expect(Math.abs((await page.locator(".course-shell__model").boundingBox())!.y)).toBeLessThanOrEqual(1);
 });
 
+test("认识部件：模型上有编号热点；学员模式「点这里」指向下一个未看的部件，点热点即记为已看", async ({ page }) => {
+  await open(page, "student");
+  const hotspot = (id: string) => page.getByTestId(`hotspot-${id}`);
+  await expect(hotspot("slitHousing")).toHaveText("01");
+  await expect(hotspot("focusTube")).toHaveText("05");
+  await expect(page.getByTestId("optics-coach")).toHaveText("点这里：入光端与狭缝");
+  await hotspot("slitHousing").click();
+  await expect(hotspot("slitHousing")).toHaveAttribute("data-done", "true");
+  await expect(page.getByTestId("optics-coach")).toHaveText("点这里：狭缝调节环");
+  await expect(page.getByTestId("course-guide")).toContainText("点选关键部件 1 / 5");
+  // 讲师演示不显示指引气泡，热点仍在；离开本步热点消失。
+  await page.getByTestId("course-mode-teacher").click();
+  await expect(page.getByTestId("optics-coach")).toHaveCount(0);
+  await expect(hotspot("collimator")).toBeVisible();
+  await page.getByTestId("course-skip").click();
+  await expect(page.locator(".opt-hotspot")).toHaveCount(0);
+});
+
+test("调节步骤可在三维中直接拖动狭缝调节环，滑杆读数同步", async ({ page }) => {
+  await page.goto(`${route}?course=basic&mode=teacher&step=tune`);
+  await expect(bench(page)).toHaveAttribute("data-loaded", "true", { timeout: 60_000 });
+  await button(page, "用镊子夹样品放入光路").click();
+  await button(page, "分光镜").click();
+  await page.waitForTimeout(600);
+  await bench(page).scrollIntoViewIfNeeded();
+  const box = (await bench(page).boundingBox())!;
+  const [hx, hy] = JSON.parse((await bench(page).getAttribute("data-handles")) ?? "{}").slitControl;
+  const slider = page.getByLabel("狭缝宽度");
+  const before = Number(await slider.inputValue());
+  await page.mouse.move(box.x + hx, box.y + hy);
+  await page.mouse.down();
+  await page.mouse.move(box.x + hx - 80, box.y + hy, { steps: 8 });
+  await page.mouse.up();
+  await expect.poll(async () => Number(await slider.inputValue())).toBeLessThan(before - 15);
+  await expect(field(page)).not.toHaveAttribute("data-problems", /slit-wide/);
+});
+
 test("窄屏课程无横向溢出", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await open(page, "student");

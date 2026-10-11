@@ -275,3 +275,38 @@ test('透射时镊子竖向夹住腰棱两侧，不挡灯口到入光口的光�
   await page.getByTestId('bench-place-sample').click();
   await expect(canvas(page)).toHaveAttribute('data-tweezer-grip', 'resting');
 });
+
+test('在三维中直接拖动狭缝调节环、目镜套筒和灯头，滑杆与模型同步', async ({ page }) => {
+  await openBench(page, '?sample=ruby');
+  await prepare(page);
+  await page.getByRole('button', { name: '分光镜', exact: true }).click();
+  await page.waitForTimeout(600);
+  const handle = async (id: string) => {
+    await canvas(page).scrollIntoViewIfNeeded();
+    const box = (await canvas(page).boundingBox())!;
+    const handles = JSON.parse((await canvas(page).getAttribute('data-handles')) ?? '{}');
+    return [box.x + handles[id][0], box.y + handles[id][1]] as const;
+  };
+  const dragBy = async (id: string, dx: number) => {
+    const [x, y] = await handle(id);
+    await page.mouse.move(x, y);
+    await page.mouse.down();
+    await page.mouse.move(x + dx / 2, y, { steps: 4 });
+    await expect(canvas(page)).toHaveAttribute('data-dragging', id);
+    await page.mouse.move(x + dx, y, { steps: 4 });
+    await page.mouse.up();
+  };
+  const slit = page.getByRole('slider', { name: '狭缝宽度', exact: true });
+  const gapBefore = Number(await canvas(page).getAttribute('data-slit-gap'));
+  await dragBy('slitControl', 60);
+  await expect.poll(async () => Number(await slit.inputValue())).toBeGreaterThan(0.5);
+  expect(Number(await canvas(page).getAttribute('data-slit-gap'))).toBeGreaterThan(gapBefore);
+  const focus = page.getByRole('slider', { name: '调焦位置', exact: true });
+  await dragBy('focusTube', -60);
+  await expect.poll(async () => Number(await focus.inputValue())).toBeLessThan(0.4);
+  await page.getByRole('button', { name: '全景', exact: true }).click();
+  await page.waitForTimeout(600);
+  await dragBy('lampHead', 40);
+  await expect.poll(async () => Number(await page.getByRole('slider', { name: '灯头横移', exact: true }).inputValue())).toBeGreaterThan(0.2);
+  await expect(canvas(page)).toHaveAttribute('data-dragging', '');
+});

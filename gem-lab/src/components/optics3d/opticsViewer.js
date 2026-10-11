@@ -210,7 +210,7 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
     if (!root) return;
     state = { ...state, ...patch }; apply(); if (refit) fit();
   }
-  function select(id) { update({ selectedId: id }); if (chosen()) fitBox(bounds([chosen().object])); }
+  function select(id, focus = true) { update({ selectedId: id }); if (focus && chosen()) fitBox(bounds([chosen().object])); }
   async function json(url) { const response = await fetch(url); if (!response.ok) throw Error(`${response.status}: ${url}`); return response.json(); }
   async function load() {
     try {
@@ -233,6 +233,8 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
       const missing = parts.filter(p => !p.object);
       if (missing.length) throw Error('缺少部件：' + missing.map(p => p.id).join('、'));
       for (const part of parts) originalPoses.set(part.object, { position: part.object.position.clone(), quaternion: part.object.quaternion.clone(), scale: part.object.scale.clone() });
+      // 热点按清单（模型坐标）换算到部件自身坐标：拆解、联动移动时编号跟着部件走。
+      for (const part of parts) if (part.hotspot) part.hotspotLocal = part.object.worldToLocal(root.localToWorld(new THREE.Vector3(...part.hotspot)));
       root.traverse(o => {
         if (!o.isMesh) return;
         o.material = Array.isArray(o.material) ? o.material.map(m => m.clone()) : o.material.clone();
@@ -245,6 +247,53 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
       if (disposed) return;
       canvas.dataset.error = String(error); console.error(error);
       onChange?.({ status: 'error', error: error instanceof Error ? error.message : String(error) });
+    }
+  }
+  // 部件编号热点与「点这里」指引（同偏光镜）：HTML 按钮，每帧按部件当前姿态投影到画面。
+  const hotspotLayer = document.createElement('div'); hotspotLayer.className = 'opt-hotspots'; hotspotLayer.dataset.testid = 'optics-hotspots';
+  container.append(hotspotLayer);
+  let hotspots = null, hotspotButtons = new Map(), coachBubble = null;
+  function setHotspots(next) {
+    hotspots = next && next.ids.length ? next : null;
+    hotspotLayer.replaceChildren(); hotspotButtons = new Map(); coachBubble = null;
+    if (!hotspots) return;
+    hotspots.ids.forEach((id, index) => {
+      const part = parts.find(p => p.id === id); if (!part?.hotspotLocal) return;
+      const button = document.createElement('button');
+      button.type = 'button'; button.className = 'opt-hotspot'; button.dataset.testid = 'hotspot-' + id; button.dataset.done = String(hotspots.done?.includes(id) ?? false);
+      button.textContent = String(index + 1).padStart(2, '0'); button.setAttribute('aria-label', `模型热点 ${button.textContent}：${hotspots.labels?.[id] || part.label}${button.dataset.done === 'true' ? '（已查看）' : ''}`);
+      // 点热点只选中、不推近镜头，其余热点仍在画面中（同偏光镜学员模式）。
+      button.addEventListener('click', () => select(id, false));
+      hotspotLayer.append(button); hotspotButtons.set(id, button);
+    });
+    if (hotspots.coach && hotspotButtons.has(hotspots.coach)) {
+      coachBubble = document.createElement('div'); coachBubble.className = 'opt-coach'; coachBubble.dataset.testid = 'optics-coach';
+      coachBubble.setAttribute('role', 'status'); coachBubble.setAttribute('aria-live', 'polite');
+      coachBubble.textContent = '点这里：' + (hotspots.labels?.[hotspots.coach] || parts.find(p => p.id === hotspots.coach).label);
+      hotspotLayer.append(coachBubble);
+    }
+    placeHotspots();
+  }
+  const projected = new THREE.Vector3();
+  function placeHotspots() {
+    if (!hotspots || !root) return;
+    const w = container.clientWidth, h = container.clientHeight;
+    for (const [id, button] of hotspotButtons) {
+      const part = parts.find(p => p.id === id);
+      projected.copy(part.hotspotLocal); part.object.localToWorld(projected); projected.project(camera);
+      const visible = isShown(part.object) && projected.z > -1 && projected.z < 1 && Math.abs(projected.x) < 1.02 && Math.abs(projected.y) < 1.02;
+      button.hidden = !visible;
+      button.style.transform = `translate(${(projected.x * .5 + .5) * w}px, ${(-projected.y * .5 + .5) * h}px) translate(-50%, -50%)`;
+      if (coachBubble && id === hotspots.coach) {
+        // 右侧放不下时改到热点左侧，避免气泡被三维区边缘裁掉。
+        // 依次尝试右侧、左侧；两侧都放不下（手机窄画幅）时放到热点正上方，不压住热点。
+        const x = (projected.x * .5 + .5) * w, y = (-projected.y * .5 + .5) * h, width = coachBubble.offsetWidth, height = coachBubble.offsetHeight;
+        const side = x + 24 + width <= w - 8 ? 'right' : x - 24 - width >= 8 ? 'left' : 'above';
+        const left = side === 'right' ? x + 24 : side === 'left' ? x - 24 - width : Math.min(w - 8 - width, Math.max(8, x - width / 2));
+        const top = side === 'above' ? y - 24 - height : y - height / 2;
+        coachBubble.hidden = !visible; coachBubble.dataset.side = side;
+        coachBubble.style.transform = `translate(${left}px, ${top}px)`;
+      }
     }
   }
   let pointerDown;
@@ -265,12 +314,12 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
     fit();
   }
   const observer = new ResizeObserver(resize); observer.observe(container);
-  function animate() { if (disposed) return; animationFrame = requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); }
+  function animate() { if (disposed) return; animationFrame = requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); placeHotspots(); }
   function dispose() {
     if (disposed) return; disposed = true;
     cancelAnimationFrame(animationFrame); observer.disconnect(); controls.dispose();
     canvas.removeEventListener('pointerdown', onPointerDown); canvas.removeEventListener('pointerup', onPointerUp);
-    disposeTree(root); disposeTree(helpers); env.texture.dispose(); renderer.dispose(); canvas.remove();
+    disposeTree(root); disposeTree(helpers); env.texture.dispose(); renderer.dispose(); canvas.remove(); hotspotLayer.remove();
   }
   animate(); load();
   return {
@@ -284,6 +333,7 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
     setRays: rays => update({ rays }),
     setExplode: explode => update({ explode }, true),
     toggleIsolate: () => update({ isolated: !state.isolated }, true),
+    setHotspots,
     select, focusSelected: () => { if (chosen()) fitBox(bounds([chosen().object])); },
     fit, reset: () => { external = null; update({ view: 'optics', caseId: caseFile.defaultCaseId || caseFile.cases[0].id, rays: true, explode: 0, selectedId: null, isolated: false }, true); },
     dispose,

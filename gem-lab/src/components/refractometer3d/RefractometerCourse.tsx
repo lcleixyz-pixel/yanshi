@@ -58,6 +58,8 @@ export default function RefractometerCourse({
   });
   const [input, setInput] = useState("");
   const phone = useMediaQuery("(max-width: 680px)");
+  // 载入失败时原地重试：换一次 attempt 就重新创建查看器，不刷新整页（同偏光镜）。
+  const [attempt, setAttempt] = useState(0);
   const [finished, setFinished] = useState(false);
   const learning = useLearningRecord("refractometer", teacherUsed.current ? "teacher" : "student");
   const viewport = useRef<HTMLDivElement>(null),
@@ -68,6 +70,7 @@ export default function RefractometerCourse({
   useResponsiveViewport();
   useEffect(() => {
     if (!viewport.current) return;
+    setSnapshot({ status: "loading" });
     const v = createOpticsViewer({
       container: viewport.current,
       instrument: "refractometer",
@@ -91,7 +94,7 @@ export default function RefractometerCourse({
       v.dispose();
       viewer.current = null;
     };
-  }, [assetBase]);
+  }, [assetBase, attempt]);
   useEffect(() => {
     if (!ready) return;
     viewer.current?.setState({ ...deriveCourse(s), angle: s.angle });
@@ -105,6 +108,22 @@ export default function RefractometerCourse({
   useEffect(() => {
     setInput("");
   }, [s.epoch, s.step, s.angle]);
+  // 认识部件：模型上显示编号热点；学员模式另有「点这里」指向下一个未看的部件（同偏光镜）。
+  const partsSeen = s.partsSeen.join(" ");
+  useEffect(() => {
+    if (!ready) return;
+    if (s.step !== "parts") {
+      viewer.current?.setHotspots(null);
+      return;
+    }
+    const seen = partsSeen ? partsSeen.split(" ") : [];
+    viewer.current?.setHotspots({
+      ids: KEY_PARTS.map((p) => p.id),
+      done: seen,
+      labels: Object.fromEntries(KEY_PARTS.map((p) => [p.id, p.label])),
+      coach: mode === "student" ? (KEY_PARTS.find((p) => !seen.includes(p.id))?.id ?? null) : null,
+    });
+  }, [ready, s.step, partsSeen, mode]);
   const selected = snapshot.status === "ready" ? snapshot.selected : null;
   const latest = s.readings
     .filter((r) => r.epoch === s.epoch && r.angle === s.angle)
@@ -188,7 +207,7 @@ export default function RefractometerCourse({
             <div className="course-shell__fallback" role="alert">
               <img src={`${assetBase}poster.png`} alt="折射仪静态预览" />
               <p>模型载入失败，静态图不能替代操作练习。</p>
-              <button onClick={() => window.location.reload()}>重新载入</button>
+              <button className="iu-button" onClick={() => setAttempt((n) => n + 1)} data-testid="course-retry">重新载入</button>
             </div>
           )}
           {observe && (

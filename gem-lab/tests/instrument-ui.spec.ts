@@ -66,3 +66,15 @@ test("手机上工作台练习页按手机布局显示，三维区吸附顶部�
   expect(Math.abs((await page.locator(".sb-viewport-card").boundingBox())!.y)).toBeLessThanOrEqual(1);
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
 });
+
+test("课程模型载入失败后原地重新载入，进度与地址保留", async ({ page }) => {
+  await failFirstModelLoad(page, "**/refractometer/paper-optics-v2/model.glb**");
+  await page.goto("/explore/optics/refractometer?course=basic&mode=student");
+  await expect(page.getByRole("alert")).toContainText("模型载入失败");
+  await markPage(page);
+  await page.getByTestId("course-retry").click();
+  await expect(page.getByTestId("optics3d-canvas")).toHaveAttribute("data-loaded", "true", { timeout: 60_000 });
+  expect(await stillSamePage(page)).toBe(true);
+  await expect(page.locator("canvas")).toHaveCount(1);
+  await expect(page.getByTestId("refractometer-course")).toHaveAttribute("data-mode", "student");
+});

@@ -9,6 +9,8 @@ import { BENCH_GEOMETRY, benchLampPose, benchScopePose, normalizeBenchState, typ
 export interface BenchViewerCallbacks {
   onStatus(status: 'loading' | 'ready' | 'error', message?: string): void;
   onSelect?(part: string): void;
+  /** 在三维中直接拖动灯头、狭缝调节环或目镜套筒时回报新的数值（与滑杆同一字段）。 */
+  onAdjust?(patch: Partial<Pick<BenchState, 'lampLateral' | 'slit' | 'focus'>>): void;
 }
 export interface BenchSpecimenAppearance { color: string; shape: string }
 
@@ -630,8 +632,59 @@ export function createSpectroscopeBenchViewer(host: HTMLElement, callbacks: Benc
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
   let pointerStart: { x: number; y: number } | null = null;
-  const pointerDown = (event: PointerEvent) => { pointerStart = { x: event.clientX, y: event.clientY }; };
+  // 直接操作（同偏光镜拖转盘）：按住灯头、狭缝调节环或目镜套筒左右拖动，数值与滑杆同步；两指操作时让给缩放平移。
+  const DRAGGABLE: Record<string, { key: 'lampLateral' | 'slit' | 'focus'; perPixel: number; min: number; max: number }> = {
+    lampHead: { key: 'lampLateral', perPixel: 0.008, min: -1, max: 1 },
+    slitControl: { key: 'slit', perPixel: 0.004, min: 0, max: 1 },
+    focusTube: { key: 'focus', perPixel: 0.004, min: 0, max: 1 },
+  };
+  let drag: { pointerId: number; part: string; startX: number; startValue: number } | null = null;
+  const draggableAt = (event: PointerEvent) => {
+    if (!ready || !current || !callbacks.onAdjust) return null;
+    const rect = canvas.getBoundingClientRect();
+    pointer.set((event.clientX - rect.left) / rect.width * 2 - 1, -(event.clientY - rect.top) / rect.height * 2 + 1);
+    raycaster.setFromCamera(pointer, camera);
+    const roots = [bench!.root, instrument[current.state.dispersion]!.root];
+    for (const hit of raycaster.intersectObjects(roots, true)) {
+      let hidden = false;
+      for (let parent: THREE.Object3D | null = hit.object; parent; parent = parent.parent) if (!parent.visible) hidden = true;
+      if (hidden) continue;
+      let node: THREE.Object3D | null = hit.object;
+      while (node && !node.userData.part) node = node.parent;
+      const id = node?.userData.part as string | undefined;
+      return id && DRAGGABLE[id] ? id : null;
+    }
+    return null;
+  };
+  const dragMove = (event: PointerEvent) => {
+    if (drag && event.pointerId === drag.pointerId && current) {
+      const rule = DRAGGABLE[drag.part];
+      const value = Math.min(rule.max, Math.max(rule.min, drag.startValue + (event.clientX - drag.startX) * rule.perPixel));
+      callbacks.onAdjust?.({ [rule.key]: Number(value.toFixed(3)) });
+      return;
+    }
+    if (event.buttons === 0) canvas.style.cursor = draggableAt(event) ? 'ew-resize' : '';
+  };
+  const endDrag = (event: PointerEvent) => {
+    if (!drag || event.pointerId !== drag.pointerId) return;
+    drag = null;
+    controls.enabled = true;
+    canvas.dataset.dragging = '';
+    if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+  };
+  const pointerDown = (event: PointerEvent) => {
+    pointerStart = { x: event.clientX, y: event.clientY };
+    if (drag && !event.isPrimary) { endDrag({ pointerId: drag.pointerId } as PointerEvent); return; }
+    const part = event.isPrimary ? draggableAt(event) : null;
+    if (!part || !current) return;
+    const rule = DRAGGABLE[part];
+    drag = { pointerId: event.pointerId, part, startX: event.clientX, startValue: current.state[rule.key] };
+    controls.enabled = false;
+    canvas.dataset.dragging = part;
+    canvas.setPointerCapture(event.pointerId);
+  };
   const pointerUp = (event: PointerEvent) => {
+    if (drag && event.pointerId === drag.pointerId) { endDrag(event); pointerStart = null; return; }
     if (!pointerStart || Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y) > 5 || !ready) return;
     pointerStart = null;
     const rect = canvas.getBoundingClientRect();
@@ -649,6 +702,8 @@ export function createSpectroscopeBenchViewer(host: HTMLElement, callbacks: Benc
   };
   canvas.addEventListener('pointerdown', pointerDown);
   canvas.addEventListener('pointerup', pointerUp);
+  canvas.addEventListener('pointermove', dragMove);
+  canvas.addEventListener('pointercancel', endDrag);
   const contextLost = (event: Event) => {
     event.preventDefault();
     failed = true;
@@ -705,6 +760,23 @@ export function createSpectroscopeBenchViewer(host: HTMLElement, callbacks: Benc
     callbacks.onStatus('error', error instanceof Error ? `3D 工作台加载失败：${error.message}。可继续使用二维观察区。` : '3D 工作台加载失败，可继续使用二维观察区。');
   });
 
+  /** 可拖动部件在画面上的位置（CSS 像素，相对画布），供核验直接操作。 */
+  const handleBox = new THREE.Box3(), handleCenter = new THREE.Vector3();
+  function writeHandles() {
+    const rect = canvas.getBoundingClientRect();
+    const handles: Record<string, [number, number]> = {};
+    for (const asset of [bench!, instrument[current!.state.dispersion]!]) for (const part of asset.manifest.parts) {
+      if (!DRAGGABLE[part.id]) continue;
+      const node = asset.root.getObjectByName(part.node);
+      if (!node?.visible) continue;
+      // 取顶面附近一点：环、套筒是空心的，中心点会穿过环孔打到内部部件。
+      handleBox.setFromObject(node).getCenter(handleCenter);
+      handleCenter.y = handleBox.max.y - (handleBox.max.y - handleBox.min.y) * 0.12;
+      handleCenter.project(camera);
+      handles[part.id] = [Math.round((handleCenter.x * .5 + .5) * rect.width), Math.round((-handleCenter.y * .5 + .5) * rect.height)];
+    }
+    canvas.dataset.handles = JSON.stringify(handles);
+  }
   const render = (time: number) => {
     if (disposed || failed) return;
     if (transition) {
@@ -724,6 +796,7 @@ export function createSpectroscopeBenchViewer(host: HTMLElement, callbacks: Benc
       handLabel.style.top = `${(-position.y * 0.5 + 0.5) * host.clientHeight}px`;
     }
     renderer.render(scene, camera);
+    if (ready && current) writeHandles();
     animation = requestAnimationFrame(render);
   };
   animation = requestAnimationFrame(render);
@@ -741,6 +814,8 @@ export function createSpectroscopeBenchViewer(host: HTMLElement, callbacks: Benc
       controls.dispose();
       canvas.removeEventListener('pointerdown', pointerDown);
       canvas.removeEventListener('pointerup', pointerUp);
+      canvas.removeEventListener('pointermove', dragMove);
+      canvas.removeEventListener('pointercancel', endDrag);
       canvas.removeEventListener('webglcontextlost', contextLost);
       disposeTree(scene);
       for (const root of loadedRoots) if (!root.parent) disposeTree(root);

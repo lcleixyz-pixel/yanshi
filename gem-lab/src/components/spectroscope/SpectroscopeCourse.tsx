@@ -71,6 +71,8 @@ export default function SpectroscopeCourse({ mode, onMode, onExit, initialStep, 
   useEffect(() => setS((prev) => (prev.mode === mode ? prev : { ...prev, mode })), [mode]);
   const learning = useLearningRecord('spectroscope', teacherUsed.current ? 'teacher' : 'student');
   const phone = useMediaQuery('(max-width: 680px)');
+  // 载入失败时原地重试：换一次 attempt 就重新创建当前场景的查看器，不刷新整页（同偏光镜）。
+  const [attempt, setAttempt] = useState(0);
   const [benchView, setBenchView] = useState<(typeof BENCH_VIEWS)[number][0]>('whole');
   const [benchStatus, setBenchStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [slitGapMm, setSlitGapMm] = useState<string | null>(null);
@@ -96,7 +98,18 @@ export default function SpectroscopeCourse({ mode, onMode, onExit, initialStep, 
     viewer.current = v;
     v.setView('whole');
     return () => { v.dispose(); viewer.current = null; };
-  }, [onInstrument, assetBase, text.instrument]);
+  }, [onInstrument, assetBase, text.instrument, attempt]);
+  // 认识部件：模型上显示编号热点；学员模式另有「点这里」指向下一个未看的部件（同偏光镜）。
+  const partsSeen = s.partsSeen.join(' ');
+  useEffect(() => {
+    if (!onInstrument || snapshot.status !== 'ready') return;
+    if (s.step !== 'parts') { viewer.current?.setHotspots(null); return; }
+    const seen = partsSeen ? partsSeen.split(' ') : [];
+    viewer.current?.setHotspots({
+      ids: config.parts.map((p) => p.id), done: seen, labels: Object.fromEntries(config.parts.map((p) => [p.id, p.label])),
+      coach: mode === 'student' ? config.parts.find((p) => !seen.includes(p.id))?.id ?? null : null,
+    });
+  }, [onInstrument, snapshot.status, s.step, partsSeen, mode, config]);
   useEffect(() => {
     if (!onInstrument || snapshot.status !== 'ready') return;
     viewer.current?.setView(s.step === 'path' ? 'optics' : 'whole');
@@ -106,10 +119,18 @@ export default function SpectroscopeCourse({ mode, onMode, onExit, initialStep, 
   useEffect(() => {
     if (onInstrument || !benchHost.current) return;
     setBenchStatus('loading');
-    const v = createSpectroscopeBenchViewer(benchHost.current, { onStatus: (next) => setBenchStatus(next) });
+    const v = createSpectroscopeBenchViewer(benchHost.current, {
+      onStatus: (next) => setBenchStatus(next),
+      // 在三维中拖动灯头、狭缝调节环或目镜套筒，与滑杆走同一组操作。
+      onAdjust: (patch) => {
+        if (patch.lampLateral !== undefined) op({ type: 'lamp-lateral', value: patch.lampLateral });
+        if (patch.slit !== undefined) op({ type: 'slit', value: patch.slit });
+        if (patch.focus !== undefined) op({ type: 'focus', value: patch.focus });
+      },
+    });
     bench.current = v;
     return () => { v.dispose(); bench.current = null; };
-  }, [onInstrument]);
+  }, [onInstrument, attempt]);
   // 窄屏上课程布局在模型载入后才定下尺寸，载入完成后按最终画幅重新取一次整体视角。
   useEffect(() => {
     if (onInstrument || benchStatus !== 'ready') return;
@@ -156,7 +177,7 @@ export default function SpectroscopeCourse({ mode, onMode, onExit, initialStep, 
       {benchStatus === 'error' && (
         <div className="course-shell__fallback" role="alert">
           <p>工作台模型载入失败；光谱观察与本步操作仍可继续。</p>
-          <button onClick={() => window.location.reload()}>重新载入</button>
+          <button className="iu-button" onClick={() => setAttempt((n) => n + 1)} data-testid="course-retry">重新载入</button>
         </div>
       )}
       {observing ? (
@@ -188,7 +209,7 @@ export default function SpectroscopeCourse({ mode, onMode, onExit, initialStep, 
         <div className="course-shell__fallback" role="alert">
           <img src={`${assetBase}poster.png`} alt={text.poster} />
           <p>模型载入失败，部件与光路两步需要三维模型；光谱观察仍可练习。</p>
-          <button onClick={() => window.location.reload()}>重新载入</button>
+          <button className="iu-button" onClick={() => setAttempt((n) => n + 1)} data-testid="course-retry">重新载入</button>
         </div>
       )}
       <p className="course-shell__model-note">拖动旋转 · 滚轮缩放 · 比例及内部处方未标定</p>
@@ -242,12 +263,12 @@ export default function SpectroscopeCourse({ mode, onMode, onExit, initialStep, 
                 <RangeControl label="光源亮度" min={0} max={100} value={Math.round(s.bench.brightness * 100)} display={`${Math.round(s.bench.brightness * 100)}%`} ends={['暗', '亮']} onChange={(v) => op({ type: 'brightness', value: v / 100 })} />
                 <RangeControl label="灯头横移" min={-100} max={100} value={Math.round(s.bench.lampLateral * 100)} display={`${(s.bench.lampLateral * BENCH_GEOMETRY.lateralScale * 1000).toFixed(1)} mm`} valueText={`偏离光轴 ${Math.abs(s.bench.lampLateral * BENCH_GEOMETRY.lateralScale * 1000).toFixed(1)} 毫米`} ends={['左', '右']} onChange={(v) => op({ type: 'lamp-lateral', value: v / 100 })} />
                 <p className="course-shell__note" data-testid="grating-fixed">本机狭缝与焦距固定：模型上没有狭缝调节环和抽拉套筒，只能调照明与对光。</p>
-                <small>改变夹样、亮度或灯头位置会清除已有标记。亮度档位与对准范围为教学设定，未经实物标定；点“灯头”“分光镜”可近看。</small>
+                <small>灯头也可以在三维中按住左右拖动。改变夹样、亮度或灯头位置会清除已有标记。亮度档位与对准范围为教学设定，未经实物标定；点“灯头”“分光镜”可近看。</small>
               </div>}
               {(s.step === 'tune' || s.step === 'observe') && variant === 'prism' && <div className="course-shell__tuning">
                 <RangeControl label="狭缝宽度" testId="slit-control" min={0} max={100} value={Math.round(s.bench.slit * 100)} display={slitGapMm ? `${slitGapMm} mm` : `${Math.round(s.bench.slit * 100)}%`} valueText={slitGapMm ? `刃口间距 ${slitGapMm} 毫米` : undefined} ends={['窄', '宽']} onChange={(v) => op({ type: 'slit', value: v / 100 })} />
                 <RangeControl label="目镜焦距" min={0} max={100} value={Math.round(s.bench.focus * 100)} display={`套筒 ${Math.round(s.bench.focus * 20)} mm`} valueText={`目镜套筒拉出 ${Math.round(s.bench.focus * 20)} 毫米`} ends={['缩回', '拉出']} onChange={(v) => op({ type: 'focus', value: v / 100 })} />
-                <small>改变夹样、狭缝或焦距会清除已有标记。模型中的转角、行程和缝宽为教学联动示意，未经实物标定；点“分光镜”可近看。</small>
+                <small>也可以在三维中按住狭缝调节环或目镜套筒左右拖动。改变夹样、狭缝或焦距会清除已有标记。模型中的转角、行程和缝宽为教学联动示意，未经实物标定；点“分光镜”可近看。</small>
               </div>}
               {s.step === 'tune' && question(config.stepQuestions.tune)}
               {s.step === 'observe' && <>

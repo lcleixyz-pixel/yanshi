@@ -66,6 +66,8 @@ export default function SpectroscopePractice3D({ sampleId, onDetectionComplete, 
       const viewer = createSpectroscopeBenchViewer(hostRef.current, {
         onStatus: (next, message) => { setStatus(next); setError(message ?? ''); },
         onSelect: (part) => setSelectedPart(PARTS[part] ?? part),
+        // 在三维中拖动灯头、狭缝调节环或目镜套筒，与滑杆修改同一状态。
+        onAdjust: (patch) => updateRef.current(patch),
       });
       viewerRef.current = viewer;
       setStatus('loading');
@@ -83,6 +85,8 @@ export default function SpectroscopePractice3D({ sampleId, onDetectionComplete, 
     setSaved((previous) => previous ? { ...previous, stale: true } : null);
   };
   const update = (patch: Partial<BenchState>) => { invalidate(); setState((previous) => ({ ...previous, ...patch })); };
+  const updateRef = useRef(update);
+  updateRef.current = update;
   const changeSample = (id: string) => { invalidate(); setSelectedId(id); setNotes(''); setSaved(null); };
   const changeView = (next: View) => { setView(next); viewerRef.current?.focus(next); };
   const setupOnly = state.method !== 'transmission';
@@ -137,7 +141,7 @@ export default function SpectroscopePractice3D({ sampleId, onDetectionComplete, 
             {status === 'loading' && <div className="sb-scene-message" role="status"><span className="sb-loader" />正在准备三维观察场景…</div>}
             {status === 'error' && <div className="sb-scene-message sb-scene-error" role="alert"><strong>三维视图暂不可用</strong><p>{error || '可以继续使用 2D 演示进行观察练习。'}</p><button className="iu-button sb-retry" onClick={() => setAttempt((n) => n + 1)} data-testid="bench-retry">重新载入</button>{onUse2D ? <button className="sb-primary" onClick={onUse2D}>改用 2D 检测</button> : <Link to="/demo/spectroscope" className="sb-primary">进入 2D 演示</Link>}</div>}
             {phone && !pending && <div className="sb-mini-spectrum" data-testid="bench-mini-spectrum" aria-hidden="true"><SpectrumStrip features={evaluation.display.features} display={evaluation.display} dispersion={state.dispersion} interactive={false} showFeatureDescriptions={false} height={30} /></div>}
-            <div className="sb-scene-caption"><span>{selectedPart || '拖动旋转 · 滚轮缩放 · 点击查看部件'}</span><span>手持操作与尺寸示意</span></div>
+            <div className="sb-scene-caption"><span>{selectedPart || '拖动旋转 · 滚轮缩放 · 点击查看部件 · 按住灯头、狭缝环或目镜套筒左右拖动可调节'}</span><span>手持操作与尺寸示意</span></div>
             <div className="sb-camera-bar"><div aria-label="观察视角">{([['whole', '全景'], ['lamp', '灯头'], ['sample', '样品'], ['instrument', '分光镜']] as const).map(([key, label]) => <button key={key} aria-pressed={view === key} onClick={() => changeView(key)}>{label}</button>)}</div><label><input type="checkbox" checked={showBeams} onChange={(event) => setShowBeams(event.target.checked)} />光路示意</label></div>
           </div>
           <section className="sb-spectrum-card" aria-label="目镜观察与波长标记">

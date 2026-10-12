@@ -140,6 +140,12 @@ test('an unverified spectrum does not satisfy the two-observation gate and a rec
   await page.getByRole('link', { name: '返回检测流程' }).click();
   await page.getByRole('button', { name: /偏光镜/ }).click();
   await expect(page.getByTestId('polariscope-scene')).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
+  if (process.env.CI_WEBGL_BACKEND === 'mesa') {
+    // 在离开三维页前核验，避免收尾时已到评估页而漏查渲染后端。
+    const canvas = page.getByTestId('polariscope-canvas');
+    await expect(canvas).toHaveAttribute('data-gpu-renderer', /llvmpipe/i);
+    console.log('[smoke-renderer]', await canvas.getAttribute('data-gpu-renderer'));
+  }
   await page.getByRole('switch', { name: '电源开关' }).click();
   await page.getByRole('slider', { name: '上偏光片角度' }).fill('90');
   await page.getByTestId('detection-place-sample').click();

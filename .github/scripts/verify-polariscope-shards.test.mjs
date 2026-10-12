@@ -36,6 +36,33 @@ test('accepts the complete case set exactly once across the shards', () => {
   assert.deepEqual(result.shards.map(shard => shard.cases), SHARD_SIZES);
 });
 
+test('keeps the baseline aligned with actual Playwright discovery without launching browsers', () => {
+  const project = fileURLToPath(new URL('../../gem-lab/', import.meta.url));
+  const env = { ...process.env };
+  // JSON must be returned on stdout even when this check runs inside a reporting job.
+  delete env.PLAYWRIGHT_JSON_OUTPUT_FILE;
+  delete env.PLAYWRIGHT_JSON_OUTPUT_DIR;
+  delete env.PLAYWRIGHT_JSON_OUTPUT_NAME;
+  const collected = spawnSync(process.execPath, [
+    path.join(project, 'node_modules/playwright/cli.js'),
+    'test', 'polariscope3d', '--list', '--reporter=json',
+  ], { cwd: project, env, encoding: 'utf8', timeout: 30_000 });
+  assert.equal(collected.error, undefined, collected.error?.message);
+  assert.equal(collected.status, 0, collected.stderr);
+  const report = JSON.parse(collected.stdout);
+  assert.deepEqual(report.errors, []);
+  const keys = [];
+  const visit = suite => {
+    for (const spec of suite.specs ?? []) {
+      for (const item of spec.tests ?? []) keys.push(JSON.stringify([spec.id, item.projectId ?? item.projectName]));
+    }
+    for (const child of suite.suites ?? []) visit(child);
+  };
+  visit(report);
+  assert.equal(keys.length, EXPECTED_CASE_COUNT, 'Update the completeness baseline when polariscope coverage changes');
+  assert.equal(new Set(keys).size, EXPECTED_CASE_COUNT, 'Collected case identities must be unique');
+});
+
 test('rejects missing, duplicate and unexpected identities even when totals claim a full pass', () => {
   for (const change of ['missing', 'duplicate', 'unexpected', 'duplicate-expected']) {
     const { expected, shards } = fixture();

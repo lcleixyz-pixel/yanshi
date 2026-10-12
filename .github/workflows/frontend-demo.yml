@@ -52,9 +52,11 @@ jobs:
         working-directory: gem-lab
 
       - name: Run smoke tests
+        # The real 3D detection flow shares the runner's CPU with Mesa;
+        # serialize it like the other WebGL jobs to avoid rendering contention.
         run: |
           xvfb-run --auto-servernum glxinfo -B
-          xvfb-run --auto-servernum npm run test:smoke --prefix gem-lab -- --output=test-results/smoke
+          xvfb-run --auto-servernum npm run test:smoke --prefix gem-lab -- --workers=1 --output=test-results/smoke
         env:
           PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/smoke/results.json
 

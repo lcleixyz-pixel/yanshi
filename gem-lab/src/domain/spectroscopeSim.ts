@@ -298,9 +298,11 @@ export function spectroscopeInitial(search: URLSearchParams) {
   const task = emptyTaskData();
   task.mode = mode;
   if (stepIndex >= 0) { task.step = stepParam as StepId; task.hasSkipped = stepIndex > 0; }
+  // 带样品 / 观察方法的深链（知识库与旧练习页转来）按练习起点摆好；没有参数时实验屏从课程起点开始
+  // （光源已开、未夹样，棱镜式狭缝偏宽 / 光栅式灯头偏离）——引导任务与自由练习共用同一套工作台。
+  const practice = search.has('sample') || search.has('method');
   return {
-    // 实验屏从课程起点开始（光源已开、未夹样，棱镜式狭缝偏宽 / 光栅式灯头偏离）：引导任务与自由练习共用同一套工作台。
-    scenes: { learn: LEARN_INITIAL, lab: courseInitialLab(machine), challenge: labInitial(machine, sampleId, method) },
+    scenes: { learn: LEARN_INITIAL, lab: practice ? labInitial(machine, sampleId, method) : courseInitialLab(machine), challenge: labInitial(machine, sampleId, method) },
     options: { machine },
     taskData: task as unknown as Record<string, unknown>,
     teacherUsed: mode === 'teacher',

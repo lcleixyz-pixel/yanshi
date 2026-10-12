@@ -8,13 +8,10 @@ import '../styles/instrument-ui.css';
 import '../styles/microscope-explore.css';
 import RangeControl from '../components/shared/RangeControl';
 import RefractometerCourse from '../components/refractometer3d/RefractometerCourse';
-import SpectroscopeCourse, { GratingSpectroscopeCourse } from '../components/spectroscope/SpectroscopeCourse';
 
 /** 有引导课程的 3D 光学仪器：入口说明与课程组件。 */
 const COURSES = {
   refractometer: { title: '基础读数课', minutes: 9, intro: '从接触恢复到自主读数与换方向复核。固定尖晶石教学样品，先记录再核对。', Course: RefractometerCourse },
-  'prism-spectroscope': { title: '基础观察课', minutes: 8, intro: '从对光、调狭缝与焦距到标记吸收特征。固定红宝石教学样品，先标记再核对。', Course: SpectroscopeCourse },
-  'grating-spectroscope': { title: '观察课', minutes: 7, intro: '固定狭缝与焦距：从对光、调亮度与对准到在线性刻度上标记吸收特征。固定红宝石教学样品，先标记再核对。', Course: GratingSpectroscopeCourse },
 } as const satisfies Partial<Record<OpticsInstrumentId, { title: string; minutes: number; intro: string; Course: typeof RefractometerCourse }>>;
 const courseFor = (id: OpticsInstrumentId) => (id in COURSES ? COURSES[id as keyof typeof COURSES] : null);
 

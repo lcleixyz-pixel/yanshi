@@ -28,12 +28,13 @@ test("自由探索页模型载入失败后原地重新载入，不刷新整页",
   await expect(page.locator("canvas")).toHaveCount(1);
 });
 
-test("工作台练习页模型载入失败后原地重新载入，不刷新整页", async ({ page }) => {
+test("工作台练习页模型载入失败后原地重新载入，不刷新整页（旧地址转到实验屏）", async ({ page }) => {
   await failFirstModelLoad(page, "**/spectroscope-workbench/simple-v2/model.glb**");
   await page.goto("/explore/spectroscope-bench");
-  await expect(page.getByTestId("bench-retry")).toBeVisible({ timeout: 60_000 });
+  await expect(page).toHaveURL(/\/sim\/spectroscope\/lab$/);
+  await expect(page.getByTestId("sim-spectro-retry")).toBeVisible({ timeout: 60_000 });
   await markPage(page);
-  await page.getByTestId("bench-retry").click();
+  await page.getByTestId("sim-spectro-retry").click();
   await expect(page.getByTestId("spectroscope-bench-canvas")).toHaveAttribute("data-loaded", "true", { timeout: 60_000 });
   expect(await stillSamePage(page)).toBe(true);
   await expect(page.locator("canvas")).toHaveCount(1);
@@ -44,26 +45,29 @@ test("各仪器页使用共用设计变量与仪器主色；课程入口讲师�
   await page.goto("/explore/optics/refractometer");
   expect(await accent('[data-testid="optics-explore-page"]')).toBe("#b45309");
   await expect(page.getByRole("button", { name: "讲师演示", exact: true })).toHaveClass(/iu-button--primary/);
+  // 分光镜已迁入仿真：旧地址转到新外壳，主色仍取分光镜的 #0369a1。
   await page.goto("/explore/optics/grating-spectroscope");
-  expect(await accent('[data-testid="optics-explore-page"]')).toBe("#0369a1");
+  await expect(page).toHaveURL(/\/sim\/spectroscope\/learn\?machine=grating$/);
+  expect(await accent('[data-testid="sim-shell"]')).toBe("#0369a1");
   await page.goto("/explore/spectroscope-bench");
-  expect(await accent('[data-testid="spectroscope-practice-3d"]')).toBe("#0369a1");
+  expect(await accent('[data-testid="sim-shell"]')).toBe("#0369a1");
   await page.goto("/explore/optics/refractometer?course=basic&mode=student");
   expect(await accent('[data-testid="refractometer-course"]')).toBe("#b45309");
 });
 
-test("手机上工作台练习页按手机布局显示，三维区吸附顶部并叠小光谱", async ({ page }) => {
+test("手机上实验屏按手机布局显示，操作区与面板都在一屏内", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/explore/spectroscope-bench?sample=ruby");
+  await page.goto("/sim/spectroscope/lab?sample=ruby");
   await expect(page.getByTestId("spectroscope-bench-canvas")).toHaveAttribute("data-loaded", "true", { timeout: 60_000 });
   expect(await page.evaluate(() => document.querySelector('meta[name="viewport"]')?.getAttribute("content"))).toContain("width=device-width");
-  await page.getByRole("switch", { name: "光源电源" }).click();
-  await page.getByTestId("bench-place-sample").click();
-  const slit = page.getByRole("slider", { name: "狭缝宽度", exact: true });
-  await slit.scrollIntoViewIfNeeded();
-  await slit.fill("0.6");
-  await expect(page.getByTestId("bench-mini-spectrum")).toBeInViewport();
-  expect(Math.abs((await page.locator(".sb-viewport-card").boundingBox())!.y)).toBeLessThanOrEqual(1);
+  await expect(page.getByTestId("sim-spectro-field")).toBeVisible();
+  // 手机上控制面板默认收起为底部抽屉（内含光源开关）。
+  await expect(page.getByTestId("sim-panel-light")).toBeHidden();
+  await page.getByTestId("sim-controls-toggle").click();
+  await expect(page.getByTestId("sim-panel-light")).toBeVisible();
+  await page.getByTestId("sim-bench-power").click();
+  await page.getByTestId("sim-bench-place").click();
+  await expect(page.getByTestId("sim-spectro-status")).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
 });
 
@@ -79,20 +83,17 @@ test("课程模型载入失败后原地重新载入，进度与地址保留", as
   await expect(page.getByTestId("refractometer-course")).toHaveAttribute("data-mode", "student");
 });
 
-test("课程投屏模式：隐藏页眉、Esc 退出、焦点在页内循环并回到入口", async ({ page }) => {
-  await page.goto("/explore/optics/prism-spectroscope?course=basic&mode=teacher");
+test("折射仪课程投屏模式：隐藏页眉、Esc 退出、焦点在页内循环并回到入口", async ({ page }) => {
+  await page.goto("/explore/optics/refractometer?course=basic&mode=teacher");
   await expect(page.getByTestId("optics3d-canvas")).toHaveAttribute("data-loaded", "true", { timeout: 60_000 });
-  const course = page.getByTestId("spectroscope-course");
+  const course = page.getByTestId("refractometer-course");
   await page.getByTestId("course-projection").click();
   await expect(course).toHaveAttribute("data-projection", "true");
   await expect(course.locator(":scope > header")).toBeHidden();
   await expect(page.getByTestId("course-projection-exit")).toBeFocused();
   // Tab 在投屏页内循环，不会跑到页面外。
   for (let i = 0; i < 40; i++) await page.keyboard.press("Tab");
-  expect(await page.evaluate(() => !!document.activeElement?.closest('[data-testid="spectroscope-course"]'))).toBe(true);
-  // 课程操作仍可用。
-  await page.getByTestId("course-skip").click();
-  await expect(course).toHaveAttribute("data-step", "path");
+  expect(await page.evaluate(() => !!document.activeElement?.closest('[data-testid="refractometer-course"]'))).toBe(true);
   await page.keyboard.press("Escape");
   await expect(course).toHaveAttribute("data-projection", "false");
   await expect(page.getByTestId("course-projection")).toBeFocused();
@@ -107,13 +108,13 @@ test("三维查看器遵守减少动效；视图按钮标出当前视图", async
   await expect(page.getByRole("button", { name: "整机结构", exact: true })).toHaveAttribute("aria-pressed", "true");
   await page.getByRole("button", { name: "内部光路", exact: true }).click();
   await expect(page.getByRole("button", { name: "内部光路", exact: true })).toHaveAttribute("aria-pressed", "true");
-  await page.goto("/explore/spectroscope-bench");
+  await page.goto("/sim/spectroscope/lab");
   await expect(page.getByTestId("spectroscope-bench-canvas")).toHaveAttribute("data-reduced-motion", "true", { timeout: 60_000 });
 });
 
 test("手机上三维场景默认流畅画质", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/explore/spectroscope-bench");
+  await page.goto("/sim/spectroscope/lab");
   await expect(page.getByTestId("spectroscope-bench-canvas")).toHaveAttribute("data-quality", "smooth", { timeout: 60_000 });
   await page.goto("/explore/optics/refractometer?course=basic&mode=student");
   await expect(page.getByTestId("optics3d-canvas")).toHaveAttribute("data-quality", "smooth", { timeout: 60_000 });

@@ -103,8 +103,20 @@ test("手机：控制面板收为底部抽屉，任务卡展开为底部抽屉�
   await expect(page.getByTestId("sim-home")).toBeVisible();
 });
 
-test("阶段 1 不改旧入口：原有页面照常打开，不被重定向", async ({ page }) => {
-  for (const path of ["/explore/spectroscope-bench", "/explore/optics/refractometer", "/explore/polariscope", "/demo/spectroscope"]) {
+test("逐台迁移：分光镜旧入口重定向到仿真，其余仪器与 2D 演示照常打开", async ({ page }) => {
+  // 已迁完的分光镜：旧地址转到新屏（保留参数）。
+  for (const [from, target] of [
+    ["/explore/optics/prism-spectroscope", /\/sim\/spectroscope\/learn\?machine=prism$/],
+    ["/explore/optics/prism-spectroscope?course=basic&mode=student&step=tune", /\/sim\/spectroscope\/lab\?machine=prism&mode=student&step=tune$/],
+    ["/explore/optics/grating-spectroscope?course=basic&mode=student", /\/sim\/spectroscope\/learn\?machine=grating&mode=student$/],
+    ["/explore/spectroscope-bench?sample=ruby&method=internal-reflection", /\/sim\/spectroscope\/lab\?sample=ruby&method=internal-reflection$/],
+  ] as const) {
+    await page.goto(from);
+    await expect(page).toHaveURL(target);
+    await expect(page.getByTestId("sim-shell")).toHaveCount(1);
+  }
+  // 还没迁的仪器与 2D 演示：原页面照常，不被重定向。
+  for (const path of ["/explore/optics/refractometer", "/explore/polariscope", "/demo/spectroscope"]) {
     await page.goto(path);
     await expect(page).toHaveURL(new RegExp(path.replace(/[/?]/g, (c) => `\\${c}`)));
     await expect(page.getByTestId("sim-shell")).toHaveCount(0);

@@ -23,9 +23,9 @@ export const INSTRUMENT_COURSES: Partial<Record<InstrumentId, InstrumentCourse>>
     summary: '约 9 分钟：认识部件、跟随光路、开灯滴液放样、恢复光学接触、先读数再核对、换方向复核、解释与清洁复位。学员可以自学，讲师可以投屏演示；学完后到检测练习中独立读数。',
   },
   spectroscope: {
-    student: '/explore/optics/prism-spectroscope?course=basic&mode=student',
-    teacher: '/explore/optics/prism-spectroscope?course=basic&mode=teacher',
-    title: '在 3D 棱镜式分光镜上完成基础观察课',
-    summary: '约 8 分钟：认识部件、跟随光路、对光与照明、调节狭缝与焦距、标记红宝石的吸收特征、解释。学员可以自学，讲师可以投屏演示；学完后可再上光栅式观察课，或到检测练习中独立观察。',
+    student: '/sim/spectroscope/learn?machine=prism&mode=student',
+    teacher: '/sim/spectroscope/learn?machine=prism&mode=teacher',
+    title: '在分光镜仿真上完成基础观察课',
+    summary: '约 8 分钟：认识部件、跟随光路、对光与照明、调节狭缝与焦距、标记红宝石的吸收特征、解释。学员可以自学，讲师可以演示；学完后可再上光栅式观察课，或到检测练习中独立观察。',
   },
 };

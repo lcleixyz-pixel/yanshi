@@ -52,6 +52,8 @@
 .sim-shell .sim-readout__head span { color: var(--iu-muted); font-size: 11px; }
 .sim-shell .sim-readout__head i { margin-left: auto; color: var(--iu-faint); font-style: normal; }
 .sim-readout__body { display: grid; gap: 6px; padding: 0 10px 9px; font-size: 12px; }
+/* 收起读数框要真的收起来：display 覆盖了 hidden 属性，需要显式声明（否则卡片仍挡住操作区）。 */
+.sim-readout__body[hidden] { display: none; }
 
 /* 工具箱与放置位 */
 .sim-toolbox { position: absolute; z-index: 3; right: 12px; bottom: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; max-width: calc(100% - 24px); padding: 6px; border: 1px solid var(--iu-line); border-radius: 10px; background: #fff; }

@@ -75,7 +75,10 @@ export interface LearnScene extends Record<string, unknown> {
   byVariant: Record<Machine, { view: 'whole' | 'optics'; caseId: string | null }>;
 }
 
-/** 实验屏与挑战屏的场景：工作台状态与本次记录。 */
+/** 本屏保存过的一次观察记录；条件一变只标记为过期，不自动恢复确认。 */
+export interface SavedRecord { notes: string; stale: boolean; pending: boolean }
+
+/** 实验屏与挑战屏的场景：工作台状态、本次记录与观察记录的去向。 */
 export interface LabScene extends Record<string, unknown> {
   sampleId: string;
   method: BenchMethod;
@@ -83,7 +86,11 @@ export interface LabScene extends Record<string, unknown> {
   bench: BenchState;
   marks: number[]; bands: { start: number; end: number }[]; noAbsorption: boolean; notes: string; checked: boolean;
   beams: boolean; names: boolean; values: boolean;
+  view: 'whole' | 'lamp' | 'sample' | 'instrument';
+  saved: SavedRecord | null;
 }
+
+const VIEWS = ['whole', 'lamp', 'sample', 'instrument'] as const;
 
 export const LEARN_INITIAL: LearnScene = {
   rays: true, names: false, values: true, explode: 0,
@@ -95,7 +102,7 @@ export function labInitial(machine: Machine, sampleId = 'ruby', method: BenchMet
     sampleId, method, dispersion: machine,
     bench: { ...createBenchState(machine), method, ...benchMethodSetup(method) },
     marks: [], bands: [], noAbsorption: false, notes: '', checked: false,
-    beams: true, names: false, values: true,
+    beams: true, names: false, values: true, view: 'whole', saved: null,
   };
 }
 
@@ -128,6 +135,10 @@ export function readLabScene(scene: Record<string, unknown> | undefined, machine
     notes: typeof raw.notes === 'string' ? raw.notes : '',
     checked: raw.checked === true,
     beams: raw.beams !== false, names: raw.names === true, values: raw.values !== false,
+    view: (VIEWS as readonly string[]).includes(raw.view as string) ? raw.view as LabScene['view'] : 'whole',
+    saved: raw.saved && typeof raw.saved === 'object' && typeof raw.saved.notes === 'string'
+      ? { notes: raw.saved.notes, stale: raw.saved.stale === true, pending: raw.saved.pending === true }
+      : null,
   };
 }
 
@@ -152,7 +163,13 @@ export function mergeCourse(task: SpectroscopeTaskData, scene: LabScene, machine
 /** 把一次课程操作同时写回任务切片与场景；已完成的当前步顺延到下一步。 */
 export function applyOperation(task: SpectroscopeTaskData, scene: LabScene, machine: Machine, op: Operation): { task: SpectroscopeTaskData; scene: LabScene } {
   const next = operate(mergeCourse(task, scene, machine), op);
-  const sceneNext: LabScene = { ...scene, bench: { ...next.bench, dispersion: machine }, marks: next.marks, checked: next.checked };
+  const bench = { ...next.bench, dispersion: machine };
+  // 观察条件一变：旧标记与核对作废（课程域已处理），标带与「未见明显特征」也一并作废，已保存的记录只标为过期。
+  const changed = !sameBench(scene.bench, bench);
+  const sceneNext: LabScene = {
+    ...scene, bench, marks: next.marks, checked: next.checked,
+    ...(changed ? { bands: [] as LabScene['bands'], noAbsorption: false, saved: scene.saved ? { ...scene.saved, stale: true } : null } : {}),
+  };
   const byVariant = {
     ...task.byVariant,
     [machine]: {
@@ -161,6 +178,19 @@ export function applyOperation(task: SpectroscopeTaskData, scene: LabScene, mach
   };
   const taskNext: SpectroscopeTaskData = { ...task, mode: next.mode, step: next.step, hasSkipped: next.hasSkipped, byVariant };
   return { task: advanceStep(taskNext, sceneNext, machine), scene: sceneNext };
+}
+
+const sameBench = (a: BenchState, b: BenchState) => (Object.keys(b) as (keyof BenchState)[]).every((key) => a[key] === b[key]);
+
+/** 换样品：清掉旧标记、标带、核对与补充说明，已保存的记录不再适用（同练习页）。 */
+export function changeLabSample(scene: LabScene, sampleId: string): LabScene {
+  return { ...scene, sampleId, marks: [], bands: [], noAbsorption: false, checked: false, notes: '', saved: null };
+}
+
+/** 引导任务的起始工作台：光源已开、未放样，狭缝与焦距（光栅式为亮度与对光）按课程标准故意不合适（与课程页一致）。 */
+export function courseInitialLab(machine: Machine): LabScene {
+  const base = labInitial(machine, COURSE_SAMPLE.id, 'transmission');
+  return { ...base, bench: initialCourse('student', machine).bench };
 }
 
 /** 当前步完成后，把「最近所在的一步」顺延到下一个未完成的步骤。 */
@@ -173,17 +203,23 @@ function advanceStep(task: SpectroscopeTaskData, scene: LabScene, machine: Machi
   return next === state.step ? task : { ...task, step: next };
 }
 
-/** 只改场景（不经过课程域）：自由练习的滑杆、夹样、样品与显示开关；条件一变旧标记与核对作废。 */
-export function patchLab(scene: LabScene, patch: Partial<BenchState> & Partial<Pick<LabScene, 'sampleId' | 'notes' | 'beams' | 'names' | 'values'>>, invalidate = true): LabScene {
-  const { sampleId, notes, beams, names, values, ...benchPatch } = patch;
+/**
+ * 只改场景（不经过课程域）：自由练习的滑杆、夹样、样品与显示开关。
+ * 观察条件一变，旧标记与核对作废、已保存的记录只标记为过期（内容保留，不自动恢复确认）；
+ * 只换视角、显示开关或补充说明时不动标记，也不让旧记录过期。
+ */
+export function patchLab(scene: LabScene, patch: Partial<BenchState> & Partial<Pick<LabScene, 'sampleId' | 'notes' | 'beams' | 'names' | 'values' | 'view'>>, invalidate = true): LabScene {
+  const { sampleId, notes, beams, names, values, view, ...benchPatch } = patch;
   const changed = Object.keys(benchPatch).length > 0;
   const bench = { ...scene.bench, ...benchPatch };
   const cleared = invalidate && changed ? { marks: [] as number[], bands: [] as LabScene['bands'], noAbsorption: false, checked: false } : {};
+  const saved = invalidate && changed && scene.saved ? { ...scene.saved, stale: true } : scene.saved;
   return {
-    ...scene, ...cleared,
+    ...scene, ...cleared, saved,
     bench,
     sampleId: sampleId ?? scene.sampleId,
     notes: notes ?? scene.notes,
+    view: view ?? scene.view,
     beams: beams ?? scene.beams, names: names ?? scene.names, values: values ?? scene.values,
   };
 }
@@ -249,8 +285,10 @@ export function spectroscopeInitial(search: URLSearchParams) {
   task.mode = mode;
   if (stepIndex >= 0) { task.step = stepParam as StepId; task.hasSkipped = stepIndex > 0; }
   return {
-    scenes: { learn: LEARN_INITIAL, lab: labInitial(machine, sampleId, method), challenge: labInitial(machine, sampleId, method) },
+    // 实验屏从课程起点开始（光源已开、未夹样，棱镜式狭缝偏宽 / 光栅式灯头偏离）：引导任务与自由练习共用同一套工作台。
+    scenes: { learn: LEARN_INITIAL, lab: courseInitialLab(machine), challenge: labInitial(machine, sampleId, method) },
     options: { machine },
     taskData: task as unknown as Record<string, unknown>,
+    teacherUsed: mode === 'teacher',
   };
 }

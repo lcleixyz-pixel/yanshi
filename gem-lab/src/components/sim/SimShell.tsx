@@ -159,7 +159,7 @@ export function SimTaskCard({ title, items, open, onOpen, onRestart, progress, c
   const suppressed = useSimDrawer('task', open);
   const done = progress?.done ?? items.filter((item) => item.done).length;
   const total = progress?.total ?? items.length;
-  if (!open) return <button type="button" className="sim-task-line" onClick={() => onOpen(true)} aria-expanded="false" data-testid="sim-task-open"><strong>引导任务 {done} / {total}</strong><span>{title}</span><i aria-hidden="true">▸</i></button>;
+  if (!open) return <SimTaskLine title={title} done={done} total={total} onOpen={() => onOpen(true)} />;
   return (
     <section className="sim-task" aria-label="引导任务" data-testid="sim-task" data-suppressed={suppressed}>
       <header><span>引导任务 · {done} / {total}</span><button type="button" onClick={() => onOpen(false)} aria-expanded="true" data-testid="sim-task-close">收起 ▾</button></header>
@@ -169,6 +169,11 @@ export function SimTaskCard({ title, items, open, onOpen, onRestart, progress, c
       <button type="button" className="sim-task__restart" onClick={onRestart} data-testid="sim-task-restart">重新开始任务</button>
     </section>
   );
+}
+
+/** 收起后的任务卡：顶部一行，点开恢复卡片（手机与桌面同一形态）。 */
+export function SimTaskLine({ title, done, total, onOpen }: { title: string; done: number; total: number; onOpen: () => void }) {
+  return <button type="button" className="sim-task-line" onClick={onOpen} aria-expanded="false" data-testid="sim-task-open"><strong>引导任务 {done} / {total}</strong><span>{title}</span><i aria-hidden="true">▸</i></button>;
 }
 
 /** 操作区里的记录面板：桌面为右上浮卡，手机为底部抽屉；与任务、控制抽屉互不叠放。由外部按钮控制开合。 */

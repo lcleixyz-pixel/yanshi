@@ -45,7 +45,7 @@ function SimSessionView({ sim, requested }: { sim: SimDef; requested: string | u
   const [session, dispatch] = useReducer(simReducer, undefined, () => {
     const init = impl?.initial(searchParams);
     const scenes = init?.scenes ?? Object.fromEntries(available.map((id) => [id, INITIAL_SCENE]));
-    return createSimSession(screen, scenes, !window.matchMedia('(max-width: 680px)').matches, init ? { options: init.options, taskData: init.taskData } : undefined);
+    return createSimSession(screen, scenes, !window.matchMedia('(max-width: 680px)').matches, init ? { options: init.options, taskData: init.taskData, teacherUsed: init.teacherUsed } : undefined);
   });
   // 地址是屏幕的唯一来源：不认识的屏幕改写为第一块可用屏幕；会话随地址切换当前屏。
   useEffect(() => {

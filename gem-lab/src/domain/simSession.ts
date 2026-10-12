@@ -36,11 +36,12 @@ export interface SimSession {
 export const EMPTY_TASK: SimTaskState = { open: true, done: [], hasSkipped: false, teacherUsed: false, data: {} };
 
 /** taskOpen：任务卡初始是否展开（手机上默认收起为一行，避免盖住操作区）。 */
-export function createSimSession(screen: SimScreenId, initialScenes: Partial<Record<SimScreenId, SimScene>>, taskOpen = true, init?: { options?: SimScene; taskData?: SimScene }): SimSession {
+export function createSimSession(screen: SimScreenId, initialScenes: Partial<Record<SimScreenId, SimScene>>, taskOpen = true, init?: { options?: SimScene; taskData?: SimScene; teacherUsed?: boolean }): SimSession {
   return {
     screen,
     scenes: structuredClone(initialScenes),
-    task: { ...EMPTY_TASK, open: taskOpen, data: structuredClone(init?.taskData ?? {}) },
+    // 深链 ?mode=teacher 进入时也算用过讲师演示，学习记录规则据此判断。
+    task: { ...EMPTY_TASK, open: taskOpen, data: structuredClone(init?.taskData ?? {}), teacherUsed: init?.teacherUsed === true },
     options: structuredClone(init?.options ?? {}),
   };
 }

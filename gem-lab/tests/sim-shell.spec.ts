@@ -68,18 +68,18 @@ test("各仿真主色随仪器；未迁入的屏幕指向现有页面", async ({
   await page.goto("/sim/refractometer/lab");
   expect(await accent()).toBe("#b45309");
   await expect(page.getByTestId("sim-placeholder").getByRole("link", { name: "2D 全样品读数" })).toHaveAttribute("href", "/demo/refractometer");
-  await page.goto("/sim/spectroscope/lab");
+  await page.goto("/sim/spectroscope/learn");
   expect(await accent()).toBe("#0369a1");
-  await expect(page.getByTestId("sim-placeholder").getByRole("link", { name: "照明与夹样练习" })).toHaveAttribute("href", "/explore/spectroscope-bench");
   await page.goto("/sim/polariscope/learn");
   expect(await accent()).toBe("#6d28d9");
+  await expect(page.getByTestId("sim-placeholder").getByRole("link", { name: "认识部件" })).toHaveAttribute("href", "/explore/polariscope?lesson=components");
   // 外壳按钮的字号不被全站按钮样式覆盖（橙色重置钮图标清晰可见）。
   expect(await page.getByTestId("sim-reset").evaluate((el) => getComputedStyle(el).fontSize)).toBe("22px");
 });
 
 test("手机：控制面板收为底部抽屉，任务卡展开为底部抽屉，底栏与首页始终可用，无横向溢出", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/sim/spectroscope/lab");
+  await page.goto("/sim/polariscope/lab");
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
   await expect(page.getByTestId("sim-panel-display")).toBeHidden();
   await page.getByTestId("sim-controls-toggle").click();

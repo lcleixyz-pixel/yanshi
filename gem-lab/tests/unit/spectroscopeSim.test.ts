@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { COURSE_CONFIG } from "../../src/domain/spectroscopeCourse";
 import {
-  applyOperation, courseView, emptyTaskData, labInitial, patchLab, readLabScene, readLearnScene, readTaskData,
+  applyOperation, changeLabSample, courseInitialLab, courseView, emptyTaskData, labInitial, patchLab, readLabScene, readLearnScene, readTaskData,
 } from "../../src/domain/spectroscopeSim";
 
 const machine = "prism";
@@ -95,4 +95,60 @@ test("自由练习改条件会清掉旧标记与核对；样本与备注照常�
   assert.deepEqual(kept.marks, [694]);
   assert.equal(kept.beams, false);
   assert.equal(kept.names, true);
+});
+
+test("实验屏场景：读回视角与已保存的记录，缺字段回落", () => {
+  const saved = readLabScene({ view: "instrument", saved: { notes: "只记了一笔", stale: true } }, machine);
+  assert.equal(saved.view, "instrument");
+  assert.deepEqual(saved.saved, { notes: "只记了一笔", stale: true, pending: false });
+  const broken = readLabScene({ view: "sideways", saved: { notes: 7 } }, machine);
+  assert.equal(broken.view, "whole");
+  assert.equal(broken.saved, null);
+});
+
+test("改条件才作废标记与核对：已保存的记录只标为过期，换视角与显示开关不算改条件", () => {
+  const saved = { ...labInitial(machine), marks: [694], bands: [{ start: 540, end: 620 }], noAbsorption: false, checked: true, saved: { notes: "记一笔", stale: false, pending: false } };
+  const changed = patchLab(saved, { brightness: 0.4 });
+  assert.deepEqual(changed.marks, []);
+  assert.deepEqual(changed.bands, []);
+  assert.equal(changed.checked, false);
+  assert.deepEqual(changed.saved, { notes: "记一笔", stale: true, pending: false });
+  const viewed = patchLab(saved, { view: "lamp", beams: false, values: false });
+  assert.deepEqual(viewed.marks, [694]);
+  assert.deepEqual(viewed.bands, [{ start: 540, end: 620 }]);
+  assert.equal(viewed.checked, true);
+  assert.deepEqual(viewed.saved, { notes: "记一笔", stale: false, pending: false });
+});
+
+test("换样品清掉旧记录；课程起点按机型给出故意不合适的条件", () => {
+  const marked = { ...labInitial(machine), marks: [694], notes: "蓝紫区较暗", saved: { notes: "旧记录", stale: false, pending: false } };
+  const next = changeLabSample(marked, "amethyst");
+  assert.equal(next.sampleId, "amethyst");
+  assert.deepEqual(next.marks, []);
+  assert.equal(next.notes, "");
+  assert.equal(next.saved, null);
+  const prism = courseInitialLab("prism");
+  assert.equal(prism.bench.power, true);
+  assert.equal(prism.bench.samplePlaced, false);
+  assert.equal(prism.bench.slit, 0.72);
+  assert.equal(prism.bench.focus, 0.2);
+  const grating = courseInitialLab("grating");
+  assert.equal(grating.bench.brightness, 0.35);
+  assert.equal(grating.bench.lampLateral, 0.15);
+  assert.equal(grating.bench.dispersion, "grating");
+});
+
+test("课程操作同时写回任务与场景；改条件后标带与已保存记录一并作废", () => {
+  let { task, scene } = start();
+  ({ task, scene } = applyOperation(task, scene, machine, { type: "mark", wavelength: 694 }));
+  assert.deepEqual(scene.marks, [694]);
+  scene = { ...scene, bands: [{ start: 540, end: 620 }], saved: { notes: "旧记录", stale: false, pending: false } };
+  const next = applyOperation(task, scene, machine, { type: "slit", value: 0.8 });
+  assert.deepEqual(next.scene.marks, []);
+  assert.deepEqual(next.scene.bands, []);
+  assert.equal(next.scene.saved.stale, true);
+  assert.equal(next.scene.saved.notes, "旧记录");
+  // 答题不改条件，已保存的记录不受影响。
+  const answered = applyOperation(task, scene, machine, { type: "answer", id: "dispersion", option: 0 });
+  assert.deepEqual(answered.scene.saved, { notes: "旧记录", stale: false, pending: false });
 });

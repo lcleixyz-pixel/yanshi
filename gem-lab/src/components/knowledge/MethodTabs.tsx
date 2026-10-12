@@ -1,13 +1,19 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import clsx from '@/utils/clsx';
 import type { InstrumentMethod } from '@/data/types';
+
+export type MethodPractice = { to: string; label: string } | { note: string };
 
 export default function MethodTabs({
   methods,
   themeHex = '#1f5ba8',
+  practice,
 }: {
   methods: InstrumentMethod[];
   themeHex?: string;
+  /** 按方法 id 给出练习入口（或无练习时的说明），显示在步骤列表下方。 */
+  practice?: Record<string, MethodPractice>;
 }) {
   const [activeId, setActiveId] = useState(methods[0]?.id);
   const active = methods.find((m) => m.id === activeId) ?? methods[0];
@@ -77,6 +83,14 @@ export default function MethodTabs({
           </li>
         ))}
       </ol>
+      {practice?.[active.id] && (() => {
+        const item = practice[active.id];
+        return <div className="border-t border-line px-6 py-4" data-testid={`method-practice-${active.id}`}>
+          {'to' in item
+            ? <Link to={item.to} className="btn-primary text-xs" style={{ background: themeHex }}>{item.label} →</Link>
+            : <p className="text-xs text-ink-3">{item.note}</p>}
+        </div>;
+      })()}
     </div>
   );
 }

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "inputDirectory": "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi-instrument-assets/gem-lab/public/assets/3d/refractometer/paper-optics-v1",
+  "testFile": "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi-instrument-assets/gem-lab/tools/3d-assets/instruments-optics-2026-10-08/refractometer/test_optics.py",
+  "testFileSha256": "240ed5c76ce2fb940f2790f03ae4aa2b32747c74437812116a146da42c56cb19",
+  "opticsModuleSha256": "2a4d8a512f2bac572412560df5686fb25ec9f025e1387a15ceb46f05a5f7d340",
+  "modelSha256": "801a87705268e57f66603b476b29d00109e56cbce06f9e88ce1a59e493ea24d6",
+  "casesSha256": "8c417684ccb4ea3f377702eff98e05f855652949173ca417d3f0fa15e02e2ba8",
+  "scope": "Existing four mathematical unit tests from test_optics.py. These use the author formulas and generated mathematical cases; they do not read the public GLB. The public GLB is separately checked by independent_refractometer.py.",
+  "pass": true,
+  "testsRun": 4,
+  "failures": 0,
+  "errors": 0,
+  "seconds": 0.02619004200096242,
+  "log": "test_energy_and_finite_pupils (public_optics_math_tests.OpticsTests.test_energy_and_finite_pupils) ... ok\ntest_fresnel_known_limits (public_optics_math_tests.OpticsTests.test_fresnel_known_limits) ... ok\ntest_sample_case_and_inaccessible_boundaries (public_optics_math_tests.OpticsTests.test_sample_case_and_inaccessible_boundaries) ... ok\ntest_snell_known_angle (public_optics_math_tests.OpticsTests.test_snell_known_angle) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.001s\n\nOK\n"
+}

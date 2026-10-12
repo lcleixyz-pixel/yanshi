@@ -1,0 +1,82 @@
+{
+  "status": "passed",
+  "checkedAt": "2026-10-05T06:08:11.193505+00:00",
+  "fourIndependentUploadImages": true,
+  "fourImagesShareCameraScaleTargetAndElevation": true,
+  "imageHashesMatchManifest": true,
+  "allProtectedSourceHashesUnchanged": true,
+  "scriptHashMatchesManifest": true,
+  "visualReview": {
+    "reviewed": [
+      "01-front",
+      "02-left",
+      "03-back",
+      "04-right",
+      "hero",
+      "top"
+    ],
+    "notes": "No crops or missing parts. Rings and working gap remain separate; continuous thin support is visible from each side. Back remains a plain reference-unknown panel. Transparent appearance is illustrative, not calibrated optics."
+  },
+  "outputs": [
+    {
+      "file": "B-multiview/01-front.png",
+      "dimensions": [
+        2048,
+        2048
+      ],
+      "bytes": 3250722,
+      "sha256": "234136a03a0394dd6692899518cd1534ec46f9f2671abc9bcc93d1d86bd6938d",
+      "forUpload": true
+    },
+    {
+      "file": "B-multiview/02-left.png",
+      "dimensions": [
+        2048,
+        2048
+      ],
+      "bytes": 3229642,
+      "sha256": "c6f40058e71975415b8567d08a0a16cacc5448614987c25d7e76cea2e206322f",
+      "forUpload": true
+    },
+    {
+      "file": "B-multiview/03-back.png",
+      "dimensions": [
+        2048,
+        2048
+      ],
+      "bytes": 3140587,
+      "sha256": "799d36e1174414adc356f5291b02871b22ef30bd68e9f5f116b49d6a9354ce04",
+      "forUpload": true
+    },
+    {
+      "file": "B-multiview/04-right.png",
+      "dimensions": [
+        2048,
+        2048
+      ],
+      "bytes": 3203158,
+      "sha256": "e988cc14d8bd7fccf979a860c9b550283bb9163ceeab8b78c45cbf73911bc281",
+      "forUpload": true
+    },
+    {
+      "file": "review/hero.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "bytes": 876136,
+      "sha256": "21747fa657a837b20844a03af2f0bc9ba618d5907ff49a891873445755106e85",
+      "forUpload": false
+    },
+    {
+      "file": "review/top.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "bytes": 851045,
+      "sha256": "f52aa019a416834c38c32c7e6067d951587b1da970c2a4504276a7e20a847cc9",
+      "forUpload": false
+    }
+  ]
+}

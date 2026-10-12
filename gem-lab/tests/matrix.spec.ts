@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { SAMPLES } from '../src/data/samples';
+import type { SampleDef } from '../src/data/types';
 
 const progressStorage = {
   state: {
@@ -29,7 +30,13 @@ const instruments = [
     id: 'spectroscope',
     label: '分光镜',
     saveTestId: 'spectroscope-save',
-    prepare: async ({ page }: { page: Page }) => {
+    prepare: async ({ page, sample }: { page: Page; sample: SampleDef }) => {
+      if (sample.spectrum.diagnosticStatus === 'unverified') {
+        await expect(page.getByTestId('spectroscope-unverified-spectrum')).toBeVisible();
+        await expect(page.getByTestId('spectroscope-no-absorption')).toBeDisabled();
+        await expect(page.getByTestId('spectroscope-save')).toHaveText(/保存待核记录/);
+        return;
+      }
       await page.getByTestId('spectroscope-no-absorption').click();
       await expect(page.getByTestId('spectroscope-no-absorption-summary')).toBeVisible();
     },
@@ -51,7 +58,7 @@ test.describe('unknown sample detection matrix', () => {
 
         await page.goto(`/demo/${instrument.id}?sample=${sample.id}&mode=detection&qa=ready`);
         await expect(page.getByTestId('unknown-sample-label').first()).toBeVisible();
-        await instrument.prepare({ page });
+        await instrument.prepare({ page, sample });
 
         const pageText = await page.locator('body').innerText();
         expect(pageText).toContain('未知样品');

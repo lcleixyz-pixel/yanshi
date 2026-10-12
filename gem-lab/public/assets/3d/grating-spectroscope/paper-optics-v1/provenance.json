@@ -1,0 +1,31 @@
+{
+  "assetId": "grating-spectroscope-paper-optics-v1",
+  "version": "paper-optics-v1",
+  "modelSha256": "bc1ae40ae18b12942b5edbd13a4ca5506fe5351d603293ce5274d54d1757e16b",
+  "note": "Web packaging for app integration. Model bytes identical to structure-v1 (no geometry or material change); adds the 2026-10-08 optical cases and sources so the app does not read git-ignored assets-source.",
+  "predecessor": {
+    "path": "../structure-v1/model.glb",
+    "modelSha256": "bc1ae40ae18b12942b5edbd13a4ca5506fe5351d603293ce5274d54d1757e16b"
+  },
+  "from": {
+    "dir": "assets-source/optics-paper-review/2026-10-08/grating-spectroscope",
+    "manifestSha256": "8fe5b50935c2932bf8296609b984d0526cd65cb3130001aa9efc8d49d3e3bdeb",
+    "auditSha256": "7bb99e6acb30eda1f437a3a39bebff6536dac212acfa37f135c6aa290f27f72f"
+  },
+  "assets": {
+    "model.glb": {
+      "sha256": "bc1ae40ae18b12942b5edbd13a4ca5506fe5351d603293ce5274d54d1757e16b"
+    },
+    "optical-cases.json": {
+      "sha256": "cce9fbed63532238583ae7da35e71ffe0b268efad74c93fcb1273648ae5556e0"
+    },
+    "sources.json": {
+      "sha256": "2f414b286bf8113fa09527b68309698ef8884c59ac22b75ad75a928d26639f33"
+    },
+    "poster.png": {
+      "sha256": "cef26cb9d943b1d4c71d08b66036c1a655086d8b83007799b316f9086f1d8898"
+    }
+  },
+  "displayNote": "Incident white light is drawn as a grey line by the app (display-paths), not stored in optical-cases.json.",
+  "packagedBy": "Claude Code, 2026-10-08"
+}

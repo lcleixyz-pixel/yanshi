@@ -105,6 +105,10 @@ export interface GemCharacteristics {
 }
 
 export interface SpectrumFeatures {
+  /** 教学诊断价值；未核定与已知不特征必须区分。未填写者沿用既有资料。 */
+  diagnosticStatus?: 'characteristic' | 'non-diagnostic' | 'unverified';
+  /** 目视观察限制，独立于资料记录的定性吸收强度。 */
+  observationNote?: string;
   /** 用 CSS 渐变绘制时的吸收特征 */
   features: AbsorptionFeature[];
   /** 文字描述 */
@@ -118,6 +122,8 @@ export interface SampleDef {
   category: string;
   difficulty: Difficulty;
   image: string;
+  /** 图片身份/来源限制，复用示意图不得当作该样品实测照片。 */
+  imageNote?: string;
   /** 与样品图/常规成品形态一致，供折射仪互动校验刻面/点测法；不在通用界面展示 */
   refractometerShape: SampleRefractometerShape;
   characteristics: GemCharacteristics;

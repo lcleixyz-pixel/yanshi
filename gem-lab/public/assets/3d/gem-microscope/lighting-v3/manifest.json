@@ -1,0 +1,3723 @@
+{
+  "schemaVersion": 2,
+  "assetId": "gem-microscope-ksw-lighting-v3-web",
+  "model": "model.glb",
+  "blender": "microscope.blend",
+  "units": "uncalibrated source scene units",
+  "coordinateSystem": "glTF Y-up; source Blender Z-up maps x,z,-y",
+  "scaleNote": "保留 KSW6000 Tripo 外形数值，内部参数为未标定教学设定；不是米或毫米实测。",
+  "internalOpticsIllustrative": true,
+  "internalStructureNote": "LED—准直—可退出中央锥镜—外围曲面—样品的路线参考公开论文；曲面参数、导向和横移机构为教学简化，不代表 KRUSS 或飞博尔的实际机构。",
+  "parts": [
+    {
+      "id": "tripo_part_0",
+      "node": "tripo_part_0",
+      "label": "顶照灯与鹅颈",
+      "group": "tripoExterior",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0,
+        0.13,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_1",
+      "node": "tripo_part_1",
+      "label": "圆底座主体",
+      "group": "base",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0,
+        -0.12,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_2",
+      "node": "tripo_part_2",
+      "label": "镜头主体",
+      "group": "tripoExterior",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0,
+        0.13,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_3",
+      "node": "tripo_part_3",
+      "label": "镜臂与物镜外壳",
+      "group": "frame",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0.15,
+        0.06,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_4",
+      "node": "tripo_part_4",
+      "label": "载物台",
+      "group": "stage",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0.14,
+        0.055,
+        0
+      ],
+      "defaultVisible": true,
+      "transparentShell": true
+    },
+    {
+      "id": "tripo_part_5",
+      "node": "tripo_part_5",
+      "label": "台下灯室外壳",
+      "group": "lampHousing",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        -0.16,
+        0,
+        0
+      ],
+      "defaultVisible": true,
+      "transparentShell": true
+    },
+    {
+      "id": "tripo_part_6",
+      "node": "tripo_part_6",
+      "label": "调焦旋钮 A",
+      "group": "frame",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0.15,
+        0.06,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_7",
+      "node": "tripo_part_7",
+      "label": "目镜 A",
+      "group": "tripoExterior",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0,
+        0.13,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_8",
+      "node": "tripo_part_8",
+      "label": "目镜 B",
+      "group": "tripoExterior",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0,
+        0.13,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_9",
+      "node": "tripo_part_9",
+      "label": "升降支架",
+      "group": "frame",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0.15,
+        0.06,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_10",
+      "node": "tripo_part_10",
+      "label": "细鹅颈附件",
+      "group": "tripoExterior",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0,
+        0.13,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_11",
+      "node": "tripo_part_11",
+      "label": "目镜安装筒 A",
+      "group": "tripoExterior",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0,
+        0.13,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_12",
+      "node": "tripo_part_12",
+      "label": "目镜安装筒 B",
+      "group": "tripoExterior",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0,
+        0.13,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_13",
+      "node": "tripo_part_13",
+      "label": "底座连接外壳",
+      "group": "base",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0,
+        -0.12,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_14",
+      "node": "tripo_part_14",
+      "label": "台面窗口环",
+      "group": "stage",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0.14,
+        0.055,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_15",
+      "node": "tripo_part_15",
+      "label": "镜头控制旋钮 A",
+      "group": "tripoExterior",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0,
+        0.13,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_16",
+      "node": "tripo_part_16",
+      "label": "台面旋钮",
+      "group": "stage",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0.14,
+        0.055,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_17",
+      "node": "tripo_part_17",
+      "label": "俯仰轴端 A",
+      "group": "base",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0,
+        -0.12,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_18",
+      "node": "tripo_part_18",
+      "label": "俯仰轴端 B",
+      "group": "base",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0,
+        -0.12,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_19",
+      "node": "tripo_part_19",
+      "label": "调焦旋钮 B",
+      "group": "frame",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0.15,
+        0.06,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_20",
+      "node": "tripo_part_20",
+      "label": "底座俯仰连接座",
+      "group": "base",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0,
+        -0.12,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_21",
+      "node": "tripo_part_21",
+      "label": "宝石夹持件",
+      "group": "stage",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0.14,
+        0.055,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_22",
+      "node": "tripo_part_22",
+      "label": "镜头控制旋钮 B",
+      "group": "tripoExterior",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0,
+        0.13,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_23",
+      "node": "tripo_part_23",
+      "label": "紧固杆 A",
+      "group": "tripoExterior",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0,
+        0.13,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_24",
+      "node": "tripo_part_24",
+      "label": "紧固杆 B",
+      "group": "tripoExterior",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0,
+        0.13,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "tripo_part_26",
+      "node": "tripo_part_26",
+      "label": "台面紧固件",
+      "group": "stage",
+      "note": "保留 KSW6000 Tripo 外形、几何及纹理；名称按外形辨识，非厂家精确部件定义。",
+      "explodeOffset": [
+        0.14,
+        0.055,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "lampHousingCap",
+      "node": "lampHousingCap",
+      "label": "灯室底部封盖",
+      "group": "lampHousing",
+      "note": "通用教学内部结构，不代表厂家真实内部。",
+      "explodeOffset": [
+        0,
+        -0.075,
+        0
+      ],
+      "defaultVisible": true,
+      "transparentShell": true
+    },
+    {
+      "id": "ledHeatSink",
+      "node": "ledHeatSink",
+      "label": "LED 光源与散热座",
+      "group": "source",
+      "note": "通用教学内部结构，不代表厂家真实内部。",
+      "explodeOffset": [
+        0,
+        -0.035,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "collimatorAssembly",
+      "node": "collimatorAssembly",
+      "label": "准直组件（功能示意）",
+      "group": "source",
+      "note": "示意准直输出，不逆向声称厂家镜组、焦距或LED辐射分布。",
+      "explodeOffset": [
+        0,
+        -0.022,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "centralCone",
+      "node": "centralCone",
+      "label": "中央可退出锥形反射器",
+      "group": "centralCone",
+      "note": "暗域时把准直光转为径向光；亮域时在灯室内部平移让开光束，传动为教学简化。",
+      "explodeOffset": [
+        0,
+        0.035,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "coneGuide",
+      "node": "coneGuide",
+      "label": "灯室内短行程导向",
+      "group": "guide",
+      "note": "滑轨位于水平出射光下方和准直束之外；不构造未知厂家齿轮或穿壳传动。",
+      "explodeOffset": [
+        0,
+        -0.018,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "outerReflector",
+      "node": "outerReflector",
+      "label": "外围腰形反射面（教学曲面）",
+      "group": "reflector",
+      "note": "把水平径向光再次反射到样品；参数独立设计，不使用旧椭球两焦点解释。",
+      "explodeOffset": [
+        -0.115,
+        -0.015,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "outerReflectorMount",
+      "node": "outerReflectorMount",
+      "label": "外围反射器固定支架",
+      "group": "reflector",
+      "note": "通用教学内部结构，不代表厂家真实内部。",
+      "explodeOffset": [
+        -0.115,
+        -0.015,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "bottomModeLever",
+      "node": "bottomModeLever",
+      "label": "底光明暗域选择拨钮",
+      "group": "control",
+      "note": "拨钮表达控制关系；未知穿壳传动不建造，内部横移仅为教学简化。",
+      "explodeOffset": [
+        0,
+        0,
+        0.022
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "irisCarrier",
+      "node": "irisCarrier",
+      "label": "独立虹彩光阑支承环",
+      "group": "iris",
+      "note": "通用教学内部结构，不代表厂家真实内部。",
+      "explodeOffset": [
+        0,
+        0.065,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "irisLeaf01",
+      "node": "irisLeaf01",
+      "label": "虹彩光阑叶片 1",
+      "group": "iris",
+      "note": "分层扇区形态目标演示孔径；非厂家连杆结构。",
+      "explodeOffset": [
+        0,
+        0.065,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "irisLeaf02",
+      "node": "irisLeaf02",
+      "label": "虹彩光阑叶片 2",
+      "group": "iris",
+      "note": "分层扇区形态目标演示孔径；非厂家连杆结构。",
+      "explodeOffset": [
+        0,
+        0.069,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "irisLeaf03",
+      "node": "irisLeaf03",
+      "label": "虹彩光阑叶片 3",
+      "group": "iris",
+      "note": "分层扇区形态目标演示孔径；非厂家连杆结构。",
+      "explodeOffset": [
+        0,
+        0.07300000000000001,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "irisLeaf04",
+      "node": "irisLeaf04",
+      "label": "虹彩光阑叶片 4",
+      "group": "iris",
+      "note": "分层扇区形态目标演示孔径；非厂家连杆结构。",
+      "explodeOffset": [
+        0,
+        0.077,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "irisLeaf05",
+      "node": "irisLeaf05",
+      "label": "虹彩光阑叶片 5",
+      "group": "iris",
+      "note": "分层扇区形态目标演示孔径；非厂家连杆结构。",
+      "explodeOffset": [
+        0,
+        0.081,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "irisLeaf06",
+      "node": "irisLeaf06",
+      "label": "虹彩光阑叶片 6",
+      "group": "iris",
+      "note": "分层扇区形态目标演示孔径；非厂家连杆结构。",
+      "explodeOffset": [
+        0,
+        0.085,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "irisLeaf07",
+      "node": "irisLeaf07",
+      "label": "虹彩光阑叶片 7",
+      "group": "iris",
+      "note": "分层扇区形态目标演示孔径；非厂家连杆结构。",
+      "explodeOffset": [
+        0,
+        0.089,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "irisLeaf08",
+      "node": "irisLeaf08",
+      "label": "虹彩光阑叶片 8",
+      "group": "iris",
+      "note": "分层扇区形态目标演示孔径；非厂家连杆结构。",
+      "explodeOffset": [
+        0,
+        0.093,
+        0
+      ],
+      "defaultVisible": true
+    },
+    {
+      "id": "irisControl",
+      "node": "irisControl",
+      "label": "光阑操作环与短柄",
+      "group": "iris",
+      "note": "短柄、转环与叶片形变联动仅表达孔径控制，不代表厂家连杆。",
+      "explodeOffset": [
+        0,
+        0.065,
+        0
+      ],
+      "defaultVisible": true
+    }
+  ],
+  "shellIds": [
+    "tripo_part_4",
+    "tripo_part_5",
+    "lampHousingCap"
+  ],
+  "samplePosition": [
+    0.0673,
+    0.35,
+    -0.0283
+  ],
+  "sampleRadius": 0.009,
+  "optics": {
+    "axis": [
+      0,
+      1,
+      0
+    ],
+    "axisPoint": [
+      0.0673,
+      0.178,
+      -0.0283
+    ],
+    "sourcePosition": [
+      0.0673,
+      0.178,
+      -0.0283
+    ],
+    "sourceRadius": 0.008,
+    "collimatorExit": [
+      0.0673,
+      0.195,
+      -0.0283
+    ],
+    "collimatedBeamRadius": 0.017,
+    "collimatedDirection": [
+      0,
+      1,
+      0
+    ],
+    "beamDefinition": "Ideal parallel beam at authored collimator exit; actual lens imaging and LED etendue are not simulated.",
+    "centralAbsorbingTipRadius": 0.0008,
+    "centralAbsorbingTipNote": "锥尖用极小黑色截顶避免退化几何；该中心束被吸收，不绘作反射环光。",
+    "irisCenter": [
+      0.0673,
+      0.2955,
+      -0.0283
+    ],
+    "irisRadiusRange": [
+      0.006,
+      0.038
+    ],
+    "twoReflectionPaths": [
+      {
+        "exitPoint": [
+          0.070274335,
+          0.195,
+          -0.028691579
+        ],
+        "conePoint": [
+          0.070274335,
+          0.211,
+          -0.028691579
+        ],
+        "outerPoint": [
+          0.14370637,
+          0.211,
+          -0.038359089
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.097257893,
+          0.2955,
+          -0.032244031
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 7.499999999999999
+      },
+      {
+        "exitPoint": [
+          0.070071639,
+          0.195,
+          -0.02944805
+        ],
+        "conePoint": [
+          0.070071639,
+          0.211,
+          -0.02944805
+        ],
+        "outerPoint": [
+          0.138499403,
+          0.211,
+          -0.057791758
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.095216313,
+          0.2955,
+          -0.039863315
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 22.5
+      },
+      {
+        "exitPoint": [
+          0.06968006,
+          0.195,
+          -0.030126284
+        ],
+        "conePoint": [
+          0.06968006,
+          0.211,
+          -0.030126284
+        ],
+        "outerPoint": [
+          0.128440313,
+          0.211,
+          -0.075214612
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.091272281,
+          0.2955,
+          -0.046694578
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 37.5
+      },
+      {
+        "exitPoint": [
+          0.069126284,
+          0.195,
+          -0.03068006
+        ],
+        "conePoint": [
+          0.069126284,
+          0.211,
+          -0.03068006
+        ],
+        "outerPoint": [
+          0.114214612,
+          0.211,
+          -0.089440313
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.085694578,
+          0.2955,
+          -0.052272281
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 52.5
+      },
+      {
+        "exitPoint": [
+          0.06844805,
+          0.195,
+          -0.031071639
+        ],
+        "conePoint": [
+          0.06844805,
+          0.211,
+          -0.031071639
+        ],
+        "outerPoint": [
+          0.096791758,
+          0.211,
+          -0.099499403
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.078863315,
+          0.2955,
+          -0.056216313
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 67.5
+      },
+      {
+        "exitPoint": [
+          0.067691579,
+          0.195,
+          -0.031274335
+        ],
+        "conePoint": [
+          0.067691579,
+          0.211,
+          -0.031274335
+        ],
+        "outerPoint": [
+          0.077359089,
+          0.211,
+          -0.10470637
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.071244031,
+          0.2955,
+          -0.058257893
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 82.5
+      },
+      {
+        "exitPoint": [
+          0.066908421,
+          0.195,
+          -0.031274335
+        ],
+        "conePoint": [
+          0.066908421,
+          0.211,
+          -0.031274335
+        ],
+        "outerPoint": [
+          0.057240911,
+          0.211,
+          -0.10470637
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.063355969,
+          0.2955,
+          -0.058257893
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 97.5
+      },
+      {
+        "exitPoint": [
+          0.06615195,
+          0.195,
+          -0.031071639
+        ],
+        "conePoint": [
+          0.06615195,
+          0.211,
+          -0.031071639
+        ],
+        "outerPoint": [
+          0.037808242,
+          0.211,
+          -0.099499403
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.055736685,
+          0.2955,
+          -0.056216313
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 112.49999999999999
+      },
+      {
+        "exitPoint": [
+          0.065473716,
+          0.195,
+          -0.03068006
+        ],
+        "conePoint": [
+          0.065473716,
+          0.211,
+          -0.03068006
+        ],
+        "outerPoint": [
+          0.020385388,
+          0.211,
+          -0.089440313
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.048905422,
+          0.2955,
+          -0.052272281
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 127.50000000000001
+      },
+      {
+        "exitPoint": [
+          0.06491994,
+          0.195,
+          -0.030126284
+        ],
+        "conePoint": [
+          0.06491994,
+          0.211,
+          -0.030126284
+        ],
+        "outerPoint": [
+          0.006159687,
+          0.211,
+          -0.075214612
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.043327719,
+          0.2955,
+          -0.046694578
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 142.5
+      },
+      {
+        "exitPoint": [
+          0.064528361,
+          0.195,
+          -0.02944805
+        ],
+        "conePoint": [
+          0.064528361,
+          0.211,
+          -0.02944805
+        ],
+        "outerPoint": [
+          -0.003899403,
+          0.211,
+          -0.057791758
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.039383687,
+          0.2955,
+          -0.039863315
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 157.5
+      },
+      {
+        "exitPoint": [
+          0.064325665,
+          0.195,
+          -0.028691579
+        ],
+        "conePoint": [
+          0.064325665,
+          0.211,
+          -0.028691579
+        ],
+        "outerPoint": [
+          -0.00910637,
+          0.211,
+          -0.038359089
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.037342107,
+          0.2955,
+          -0.032244031
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 172.49999999999997
+      },
+      {
+        "exitPoint": [
+          0.064325665,
+          0.195,
+          -0.027908421
+        ],
+        "conePoint": [
+          0.064325665,
+          0.211,
+          -0.027908421
+        ],
+        "outerPoint": [
+          -0.00910637,
+          0.211,
+          -0.018240911
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.037342107,
+          0.2955,
+          -0.024355969
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 187.50000000000003
+      },
+      {
+        "exitPoint": [
+          0.064528361,
+          0.195,
+          -0.02715195
+        ],
+        "conePoint": [
+          0.064528361,
+          0.211,
+          -0.02715195
+        ],
+        "outerPoint": [
+          -0.003899403,
+          0.211,
+          0.001191758
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.039383687,
+          0.2955,
+          -0.016736685
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 202.5
+      },
+      {
+        "exitPoint": [
+          0.06491994,
+          0.195,
+          -0.026473716
+        ],
+        "conePoint": [
+          0.06491994,
+          0.211,
+          -0.026473716
+        ],
+        "outerPoint": [
+          0.006159687,
+          0.211,
+          0.018614612
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.043327719,
+          0.2955,
+          -0.009905422
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 217.5
+      },
+      {
+        "exitPoint": [
+          0.065473716,
+          0.195,
+          -0.02591994
+        ],
+        "conePoint": [
+          0.065473716,
+          0.211,
+          -0.02591994
+        ],
+        "outerPoint": [
+          0.020385388,
+          0.211,
+          0.032840313
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.048905422,
+          0.2955,
+          -0.004327719
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 232.5
+      },
+      {
+        "exitPoint": [
+          0.06615195,
+          0.195,
+          -0.025528361
+        ],
+        "conePoint": [
+          0.06615195,
+          0.211,
+          -0.025528361
+        ],
+        "outerPoint": [
+          0.037808242,
+          0.211,
+          0.042899403
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.055736685,
+          0.2955,
+          -0.000383687
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 247.50000000000003
+      },
+      {
+        "exitPoint": [
+          0.066908421,
+          0.195,
+          -0.025325665
+        ],
+        "conePoint": [
+          0.066908421,
+          0.211,
+          -0.025325665
+        ],
+        "outerPoint": [
+          0.057240911,
+          0.211,
+          0.04810637
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.063355969,
+          0.2955,
+          0.001657893
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 262.5
+      },
+      {
+        "exitPoint": [
+          0.067691579,
+          0.195,
+          -0.025325665
+        ],
+        "conePoint": [
+          0.067691579,
+          0.211,
+          -0.025325665
+        ],
+        "outerPoint": [
+          0.077359089,
+          0.211,
+          0.04810637
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.071244031,
+          0.2955,
+          0.001657893
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 277.5
+      },
+      {
+        "exitPoint": [
+          0.06844805,
+          0.195,
+          -0.025528361
+        ],
+        "conePoint": [
+          0.06844805,
+          0.211,
+          -0.025528361
+        ],
+        "outerPoint": [
+          0.096791758,
+          0.211,
+          0.042899403
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.078863315,
+          0.2955,
+          -0.000383687
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 292.5
+      },
+      {
+        "exitPoint": [
+          0.069126284,
+          0.195,
+          -0.02591994
+        ],
+        "conePoint": [
+          0.069126284,
+          0.211,
+          -0.02591994
+        ],
+        "outerPoint": [
+          0.114214612,
+          0.211,
+          0.032840313
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.085694578,
+          0.2955,
+          -0.004327719
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 307.49999999999994
+      },
+      {
+        "exitPoint": [
+          0.06968006,
+          0.195,
+          -0.026473716
+        ],
+        "conePoint": [
+          0.06968006,
+          0.211,
+          -0.026473716
+        ],
+        "outerPoint": [
+          0.128440313,
+          0.211,
+          0.018614612
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.091272281,
+          0.2955,
+          -0.009905422
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 322.5
+      },
+      {
+        "exitPoint": [
+          0.070071639,
+          0.195,
+          -0.02715195
+        ],
+        "conePoint": [
+          0.070071639,
+          0.211,
+          -0.02715195
+        ],
+        "outerPoint": [
+          0.138499403,
+          0.211,
+          0.001191758
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.095216313,
+          0.2955,
+          -0.016736685
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 337.5
+      },
+      {
+        "exitPoint": [
+          0.070274335,
+          0.195,
+          -0.027908421
+        ],
+        "conePoint": [
+          0.070274335,
+          0.211,
+          -0.027908421
+        ],
+        "outerPoint": [
+          0.14370637,
+          0.211,
+          -0.018240911
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.097257893,
+          0.2955,
+          -0.024355969
+        ],
+        "beamRadius": 0.003,
+        "azimuthDegrees": 352.5
+      },
+      {
+        "exitPoint": [
+          0.075231559,
+          0.195,
+          -0.02934421
+        ],
+        "conePoint": [
+          0.075231559,
+          0.216,
+          -0.02934421
+        ],
+        "outerPoint": [
+          0.146573579,
+          0.216,
+          -0.038736565
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.099541866,
+          0.2955,
+          -0.032544722
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 7.499999999999999
+      },
+      {
+        "exitPoint": [
+          0.074691036,
+          0.195,
+          -0.031361467
+        ],
+        "conePoint": [
+          0.074691036,
+          0.216,
+          -0.031361467
+        ],
+        "outerPoint": [
+          0.141171215,
+          0.216,
+          -0.058898459
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.097344636,
+          0.2955,
+          -0.040744896
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 22.5
+      },
+      {
+        "exitPoint": [
+          0.073646827,
+          0.195,
+          -0.033170091
+        ],
+        "conePoint": [
+          0.073646827,
+          0.216,
+          -0.033170091
+        ],
+        "outerPoint": [
+          0.130734651,
+          0.216,
+          -0.076975119
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.093099914,
+          0.2955,
+          -0.04809697
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 37.5
+      },
+      {
+        "exitPoint": [
+          0.072170091,
+          0.195,
+          -0.034646827
+        ],
+        "conePoint": [
+          0.072170091,
+          0.216,
+          -0.034646827
+        ],
+        "outerPoint": [
+          0.115975119,
+          0.216,
+          -0.091734651
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.08709697,
+          0.2955,
+          -0.054099914
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 52.5
+      },
+      {
+        "exitPoint": [
+          0.070361467,
+          0.195,
+          -0.035691036
+        ],
+        "conePoint": [
+          0.070361467,
+          0.216,
+          -0.035691036
+        ],
+        "outerPoint": [
+          0.097898459,
+          0.216,
+          -0.102171215
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.079744896,
+          0.2955,
+          -0.058344636
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 67.5
+      },
+      {
+        "exitPoint": [
+          0.06834421,
+          0.195,
+          -0.036231559
+        ],
+        "conePoint": [
+          0.06834421,
+          0.216,
+          -0.036231559
+        ],
+        "outerPoint": [
+          0.077736565,
+          0.216,
+          -0.107573579
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.071544722,
+          0.2955,
+          -0.060541866
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 82.5
+      },
+      {
+        "exitPoint": [
+          0.06625579,
+          0.195,
+          -0.036231559
+        ],
+        "conePoint": [
+          0.06625579,
+          0.216,
+          -0.036231559
+        ],
+        "outerPoint": [
+          0.056863435,
+          0.216,
+          -0.107573579
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.063055278,
+          0.2955,
+          -0.060541866
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 97.5
+      },
+      {
+        "exitPoint": [
+          0.064238533,
+          0.195,
+          -0.035691036
+        ],
+        "conePoint": [
+          0.064238533,
+          0.216,
+          -0.035691036
+        ],
+        "outerPoint": [
+          0.036701541,
+          0.216,
+          -0.102171215
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.054855104,
+          0.2955,
+          -0.058344636
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 112.49999999999999
+      },
+      {
+        "exitPoint": [
+          0.062429909,
+          0.195,
+          -0.034646827
+        ],
+        "conePoint": [
+          0.062429909,
+          0.216,
+          -0.034646827
+        ],
+        "outerPoint": [
+          0.018624881,
+          0.216,
+          -0.091734651
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.04750303,
+          0.2955,
+          -0.054099914
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 127.50000000000001
+      },
+      {
+        "exitPoint": [
+          0.060953173,
+          0.195,
+          -0.033170091
+        ],
+        "conePoint": [
+          0.060953173,
+          0.216,
+          -0.033170091
+        ],
+        "outerPoint": [
+          0.003865349,
+          0.216,
+          -0.076975119
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.041500086,
+          0.2955,
+          -0.04809697
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 142.5
+      },
+      {
+        "exitPoint": [
+          0.059908964,
+          0.195,
+          -0.031361467
+        ],
+        "conePoint": [
+          0.059908964,
+          0.216,
+          -0.031361467
+        ],
+        "outerPoint": [
+          -0.006571215,
+          0.216,
+          -0.058898459
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.037255364,
+          0.2955,
+          -0.040744896
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 157.5
+      },
+      {
+        "exitPoint": [
+          0.059368441,
+          0.195,
+          -0.02934421
+        ],
+        "conePoint": [
+          0.059368441,
+          0.216,
+          -0.02934421
+        ],
+        "outerPoint": [
+          -0.011973579,
+          0.216,
+          -0.038736565
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.035058134,
+          0.2955,
+          -0.032544722
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 172.49999999999997
+      },
+      {
+        "exitPoint": [
+          0.059368441,
+          0.195,
+          -0.02725579
+        ],
+        "conePoint": [
+          0.059368441,
+          0.216,
+          -0.02725579
+        ],
+        "outerPoint": [
+          -0.011973579,
+          0.216,
+          -0.017863435
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.035058134,
+          0.2955,
+          -0.024055278
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 187.50000000000003
+      },
+      {
+        "exitPoint": [
+          0.059908964,
+          0.195,
+          -0.025238533
+        ],
+        "conePoint": [
+          0.059908964,
+          0.216,
+          -0.025238533
+        ],
+        "outerPoint": [
+          -0.006571215,
+          0.216,
+          0.002298459
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.037255364,
+          0.2955,
+          -0.015855104
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 202.5
+      },
+      {
+        "exitPoint": [
+          0.060953173,
+          0.195,
+          -0.023429909
+        ],
+        "conePoint": [
+          0.060953173,
+          0.216,
+          -0.023429909
+        ],
+        "outerPoint": [
+          0.003865349,
+          0.216,
+          0.020375119
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.041500086,
+          0.2955,
+          -0.00850303
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 217.5
+      },
+      {
+        "exitPoint": [
+          0.062429909,
+          0.195,
+          -0.021953173
+        ],
+        "conePoint": [
+          0.062429909,
+          0.216,
+          -0.021953173
+        ],
+        "outerPoint": [
+          0.018624881,
+          0.216,
+          0.035134651
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.04750303,
+          0.2955,
+          -0.002500086
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 232.5
+      },
+      {
+        "exitPoint": [
+          0.064238533,
+          0.195,
+          -0.020908964
+        ],
+        "conePoint": [
+          0.064238533,
+          0.216,
+          -0.020908964
+        ],
+        "outerPoint": [
+          0.036701541,
+          0.216,
+          0.045571215
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.054855104,
+          0.2955,
+          0.001744636
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 247.50000000000003
+      },
+      {
+        "exitPoint": [
+          0.06625579,
+          0.195,
+          -0.020368441
+        ],
+        "conePoint": [
+          0.06625579,
+          0.216,
+          -0.020368441
+        ],
+        "outerPoint": [
+          0.056863435,
+          0.216,
+          0.050973579
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.063055278,
+          0.2955,
+          0.003941866
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 262.5
+      },
+      {
+        "exitPoint": [
+          0.06834421,
+          0.195,
+          -0.020368441
+        ],
+        "conePoint": [
+          0.06834421,
+          0.216,
+          -0.020368441
+        ],
+        "outerPoint": [
+          0.077736565,
+          0.216,
+          0.050973579
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.071544722,
+          0.2955,
+          0.003941866
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 277.5
+      },
+      {
+        "exitPoint": [
+          0.070361467,
+          0.195,
+          -0.020908964
+        ],
+        "conePoint": [
+          0.070361467,
+          0.216,
+          -0.020908964
+        ],
+        "outerPoint": [
+          0.097898459,
+          0.216,
+          0.045571215
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.079744896,
+          0.2955,
+          0.001744636
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 292.5
+      },
+      {
+        "exitPoint": [
+          0.072170091,
+          0.195,
+          -0.021953173
+        ],
+        "conePoint": [
+          0.072170091,
+          0.216,
+          -0.021953173
+        ],
+        "outerPoint": [
+          0.115975119,
+          0.216,
+          0.035134651
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.08709697,
+          0.2955,
+          -0.002500086
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 307.49999999999994
+      },
+      {
+        "exitPoint": [
+          0.073646827,
+          0.195,
+          -0.023429909
+        ],
+        "conePoint": [
+          0.073646827,
+          0.216,
+          -0.023429909
+        ],
+        "outerPoint": [
+          0.130734651,
+          0.216,
+          0.020375119
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.093099914,
+          0.2955,
+          -0.00850303
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 322.5
+      },
+      {
+        "exitPoint": [
+          0.074691036,
+          0.195,
+          -0.025238533
+        ],
+        "conePoint": [
+          0.074691036,
+          0.216,
+          -0.025238533
+        ],
+        "outerPoint": [
+          0.141171215,
+          0.216,
+          0.002298459
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.097344636,
+          0.2955,
+          -0.015855104
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 337.5
+      },
+      {
+        "exitPoint": [
+          0.075231559,
+          0.195,
+          -0.02725579
+        ],
+        "conePoint": [
+          0.075231559,
+          0.216,
+          -0.02725579
+        ],
+        "outerPoint": [
+          0.146573579,
+          0.216,
+          -0.017863435
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.099541866,
+          0.2955,
+          -0.024055278
+        ],
+        "beamRadius": 0.008,
+        "azimuthDegrees": 352.5
+      },
+      {
+        "exitPoint": [
+          0.081180228,
+          0.195,
+          -0.030127367
+        ],
+        "conePoint": [
+          0.081180228,
+          0.222,
+          -0.030127367
+        ],
+        "outerPoint": [
+          0.149875594,
+          0.222,
+          -0.039171283
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.10245914,
+          0.2955,
+          -0.032928789
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 7.499999999999999
+      },
+      {
+        "exitPoint": [
+          0.080234313,
+          0.195,
+          -0.033657568
+        ],
+        "conePoint": [
+          0.080234313,
+          0.222,
+          -0.033657568
+        ],
+        "outerPoint": [
+          0.144248204,
+          0.222,
+          -0.06017299
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.100063102,
+          0.2955,
+          -0.041870921
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 22.5
+      },
+      {
+        "exitPoint": [
+          0.078406947,
+          0.195,
+          -0.03682266
+        ],
+        "conePoint": [
+          0.078406947,
+          0.222,
+          -0.03682266
+        ],
+        "outerPoint": [
+          0.133376921,
+          0.222,
+          -0.079002604
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.095434314,
+          0.2955,
+          -0.049888218
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 37.5
+      },
+      {
+        "exitPoint": [
+          0.07582266,
+          0.195,
+          -0.039406947
+        ],
+        "conePoint": [
+          0.07582266,
+          0.222,
+          -0.039406947
+        ],
+        "outerPoint": [
+          0.118002604,
+          0.222,
+          -0.094376921
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.088888218,
+          0.2955,
+          -0.056434314
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 52.5
+      },
+      {
+        "exitPoint": [
+          0.072657568,
+          0.195,
+          -0.041234313
+        ],
+        "conePoint": [
+          0.072657568,
+          0.222,
+          -0.041234313
+        ],
+        "outerPoint": [
+          0.09917299,
+          0.222,
+          -0.105248204
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.080870921,
+          0.2955,
+          -0.061063102
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 67.5
+      },
+      {
+        "exitPoint": [
+          0.069127367,
+          0.195,
+          -0.042180228
+        ],
+        "conePoint": [
+          0.069127367,
+          0.222,
+          -0.042180228
+        ],
+        "outerPoint": [
+          0.078171283,
+          0.222,
+          -0.110875594
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.071928789,
+          0.2955,
+          -0.06345914
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 82.5
+      },
+      {
+        "exitPoint": [
+          0.065472633,
+          0.195,
+          -0.042180228
+        ],
+        "conePoint": [
+          0.065472633,
+          0.222,
+          -0.042180228
+        ],
+        "outerPoint": [
+          0.056428717,
+          0.222,
+          -0.110875594
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.062671211,
+          0.2955,
+          -0.06345914
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 97.5
+      },
+      {
+        "exitPoint": [
+          0.061942432,
+          0.195,
+          -0.041234313
+        ],
+        "conePoint": [
+          0.061942432,
+          0.222,
+          -0.041234313
+        ],
+        "outerPoint": [
+          0.03542701,
+          0.222,
+          -0.105248204
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.053729079,
+          0.2955,
+          -0.061063102
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 112.49999999999999
+      },
+      {
+        "exitPoint": [
+          0.05877734,
+          0.195,
+          -0.039406947
+        ],
+        "conePoint": [
+          0.05877734,
+          0.222,
+          -0.039406947
+        ],
+        "outerPoint": [
+          0.016597396,
+          0.222,
+          -0.094376921
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.045711782,
+          0.2955,
+          -0.056434314
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 127.50000000000001
+      },
+      {
+        "exitPoint": [
+          0.056193053,
+          0.195,
+          -0.03682266
+        ],
+        "conePoint": [
+          0.056193053,
+          0.222,
+          -0.03682266
+        ],
+        "outerPoint": [
+          0.001223079,
+          0.222,
+          -0.079002604
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.039165686,
+          0.2955,
+          -0.049888218
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 142.5
+      },
+      {
+        "exitPoint": [
+          0.054365687,
+          0.195,
+          -0.033657568
+        ],
+        "conePoint": [
+          0.054365687,
+          0.222,
+          -0.033657568
+        ],
+        "outerPoint": [
+          -0.009648204,
+          0.222,
+          -0.06017299
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.034536898,
+          0.2955,
+          -0.041870921
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 157.5
+      },
+      {
+        "exitPoint": [
+          0.053419772,
+          0.195,
+          -0.030127367
+        ],
+        "conePoint": [
+          0.053419772,
+          0.222,
+          -0.030127367
+        ],
+        "outerPoint": [
+          -0.015275594,
+          0.222,
+          -0.039171283
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.03214086,
+          0.2955,
+          -0.032928789
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 172.49999999999997
+      },
+      {
+        "exitPoint": [
+          0.053419772,
+          0.195,
+          -0.026472633
+        ],
+        "conePoint": [
+          0.053419772,
+          0.222,
+          -0.026472633
+        ],
+        "outerPoint": [
+          -0.015275594,
+          0.222,
+          -0.017428717
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.03214086,
+          0.2955,
+          -0.023671211
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 187.50000000000003
+      },
+      {
+        "exitPoint": [
+          0.054365687,
+          0.195,
+          -0.022942432
+        ],
+        "conePoint": [
+          0.054365687,
+          0.222,
+          -0.022942432
+        ],
+        "outerPoint": [
+          -0.009648204,
+          0.222,
+          0.00357299
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.034536898,
+          0.2955,
+          -0.014729079
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 202.5
+      },
+      {
+        "exitPoint": [
+          0.056193053,
+          0.195,
+          -0.01977734
+        ],
+        "conePoint": [
+          0.056193053,
+          0.222,
+          -0.01977734
+        ],
+        "outerPoint": [
+          0.001223079,
+          0.222,
+          0.022402604
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.039165686,
+          0.2955,
+          -0.006711782
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 217.5
+      },
+      {
+        "exitPoint": [
+          0.05877734,
+          0.195,
+          -0.017193053
+        ],
+        "conePoint": [
+          0.05877734,
+          0.222,
+          -0.017193053
+        ],
+        "outerPoint": [
+          0.016597396,
+          0.222,
+          0.037776921
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.045711782,
+          0.2955,
+          -0.000165686
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 232.5
+      },
+      {
+        "exitPoint": [
+          0.061942432,
+          0.195,
+          -0.015365687
+        ],
+        "conePoint": [
+          0.061942432,
+          0.222,
+          -0.015365687
+        ],
+        "outerPoint": [
+          0.03542701,
+          0.222,
+          0.048648204
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.053729079,
+          0.2955,
+          0.004463102
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 247.50000000000003
+      },
+      {
+        "exitPoint": [
+          0.065472633,
+          0.195,
+          -0.014419772
+        ],
+        "conePoint": [
+          0.065472633,
+          0.222,
+          -0.014419772
+        ],
+        "outerPoint": [
+          0.056428717,
+          0.222,
+          0.054275594
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.062671211,
+          0.2955,
+          0.00685914
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 262.5
+      },
+      {
+        "exitPoint": [
+          0.069127367,
+          0.195,
+          -0.014419772
+        ],
+        "conePoint": [
+          0.069127367,
+          0.222,
+          -0.014419772
+        ],
+        "outerPoint": [
+          0.078171283,
+          0.222,
+          0.054275594
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.071928789,
+          0.2955,
+          0.00685914
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 277.5
+      },
+      {
+        "exitPoint": [
+          0.072657568,
+          0.195,
+          -0.015365687
+        ],
+        "conePoint": [
+          0.072657568,
+          0.222,
+          -0.015365687
+        ],
+        "outerPoint": [
+          0.09917299,
+          0.222,
+          0.048648204
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.080870921,
+          0.2955,
+          0.004463102
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 292.5
+      },
+      {
+        "exitPoint": [
+          0.07582266,
+          0.195,
+          -0.017193053
+        ],
+        "conePoint": [
+          0.07582266,
+          0.222,
+          -0.017193053
+        ],
+        "outerPoint": [
+          0.118002604,
+          0.222,
+          0.037776921
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.088888218,
+          0.2955,
+          -0.000165686
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 307.49999999999994
+      },
+      {
+        "exitPoint": [
+          0.078406947,
+          0.195,
+          -0.01977734
+        ],
+        "conePoint": [
+          0.078406947,
+          0.222,
+          -0.01977734
+        ],
+        "outerPoint": [
+          0.133376921,
+          0.222,
+          0.022402604
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.095434314,
+          0.2955,
+          -0.006711782
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 322.5
+      },
+      {
+        "exitPoint": [
+          0.080234313,
+          0.195,
+          -0.022942432
+        ],
+        "conePoint": [
+          0.080234313,
+          0.222,
+          -0.022942432
+        ],
+        "outerPoint": [
+          0.144248204,
+          0.222,
+          0.00357299
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.100063102,
+          0.2955,
+          -0.014729079
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 337.5
+      },
+      {
+        "exitPoint": [
+          0.081180228,
+          0.195,
+          -0.026472633
+        ],
+        "conePoint": [
+          0.081180228,
+          0.222,
+          -0.026472633
+        ],
+        "outerPoint": [
+          0.149875594,
+          0.222,
+          -0.017428717
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.10245914,
+          0.2955,
+          -0.023671211
+        ],
+        "beamRadius": 0.014,
+        "azimuthDegrees": 352.5
+      },
+      {
+        "exitPoint": [
+          0.084154563,
+          0.195,
+          -0.030518945
+        ],
+        "conePoint": [
+          0.084154563,
+          0.225,
+          -0.030518945
+        ],
+        "outerPoint": [
+          0.151469888,
+          0.225,
+          -0.039381176
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.103998071,
+          0.2955,
+          -0.033131393
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 7.499999999999999
+      },
+      {
+        "exitPoint": [
+          0.083005952,
+          0.195,
+          -0.034805618
+        ],
+        "conePoint": [
+          0.083005952,
+          0.225,
+          -0.034805618
+        ],
+        "outerPoint": [
+          0.145733849,
+          0.225,
+          -0.060788364
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.101497158,
+          0.2955,
+          -0.042464927
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 22.5
+      },
+      {
+        "exitPoint": [
+          0.080787007,
+          0.195,
+          -0.038648944
+        ],
+        "conePoint": [
+          0.080787007,
+          0.225,
+          -0.038648944
+        ],
+        "outerPoint": [
+          0.134652673,
+          0.225,
+          -0.079981524
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.096665765,
+          0.2955,
+          -0.050833144
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 37.5
+      },
+      {
+        "exitPoint": [
+          0.077648944,
+          0.195,
+          -0.041787007
+        ],
+        "conePoint": [
+          0.077648944,
+          0.225,
+          -0.041787007
+        ],
+        "outerPoint": [
+          0.118981524,
+          0.225,
+          -0.095652673
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.089833144,
+          0.2955,
+          -0.057665765
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 52.5
+      },
+      {
+        "exitPoint": [
+          0.073805618,
+          0.195,
+          -0.044005952
+        ],
+        "conePoint": [
+          0.073805618,
+          0.225,
+          -0.044005952
+        ],
+        "outerPoint": [
+          0.099788364,
+          0.225,
+          -0.106733849
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.081464927,
+          0.2955,
+          -0.062497158
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 67.5
+      },
+      {
+        "exitPoint": [
+          0.069518945,
+          0.195,
+          -0.045154563
+        ],
+        "conePoint": [
+          0.069518945,
+          0.225,
+          -0.045154563
+        ],
+        "outerPoint": [
+          0.078381176,
+          0.225,
+          -0.112469888
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.072131393,
+          0.2955,
+          -0.064998071
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 82.5
+      },
+      {
+        "exitPoint": [
+          0.065081055,
+          0.195,
+          -0.045154563
+        ],
+        "conePoint": [
+          0.065081055,
+          0.225,
+          -0.045154563
+        ],
+        "outerPoint": [
+          0.056218824,
+          0.225,
+          -0.112469888
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.062468607,
+          0.2955,
+          -0.064998071
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 97.5
+      },
+      {
+        "exitPoint": [
+          0.060794382,
+          0.195,
+          -0.044005952
+        ],
+        "conePoint": [
+          0.060794382,
+          0.225,
+          -0.044005952
+        ],
+        "outerPoint": [
+          0.034811636,
+          0.225,
+          -0.106733849
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.053135073,
+          0.2955,
+          -0.062497158
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 112.49999999999999
+      },
+      {
+        "exitPoint": [
+          0.056951056,
+          0.195,
+          -0.041787007
+        ],
+        "conePoint": [
+          0.056951056,
+          0.225,
+          -0.041787007
+        ],
+        "outerPoint": [
+          0.015618476,
+          0.225,
+          -0.095652673
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.044766856,
+          0.2955,
+          -0.057665765
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 127.50000000000001
+      },
+      {
+        "exitPoint": [
+          0.053812993,
+          0.195,
+          -0.038648944
+        ],
+        "conePoint": [
+          0.053812993,
+          0.225,
+          -0.038648944
+        ],
+        "outerPoint": [
+          -0.000052673,
+          0.225,
+          -0.079981524
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.037934235,
+          0.2955,
+          -0.050833144
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 142.5
+      },
+      {
+        "exitPoint": [
+          0.051594048,
+          0.195,
+          -0.034805618
+        ],
+        "conePoint": [
+          0.051594048,
+          0.225,
+          -0.034805618
+        ],
+        "outerPoint": [
+          -0.011133849,
+          0.225,
+          -0.060788364
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.033102842,
+          0.2955,
+          -0.042464927
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 157.5
+      },
+      {
+        "exitPoint": [
+          0.050445437,
+          0.195,
+          -0.030518945
+        ],
+        "conePoint": [
+          0.050445437,
+          0.225,
+          -0.030518945
+        ],
+        "outerPoint": [
+          -0.016869888,
+          0.225,
+          -0.039381176
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.030601929,
+          0.2955,
+          -0.033131393
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 172.49999999999997
+      },
+      {
+        "exitPoint": [
+          0.050445437,
+          0.195,
+          -0.026081055
+        ],
+        "conePoint": [
+          0.050445437,
+          0.225,
+          -0.026081055
+        ],
+        "outerPoint": [
+          -0.016869888,
+          0.225,
+          -0.017218824
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.030601929,
+          0.2955,
+          -0.023468607
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 187.50000000000003
+      },
+      {
+        "exitPoint": [
+          0.051594048,
+          0.195,
+          -0.021794382
+        ],
+        "conePoint": [
+          0.051594048,
+          0.225,
+          -0.021794382
+        ],
+        "outerPoint": [
+          -0.011133849,
+          0.225,
+          0.004188364
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.033102842,
+          0.2955,
+          -0.014135073
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 202.5
+      },
+      {
+        "exitPoint": [
+          0.053812993,
+          0.195,
+          -0.017951056
+        ],
+        "conePoint": [
+          0.053812993,
+          0.225,
+          -0.017951056
+        ],
+        "outerPoint": [
+          -0.000052673,
+          0.225,
+          0.023381524
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.037934235,
+          0.2955,
+          -0.005766856
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 217.5
+      },
+      {
+        "exitPoint": [
+          0.056951056,
+          0.195,
+          -0.014812993
+        ],
+        "conePoint": [
+          0.056951056,
+          0.225,
+          -0.014812993
+        ],
+        "outerPoint": [
+          0.015618476,
+          0.225,
+          0.039052673
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.044766856,
+          0.2955,
+          0.001065765
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 232.5
+      },
+      {
+        "exitPoint": [
+          0.060794382,
+          0.195,
+          -0.012594048
+        ],
+        "conePoint": [
+          0.060794382,
+          0.225,
+          -0.012594048
+        ],
+        "outerPoint": [
+          0.034811636,
+          0.225,
+          0.050133849
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.053135073,
+          0.2955,
+          0.005897158
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 247.50000000000003
+      },
+      {
+        "exitPoint": [
+          0.065081055,
+          0.195,
+          -0.011445437
+        ],
+        "conePoint": [
+          0.065081055,
+          0.225,
+          -0.011445437
+        ],
+        "outerPoint": [
+          0.056218824,
+          0.225,
+          0.055869888
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.062468607,
+          0.2955,
+          0.008398071
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 262.5
+      },
+      {
+        "exitPoint": [
+          0.069518945,
+          0.195,
+          -0.011445437
+        ],
+        "conePoint": [
+          0.069518945,
+          0.225,
+          -0.011445437
+        ],
+        "outerPoint": [
+          0.078381176,
+          0.225,
+          0.055869888
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.072131393,
+          0.2955,
+          0.008398071
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 277.5
+      },
+      {
+        "exitPoint": [
+          0.073805618,
+          0.195,
+          -0.012594048
+        ],
+        "conePoint": [
+          0.073805618,
+          0.225,
+          -0.012594048
+        ],
+        "outerPoint": [
+          0.099788364,
+          0.225,
+          0.050133849
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.081464927,
+          0.2955,
+          0.005897158
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 292.5
+      },
+      {
+        "exitPoint": [
+          0.077648944,
+          0.195,
+          -0.014812993
+        ],
+        "conePoint": [
+          0.077648944,
+          0.225,
+          -0.014812993
+        ],
+        "outerPoint": [
+          0.118981524,
+          0.225,
+          0.039052673
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.089833144,
+          0.2955,
+          0.001065765
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 307.49999999999994
+      },
+      {
+        "exitPoint": [
+          0.080787007,
+          0.195,
+          -0.017951056
+        ],
+        "conePoint": [
+          0.080787007,
+          0.225,
+          -0.017951056
+        ],
+        "outerPoint": [
+          0.134652673,
+          0.225,
+          0.023381524
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.096665765,
+          0.2955,
+          -0.005766856
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 322.5
+      },
+      {
+        "exitPoint": [
+          0.083005952,
+          0.195,
+          -0.021794382
+        ],
+        "conePoint": [
+          0.083005952,
+          0.225,
+          -0.021794382
+        ],
+        "outerPoint": [
+          0.145733849,
+          0.225,
+          0.004188364
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.101497158,
+          0.2955,
+          -0.014135073
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 337.5
+      },
+      {
+        "exitPoint": [
+          0.084154563,
+          0.195,
+          -0.026081055
+        ],
+        "conePoint": [
+          0.084154563,
+          0.225,
+          -0.026081055
+        ],
+        "outerPoint": [
+          0.151469888,
+          0.225,
+          -0.017218824
+        ],
+        "samplePoint": [
+          0.0673,
+          0.35,
+          -0.0283
+        ],
+        "irisPoint": [
+          0.103998071,
+          0.2955,
+          -0.023468607
+        ],
+        "beamRadius": 0.017,
+        "azimuthDegrees": 352.5
+      }
+    ],
+    "objectiveCenter": [
+      0.0673,
+      0.527,
+      -0.0283
+    ],
+    "objectiveRadius": 0.035,
+    "objectivePlaneY": 0.527,
+    "focusRange": [
+      -0.012,
+      0.012
+    ],
+    "receiverNodes": [
+      "tripo_part_3"
+    ],
+    "acceptanceProxyNote": "实际双路入口瞳未知；半径 .035 同轴圆盘是保守教学代理，焦程仅用于净空验证。",
+    "coneReflector": {
+      "node": "coneReflectorSurface",
+      "groupNode": "centralCone",
+      "apex": [
+        0.0673,
+        0.208,
+        -0.0283
+      ],
+      "radius": 0.023,
+      "halfAngleDegrees": 45,
+      "radialRange": [
+        0.0008,
+        0.023
+      ],
+      "formula": "z = .208 + r (Blender Z-up)"
+    },
+    "outerReflector": {
+      "node": "outerReflector",
+      "radialFormula": "r(z) = (.236^2 - (.350 - z)^2) / (2 * .236)",
+      "parameterC": 0.236,
+      "verticalRange": [
+        0.208,
+        0.233
+      ],
+      "radialRange": [
+        0.07527966101694915,
+        0.08899788135593222
+      ],
+      "note": "回转外围曲面将水平径向光反射向样品；不是旧椭球，也不是厂家实测曲面。"
+    },
+    "supportOcclusion": {
+      "azimuthDegrees": -90,
+      "halfSectorDegrees": 3,
+      "node": "coneSupportStem",
+      "note": "窄支杆遮住少量方位；示意光线避开此扇区，不宣称 360° 均匀照明。"
+    },
+    "protectiveWindow": "omitted: no verified physical basis",
+    "modePolicy": "darkfield: cone centered, two reflections, direct beam blocked; brightfield: cone parked +X, axial parallel beam, outer reflector unilluminated; off: emitter disabled",
+    "intermediateStatePolicy": "Moving cone between modes is a transition, not a stable brightfield/darkfield observation."
+  },
+  "iris": {
+    "bladeNodes": [
+      "irisLeaf01",
+      "irisLeaf02",
+      "irisLeaf03",
+      "irisLeaf04",
+      "irisLeaf05",
+      "irisLeaf06",
+      "irisLeaf07",
+      "irisLeaf08"
+    ],
+    "type": "morphTargets",
+    "range": [
+      0,
+      1
+    ],
+    "morphTarget": "ApertureClosed",
+    "morphTargetIndex": 0,
+    "influenceExpression": "1 - irisOpen",
+    "radiusMapping": {
+      "min": 0.006,
+      "max": 0.038,
+      "expression": ".006 + .032 * irisOpen"
+    },
+    "note": "复用旧分层叶片的教学孔径演示，不代表真实传动。"
+  },
+  "centralCone": {
+    "node": "centralCone",
+    "axis": [
+      1,
+      0,
+      0
+    ],
+    "openOffset": [
+      0.058,
+      0,
+      0
+    ],
+    "closedPosition": [
+      0.0673,
+      0.208,
+      -0.0283
+    ],
+    "defaultState": "centered",
+    "note": "只在灯室内短距横移；外部拨钮通过简化连杆控制，不复刻厂家传动。"
+  },
+  "controls": {
+    "modeNode": "bottomModeLever",
+    "modeAction": "centralCone translation +X .058",
+    "modePivot": [
+      0.0963,
+      0.202,
+      0.0847
+    ],
+    "modeRotationAxis": [
+      0,
+      0,
+      -1
+    ],
+    "modeAngleRangeDegrees": [
+      0,
+      60
+    ],
+    "modeNote": "外部拨钮只表达控制关系；穿壳传动未知，不构造齿轮或连杆。",
+    "collimatorNode": "collimatorAssembly",
+    "irisHandleNode": "irisHandle",
+    "irisControlRingNode": "irisControl",
+    "irisPivot": [
+      0.0673,
+      0.2995,
+      -0.0283
+    ],
+    "irisRotationAxis": [
+      0,
+      1,
+      0
+    ],
+    "irisAngleRangeDegrees": [
+      0,
+      32
+    ]
+  },
+  "movingAssemblyNode": "centralCone",
+  "movingSurfaceNode": "coneReflectorSurface",
+  "transparentOpticalNodes": [
+    "collimatorExit"
+  ],
+  "mechanicalContactPairs": [
+    [
+      "coneSliderFoot",
+      "coneGuideLeft"
+    ],
+    [
+      "coneSliderFoot",
+      "coneGuideRight"
+    ]
+  ],
+  "staticInternalNodes": [
+    "lampHousingLiner",
+    "stageWellLiner",
+    "lampHousingCap",
+    "collimatorHousing",
+    "collimatorRetainer",
+    "outerReflector",
+    "outerReflectorMount",
+    "coneGuideLeft",
+    "coneGuideRight",
+    "coneGuideMount"
+  ],
+  "lampEmitterNode": "lampEmitter",
+  "collimatorExitNode": "collimatorExit",
+  "defaultMode": "darkfield",
+  "chamberReview": {
+    "center": [
+      0.0673,
+      0.233,
+      -0.0283
+    ],
+    "radius": 0.12,
+    "cutPlane": {
+      "normal": [
+        0,
+        0,
+        -1
+      ],
+      "point": [
+        0.0673,
+        0.23,
+        -0.0283
+      ],
+      "note": "剖切前半侧灯室只用于查看；不是移走实体光学零件。"
+    },
+    "hideUpperGroups": [
+      "frame",
+      "stage",
+      "tripoExterior"
+    ],
+    "retainCloudNodes": [
+      "tripo_part_4",
+      "tripo_part_5",
+      "tripo_part_14",
+      "tripo_part_16",
+      "tripo_part_21",
+      "tripo_part_26"
+    ]
+  },
+  "lampHousingEnvelope": {
+    "center": [
+      0.0673,
+      0.221,
+      -0.0283
+    ],
+    "heightRange": [
+      0.169,
+      0.273
+    ],
+    "innerRadiusRange": [
+      0.1015,
+      0.1105
+    ]
+  },
+  "source": {
+    "preservedOriginalMeshNames": [
+      "tripo_part_0",
+      "tripo_part_1",
+      "tripo_part_2",
+      "tripo_part_3",
+      "tripo_part_4",
+      "tripo_part_5",
+      "tripo_part_6",
+      "tripo_part_7",
+      "tripo_part_8",
+      "tripo_part_9",
+      "tripo_part_10",
+      "tripo_part_11",
+      "tripo_part_12",
+      "tripo_part_13",
+      "tripo_part_14",
+      "tripo_part_15",
+      "tripo_part_16",
+      "tripo_part_17",
+      "tripo_part_18",
+      "tripo_part_19",
+      "tripo_part_20",
+      "tripo_part_21",
+      "tripo_part_22",
+      "tripo_part_23",
+      "tripo_part_24",
+      "tripo_part_26"
+    ],
+    "removedNodes": [
+      "tripo_part_25"
+    ],
+    "note": "原 26 个云外形网格及 UV 不改；不切旧长槽，原不透明窗口片去除且不新增透明保护窗。",
+    "file": "../candidate-textured.glb",
+    "sha256": "c7dc8413205c744f83dd53b6332ff80e3b53362dc0471f3aa048151688a909ea",
+    "originalPolygonCounts": {
+      "tripo_part_0": 298308,
+      "tripo_part_1": 264846,
+      "tripo_part_10": 75369,
+      "tripo_part_11": 53076,
+      "tripo_part_12": 46100,
+      "tripo_part_13": 43052,
+      "tripo_part_14": 39942,
+      "tripo_part_15": 16158,
+      "tripo_part_16": 10457,
+      "tripo_part_17": 13579,
+      "tripo_part_18": 14480,
+      "tripo_part_19": 53915,
+      "tripo_part_2": 177834,
+      "tripo_part_20": 30498,
+      "tripo_part_21": 26361,
+      "tripo_part_22": 16758,
+      "tripo_part_23": 9445,
+      "tripo_part_24": 8465,
+      "tripo_part_25": 7329,
+      "tripo_part_26": 3739,
+      "tripo_part_3": 156702,
+      "tripo_part_4": 127042,
+      "tripo_part_5": 119899,
+      "tripo_part_6": 54250,
+      "tripo_part_7": 86359,
+      "tripo_part_8": 80817,
+      "tripo_part_9": 51795
+    },
+    "independentInnerWallNodes": [
+      "lampHousingLiner",
+      "stageWellLiner"
+    ],
+    "surfaceClippedNode": null
+  },
+  "modelSha256": "6a24b6208af5a7f23fce1cdafc846a52a0fc4bbbb6ff8a6cca8d4a9d50767091",
+  "modelBytes": 4894312,
+  "web": {
+    "sourceModelSha256": "b55e7b8299d63814409b955b1a8279cfff3dd401456e43520f98a1a938c98f68",
+    "sourceBytes": 54092072,
+    "simplifiedExteriorRatio": 0.22,
+    "maxTexture": 1024,
+    "textureFormat": "webp",
+    "trianglesBefore": 2025182,
+    "trianglesAfter": 568942,
+    "note": "Only tripo_part_* exterior meshes simplified; teaching parts, morph targets, node names and transforms unchanged."
+  }
+}

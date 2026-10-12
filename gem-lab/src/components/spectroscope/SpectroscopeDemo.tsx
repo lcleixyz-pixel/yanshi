@@ -28,10 +28,10 @@ const STEP_META: Record<StepId, { iconId: string; title: string; tip: string }> 
   align: {
     iconId: 'align',
     title: '对准光路（按方法所需调整角度）',
-    tip: '透射法须同轴；内反射 ≈ 45°；表面反射调至最强反射方向',
+    tip: '透射法须同轴；两种反射法从样品两侧斜上方照明和收光，各与台面约 45° 起调',
   },
   tune: { iconId: 'focus', title: '调节狭缝与焦距', tip: '狭缝缓慢收紧至接近闭合；焦距居中至谱线最锐' },
-  observe: { iconId: 'observe', title: '观察并标记吸收线/带', tip: '点击光谱条标记吸收特征位置（nm）' },
+  observe: { iconId: 'observe', title: '观察并记录吸收情况', tip: '标记吸收线/带的位置（nm）；未见明显特征时也应如实记录' },
   record: { iconId: 'record', title: '保存数据', tip: '提交本次观察结果' },
 };
 
@@ -48,7 +48,7 @@ interface DemoState {
   power: boolean;
   sampleOn: boolean;
   method: SpectroscopeMethod | null;
-  /** 透射法不需要调角度，自动 done；内反射/表面反射须落在合格区间 */
+  /** 透射法不需要调角度；反射法沿用本页教学响应窗口，不表示仪器合格角度 */
   aligned: boolean;
   tuned: boolean;
   observed: boolean;
@@ -101,6 +101,7 @@ export default function SpectroscopeDemo({
   const sample = SAMPLES_BY_ID[sampleId];
   const sampleLabel = mode === 'detection' ? '未知样品' : sample?.name;
   const features = sample?.spectrum.features ?? [];
+  const spectrumUnverified = sample?.spectrum.diagnosticStatus === 'unverified';
   const recommendedMethod = sample ? recommendMethod(sample) : 'transmission';
   const [noAbsorption, setNoAbsorption] = useState(false);
 
@@ -109,7 +110,7 @@ export default function SpectroscopeDemo({
   const markInstrument = useDetection((s) => s.markInstrument);
   const markDemoComplete = useProgress((s) => s.markDemoComplete);
 
-  // 角度
+  // 本页角度为光线与水平台面的夹角；响应窗口是教学简化，并非实物合格范围。
   const angleDeg = angle01 * 90;
   const angleNeeded = state.method === 'internal-reflection' || state.method === 'surface-reflection';
   const angleOk = !angleNeeded
@@ -119,8 +120,10 @@ export default function SpectroscopeDemo({
       : angleDeg >= 25 && angleDeg <= 65;
 
   // 调节合格
-  const focusOk = Math.abs(focus - 0.5) < 0.12;
-  const slitOk = slitWidth >= 0.18 && slitWidth <= 0.45;
+  // 手持光栅式为固定狭缝、固定焦距（GIA 产品说明），只有棱镜式需要调节这两项。
+  const fixedOptics = dispersion === 'grating';
+  const focusOk = fixedOptics || Math.abs(focus - 0.5) < 0.12;
+  const slitOk = fixedOptics || (slitWidth >= 0.18 && slitWidth <= 0.45);
   const tuneScore = (focusOk ? 1 : 0) + (slitOk ? 1 : 0);
 
   // 推进 aligned/tuned，并在上游步骤失效时清理下游观测。
@@ -134,7 +137,7 @@ export default function SpectroscopeDemo({
         observed: nextAligned ? s.observed : false,
         recorded: nextAligned ? s.recorded : false,
       }));
-      if (!nextAligned) setMarks([]);
+      if (!nextAligned) { setMarks([]); setNoAbsorption(false); }
     }
   }, [state.power, state.sampleOn, state.method, angleOk, state.aligned]);
 
@@ -147,7 +150,7 @@ export default function SpectroscopeDemo({
         observed: nextTuned ? s.observed : false,
         recorded: nextTuned ? s.recorded : false,
       }));
-      if (!nextTuned) setMarks([]);
+      if (!nextTuned) { setMarks([]); setNoAbsorption(false); }
     }
   }, [state.aligned, focusOk, slitOk, state.tuned]);
 
@@ -186,7 +189,7 @@ export default function SpectroscopeDemo({
   const lightSourceLabel = validLightSource ? '光纤灯' : '日光灯';
   const showSpectrum = state.power && state.sampleOn && !!state.method && state.aligned;
   const spectrumReady = showSpectrum && state.tuned && validLightSource;
-  const canSave = spectrumReady && (marks.length > 0 || noAbsorption);
+  const canSave = spectrumReady && (spectrumUnverified || marks.length > 0 || noAbsorption);
   const workbenchGuideStep =
     mode === 'detection' && currentStep !== 'observe' && currentStep !== 'record'
       ? currentStep
@@ -314,7 +317,7 @@ export default function SpectroscopeDemo({
   };
 
   const handleAddMark = (wl: number) => {
-    if (!spectrumReady) return;
+    if (!spectrumReady || spectrumUnverified) return;
     setNoAbsorption(false);
     setMarks((m) => (m.includes(wl) ? m : [...m, wl].sort((a, b) => b - a)));
     setState((s) => ({ ...s, observed: true, recorded: false }));
@@ -328,7 +331,7 @@ export default function SpectroscopeDemo({
   };
 
   const handleNoAbsorptionChange = (checked: boolean) => {
-    if (!spectrumReady) return;
+    if (!spectrumReady || spectrumUnverified) return;
     setNoAbsorption(checked);
     if (checked) {
       setMarks([]);
@@ -350,16 +353,17 @@ export default function SpectroscopeDemo({
     if (!canSave) return;
     if (mode === 'detection') {
       setSpectroscopeData({
+        observationStatus: spectrumUnverified ? 'pending-reference' : 'observed',
         method: state.method,
-        markedLines: noAbsorption ? [] : marks,
+        markedLines: spectrumUnverified || noAbsorption ? [] : marks,
         bandRanges: [],
-        notes: noAbsorption ? '无明显特征吸收' : '',
+        notes: spectrumUnverified ? '教学谱图未核定，无法判断吸收情况' : noAbsorption ? '无明显特征吸收' : '',
       });
       markInstrument('spectroscope');
       onDetectionComplete?.();
     }
     setState((s) => ({ ...s, recorded: true }));
-    markDemoComplete({ instrumentId: 'spectroscope', mode, completedAt: Date.now() });
+    if (!spectrumUnverified) markDemoComplete({ instrumentId: 'spectroscope', mode, completedAt: Date.now() });
   };
 
   // 学习模式参考特征文字
@@ -419,9 +423,10 @@ export default function SpectroscopeDemo({
                 <ModeBtn
                   active={mode === 'learning'}
                   themeHex={instrument.themeHex}
-                  onClick={() => setMode('learning')}
+                  onClick={() => !embedded && setMode('learning')}
                   icon="📖"
                   label="学习模式"
+                  disabled={embedded}
                 />
                 <ModeBtn
                   active={mode === 'detection'}
@@ -454,6 +459,7 @@ export default function SpectroscopeDemo({
                 <div className="flex max-w-full flex-wrap items-center gap-2 rounded-lg border border-line bg-white/85 px-3 py-2 shadow-card backdrop-blur">
                   <span className="font-mono text-[10px] uppercase tracking-widest text-ink-4">演示样品</span>
                   <select
+                    aria-label="分光镜演示样品"
                     value={learningSampleId}
                     onChange={(e) => {
                       const nextId = e.target.value;
@@ -463,8 +469,8 @@ export default function SpectroscopeDemo({
                     }}
                     className="rounded border border-line-2 bg-white px-2 py-1 text-xs"
                   >
-                    {SAMPLES.filter((s) => s.spectrum.features.length > 0).map((s) => (
-                      <option key={s.id} value={s.id}>{s.name}</option>
+                    {SAMPLES.map((s) => (
+                      <option key={s.id} value={s.id}>{s.name}{spectrumSampleHint(s)}</option>
                     ))}
                   </select>
                 </div>
@@ -542,7 +548,7 @@ export default function SpectroscopeDemo({
                     active={state.method === 'internal-reflection'}
                     recommend={recommendedMethod === 'internal-reflection'}
                     title="内反射光法"
-                    desc="台面向下 + ≈ 45° 入射，亭部内反射"
+                    desc="台面向下放黑底，两侧斜上方照明与收光"
                     suit="颜色较浅、颗粒较小的透明刻面"
                     typicalSamples={mode === 'learning' ? '浅色蓝宝、海蓝宝、变石、浅色碧玺' : undefined}
                     onClick={() => handlePickMethod('internal-reflection')}
@@ -555,7 +561,7 @@ export default function SpectroscopeDemo({
                     active={state.method === 'surface-reflection'}
                     recommend={recommendedMethod === 'surface-reflection'}
                     title="表面反射法"
-                    desc="斜射 + 表面镜面反射进入分光镜"
+                    desc="黑底承放、待测面朝上，斜照并接收表面反射光"
                     suit="不透明 / 透明度差的玉石类"
                     typicalSamples={mode === 'learning' ? '翡翠、绿松石、孔雀石、青金石' : undefined}
                     onClick={() => handlePickMethod('surface-reflection')}
@@ -599,6 +605,9 @@ export default function SpectroscopeDemo({
                   className="mx-auto h-44 w-44 rounded-xl bg-brand-50/40 object-contain p-2 ring-1 ring-line"
                   draggable={false}
                 />
+                {mode === 'learning' && SAMPLES_BY_ID[showSamplePreview]?.imageNote && (
+                  <p className="mt-2 text-[10px] leading-relaxed text-ink-3">{SAMPLES_BY_ID[showSamplePreview].imageNote}</p>
+                )}
                 <div className="mt-3 rounded-lg bg-cyan-50 px-3 py-2 text-[11px] text-cyan-800 ring-1 ring-cyan-200">
                   透明度：{SAMPLES_BY_ID[showSamplePreview]?.characteristics.transparency} ·
                   颜色：{SAMPLES_BY_ID[showSamplePreview]?.characteristics.color}
@@ -677,7 +686,12 @@ export default function SpectroscopeDemo({
               )}
 
               <div className="relative">
-                <SpectrumStrip
+                {spectrumUnverified ? (
+                  <div data-testid="spectroscope-unverified-spectrum" className="grid min-h-28 place-content-center rounded-lg border border-dashed border-slate-500 bg-slate-900 px-5 py-4 text-center text-xs leading-relaxed text-slate-300">
+                    <strong className="text-slate-100">本教学样品暂无已核实谱图</strong>
+                    <p className="mt-1">资料未核定，不能据此判断有无吸收；仍可用其他仪器练习。</p>
+                  </div>
+                ) : <SpectrumStrip
                   features={spectrumReady ? features : []}
                   userMarks={marks}
                   onAddMark={handleAddMark}
@@ -691,8 +705,8 @@ export default function SpectroscopeDemo({
                   height={obsHeight}
                   interactive={spectrumReady}
                   locked={!spectrumReady}
-                />
-                {mode === 'detection' && currentStep === 'observe' && (
+                />}
+                {mode === 'detection' && currentStep === 'observe' && !spectrumUnverified && (
                   <SpectroscopeRightSideGuide
                     label="在光谱条标记吸收线"
                     testId="spectroscope-spectrum-guide"
@@ -714,9 +728,9 @@ export default function SpectroscopeDemo({
                           ? '请选择照明方法'
                           : !state.aligned
                             ? state.method === 'internal-reflection'
-                              ? `请将入射角调至 35°–55°（当前 ${angleDeg.toFixed(0)}°）`
+                              ? `请从与台面约 45° 处微调（当前 ${angleDeg.toFixed(0)}°；本页响应仅为教学示意）`
                               : state.method === 'surface-reflection'
-                                ? `请将入射角调至 25°–65°（当前 ${angleDeg.toFixed(0)}°）`
+                                ? `请从与台面约 45° 处微调（当前 ${angleDeg.toFixed(0)}°；本页响应仅为教学示意）`
                                 : '请等待对准…'
                             : !state.tuned
                               ? '请调节狭缝（接近闭合）与焦距至「合格」'
@@ -735,7 +749,7 @@ export default function SpectroscopeDemo({
                   )}
                 </div>
               )}
-              {spectrumReady && (
+              {spectrumReady && !spectrumUnverified && (
                 <div className="text-center text-[10px] text-slate-300">
                   点击光谱条标记吸收线 · 点击红色标记可删除
                 </div>
@@ -758,6 +772,7 @@ export default function SpectroscopeDemo({
                   focusOk={focusOk}
                   focusCue={opticsFocusCue}
                   tuneScore={tuneScore}
+                  fixedOptics={fixedOptics}
                   themeHex={instrument.themeHex}
                   guideActive={mode === 'detection' && currentStep === 'tune'}
                 />
@@ -838,18 +853,22 @@ export default function SpectroscopeDemo({
                   <input
                     type="checkbox"
                     checked={noAbsorption}
-                    disabled={!spectrumReady}
+                    disabled={!spectrumReady || spectrumUnverified}
                     onChange={(e) => handleNoAbsorptionChange(e.target.checked)}
                     data-testid="spectroscope-no-absorption"
                   />
-                  无特征吸收
+                  未见明显特征吸收
                 </label>
+                {spectrumUnverified && (
+                  <p data-testid="spectroscope-unverified-note" className="mt-2 text-[11px] leading-relaxed text-amber-800">本次只能保存“教学谱图未核定，无法判断吸收情况”；这不表示真实样品无法测试，也不记为已完成光谱观察。</p>
+                )}
                 {noAbsorption && (
                   <div
                     className="mt-1.5 rounded-md bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700 ring-1 ring-emerald-200"
                     data-testid="spectroscope-no-absorption-summary"
                   >
                     已记录：无明显特征吸收
+                    <p className="mt-1">这是本次观察信息；仍需结合其他仪器结果判断样品。</p>
                   </div>
                 )}
 
@@ -862,10 +881,11 @@ export default function SpectroscopeDemo({
                   </div>
                 )}
 
-                {mode === 'learning' && spectrumReady && features.length > 0 && (
-                  <div className="mt-2 rounded-lg bg-cyan-50/60 p-2 text-[11px] leading-relaxed text-ink-2 ring-1 ring-cyan-100">
-                    <div className="mb-0.5 font-semibold text-cyan-700">参考特征（教学）</div>
+                {mode === 'learning' && spectrumReady && (
+                  <div data-testid="spectroscope-reference" className="mt-2 rounded-lg bg-cyan-50/60 p-2 text-[11px] leading-relaxed text-ink-2 ring-1 ring-cyan-100">
+                    <div className="mb-0.5 font-semibold text-cyan-700">参考吸收情况（教学）</div>
                     {referenceText}
+                    {sample?.spectrum.observationNote && <p className="mt-1">{sample.spectrum.observationNote}</p>}
                   </div>
                 )}
 
@@ -878,7 +898,7 @@ export default function SpectroscopeDemo({
                     className="btn-primary flex-1 text-xs"
                     style={{ background: instrument.themeHex }}
                   >
-                    💾 {mode === 'detection' ? '提交检测结果' : '保存数据'}
+                    💾 {spectrumUnverified ? '保存待核记录' : mode === 'detection' ? '提交检测结果' : '保存数据'}
                   </button>
                   <button type="button" onClick={handleReset} className="btn-ghost px-3 text-xs">
                     ↺ 重置
@@ -887,7 +907,7 @@ export default function SpectroscopeDemo({
 
                 {state.recorded && mode === 'learning' && (
                   <div className="mt-2 rounded-lg bg-emerald-50 px-2.5 py-1.5 text-[11px] text-emerald-700 ring-1 ring-emerald-200">
-                    ✓ 已完成观察。可切换样品继续练习。
+                    {spectrumUnverified ? '已保存待核记录。请换用其他仪器，或选择有已核实谱图的样品继续练习。' : '✓ 已完成观察。可切换样品继续练习。'}
                   </div>
                 )}
               </div>
@@ -953,9 +973,9 @@ function methodReasonForSample(sample: SampleDef, m: SpectroscopeMethod): string
     case 'transmission':
       return `${t}样品中光可充分透过宝石进入分光镜，吸收特征最完整、清晰`;
     case 'internal-reflection':
-      return '颜色较浅或颗粒较小时，借亭部刻面内反射延长光程，弱吸收特征更易识别';
+      return '浅色或小颗粒样品可台面向下放黑底，借内部反射延长光程，再寻找最亮出光点';
     case 'surface-reflection':
-      return `${t}样品光线无法穿透，须借抛光面镜面反射收光，玉石类常用`;
+      return `${t}样品可在透射不足时尝试反射观察；置于黑色背景，从两侧斜上方照明与收光`;
   }
 }
 
@@ -964,9 +984,9 @@ function methodReasonForDetection(m: SpectroscopeMethod): string {
     case 'transmission':
       return '优先获得完整、清晰的透射吸收特征';
     case 'internal-reflection':
-      return '用于增强弱吸收特征，使浅色或小颗粒样品更容易读谱';
+      return '浅色或小颗粒样品可尝试内部反射以延长光程，按实际亮点调整观察方向';
     case 'surface-reflection':
-      return '用于透射响应不足时，通过抛光面反射收集可读光谱';
+      return '透射不足时可尝试收集样品表面的反射光，是否能读谱仍取决于实际观察条件';
   }
 }
 
@@ -983,11 +1003,11 @@ function operationHint(m: SpectroscopeMethod, mode: DemoMode): string {
     case 'transmission':
       return '将宝石置于带小孔的黑板（锁光圈）上，光从下方垂直穿透样品。光纤灯—宝石—分光镜呈一条同轴直线；不要用手指持拿小宝石（手指血液在 592 nm 有吸收线，会污染光谱）。狭缝由宽到窄缓慢收紧，至吸收线/带的边缘最实最清晰再读数。读数从红区扫到紫区，记录主要特征位置。';
     case 'internal-reflection':
-      return '宝石台面向下置于黑色背景，亭部朝上；光纤灯从冠部一侧斜射，与分光镜约成 45° 夹角。光从冠部进入 → 亭部刻面全反射 → 从冠部另一侧出射进入分光镜，光程被延长 1.5–2 倍。颜色浅时狭缝可稍宽以保证亮度。该法适合识别较弱的特征吸收，但定位读数误差大于透射法，弱线建议留疑。';
+      return '宝石台面向下贴放黑色背景，亭部朝上；光纤灯和分光镜分处样品两侧斜上方，入射方向与收光方向各同台面约成 45°。示意光从一侧亭部进入，经底部台面内侧反射，再从对侧亭部出射；对准实际最亮的出光点，继续微调角度、狭缝与焦距。45° 只是教学起点，不是所有样品的固定最佳角度；记录实际观察到的吸收及不确定之处。';
     case 'surface-reflection':
       return mode === 'detection'
-        ? '抛光面朝上，置于黑色背景；光纤灯调到合适角度使尽量多的白光从样品表面反射进入分光镜（入射角 = 反射角，先在 30°–60° 范围试探最强反射方向）。表面越光滑反射越强，反射光通常较弱，狭缝可稍宽换取亮度。检测模式下只记录观察到的吸收线/带，不显示样品身份提示。'
-        : '抛光面朝上，置于黑色背景；光纤灯调到合适角度使尽量多的白光从样品表面反射进入分光镜（入射角 = 反射角，先在 30°–60° 范围试探最强反射方向）。表面越光滑反射越强，反射光通常较弱，狭缝可稍宽换取亮度。翡翠在红光区 630–660–690 nm 处的三阶梯吸收带是经典识别特征——天然显清晰阶梯，染色仅显模糊宽带。';
+        ? '将样品稳定放在黑色背景上，待测表面朝上。光纤灯和分光镜从两侧斜上方朝向同一受照区域，可由各与台面约成 45° 的位置开始，微调至反射最亮区域进入狭缝。角度仅为教学起点，实际以最清晰光谱为准。检测模式下只记录观察到的吸收线/带，不显示样品身份提示。'
+        : '将样品稳定放在黑色背景上，待测表面朝上。光纤灯和分光镜从两侧斜上方朝向同一受照区域，可由各与台面约成 45° 的位置开始，微调至反射最亮区域进入狭缝。角度仅为教学起点，实际以最清晰光谱为准。记录吸收位置、强弱及观察条件；天然或处理的判断需结合其他检测，不能仅凭几条吸收线定论。';
   }
 }
 
@@ -999,9 +1019,15 @@ interface ChromophoreAnalysis {
   text: string;
 }
 
+function spectrumSampleHint(sample: SampleDef): string {
+  if (sample.spectrum.diagnosticStatus === 'unverified') return '（谱型待细分）';
+  if (sample.spectrum.diagnosticStatus === 'non-diagnostic' && sample.spectrum.features.length > 0) return '（不单独诊断）';
+  return sample.spectrum.features.length === 0 ? '（不特征）' : '';
+}
+
 function identifyChromophore(sample: SampleDef): ChromophoreAnalysis | null {
   const features = sample.spectrum.features;
-  if (features.length === 0) return null;
+  if (features.length === 0 || sample.spectrum.diagnosticStatus === 'non-diagnostic' || sample.spectrum.diagnosticStatus === 'unverified') return null;
   const wls = features.map((f) => f.wavelength);
 
   // 锆石：653.5 nm 单条强线
@@ -1035,11 +1061,11 @@ function identifyChromophore(sample: SampleDef): ChromophoreAnalysis | null {
   // 蓝宝石 / 橄榄石：铁谱
   // 特征：450 nm 附近强吸收（Fe³⁺/Fe²⁺）+ 蓝区附近三联线
   const hasFe450 = features.some((f) => Math.abs(f.wavelength - 450) <= 8 && f.intensity !== 'weak');
-  const has453473493 = wls.includes(453) && wls.includes(473) && wls.includes(493);
-  if (has453473493 || (hasFe450 && sample.id !== 'tanzanite')) {
+  const has453477497 = wls.includes(453) && wls.includes(477) && wls.includes(497);
+  if (has453477497 || (hasFe450 && sample.id !== 'tanzanite')) {
     return {
       label: '铁谱（Fe）',
-      text: 'Fe 致色宝石明度通常较暗。蓝宝石的特征是蓝区 450 nm 强吸收线（Fe³⁺）；橄榄石呈 453 / 473 / 493 nm 三联线（Fe²⁺）。注意：含铁也含铬的宝石（如部分泰国红宝）会同时显示铁谱与铬谱。',
+      text: '蓝宝石的典型铁吸收见于蓝区 450 nm 附近；橄榄石本例按 453 / 477 / 497 nm 吸收带记录。蓝紫区本就较难观察，资料中的吸收强度不等于任一实物在手持分光镜中都容易看见。部分宝石可同时显示铁与铬的吸收特征。',
     };
   }
 
@@ -1179,6 +1205,7 @@ function OpticsControlPanel({
   focusOk,
   focusCue,
   tuneScore,
+  fixedOptics = false,
   themeHex,
   guideActive = false,
 }: {
@@ -1197,6 +1224,8 @@ function OpticsControlPanel({
   focusOk: boolean;
   focusCue: OpticsFocusCue;
   tuneScore: number;
+  /** 光栅式：狭缝与焦距固定，不显示调节滑块。 */
+  fixedOptics?: boolean;
   themeHex: string;
   guideActive?: boolean;
 }) {
@@ -1225,7 +1254,7 @@ function OpticsControlPanel({
           <div className="mt-0.5 text-[10px] text-ink-3">
             {method === 'transmission'
               ? '样品出射光已锁定分光镜中轴'
-              : '先调入射角，再微调狭缝与焦距'}
+              : '先调照明方向，再微调狭缝与焦距'}
           </div>
         </div>
         <span
@@ -1234,7 +1263,7 @@ function OpticsControlPanel({
             aligned ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700',
           )}
         >
-          {aligned ? '光路合格' : '调光路'}
+          {aligned ? '教学光路已对准' : '调光路'}
         </span>
       </div>
 
@@ -1249,7 +1278,12 @@ function OpticsControlPanel({
         />
       )}
 
-      {aligned && (
+      {aligned && fixedOptics && (
+        <p className={clsx('text-[11px] leading-relaxed text-ink-3', angleNeeded && 'mt-3 border-t border-line pt-3')} data-testid="spectroscope-fixed-optics">
+          光栅式：狭缝与焦距固定，无需调节；光谱偏暗时改善照明或对光。
+        </p>
+      )}
+      {aligned && !fixedOptics && (
         <div className={clsx(angleNeeded && 'mt-3 border-t border-line pt-3')}>
           <div className={clsx('rounded-lg transition', focusCue === 'slit' && 'bg-cyan-50 p-2 ring-1 ring-cyan-200')}>
             <SliderRow
@@ -1311,18 +1345,18 @@ function AngleSlider({
   ok: boolean;
   themeHex: string;
 }) {
-  const hint = method === 'internal-reflection' ? '推荐 35°–55°' : '推荐 25°–65°';
+  const hint = '约 45° 起调，继续寻找最亮区域';
   return (
     <div>
       <div className="mb-1 flex items-center justify-between text-[11px]">
-        <span className="font-medium text-ink-2">入射角</span>
+        <span className="font-medium text-ink-2">光线与台面夹角</span>
         <span
           className={clsx(
             'rounded px-1.5 py-0.5 font-mono text-[10px]',
             ok ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700',
           )}
         >
-          {angleDeg.toFixed(0)}° · {ok ? '合格' : hint}
+          {angleDeg.toFixed(0)}° · {ok ? '教学响应已对准' : '继续微调'}
         </span>
       </div>
       <input
@@ -1334,13 +1368,16 @@ function AngleSlider({
         onChange={(e) => onChange(parseFloat(e.target.value))}
         className="h-2 w-full accent-cyan-500"
         style={{ accentColor: themeHex }}
-        aria-label="入射角"
+        aria-label="光线与台面夹角"
       />
       <div className="flex justify-between font-mono text-[10px] text-ink-4">
         <span>0°</span>
         <span>{hint}</span>
         <span>90°</span>
       </div>
+      <p className="mt-1 text-[10px] leading-relaxed text-ink-3">
+        {method === 'internal-reflection' ? '内反射' : '表面反射'}示意中，照明与收光各从台面上方斜向样品；本页响应范围不作为实物合格标准。
+      </p>
     </div>
   );
 }
@@ -1431,6 +1468,7 @@ function SliderRow({
         step={0.01}
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value))}
+        aria-label={label}
         className="w-full"
       />
       <div className="flex justify-between font-mono text-[10px] text-ink-4">

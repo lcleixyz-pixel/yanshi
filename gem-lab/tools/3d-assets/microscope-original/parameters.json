@@ -1,0 +1,17 @@
+{
+  "assetId": "original-teaching-gem-microscope-v1",
+  "units": "metres",
+  "heightTarget": 0.34,
+  "baseDimensions": [0.226, 0.198, 0.053],
+  "axisY": -0.01,
+  "tiltPivot": [0, -0.01, 0.075],
+  "sampleCenter": [0, -0.01, 0.165],
+  "observationEntrance": [0, -0.01, 0.244],
+  "darkfieldRingRadius": 0.035,
+  "darkfieldLedCount": 16,
+  "darkfieldLedRadius": 0.0015,
+  "darkfieldHalfAngleDegrees": 4,
+  "sampleRadius": 0.004,
+  "renderSamples": 64,
+  "note": "Original teaching dimensions, not measurements or a manufacturing specification. Blender Z-up; exported contract uses glTF Y-up."
+}

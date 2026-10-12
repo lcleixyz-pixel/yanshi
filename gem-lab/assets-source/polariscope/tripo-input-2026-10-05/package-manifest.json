@@ -1,0 +1,207 @@
+{
+  "title": "偏光镜 · Tripo / Meshy 对照输入包",
+  "preparedAt": "2026-10-05T06:09:29.180750+00:00",
+  "purpose": "User-operated A single-image and B multiview image-to-3D trial. No superiority or physical accuracy established.",
+  "groups": {
+    "A": {
+      "files": [
+        "A-original/01-original.png"
+      ],
+      "method": "Unmodified project source image",
+      "externalAuthorAndReuseRights": "not established"
+    },
+    "B": {
+      "files": [
+        "B-multiview/01-front.png",
+        "B-multiview/02-left.png",
+        "B-multiview/03-back.png",
+        "B-multiview/04-right.png"
+      ],
+      "method": "Blender Cycles render of the same v0.4 teaching geometry with temporary materials and lighting",
+      "synthetic": true,
+      "physicalMeasurementsVerified": false,
+      "cameraAndRendering": "source/render-manifest.json"
+    }
+  },
+  "aiMaterialTarget": {
+    "file": "review/material-target-ai.png",
+    "tool": "native imagegen",
+    "prompt": "review/material-target-prompt.txt",
+    "purpose": "material and lighting review only; do not mix with B inputs",
+    "references": [
+      "偏光镜/偏光镜_产品图.png",
+      "gem-lab/public/assets/3d/polariscope/renders/04-three-quarter.png"
+    ],
+    "synthetic": true
+  },
+  "limitations": [
+    "Current geometry is reference-derived and unmeasured.",
+    "Unknown rear details are not evidence of actual hardware.",
+    "Transparent shader mix is illustrative, not a calibrated optical simulation.",
+    "Image generation or conversion does not establish source rights.",
+    "A and B differ in source representation and viewpoint as well as number of images; this is a practical workflow comparison, not a controlled study of multiview alone."
+  ],
+  "cloud3dUploadPerformed": false,
+  "cloud3dPaidGenerationPerformed": false,
+  "currentMasterAndWebAssetUnchanged": true,
+  "renderVerification": "source/verification.json",
+  "officialReferences": [
+    {
+      "url": "https://developers.tripo3d.ai/en/docs/generation-multiview-to-model/standard",
+      "verifiedDate": "2026-10-05"
+    },
+    {
+      "url": "https://docs.meshy.ai/en/api/multi-image-to-3d",
+      "verifiedDate": "2026-10-05"
+    }
+  ],
+  "files": [
+    {
+      "file": "A-original/01-original.png",
+      "bytes": 319071,
+      "sha256": "99180744ea3ddceaf5ffd0910f5acc1a5f9bffee4ca4208e3715155dd145c4aa",
+      "forUpload": true,
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGBA"
+    },
+    {
+      "file": "B-multiview/01-front.png",
+      "bytes": 3250722,
+      "sha256": "234136a03a0394dd6692899518cd1534ec46f9f2671abc9bcc93d1d86bd6938d",
+      "forUpload": true,
+      "width": 2048,
+      "height": 2048,
+      "mode": "RGB"
+    },
+    {
+      "file": "B-multiview/02-left.png",
+      "bytes": 3229642,
+      "sha256": "c6f40058e71975415b8567d08a0a16cacc5448614987c25d7e76cea2e206322f",
+      "forUpload": true,
+      "width": 2048,
+      "height": 2048,
+      "mode": "RGB"
+    },
+    {
+      "file": "B-multiview/03-back.png",
+      "bytes": 3140587,
+      "sha256": "799d36e1174414adc356f5291b02871b22ef30bd68e9f5f116b49d6a9354ce04",
+      "forUpload": true,
+      "width": 2048,
+      "height": 2048,
+      "mode": "RGB"
+    },
+    {
+      "file": "B-multiview/04-right.png",
+      "bytes": 3203158,
+      "sha256": "e988cc14d8bd7fccf979a860c9b550283bb9163ceeab8b78c45cbf73911bc281",
+      "forUpload": true,
+      "width": 2048,
+      "height": 2048,
+      "mode": "RGB"
+    },
+    {
+      "file": "index.html",
+      "bytes": 9846,
+      "sha256": "0f0c8bbf86d7cbd7fd747330b7e1e5ff6ff146093f0d9634409be9e6bee3e636",
+      "forUpload": false
+    },
+    {
+      "file": "review/front-preview.png",
+      "bytes": 856855,
+      "sha256": "70fb9ea023fe11a2a9ec23bd8a2367a62a869833028155e06eed7059d3fb7c70",
+      "forUpload": false,
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB"
+    },
+    {
+      "file": "review/hero.png",
+      "bytes": 876136,
+      "sha256": "21747fa657a837b20844a03af2f0bc9ba618d5907ff49a891873445755106e85",
+      "forUpload": false,
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB"
+    },
+    {
+      "file": "review/material-target-ai.png",
+      "bytes": 1459210,
+      "sha256": "487647772cb758ec2bfc663dd8112a3e69bf1dd63d9b0eb5bd89a668343ffee8",
+      "forUpload": false,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGB"
+    },
+    {
+      "file": "review/material-target-prompt.txt",
+      "bytes": 1681,
+      "sha256": "fd849fd71a8422a8ee6ba56c8ece9de5bcc0ed9f44b38ba4b7eedcfd22e8133e",
+      "forUpload": false
+    },
+    {
+      "file": "review/top.png",
+      "bytes": 851045,
+      "sha256": "f52aa019a416834c38c32c7e6067d951587b1da970c2a4504276a7e20a847cc9",
+      "forUpload": false,
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB"
+    },
+    {
+      "file": "source/RENDERING.md",
+      "bytes": 2030,
+      "sha256": "b4c1d45837678a2e8ad90d5f785449c8ee91e6298c806875e6b49d1ed8eaa9af",
+      "forUpload": false
+    },
+    {
+      "file": "source/preview-settings.json",
+      "bytes": 6369,
+      "sha256": "f02c24a1650bcab98dfce71b79ade0cb07ef3f170c37f128095fd1e5266fa2b1",
+      "forUpload": false
+    },
+    {
+      "file": "source/render-manifest.json",
+      "bytes": 8197,
+      "sha256": "cb2014e41bd457b43bcdf729b6ea47ba0a5db9ea54b40be09cecd047e4448de6",
+      "forUpload": false
+    },
+    {
+      "file": "source/render_neutral_multiview.py",
+      "bytes": 11925,
+      "sha256": "e429fbfe7b0a6b92eb1f861403f2ddb3add1112977c77e70b43508a873db8c45",
+      "forUpload": false
+    },
+    {
+      "file": "source/verification.json",
+      "bytes": 2144,
+      "sha256": "54af2c2c5b996a1e23a363ad074970f67303281987c4e4ab1270cddaa549c271",
+      "forUpload": false
+    },
+    {
+      "file": "使用说明.md",
+      "bytes": 4420,
+      "sha256": "357785563b0d340d905ae64284242e06f5bdaf1b769e544de5a91bbcb530a020",
+      "forUpload": false
+    }
+  ],
+  "independentReview": {
+    "date": "2026-10-05",
+    "scope": "Four upload views plus hero/top and guide/index wording",
+    "findings": [
+      "Four view directions and component layout are consistent; no obvious crop.",
+      "Thin optical sheets can still be misread as opaque thick caps; guide now explicitly covers this.",
+      "Source rights and synthetic/unmeasured status are disclosed."
+    ],
+    "status": "Suitable for input-method trial; generated mesh acceptance pending"
+  },
+  "overviewVerification": {
+    "browser": "Codex in-app browser",
+    "observedViewportWidth": 811,
+    "allEightGalleryImagesLoaded": true,
+    "fourUploadThumbnailsSquare": true,
+    "horizontalOverflow": false,
+    "allLocalLinksExist": true
+  }
+}

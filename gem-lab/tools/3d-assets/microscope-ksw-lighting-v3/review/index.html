@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>宝石显微镜 · 三路照明</title><link rel="stylesheet" href="./review.css">
+<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}</script>
+</head>
+<body>
+<header><div><div class="eyebrow">GEM MICROSCOPE · ILLUMINATION STUDY</div><h1>宝石显微镜 · 三路照明</h1></div><p class="boundary"><strong>文献原理示意，非 KSW 厂家内部。</strong><br>顶光、底光、侧光独立开关，按 2014 年光源改造文献示意。</p></header>
+<main>
+<section class="viewport" id="viewport" aria-label="显微镜三维教学区">
+<nav class="view-switch" aria-label="观察视图"><button data-view="structure" aria-pressed="false">整机</button><button data-view="chamber" aria-pressed="true">灯室剖解</button><button data-view="sample" aria-pressed="false">散射体近景</button></nav>
+<span class="stage-label">未标定比例 · 原理示意</span><span id="status" aria-live="polite"></span>
+<div id="loading"><span><i class="spinner"></i>正在载入底光修整资产…</span></div>
+<div class="view-help"><small>拖动旋转 · 滚轮缩放 · 点选部件</small><p id="viewNote">点选部件查看作用；进入灯室剖解，近看光源与切换机构。</p></div>
+<div id="error" role="alert"><img id="fallback" hidden alt="本次底光修整候选的静态预览"><p id="errorText"></p><button id="retry" class="secondary">重新载入</button></div>
+</section>
+<aside class="sidebar" aria-label="部件与底光控制">
+<section class="block"><h2 class="block-title">底光照明 <span class="pill">文献原理</span></h2>
+<div class="segmented" role="group" aria-label="底光模式"><button data-mode="off" aria-pressed="false">关灯</button><button data-mode="darkfield" aria-pressed="true">暗域</button><button data-mode="brightfield" aria-pressed="false">明域</button></div>
+<p class="explanation" id="lightingNote"></p>
+<label class="range-label" for="brightness">照明亮度 <output id="brightnessValue">75%</output></label><input id="brightness" type="range" min="0" max="100" value="75" step="1" aria-label="照明亮度">
+<label class="range-label" for="iris">光阑开度 <output id="irisValue">100%</output></label><input id="iris" type="range" min="0" max="100" value="100" step="1" aria-label="光阑开度">
+<label class="check"><input id="showRays" type="checkbox">显示 4 条代表光路</label><label class="check"><input id="showSample" type="checkbox" checked>放置固定散射体</label>
+<p class="physical-help">点模型的明暗切换钮；横向拖动光阑短把手可调节开度。拖把手时相机暂停转动。</p>
+</section>
+<section class="block" aria-label="顶光控制"><h2 class="block-title">顶光照明 <span class="pill">LED+漫射板 · 6500K</span></h2>
+<button class="secondary toggle" id="topPower" aria-pressed="false">顶光 关</button>
+<p class="explanation" id="topNote"></p>
+<label class="range-label" for="topBrightness">顶光亮度 <output id="topBrightnessValue">60%</output></label><input id="topBrightness" type="range" min="0" max="100" value="60" step="1" aria-label="顶光亮度">
+</section>
+<section class="block" aria-label="侧光控制"><h2 class="block-title">侧光照明 <span class="pill">鹅颈光导</span></h2>
+<button class="secondary toggle" id="sidePower" aria-pressed="false">侧光 关</button>
+<p class="explanation" id="sideNote"></p>
+<label class="range-label" for="sideBrightness">侧光亮度 <output id="sideBrightnessValue">60%</output></label><input id="sideBrightness" type="range" min="0" max="100" value="60" step="1" aria-label="侧光亮度">
+<p class="physical-help">三路照明可同时开启组合使用。顶光、侧光从台面上方照射，不受光阑和明暗域切换影响。</p>
+</section>
+<section class="block"><h2 class="block-title">装配与拆解 <output id="explodeValue">0%</output></h2>
+<input id="explode" type="range" min="0" max="100" value="0" step="1" aria-label="连续拆解">
+<label class="check"><input id="cutaway" type="checkbox">剖开灯室前侧</label><p class="clip-note">剖切只为查看内部，不代表实际拆卸。拆解或隔离时暂停光学示意。</p>
+<div class="row"><button class="secondary" id="reset">全部复位</button><button class="secondary" id="fit">完整视野</button></div>
+</section>
+<section class="block"><h2 class="block-title">部件介绍 <output id="partCount"></output></h2><div class="parts" id="parts" aria-label="仪器部件"></div><div class="row"><button class="secondary" id="isolate" aria-pressed="false" disabled>隔离所选</button><button class="secondary" id="focus" disabled>聚焦所选</button></div><p class="part-note" id="partNote">从模型或列表选择部件，查看结构与作用。</p></section>
+<section class="block"><details><summary>来源、教学简化与边界</summary><p>三路照明按《宝石显微镜光源系统设计与改造》（2014，宝石和宝石学杂志 16(4)）图 1 的顶光、底光、侧光三个独立开关组织。顶光按 §3.1 示意为 LED 灯珠群加漫射板、亮度连续可调、色温 6500K；漫射板位置取自整机灯头下表面实际网格，灯珠排列与尺寸为教学示意。侧光出口取细鹅颈末端端面中心；模型中该鹅颈轴线偏离样品约 44–54°，实机鹅颈需手动弯折对准，本页按已对准样品示意，光束角为教学设定。顶光、侧光只照亮固定散射体和台面，不模拟真实宝石反射、薄膜干涉或目镜成像。</p><p>整机使用既有 KSW6000 外观候选。底光原理参考公开文献与 FABLE 功能说明：单一底光先准直；暗域时中央锥体进入光轴，将光导向外围反射器，再向上照射样品；明域时中央组件退出，保留轴向光束。两种路径分别工作。</p><p>中央组件短距离横移、切换钮联动和光阑把手为教学简化，不声称还原厂家的隐藏传动。模型数值未经实物标定，未模拟元件内的真实折射、像差、衍射或全部杂散光。</p><p>腔体明暗使用随底灯变化的灯光近似受光，未进行实时反射光线追踪；反射面本身不发光。金色线是代表光路，不能据此认定整腔照度均匀。</p><p>同一固定散射体由独立场景接受底光照明，展示补光不会照亮它。散射体近景是外侧观察，不是目镜视野或真实宝石、包裹体成像；未模拟夹具阴影。</p><div class="links"><a href="https://www.szfable.cn/product/1132.html" target="_blank" rel="noreferrer">FABLE 功能说明</a><a id="sourcesLink" target="_blank">原理与来源记录</a><a id="manifestLink" target="_blank">资产清单</a><a id="modelLink" download>下载模型</a></div></details></section>
+</aside>
+</main><script type="module" src="./review.mjs"></script>
+</body></html>

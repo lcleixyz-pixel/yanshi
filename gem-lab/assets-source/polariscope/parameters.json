@@ -1,0 +1,222 @@
+{
+  "assetId": "gem-lab-polariscope",
+  "version": "0.4.0",
+  "units": "meter",
+  "status": "project-reference-derived-teaching-model",
+  "dimensionsCalibrated": false,
+  "coordinateSystem": "Delivery: right-handed, Y up, optical axis +Y, front +Z. Blender source: Z up.",
+  "base": {
+    "width": 0.235,
+    "depth": 0.21,
+    "bodyHeight": 0.07,
+    "footHeight": 0.012,
+    "centerZ": -0.012,
+    "cornerRadius": 0.004,
+    "footRadius": 0.012,
+    "footInset": 0.018
+  },
+  "frame": {
+    "width": 0.148,
+    "rearZ": -0.1,
+    "upperHeight": 0.233,
+    "thickness": 0.004,
+    "bendRadius": 0.031,
+    "noseRadius": 0.074,
+    "apertureRadius": 0.0505
+  },
+  "lowerAssembly": {
+    "outerRadius": 0.061,
+    "clearRadius": 0.0475,
+    "lightHeight": 0.086,
+    "polarizerHeight": 0.092,
+    "stagePivotHeight": 0.105,
+    "topHeight": 0.114,
+    "knurlCount": 112
+  },
+  "analyzer": {
+    "pivotHeight": 0.241,
+    "outerRadius": 0.061,
+    "clearRadius": 0.0475,
+    "height": 0.017,
+    "knurlCount": 112
+  },
+  "conoscope": {
+    "center": [
+      -0.082,
+      0.158,
+      -0.004
+    ],
+    "lensRadius": 0.0105,
+    "outerRadius": 0.0165,
+    "handleRadius": 0.0032
+  },
+  "sample": {
+    "center": [
+      0,
+      0.11711,
+      0
+    ],
+    "radius": 0.009,
+    "height": 0.0105,
+    "visibleInRenders": false,
+    "kind": "procedural-unidentified-teaching-sample",
+    "note": "Generic faceted teaching object. No gemstone species, crystallographic orientation or diagnostic optical response is claimed."
+  },
+  "teachingMarkers": {
+    "enabled": false,
+    "color": [
+      0.32,
+      0.58,
+      0.45
+    ],
+    "note": "Optional teaching markers are disabled in the reference appearance. They would not be manufacturer marks or calibrated optical axes."
+  },
+  "render": {
+    "resolution": 1200,
+    "samples": 96,
+    "adaptiveThreshold": 0.018,
+    "device": "AUTO",
+    "transparent": false
+  },
+  "evidence": {
+    "measuredDimensions": [],
+    "layoutAssumptions": [
+      "The existing project product illustration defines the visible silhouette: thick white base, continuous rear white sheet support, round-nose upper shelf, two black rings and left-side stored conoscope.",
+      "The project PDF, figures 2-2-9 and 2-2-10, supports the mechanical teaching relationship: base illumination, fixed lower polarizer, rotatable specimen support and rotatable upper analyzer.",
+      "Dimensions, bend radius, wall thickness, clear support, concealed attachments and material properties are not measured. Only necessary virtual support geometry is modeled; no hidden rear connector or internal wiring is invented.",
+      "The front oval amber window is based on the illustration only. Its identity conflicts with the PDF and earlier UI descriptions, so it is not identified as a power button; its glow follows the illustrative light state.",
+      "Conoscope is shown as a stored clear sphere in a hand-held ring; no focal length or quantitative optical prescription is claimed.",
+      "Exploded motion demonstrates component relationships, not a physical assembly or maintenance procedure."
+    ],
+    "knownUnknowns": [
+      "External author and reuse provenance of the existing project illustration and PDF images",
+      "Measured instrument dimensions, exact bend profile and hidden rear construction",
+      "Identity and location of the actual power switch across conflicting project sources",
+      "Actual specimen-dependent polarized-light response",
+      "Calibrated polarizer transmission and extinction",
+      "Conoscope optical prescription and real interference image formation",
+      "Mechanical tolerances, physical materials and manufacturability"
+    ]
+  },
+  "designStatus": "project-reference-teaching-prototype",
+  "provisional": true,
+  "dimensionBasis": "provisional-visual-reference-dimensions",
+  "physicalInstrumentVerified": false,
+  "manufacturingValidated": false,
+  "source": {
+    "kind": "project-existing-image-and-pdf-reference",
+    "geometry": "Authored native Blender parametric geometry, visually referenced to the existing project illustration. No external mesh, logo, photograph or image texture is embedded.",
+    "note": "User explicitly requested the original project instrument appearance as the local modeling reference. Existing illustration and project PDF determine visible shape and component relationships; their external author and reuse provenance are not established. This is a provisional teaching interpretation, not a calibrated physical instrument or an original independently designed product shell.",
+    "history": "The earlier v0.2 explored an existing project illustration; its master and provenance are preserved in archive-reference-v02. v0.3 introduced the independent twin-post layout and low base. In v0.3.1, direct user feedback led to a compact, thicker conventional box base, while retaining the independent frame and controls. The numeric dimensions remain our nominal teaching-design values. In v0.4, the user explicitly asked to use the original project instrument appearance and materials. The white folded support and visible body silhouette are therefore referenced again; the twin-post design remains only in revision history.",
+    "references": [
+      {
+        "title": "Project polariscope product illustration",
+        "file": "../../../偏光镜/偏光镜_产品图.png",
+        "sameAssetFile": "../../public/assets/instruments/polariscope.png",
+        "sha256": "99180744ea3ddceaf5ffd0910f5acc1a5f9bffee4ca4208e3715155dd145c4aa",
+        "use": "Primary visible shape, body proportions, white folded support, rings, left conoscope and oval amber window. Numeric dimensions are provisional, not measured from a physical instrument.",
+        "rights": "Existing project asset; external author and reuse provenance unknown. User explicitly selected it for local modeling reference; this is not a rights-clearance claim."
+      },
+      {
+        "title": "Project polariscope reference PDF",
+        "file": "../../../偏光镜/偏光镜.pdf",
+        "pages": [
+          11
+        ],
+        "figures": [
+          "2-2-9",
+          "2-2-10"
+        ],
+        "use": "Mechanical relationships and operating context. Figure 2-2-10 shows a top-mounted switch while earlier UI text calls it rear-mounted; no exact switch position is asserted by this asset.",
+        "rights": "Existing project reference; external image and publication rights not verified. No page or image embedded into GLB."
+      }
+    ]
+  },
+  "revisionHistory": [
+    {
+      "version": "0.3.0",
+      "base": {
+        "width": 0.232,
+        "depth": 0.194,
+        "bodyHeight": 0.043,
+        "footHeight": 0.009,
+        "centerZ": -0.019,
+        "cornerRadius": 0.008,
+        "footRadius": 0.01
+      },
+      "note": "Original twin-post teaching layout, but the wide low base was judged unlike familiar desktop polariscopes by the user."
+    },
+    {
+      "version": "0.3.1",
+      "date": "2026-10-05",
+      "reason": "User requested a more conventional compact and substantial box base. All optical and support parts rise by 23 mm together, preserving their working clearances.",
+      "previousBase": {
+        "width": 0.232,
+        "depth": 0.194,
+        "bodyHeight": 0.043,
+        "footHeight": 0.009,
+        "centerZ": -0.019,
+        "cornerRadius": 0.008,
+        "footRadius": 0.01
+      },
+      "nominalBodyDimensionsMm": [
+        212,
+        184,
+        68
+      ],
+      "opticalAssemblyVerticalOffsetMm": 23
+    },
+    {
+      "version": "0.4.0",
+      "date": "2026-10-05",
+      "reason": "User explicitly requested the instrument appearance and materials in the original project. Restore the visible white continuous folded support and round-nose shelf, rather than the independent twin-post proposal. Dimensions remain provisional and unmeasured.",
+      "previousVersion": "0.3.1",
+      "previousBase": {
+        "width": 0.212,
+        "depth": 0.184,
+        "bodyHeight": 0.068,
+        "footHeight": 0.007,
+        "centerZ": -0.019,
+        "cornerRadius": 0.003,
+        "footRadius": 0.009,
+        "footInset": 0.03
+      },
+      "previousFrame": {
+        "postSpacing": 0.132,
+        "postRadius": 0.0065,
+        "rearZ": -0.083,
+        "upperHeight": 0.238,
+        "apertureRadius": 0.0505,
+        "carrierRadius": 0.067,
+        "armX": 0.058,
+        "armWidth": 0.01
+      },
+      "previousLowerAssembly": {
+        "outerRadius": 0.061,
+        "clearRadius": 0.0475,
+        "lightHeight": 0.079,
+        "polarizerHeight": 0.085,
+        "stagePivotHeight": 0.098,
+        "topHeight": 0.107,
+        "knurlCount": 112
+      },
+      "previousAnalyzer": {
+        "pivotHeight": 0.247,
+        "outerRadius": 0.061,
+        "clearRadius": 0.0475,
+        "height": 0.017,
+        "knurlCount": 112
+      },
+      "previousConoscope": {
+        "center": [
+          -0.09,
+          0.15,
+          0.018
+        ],
+        "lensRadius": 0.0105,
+        "outerRadius": 0.0165,
+        "handleRadius": 0.0032
+      }
+    }
+  ]
+}

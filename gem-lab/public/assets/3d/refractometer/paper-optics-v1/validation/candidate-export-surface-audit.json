@@ -1,0 +1,639 @@
+{
+  "schemaVersion": 1,
+  "instrumentId": "refractometer",
+  "ok": true,
+  "checks": [
+    {
+      "caseId": "isotropic-160",
+      "path": "incident-0",
+      "kind": "reflection",
+      "surface": "Refractometer_first_mirror",
+      "positionErrorMeters": 0.0,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "path": "incident-0",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 0.0,
+      "snellResidual": 2.1302700042724608e-05,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "path": "reflected-0",
+      "kind": "partial-reflection",
+      "surface": "Refractometer_isotropic_sample",
+      "positionErrorMeters": 1.862645149230957e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "path": "reflected-0",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 9.313225746154785e-09,
+      "snellResidual": 4.101683103607812e-06,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "path": "reflected-0",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 1.862645149230957e-09,
+      "snellResidual": 0.0005215380840208929,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "path": "reflected-0",
+      "kind": "reflection",
+      "surface": "Refractometer_second_mirror",
+      "positionErrorMeters": 8.33000234328132e-09,
+      "reflectionAngleErrorDegrees": 0.013988227454926254,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "path": "incident-1",
+      "kind": "reflection",
+      "surface": "Refractometer_first_mirror",
+      "positionErrorMeters": 1.862645149230957e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "path": "incident-1",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 0.0,
+      "snellResidual": 0.00016750692883164175,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "path": "reflected-1",
+      "kind": "critical",
+      "surface": "Refractometer_isotropic_sample",
+      "positionErrorMeters": 3.725290298461914e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "path": "reflected-1",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 1.3431725187092979e-08,
+      "snellResidual": 2.4066722428273124e-05,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "path": "reflected-1",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 1.862645149230957e-09,
+      "snellResidual": 0.00039156565990629624,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "path": "reflected-1",
+      "kind": "reflection",
+      "surface": "Refractometer_second_mirror",
+      "positionErrorMeters": 1.862645149230957e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "path": "incident-2",
+      "kind": "reflection",
+      "surface": "Refractometer_first_mirror",
+      "positionErrorMeters": 0.0,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "path": "incident-2",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 8.33000234328132e-09,
+      "snellResidual": 0.00022300243377685545,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "path": "reflected-2",
+      "kind": "total-internal-reflection",
+      "surface": "Refractometer_isotropic_sample",
+      "positionErrorMeters": 5.587935447692871e-09,
+      "reflectionAngleErrorDegrees": 0.013988227454926254,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "path": "reflected-2",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 7.450580596923828e-09,
+      "snellResidual": 4.939273049231474e-06,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "path": "reflected-2",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 1.862645149230957e-09,
+      "snellResidual": 0.0004585565078507464,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-160",
+      "path": "reflected-2",
+      "kind": "reflection",
+      "surface": "Refractometer_second_mirror",
+      "positionErrorMeters": 1.862645149230957e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "path": "incident-0",
+      "kind": "reflection",
+      "surface": "Refractometer_first_mirror",
+      "positionErrorMeters": 8.33000234328132e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "path": "incident-0",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 8.33000234328132e-09,
+      "snellResidual": 0.0004536008973164802,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "path": "reflected-0",
+      "kind": "partial-reflection",
+      "surface": "Refractometer_isotropic_sample",
+      "positionErrorMeters": 7.450580596923828e-09,
+      "reflectionAngleErrorDegrees": 0.024228320780105533,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "path": "reflected-0",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 1.834492720998098e-08,
+      "snellResidual": 2.5612275018627173e-06,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "path": "reflected-0",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 9.313225746154785e-09,
+      "snellResidual": 0.00026540686985629044,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "path": "reflected-0",
+      "kind": "reflection",
+      "surface": "Refractometer_second_mirror",
+      "positionErrorMeters": 4.16500117164066e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "path": "incident-1",
+      "kind": "reflection",
+      "surface": "Refractometer_first_mirror",
+      "positionErrorMeters": 3.725290298461914e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "path": "incident-1",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 0.0,
+      "snellResidual": 0.00010384202003479003,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "path": "reflected-1",
+      "kind": "critical",
+      "surface": "Refractometer_isotropic_sample",
+      "positionErrorMeters": 3.725290298461914e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "path": "reflected-1",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 1.834492720998098e-08,
+      "snellResidual": 1.4034114243166584e-05,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "path": "reflected-1",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 7.450580596923828e-09,
+      "snellResidual": 3.8671734203396535e-05,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "path": "reflected-1",
+      "kind": "reflection",
+      "surface": "Refractometer_second_mirror",
+      "positionErrorMeters": 8.33000234328132e-09,
+      "reflectionAngleErrorDegrees": 0.0098911704778757,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "path": "incident-2",
+      "kind": "reflection",
+      "surface": "Refractometer_first_mirror",
+      "positionErrorMeters": 1.862645149230957e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "path": "incident-2",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 7.450580596923828e-09,
+      "snellResidual": 0.0001634240129409447,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "path": "reflected-2",
+      "kind": "total-internal-reflection",
+      "surface": "Refractometer_isotropic_sample",
+      "positionErrorMeters": 1.30385160446167e-08,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "path": "reflected-2",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 2.5334713065503992e-08,
+      "snellResidual": 8.084853456713503e-06,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "path": "reflected-2",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 1.862645149230957e-09,
+      "snellResidual": 0.0004960249146586937,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "isotropic-170",
+      "path": "reflected-2",
+      "kind": "reflection",
+      "surface": "Refractometer_second_mirror",
+      "positionErrorMeters": 3.725290298461914e-09,
+      "reflectionAngleErrorDegrees": 0.019782341029446364,
+      "pass": true
+    },
+    {
+      "caseId": "air-gap",
+      "path": "incident-0",
+      "kind": "reflection",
+      "surface": "Refractometer_first_mirror",
+      "positionErrorMeters": 4.16500117164066e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "air-gap",
+      "path": "incident-0",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 3.725290298461914e-09,
+      "snellResidual": 8.26406478881836e-05,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "air-gap",
+      "path": "reflected-0",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 7.450580596923828e-09,
+      "snellResidual": 0.00039314627460451733,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "air-gap",
+      "path": "reflected-0",
+      "kind": "reflection",
+      "surface": "Refractometer_second_mirror",
+      "positionErrorMeters": 7.679882693323606e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "air-gap",
+      "path": "incident-1",
+      "kind": "reflection",
+      "surface": "Refractometer_first_mirror",
+      "positionErrorMeters": 1.862645149230957e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "air-gap",
+      "path": "incident-1",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 0.0,
+      "snellResidual": 0.00016750692883164175,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "air-gap",
+      "path": "reflected-1",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 7.450580596923828e-09,
+      "snellResidual": 1.8142461776733398e-05,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "air-gap",
+      "path": "reflected-1",
+      "kind": "reflection",
+      "surface": "Refractometer_second_mirror",
+      "positionErrorMeters": 0.0,
+      "reflectionAngleErrorDegrees": 0.024228320780105533,
+      "pass": true
+    },
+    {
+      "caseId": "air-gap",
+      "path": "incident-2",
+      "kind": "reflection",
+      "surface": "Refractometer_first_mirror",
+      "positionErrorMeters": 3.725290298461914e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "air-gap",
+      "path": "incident-2",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 0.0,
+      "snellResidual": 0.0007480824082657516,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "air-gap",
+      "path": "reflected-2",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 0.0,
+      "snellResidual": 0.0006837713818407012,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "air-gap",
+      "path": "reflected-2",
+      "kind": "reflection",
+      "surface": "Refractometer_second_mirror",
+      "positionErrorMeters": 4.16500117164066e-09,
+      "reflectionAngleErrorDegrees": 0.019782341029446364,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "path": "incident-0",
+      "kind": "reflection",
+      "surface": "Refractometer_first_mirror",
+      "positionErrorMeters": 4.16500117164066e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "path": "incident-0",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 3.725290298461914e-09,
+      "snellResidual": 8.26406478881836e-05,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "path": "reflected-0",
+      "kind": "partial-reflection",
+      "surface": "Refractometer_isotropic_sample",
+      "positionErrorMeters": 1.862645149230957e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "path": "reflected-0",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 5.587935447692871e-09,
+      "snellResidual": 2.395972614599451e-05,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "path": "reflected-0",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 7.679882693323606e-09,
+      "snellResidual": 8.187684303588572e-05,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "path": "reflected-0",
+      "kind": "reflection",
+      "surface": "Refractometer_second_mirror",
+      "positionErrorMeters": 4.16500117164066e-09,
+      "reflectionAngleErrorDegrees": 0.031278627784669236,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "path": "incident-1",
+      "kind": "reflection",
+      "surface": "Refractometer_first_mirror",
+      "positionErrorMeters": 1.862645149230957e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "path": "incident-1",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 0.0,
+      "snellResidual": 0.00016750692883164175,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "path": "reflected-1",
+      "kind": "partial-reflection",
+      "surface": "Refractometer_isotropic_sample",
+      "positionErrorMeters": 3.725290298461914e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "path": "reflected-1",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 1.3431725187092979e-08,
+      "snellResidual": 2.4066722428273124e-05,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "path": "reflected-1",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 1.862645149230957e-09,
+      "snellResidual": 0.00039156565990629624,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "path": "reflected-1",
+      "kind": "reflection",
+      "surface": "Refractometer_second_mirror",
+      "positionErrorMeters": 1.862645149230957e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "path": "incident-2",
+      "kind": "reflection",
+      "surface": "Refractometer_first_mirror",
+      "positionErrorMeters": 3.725290298461914e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "path": "incident-2",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 0.0,
+      "snellResidual": 0.0007480824082657516,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "path": "reflected-2",
+      "kind": "partial-reflection",
+      "surface": "Refractometer_isotropic_sample",
+      "positionErrorMeters": 9.313225746154785e-09,
+      "reflectionAngleErrorDegrees": 0.02967351172840696,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "path": "reflected-2",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 1.834492720998098e-08,
+      "snellResidual": 1.8816881469874147e-05,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "path": "reflected-2",
+      "kind": "refraction",
+      "surface": "Refractometer_test_prism",
+      "positionErrorMeters": 1.862645149230957e-09,
+      "snellResidual": 0.00019253095404713969,
+      "tolerance": 0.0015,
+      "pass": true
+    },
+    {
+      "caseId": "over-liquid",
+      "path": "reflected-2",
+      "kind": "reflection",
+      "surface": "Refractometer_second_mirror",
+      "positionErrorMeters": 1.862645149230957e-09,
+      "reflectionAngleErrorDegrees": 0.0,
+      "pass": true
+    }
+  ],
+  "limitations": [
+    "2048面半圆曲面的离散法线残差单列，不是精密面形或标尺校准。",
+    "薄透镜显式跳过曲面Snell验证；无厂家光学处方，不用薄透镜数值冒充真实厚透镜。"
+  ],
+  "reportScope": "历史候选导出验证随包附带；新public路径的独立重跑报告另行保存，不混作本次重新运行。"
+}

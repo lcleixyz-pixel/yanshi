@@ -1,0 +1,356 @@
+{
+  "createdAt": "2026-10-05T06:07:08.005618+00:00",
+  "packPurpose": "Local neutral multi-view inputs for user-operated Tripo/Meshy evaluation; no cloud upload performed",
+  "sourceAssetVersion": "0.4.0",
+  "sourceStatus": "project-reference-derived-teaching-model; provisional/unmeasured",
+  "sourceFiles": {
+    "assets-source/polariscope/polariscope-master.blend": "561ee72ee101b51bcb9f63f641e36de64bb9a7a54735676a30e2c08b917ba7bf",
+    "public/assets/3d/polariscope/polariscope.glb": "c72a598eddf78efddbd5a1dfb9da1deb82e00cc0aa06fc9df22a8fcdd5373559",
+    "assets-source/polariscope/parameters.json": "2fb2c31d6813ef61db9c4c822b27eca0fb0f356462abbb4d20eaab0a9a236b7a",
+    "assets-source/polariscope/validation.json": "5243f3d9aac8776bd91c30bd489a098981231a34f20c306e85527d4576f1262d",
+    "tools/3d-assets/blender/build_polariscope.py": "1864863f2ae0696607966dd0fe28e5997ef6b522f55175e08de8f6b443fdefad",
+    "public/assets/3d/polariscope/manifest.json": "13b2d9f528b01a099c065efa34421d0d6b08097783fa574e44eed5cc48ab53c4"
+  },
+  "scriptSha256": "e429fbfe7b0a6b92eb1f861403f2ddb3add1112977c77e70b43508a873db8c45",
+  "blenderVersion": "5.2.2 LTS",
+  "devices": [
+    "Apple M3 Ultra (GPU - 60 cores)"
+  ],
+  "camera": {
+    "projection": "orthographic",
+    "targetDeliveryYUp": [
+      0,
+      0.127,
+      -0.01
+    ],
+    "distanceMeters": 3.0,
+    "scaleMeters": 0.32,
+    "elevationDegrees": 10.0,
+    "sharedForAllFourUploadViews": true
+  },
+  "lighting": {
+    "worldEnvironmentColor": [
+      0.8,
+      0.8,
+      0.8
+    ],
+    "worldEnvironmentStrength": 0.7,
+    "cameraBackgroundLinearRGB": [
+      0.94,
+      0.94,
+      0.94
+    ],
+    "lights": [
+      {
+        "name": "front_soft",
+        "position": [
+          -0.28,
+          0.57,
+          0.48
+        ],
+        "powerW": 2.0,
+        "size": 0.85
+      },
+      {
+        "name": "back_soft",
+        "position": [
+          0.28,
+          0.57,
+          -0.48
+        ],
+        "powerW": 2.0,
+        "size": 0.85
+      },
+      {
+        "name": "left_fill",
+        "position": [
+          -0.48,
+          0.4,
+          -0.15
+        ],
+        "powerW": 1.0,
+        "size": 0.7
+      },
+      {
+        "name": "right_fill",
+        "position": [
+          0.48,
+          0.4,
+          0.15
+        ],
+        "powerW": 1.0,
+        "size": 0.7
+      }
+    ],
+    "floor": "hidden; no contact/drop shadow"
+  },
+  "colorManagement": {
+    "viewTransform": "Standard",
+    "look": "None",
+    "exposure": 0,
+    "gamma": 1,
+    "pngMode": "RGB 8bit"
+  },
+  "materials": {
+    "paint": {
+      "Base Color": [
+        0.78,
+        0.78,
+        0.755,
+        1
+      ],
+      "Roughness": 0.48,
+      "Metallic": 0,
+      "Coat Weight": 0,
+      "Specular IOR Level": 0.25
+    },
+    "black_metal": {
+      "Base Color": [
+        0.016,
+        0.018,
+        0.02,
+        1
+      ],
+      "Roughness": 0.48,
+      "Metallic": 0.35,
+      "Coat Weight": 0,
+      "Specular IOR Level": 0.3
+    },
+    "black_satin": {
+      "Base Color": [
+        0.018,
+        0.02,
+        0.022,
+        1
+      ],
+      "Roughness": 0.54,
+      "Metallic": 0.22,
+      "Coat Weight": 0,
+      "Specular IOR Level": 0.28
+    },
+    "rubber": {
+      "Base Color": [
+        0.015,
+        0.016,
+        0.017,
+        1
+      ],
+      "Roughness": 0.8,
+      "Metallic": 0,
+      "Specular IOR Level": 0.2
+    },
+    "silver": {
+      "Base Color": [
+        0.46,
+        0.48,
+        0.49,
+        1
+      ],
+      "Roughness": 0.43,
+      "Metallic": 0.8,
+      "Coat Weight": 0
+    },
+    "optic": {
+      "Base Color": [
+        0.52,
+        0.55,
+        0.5,
+        1
+      ],
+      "Roughness": 0.075,
+      "Transmission Weight": 0.92,
+      "IOR": 1.49,
+      "Coat Weight": 0
+    },
+    "clear_glass": {
+      "Base Color": [
+        0.98,
+        1,
+        1,
+        1
+      ],
+      "Roughness": 0.065,
+      "Transmission Weight": 1,
+      "IOR": 1.52,
+      "Coat Weight": 0
+    },
+    "light_emitter": {
+      "Base Color": [
+        0.92,
+        0.71,
+        0.38,
+        1
+      ],
+      "Emission Color": [
+        0.92,
+        0.71,
+        0.38,
+        1
+      ],
+      "Emission Strength": 0.65,
+      "Roughness": 0.65
+    },
+    "front_window_light": {
+      "Base Color": [
+        0.94,
+        0.49,
+        0.14,
+        1
+      ],
+      "Emission Color": [
+        0.94,
+        0.49,
+        0.14,
+        1
+      ],
+      "Emission Strength": 0.08,
+      "Roughness": 0.42,
+      "Transmission Weight": 0.1,
+      "Coat Weight": 0
+    }
+  },
+  "render": {
+    "engine": "Cycles Metal",
+    "samples": 128,
+    "adaptiveThreshold": 0.009,
+    "denoising": true
+  },
+  "geometryChanged": false,
+  "sampleVisible": false,
+  "annotations": false,
+  "views": [
+    {
+      "file": "B-multiview/01-front.png",
+      "sha256": "234136a03a0394dd6692899518cd1534ec46f9f2671abc9bcc93d1d86bd6938d",
+      "width": 2048,
+      "height": 2048,
+      "azimuthDegrees": 0,
+      "elevationDegrees": 10.0,
+      "positionDeliveryYUp": [
+        0.0,
+        0.647944533000791,
+        2.944423259036624
+      ],
+      "targetDeliveryYUp": [
+        0,
+        0.127,
+        -0.01
+      ],
+      "orthographicScaleMeters": 0.32,
+      "forUpload": true
+    },
+    {
+      "file": "B-multiview/02-left.png",
+      "sha256": "c6f40058e71975415b8567d08a0a16cacc5448614987c25d7e76cea2e206322f",
+      "width": 2048,
+      "height": 2048,
+      "azimuthDegrees": -90,
+      "elevationDegrees": 10.0,
+      "positionDeliveryYUp": [
+        -2.954423259036624,
+        0.647944533000791,
+        -0.00999999999999982
+      ],
+      "targetDeliveryYUp": [
+        0,
+        0.127,
+        -0.01
+      ],
+      "orthographicScaleMeters": 0.32,
+      "forUpload": true
+    },
+    {
+      "file": "B-multiview/03-back.png",
+      "sha256": "799d36e1174414adc356f5291b02871b22ef30bd68e9f5f116b49d6a9354ce04",
+      "width": 2048,
+      "height": 2048,
+      "azimuthDegrees": 180,
+      "elevationDegrees": 10.0,
+      "positionDeliveryYUp": [
+        3.618124987505693e-16,
+        0.647944533000791,
+        -2.9644232590366237
+      ],
+      "targetDeliveryYUp": [
+        0,
+        0.127,
+        -0.01
+      ],
+      "orthographicScaleMeters": 0.32,
+      "forUpload": true
+    },
+    {
+      "file": "B-multiview/04-right.png",
+      "sha256": "e988cc14d8bd7fccf979a860c9b550283bb9163ceeab8b78c45cbf73911bc281",
+      "width": 2048,
+      "height": 2048,
+      "azimuthDegrees": 90,
+      "elevationDegrees": 10.0,
+      "positionDeliveryYUp": [
+        2.954423259036624,
+        0.647944533000791,
+        -0.00999999999999982
+      ],
+      "targetDeliveryYUp": [
+        0,
+        0.127,
+        -0.01
+      ],
+      "orthographicScaleMeters": 0.32,
+      "forUpload": true
+    },
+    {
+      "file": "review/hero.png",
+      "sha256": "21747fa657a837b20844a03af2f0bc9ba618d5907ff49a891873445755106e85",
+      "width": 1024,
+      "height": 1024,
+      "azimuthDegrees": -38,
+      "elevationDegrees": 18,
+      "positionDeliveryYUp": [
+        -1.7565865738210655,
+        1.0540509831248421,
+        2.2383282863849825
+      ],
+      "targetDeliveryYUp": [
+        0,
+        0.127,
+        -0.01
+      ],
+      "orthographicScaleMeters": 0.35,
+      "forUpload": false
+    },
+    {
+      "file": "review/top.png",
+      "sha256": "f52aa019a416834c38c32c7e6067d951587b1da970c2a4504276a7e20a847cc9",
+      "width": 1024,
+      "height": 1024,
+      "azimuthDegrees": 0,
+      "elevationDegrees": 89.99,
+      "positionDeliveryYUp": [
+        0.0,
+        3.1269999543073874,
+        -0.009476401227059839
+      ],
+      "targetDeliveryYUp": [
+        0,
+        0.127,
+        -0.01
+      ],
+      "orthographicScaleMeters": 0.32,
+      "forUpload": false
+    }
+  ],
+  "protectedSourceFilesUnchanged": true,
+  "illustrativeTransparencyOverride": {
+    "opticTransparentMix": 0.72,
+    "clearGlassTransparentMix": 0.65,
+    "transparentColor": [
+      0.965,
+      0.98,
+      0.958,
+      1
+    ],
+    "reason": "Reduce mirror-disc ambiguity for image-to-3D input; this is not calibrated glass or polarized-light simulation."
+  },
+  "finishedAt": "2026-10-05T06:07:40.386713+00:00"
+}

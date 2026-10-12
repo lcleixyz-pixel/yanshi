@@ -1,0 +1,47 @@
+{
+  "id": "polariscope-structure-v1",
+  "packagedAt": "2026-10-05",
+  "artifact": "repaired.glb",
+  "sourceDirectory": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/",
+  "sourceFiles": {
+    "model": "repaired.glb",
+    "manifest": "manifest.json",
+    "poster": "renders/hero.png",
+    "editableMaster": "repaired.blend",
+    "rebuildScript": "source/repair_candidate.py"
+  },
+  "modelSha256": "0d4eb62f630e74915d31524010e51e1ce031c9b50f00314a1195b7c8ce469a7b",
+  "modelBytes": 29512268,
+  "geometry": {
+    "nodes": 37,
+    "meshes": 29,
+    "materials": 11,
+    "images": 3,
+    "triangles": 641461
+  },
+  "packagingChanges": "Model is byte-identical to repair-v2; hero render copied as poster.png. No geometry, UV, or texture simplification. 2026-10-06: manifest.json edited (frame marked integral with the base: explodeOffset 0, label, integralShell list; mechanics note: fixed lower polarizer, independently rotating stage), per user confirmation. GLB unchanged. 2026-10-07: manifest.json internalLight.teachingOffsetNative [0,-0.17,0] added; the web scene lowers the schematic light module inside the hollow base so the emitter-to-polarizer path is visible, per user suggestion. GLB unchanged.",
+  "scope": {
+    "dimensionCalibrated": false,
+    "physicalOpticsSimulation": false,
+    "sampleObservationIncluded": false,
+    "internalLightConstruction": "schematic module; location and path based on user correction",
+    "frameIntegralWithBase": true,
+    "lowerPolarizerFixedStageRotates": true
+  },
+  "sources": [
+    {
+      "kind": "project-reference",
+      "path": "偏光镜/偏光镜_产品图.png",
+      "usage": "User-directed local shape reference. External author and reuse license have not been verified; not claimed as CC0 or original industrial design."
+    },
+    {
+      "kind": "generated-mesh",
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/candidate.glb",
+      "sha256": "37886a63481139b2e385b7b531e1308a597c8df7c86b82b1ba4ea88401553e3a",
+      "usage": "Original Tripo output retained; regular surfaces and part structure rebuilt locally; selected grip and handle geometry/materials retained."
+    }
+  ],
+  "licenseNotes": "No new third-party images, logos, or models were downloaded or embedded during this packaging step. Existing public reference and source-license inventory remains in docs/偏光镜公开参考与素材清单.md and gem-lab/assets-source/polariscope/references/. Public availability does not imply permission to redistribute. No broader rights clearance is asserted.",
+  "validationSource": "repair-v2/inspection/repaired-0d4eb62f630e-YTNLCc/gltf-validation.json",
+  "validationNote": "Source model format and geometry checks are separate from application browser/performance acceptance."
+}

@@ -1,0 +1,495 @@
+{
+  "id": "spectroscope-workbench",
+  "version": "simple-2",
+  "date": "2026-10-10",
+  "title": "分光镜光源、宝石镊子与放置台面",
+  "model": "model.glb",
+  "poster": "poster.png",
+  "sha256": "7b463996f6e104566c1fa3bf54bdb1201c524e2c0f9fa491224acb8d27e96fbd",
+  "byteLength": 1881892,
+  "units": "meter",
+  "upAxis": "Y",
+  "rootNode": "Bench_root",
+  "boundsMeters": {
+    "min": [
+      -0.29500001668930054,
+      0.0,
+      -0.17029166221618652
+    ],
+    "max": [
+      0.148499995470047,
+      0.16464267671108246,
+      0.12136919796466827
+    ]
+  },
+  "dimensionsCalibrated": false,
+  "opticalSimulation": false,
+  "photometrySimulated": false,
+  "parts": [
+    {
+      "id": "root",
+      "node": "Bench_root",
+      "label": "分光镜光源与夹样配件",
+      "pivot": [
+        0,
+        0,
+        0
+      ],
+      "defaultVisible": true,
+      "hotspot": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "lightSource",
+      "node": "Bench_lightSource",
+      "label": "白色光纤光源主机",
+      "pivot": [
+        -0.205,
+        0.062,
+        -0.065
+      ],
+      "defaultVisible": true,
+      "hotspot": [
+        -0.205,
+        0.062,
+        -0.065
+      ]
+    },
+    {
+      "id": "powerSwitch",
+      "node": "Bench_powerSwitch",
+      "label": "旋钮关断段",
+      "pivot": [
+        -0.155,
+        0.087,
+        0.034
+      ],
+      "defaultVisible": true,
+      "hotspot": [
+        -0.155,
+        0.087,
+        0.034
+      ],
+      "motion": {
+        "type": "shared-dimmer-off-detent",
+        "sharedNode": "Bench_dimmerKnob"
+      }
+    },
+    {
+      "id": "dimmerKnob",
+      "node": "Bench_dimmerKnob",
+      "label": "开关与亮度调节旋钮",
+      "pivot": [
+        -0.155,
+        0.087,
+        0.034
+      ],
+      "defaultVisible": true,
+      "hotspot": [
+        -0.155,
+        0.087,
+        0.034
+      ],
+      "motion": {
+        "type": "rotation",
+        "axis": [
+          0,
+          0,
+          1
+        ],
+        "rangeDegrees": [
+          -135,
+          135
+        ],
+        "defaultDegrees": 35,
+        "includesPowerOff": true
+      }
+    },
+    {
+      "id": "lampHead",
+      "node": "Bench_lampHead",
+      "label": "金属光导出光端",
+      "pivot": [
+        0,
+        0.12,
+        -0.09
+      ],
+      "defaultVisible": true,
+      "hotspot": [
+        0,
+        0.12,
+        -0.09
+      ],
+      "motion": {
+        "type": "rotation",
+        "axes": [
+          "Y",
+          "X"
+        ],
+        "rangeDegrees": [
+          -75,
+          75
+        ],
+        "emissionAxisLocal": [
+          0,
+          0,
+          1
+        ],
+        "illustrative": true
+      }
+    },
+    {
+      "id": "lampEmitter",
+      "node": "Bench_lampEmitter",
+      "label": "细光导出光面",
+      "pivot": [
+        0,
+        0.12,
+        -0.069
+      ],
+      "defaultVisible": true,
+      "hotspot": [
+        0,
+        0.12,
+        -0.069
+      ]
+    },
+    {
+      "id": "fiberCable",
+      "node": "Bench_fiberCable",
+      "label": "柔性光纤导光束",
+      "pivot": [
+        -0.252,
+        0.045,
+        0.054
+      ],
+      "defaultVisible": true,
+      "hotspot": [
+        -0.252,
+        0.045,
+        0.054
+      ],
+      "motion": {
+        "type": "runtime-curve",
+        "start": [
+          -0.252,
+          0.045,
+          0.054
+        ],
+        "end": [
+          0,
+          0.12,
+          -0.137
+        ],
+        "radiusMeters": 0.0045
+      }
+    },
+    {
+      "id": "tweezers",
+      "node": "Bench_tweezers",
+      "label": "宝石镊子",
+      "pivot": [
+        0,
+        0.12,
+        0
+      ],
+      "defaultVisible": true,
+      "hotspot": [
+        0,
+        0.12,
+        0
+      ],
+      "motion": {
+        "type": "translation",
+        "translationAxis": [
+          1,
+          0,
+          0
+        ],
+        "rangeMeters": [
+          -0.035,
+          0.035
+        ]
+      }
+    },
+    {
+      "id": "tweezerJawA",
+      "node": "Bench_tweezerJawA",
+      "label": "镊子夹臂 A",
+      "pivot": [
+        0.145,
+        0.157,
+        0
+      ],
+      "defaultVisible": true,
+      "hotspot": [
+        0.145,
+        0.157,
+        0
+      ],
+      "motion": {
+        "type": "rotation",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "rangeDegrees": [
+          0,
+          4
+        ],
+        "directionMultiplier": 1,
+        "defaultDegrees": 0
+      }
+    },
+    {
+      "id": "tweezerTipA",
+      "node": "Bench_tweezerTipA",
+      "label": "镊尖接触部 A",
+      "pivot": [
+        0,
+        0.12,
+        0.007
+      ],
+      "defaultVisible": true,
+      "hotspot": [
+        0,
+        0.12,
+        0.007
+      ]
+    },
+    {
+      "id": "tweezerJawB",
+      "node": "Bench_tweezerJawB",
+      "label": "镊子夹臂 B",
+      "pivot": [
+        0.145,
+        0.157,
+        0
+      ],
+      "defaultVisible": true,
+      "hotspot": [
+        0.145,
+        0.157,
+        0
+      ],
+      "motion": {
+        "type": "rotation",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "rangeDegrees": [
+          0,
+          4
+        ],
+        "directionMultiplier": -1,
+        "defaultDegrees": 0
+      }
+    },
+    {
+      "id": "tweezerTipB",
+      "node": "Bench_tweezerTipB",
+      "label": "镊尖接触部 B",
+      "pivot": [
+        0,
+        0.12,
+        -0.007
+      ],
+      "defaultVisible": true,
+      "hotspot": [
+        0,
+        0.12,
+        -0.007
+      ]
+    },
+    {
+      "id": "reflectionTable",
+      "node": "Bench_reflectionTable",
+      "label": "黑色观察放置台面",
+      "pivot": [
+        0,
+        0.108,
+        0
+      ],
+      "defaultVisible": true,
+      "hotspot": [
+        0,
+        0.108,
+        0
+      ]
+    }
+  ],
+  "sampleCenter": [
+    0,
+    0.12,
+    0
+  ],
+  "opticalAxis": [
+    0,
+    0,
+    1
+  ],
+  "lamp": {
+    "pivot": [
+      0,
+      0.12,
+      -0.09
+    ],
+    "emitterNode": "Bench_lampEmitter",
+    "emitterWorld": [
+      0,
+      0.12,
+      -0.069
+    ],
+    "emitterLocal": [
+      0,
+      0,
+      0.021
+    ],
+    "emissionAxisLocal": [
+      0,
+      0,
+      1
+    ],
+    "apertureDiameterMeters": 0.0044,
+    "emitterRadiusMeters": 0.0022,
+    "type": "illustrative broadband halogen fiber illuminator with a thin metal fiber probe",
+    "colorTemperatureCalibrated": false
+  },
+  "fiber": {
+    "node": "Bench_fiberCable",
+    "radiusMeters": 0.0045,
+    "points": [
+      [
+        -0.252,
+        0.045,
+        0.054
+      ],
+      [
+        -0.228,
+        0.047,
+        0.093
+      ],
+      [
+        -0.17,
+        0.071,
+        0.116
+      ],
+      [
+        -0.106,
+        0.134,
+        0.07
+      ],
+      [
+        -0.073,
+        0.16,
+        -0.05
+      ],
+      [
+        -0.026,
+        0.14,
+        -0.162
+      ],
+      [
+        0,
+        0.12,
+        -0.137
+      ]
+    ],
+    "replaceWithRuntimeCurve": true,
+    "headAttachmentLocal": [
+      0,
+      0,
+      -0.047
+    ]
+  },
+  "tweezers": {
+    "node": "Bench_tweezers",
+    "pivot": [
+      0,
+      0.12,
+      0
+    ],
+    "jawNodes": [
+      "Bench_tweezerJawA",
+      "Bench_tweezerJawB"
+    ],
+    "jawPivotWorld": [
+      0.145,
+      0.157,
+      0
+    ],
+    "tipNodes": [
+      "Bench_tweezerTipA",
+      "Bench_tweezerTipB"
+    ],
+    "tipWorldPositions": [
+      [
+        0,
+        0.12,
+        0.007
+      ],
+      [
+        0,
+        0.12,
+        -0.007
+      ]
+    ],
+    "openingRangeDegrees": [
+      0,
+      4
+    ],
+    "jawDirectionMultipliers": [
+      1,
+      -1
+    ],
+    "translationAxis": [
+      1,
+      0,
+      0
+    ],
+    "translationRangeMeters": [
+      -0.035,
+      0.035
+    ]
+  },
+  "reflectionTable": {
+    "node": "Bench_reflectionTable",
+    "topY": 0.108,
+    "topSizeMeters": [
+      0.078,
+      0.062
+    ],
+    "visibleForModes": [
+      "internal-reflection",
+      "surface-reflection"
+    ]
+  },
+  "instrumentPlacement": {
+    "opticalAxis": [
+      0,
+      0,
+      1
+    ],
+    "opticalAxisHeightMeters": 0.12,
+    "suggestedEntranceZ": 0.045,
+    "includedInThisAsset": false,
+    "heldByViewer": true
+  },
+  "notes": [
+    "独立原创参数化教学资产，无品牌标识；未复刻特定厂家型号。",
+    "尺寸、灯头与样品夹行程属于教学设计，非实物测量。",
+    "卤素光纤宽带白光语义由课程定义，本模型不计算灯丝、色温、光谱响应或照度。",
+    "后板通风孔属于通用功能示意，未声称复制 FCL-100 后板。",
+    "外形参考 FABLE FCL-100 与南京宝光光纤灯，保留无品牌教学模型。",
+    "光路和样品分别由练习程序绘制；工作台 GLB 不含分光镜及样品，亦不提供谱带真值。",
+    "只包含光源、镊子与反射观察放置台；不含大底板、导轨、滑片、镜筒托架或额外灯架。",
+    "透射显示镊子；内反射与表面反射均默认显示黑色放置台面，灯和分光镜在两侧上方斜向观察；实际姿态由练习程序设置。",
+    "镊子开合为叶簧机构的简化转动示意，不是弹性有限元或真实夹持力计算。"
+  ]
+}

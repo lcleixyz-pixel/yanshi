@@ -1,0 +1,1419 @@
+{
+  "id": "gem-microscope-structure-v1",
+  "version": "structure-4",
+  "revision": "repair-v4",
+  "model": "model.glb",
+  "units": "m",
+  "dimensionsCalibrated": false,
+  "teachingOpticsSimulated": false,
+  "parts": [
+    {
+      "id": "base",
+      "label": "底座",
+      "node": "GemMicroscope_base",
+      "pivot": [
+        0.0,
+        0.0208125,
+        0.0
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.0,
+        -0.01665,
+        0.0
+      ],
+      "hotspot": [
+        0.0,
+        0.0208125,
+        0.0
+      ]
+    },
+    {
+      "id": "arm",
+      "label": "粗 C 形镜臂与后立柱",
+      "node": "GemMicroscope_arm",
+      "pivot": [
+        0.0,
+        0.1956375,
+        -0.06327
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.0,
+        0.0,
+        -0.0457875
+      ],
+      "hotspot": [
+        0.0,
+        0.1956375,
+        -0.06327
+      ],
+      "note": "粗 C 形黑镜臂和后白色立柱依据公开外观；倾斜轴与内部齿条未实测。"
+    },
+    {
+      "id": "focusCarriage",
+      "label": "黑色横支架与升降滑架",
+      "node": "GemMicroscope_focusCarriage",
+      "pivot": [
+        0.0,
+        0.2788875,
+        -0.0208125
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.0,
+        0.00666,
+        -0.014985
+      ],
+      "hotspot": [
+        0.0,
+        0.2788875,
+        -0.0208125
+      ],
+      "note": "随调焦旋钮驱动光学头沿立柱上下移动；示意齿条传动，行程未实测。",
+      "translationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "translationRangeMeters": [
+        -0.01,
+        0.01
+      ],
+      "translationRangeVerified": false
+    },
+    {
+      "id": "stage",
+      "label": "加厚圆角长方形载物台",
+      "node": "GemMicroscope_stage",
+      "pivot": [
+        0.0,
+        0.128205,
+        0.0108225
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.0,
+        0.0,
+        0.0333
+      ],
+      "hotspot": [
+        0.0,
+        0.128205,
+        0.0108225
+      ],
+      "note": "本轮按用户确认保留长方形台面。"
+    },
+    {
+      "id": "darkfield",
+      "label": "台下灯室外壳与安装法兰",
+      "node": "GemMicroscope_darkfield",
+      "pivot": [
+        0.0,
+        0.0957375,
+        0.0191475
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.0,
+        -0.0291375,
+        0.0
+      ],
+      "hotspot": [
+        0.0,
+        0.0957375,
+        0.0191475
+      ],
+      "note": "悬装在载物台下的独立灯室，不是白色承重底座；有封底灯座与上安装法兰。内部构造为通用教学示意，不是 KRÜSS 厂家剖面。"
+    },
+    {
+      "id": "bottomLight",
+      "label": "独立底部光源",
+      "node": "GemMicroscope_bottomLight",
+      "pivot": [
+        0.0,
+        0.0724275,
+        0.0191475
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.0,
+        -0.0357975,
+        0.0
+      ],
+      "hotspot": [
+        0.0,
+        0.0724275,
+        0.0191475
+      ],
+      "note": "示意 LED / 卤素出光面；独立自发光网格，可在网页单独开关；不计算照度。"
+    },
+    {
+      "id": "reflector",
+      "label": "双焦点椭球反射碗",
+      "node": "GemMicroscope_reflector",
+      "pivot": [
+        0.0,
+        0.11530125,
+        0.0191475
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.0,
+        -0.01998,
+        0.0
+      ],
+      "hotspot": [
+        0.0,
+        0.11530125,
+        0.0191475
+      ],
+      "note": "内侧为绕竖轴旋转的椭球带；底灯在下焦点，样品在上焦点；截断椭球和有限网格均为示意。"
+    },
+    {
+      "id": "darkfieldStop",
+      "label": "可平移暗域挡板",
+      "node": "GemMicroscope_darkfieldStop",
+      "pivot": [
+        0.0,
+        0.111555,
+        0.0191475
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.0333,
+        -0.0041625,
+        0.0
+      ],
+      "hotspot": [
+        0.0,
+        0.111555,
+        0.0191475
+      ],
+      "note": "合拢遮住完整底灯至物镜直射锥；平移至侧面后放开中央直射光。",
+      "illuminationMotion": {
+        "partId": "darkfieldStop",
+        "node": "GemMicroscope_darkfieldStop",
+        "type": "translation",
+        "axisLocal": [
+          1,
+          0,
+          0
+        ],
+        "space": "asset-global",
+        "positionsMeters": {
+          "closed": 0,
+          "open": 0.0208125
+        },
+        "defaultState": "closed",
+        "motionIllustrative": true
+      },
+      "translationAxisLocal": [
+        1,
+        0,
+        0
+      ],
+      "translationRangeMeters": [
+        0,
+        0.0208125
+      ],
+      "translationRangeVerified": false
+    },
+    {
+      "id": "brightfieldLever",
+      "label": "亮域切换小拨杆",
+      "node": "GemMicroscope_brightfieldLever",
+      "pivot": [
+        0.0074925,
+        0.111555,
+        0.0624375
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.028305,
+        0.0,
+        0.011655
+      ],
+      "hotspot": [
+        0.0074925,
+        0.111555,
+        0.0624375
+      ],
+      "note": "与暗域挡板同向平移；亮域仍包含反射碗斜照光。",
+      "illuminationMotion": {
+        "partId": "brightfieldLever",
+        "node": "GemMicroscope_brightfieldLever",
+        "type": "translation",
+        "axisLocal": [
+          1,
+          0,
+          0
+        ],
+        "space": "asset-global",
+        "positionsMeters": {
+          "closed": 0,
+          "open": 0.0208125
+        },
+        "defaultState": "closed",
+        "motionIllustrative": true,
+        "drivesPart": "darkfieldStop"
+      },
+      "translationAxisLocal": [
+        1,
+        0,
+        0
+      ],
+      "translationRangeMeters": [
+        0,
+        0.0208125
+      ],
+      "translationRangeVerified": false
+    },
+    {
+      "id": "iris",
+      "label": "十二片倒角哑光虹彩叶片",
+      "node": "GemMicroscope_iris",
+      "pivot": [
+        0.0,
+        0.143523,
+        0.0191475
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.0,
+        0.021645,
+        0.0
+      ],
+      "hotspot": [
+        0.0,
+        0.143523,
+        0.0191475
+      ],
+      "note": "12 片弧形叶片用不相交薄层叠置；边缘真实小倒角。形变是教学近似，不复原连杆。"
+    },
+    {
+      "id": "irisControl",
+      "label": "虹彩操纵环与小拨杆",
+      "node": "GemMicroscope_irisControl",
+      "pivot": [
+        0.0,
+        0.143523,
+        0.0191475
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": true,
+      "explodeOffset": [
+        0.0,
+        0.028305,
+        0.0
+      ],
+      "hotspot": [
+        0.0,
+        0.143523,
+        0.0191475
+      ],
+      "note": "0–90° 驱动 ApertureOpen 0–1；圆孔约 7.5–40 mm，带止位，小拨杆便于辨认。"
+    },
+    {
+      "id": "diffuser",
+      "label": "可推入磨砂漫射板",
+      "node": "GemMicroscope_diffuser",
+      "pivot": [
+        0.0690975,
+        0.1466865,
+        0.0191475
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.03996,
+        0.00999,
+        0.0
+      ],
+      "hotspot": [
+        0.0690975,
+        0.1466865,
+        0.0191475
+      ],
+      "note": "向左推入后完整盖住光井，推出后完全离开光井。",
+      "illuminationMotion": {
+        "partId": "diffuser",
+        "node": "GemMicroscope_diffuser",
+        "type": "translation",
+        "axisLocal": [
+          1,
+          0,
+          0
+        ],
+        "space": "asset-global",
+        "positionsMeters": {
+          "out": 0,
+          "in": -0.0690975
+        },
+        "defaultState": "out",
+        "motionIllustrative": true
+      },
+      "translationAxisLocal": [
+        1,
+        0,
+        0
+      ],
+      "translationRangeMeters": [
+        -0.0690975,
+        0
+      ],
+      "translationRangeVerified": false
+    },
+    {
+      "id": "polarizer",
+      "label": "可推入起偏片",
+      "node": "GemMicroscope_polarizer",
+      "pivot": [
+        -0.0690975,
+        0.15026625,
+        0.0191475
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        -0.03996,
+        0.01332,
+        0.0
+      ],
+      "hotspot": [
+        -0.0690975,
+        0.15026625,
+        0.0191475
+      ],
+      "note": "光阑上方的示意起偏片；偏振轴沿 X，不模拟偏振传输。",
+      "illuminationMotion": {
+        "partId": "polarizer",
+        "node": "GemMicroscope_polarizer",
+        "type": "translation",
+        "axisLocal": [
+          1,
+          0,
+          0
+        ],
+        "space": "asset-global",
+        "positionsMeters": {
+          "out": 0,
+          "in": 0.0690975
+        },
+        "defaultState": "out",
+        "motionIllustrative": true
+      },
+      "translationAxisLocal": [
+        1,
+        0,
+        0
+      ],
+      "translationRangeMeters": [
+        0,
+        0.0690975
+      ],
+      "translationRangeVerified": false
+    },
+    {
+      "id": "analyzer",
+      "label": "物镜下方可装检偏夹片",
+      "node": "GemMicroscope_analyzer",
+      "pivot": [
+        0.0491175,
+        0.25308,
+        0.0191475
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.034965,
+        -0.011655,
+        0.0
+      ],
+      "hotspot": [
+        0.0491175,
+        0.25308,
+        0.0191475
+      ],
+      "note": "随物镜升降；向左推入，检偏轴相对起偏轴为90°；未模拟真实双目成像。",
+      "translationAxisLocal": [
+        1,
+        0,
+        0
+      ],
+      "translationRangeMeters": [
+        -0.0491175,
+        0
+      ],
+      "translationRangeVerified": false,
+      "illuminationMotion": {
+        "partId": "analyzer",
+        "node": "GemMicroscope_analyzer",
+        "type": "translation",
+        "axisLocal": [
+          1,
+          0,
+          0
+        ],
+        "space": "asset-global",
+        "positionsMeters": {
+          "out": 0,
+          "in": -0.0491175
+        },
+        "defaultState": "out",
+        "motionIllustrative": true,
+        "followsFocus": true,
+        "note": "检偏夹片随物镜升降；插入后覆盖物镜入口，示意相对起偏轴为90°。"
+      }
+    },
+    {
+      "id": "lampHousingBase",
+      "label": "台下灯室检修底盖",
+      "node": "GemMicroscope_lampHousingBase",
+      "pivot": [
+        0.0,
+        0.06751575,
+        0.0191475
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.0,
+        -0.0424575,
+        0.0
+      ],
+      "hotspot": [
+        0.0,
+        0.06751575,
+        0.0191475
+      ],
+      "note": "底盖封住台下灯室的下口，并承托独立灯座；螺钉、接合与拆装关系为教学示意。"
+    },
+    {
+      "id": "lampMount",
+      "label": "灯座与导热支撑",
+      "node": "GemMicroscope_lampMount",
+      "pivot": [
+        0.0,
+        0.06951375,
+        0.0191475
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.0,
+        -0.038295,
+        0.0
+      ],
+      "hotspot": [
+        0.0,
+        0.06951375,
+        0.0191475
+      ],
+      "note": "连续连接检修底盖、陶瓷灯托和出光面；位于光源出射平面下方，不伸入通光锥。"
+    },
+    {
+      "id": "filterGuides",
+      "label": "台面插片固定导轨",
+      "node": "GemMicroscope_filterGuides",
+      "pivot": [
+        0.0,
+        0.1456875,
+        0.0191475
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.0,
+        0.01332,
+        -0.0208125
+      ],
+      "hotspot": [
+        0.0,
+        0.1456875,
+        0.0191475
+      ],
+      "note": "漫射板与起偏片沿固定导轨推入；支脚、滑座和孔隙为通用机械示意，未复原厂家附件。"
+    },
+    {
+      "id": "analyzerGuide",
+      "label": "检偏夹片固定导向架",
+      "node": "GemMicroscope_analyzerGuide",
+      "pivot": [
+        0.0,
+        0.25599375,
+        0.0191475
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.0291375,
+        -0.01332,
+        -0.01665
+      ],
+      "hotspot": [
+        0.0,
+        0.25599375,
+        0.0191475
+      ],
+      "note": "固定在光学头下方并随调焦升降；检偏片在导轨上横移，导轨不随插片横移。",
+      "translationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "translationRangeMeters": [
+        -0.01,
+        0.01
+      ],
+      "translationRangeVerified": false
+    },
+    {
+      "id": "gemClamp",
+      "label": "宝石夹",
+      "node": "GemMicroscope_gemClamp",
+      "pivot": [
+        -0.02664,
+        0.1640025,
+        0.01665
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        -0.041625,
+        0.018315,
+        0.0208125
+      ],
+      "hotspot": [
+        -0.02664,
+        0.1640025,
+        0.01665
+      ],
+      "note": "夹座避开完整插片行程，支杆重接；夹口与样品位置保留。安装和关节为教学示意，未按厂家校准。"
+    },
+    {
+      "id": "zoomBody",
+      "label": "体视变倍光学体",
+      "node": "GemMicroscope_zoomBody",
+      "pivot": [
+        0.0,
+        0.314685,
+        0.011655
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.0,
+        0.024975,
+        0.024975
+      ],
+      "hotspot": [
+        0.0,
+        0.314685,
+        0.011655
+      ],
+      "note": "外壳与物镜外观示意；内部双光路和变倍凸轮未复原。",
+      "translationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "translationRangeMeters": [
+        -0.01,
+        0.01
+      ],
+      "translationRangeVerified": false
+    },
+    {
+      "id": "focusKnob",
+      "label": "立柱调焦大旋钮",
+      "node": "GemMicroscope_focusKnob",
+      "pivot": [
+        0.0,
+        0.2664,
+        -0.064935
+      ],
+      "rotationAxisLocal": [
+        1,
+        0,
+        0
+      ],
+      "rotatable": true,
+      "explodeOffset": [
+        0.05328,
+        0.0,
+        0.0
+      ],
+      "hotspot": [
+        0.0,
+        0.2664,
+        -0.064935
+      ],
+      "note": "大旋钮固定在后立柱支架，绕 X 轴驱动黑横支架及镜头组件沿立柱上下平移；示意总行程 20 mm，非厂家实测。"
+    },
+    {
+      "id": "zoomKnob",
+      "label": "镜头两侧变倍小旋钮",
+      "node": "GemMicroscope_zoomKnob",
+      "pivot": [
+        0.0,
+        0.30969,
+        0.0074925
+      ],
+      "rotationAxisLocal": [
+        1,
+        0,
+        0
+      ],
+      "rotatable": true,
+      "explodeOffset": [
+        0.0474525,
+        0.0041625,
+        0.008325
+      ],
+      "hotspot": [
+        0.0,
+        0.30969,
+        0.0074925
+      ],
+      "note": "小旋钮位于镜头两侧，随整个镜头升降；不赋予未经验证的倍率公式。",
+      "translationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "translationRangeMeters": [
+        -0.01,
+        0.01
+      ],
+      "translationRangeVerified": false
+    },
+    {
+      "id": "eyepieceLeft",
+      "label": "左目镜",
+      "node": "GemMicroscope_eyepieceLeft",
+      "pivot": [
+        -0.02206125,
+        0.37049813,
+        -0.03299837
+      ],
+      "rotationAxisLocal": [
+        0.0,
+        0.75071359,
+        -0.66062796
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        -0.031635,
+        0.024975,
+        0.01665
+      ],
+      "hotspot": [
+        -0.02206125,
+        0.37049813,
+        -0.03299837
+      ],
+      "translationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "translationRangeMeters": [
+        -0.01,
+        0.01
+      ],
+      "translationRangeVerified": false
+    },
+    {
+      "id": "eyepieceRight",
+      "label": "右目镜",
+      "node": "GemMicroscope_eyepieceRight",
+      "pivot": [
+        0.02206125,
+        0.37049813,
+        -0.03299837
+      ],
+      "rotationAxisLocal": [
+        0.0,
+        0.75071359,
+        -0.66062796
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.031635,
+        0.024975,
+        0.01665
+      ],
+      "hotspot": [
+        0.02206125,
+        0.37049813,
+        -0.03299837
+      ],
+      "translationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "translationRangeMeters": [
+        -0.01,
+        0.01
+      ],
+      "translationRangeVerified": false
+    },
+    {
+      "id": "photoTube",
+      "label": "摄影口",
+      "node": "GemMicroscope_photoTube",
+      "pivot": [
+        0.0,
+        0.3721275,
+        0.02664
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.0333,
+        0.0333,
+        -0.024975
+      ],
+      "hotspot": [
+        0.0,
+        0.3721275,
+        0.02664
+      ],
+      "note": "参考实物可见附件；不把它当作第三个目镜。",
+      "translationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "translationRangeMeters": [
+        -0.01,
+        0.01
+      ],
+      "translationRangeVerified": false
+    },
+    {
+      "id": "topLight",
+      "label": "正前方 45° 箱式顶灯与粗鹅颈",
+      "node": "GemMicroscope_topLight",
+      "pivot": [
+        0.0,
+        0.20646,
+        0.0674325
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.0,
+        0.0208125,
+        0.0457875
+      ],
+      "hotspot": [
+        0.0,
+        0.20646,
+        0.0674325
+      ],
+      "note": "灯头在物镜前方、台面之上，光轴向下45°指向样品；独立出光网格。"
+    },
+    {
+      "id": "lightGuide",
+      "label": "侧面斜射光纤与独立出光端",
+      "node": "GemMicroscope_lightGuide",
+      "pivot": [
+        0.0333,
+        0.16317,
+        0.0191475
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.041625,
+        0.014985,
+        0.0
+      ],
+      "hotspot": [
+        0.0333,
+        0.16317,
+        0.0191475
+      ],
+      "note": "出光端朝向样品侧面，约8.5°向下；光导仅示意固定曲线。"
+    }
+  ],
+  "coordinates": "glTF right-handed: X right, Y up, Z toward front",
+  "construction": "KRUSS KSW6000 photograph constrained parametric reconstruction; approximate 0.40 m teaching size, not measured manufacturer CAD.",
+  "sourceCandidate": "assets-source/gem-microscope/tripo-trials/2026-10-07/candidate.glb",
+  "scaleNote": "统一米制，约 40 cm 高；示意比例，未按实物校准。",
+  "irisMechanics": {
+    "bladePartId": "iris",
+    "rotatingControlPartId": "irisControl",
+    "controlPart": "irisControl",
+    "controlNode": "GemMicroscope_irisControl",
+    "controlAngleChangesAperture": true,
+    "bladeLinkageModeled": false,
+    "bladeCount": 12,
+    "edgeBevelMeters": 1.24875e-05,
+    "layerGapMeters": 2.08125e-05,
+    "materialRoughness": 0.66,
+    "angleRangeDegrees": [
+      0,
+      90
+    ],
+    "defaultAngleDegrees": 90.0,
+    "apertureDiameterRangeMeters": [
+      0.0075,
+      0.04
+    ],
+    "defaultApertureDiameterMeters": 0.039999999999999994,
+    "drive": {
+      "type": "morphTarget",
+      "morphTargetName": "ApertureOpen",
+      "nodes": [
+        "GemMicroscope_IrisBlade_00",
+        "GemMicroscope_IrisBlade_01",
+        "GemMicroscope_IrisBlade_02",
+        "GemMicroscope_IrisBlade_03",
+        "GemMicroscope_IrisBlade_04",
+        "GemMicroscope_IrisBlade_05",
+        "GemMicroscope_IrisBlade_06",
+        "GemMicroscope_IrisBlade_07",
+        "GemMicroscope_IrisBlade_08",
+        "GemMicroscope_IrisBlade_09",
+        "GemMicroscope_IrisBlade_10",
+        "GemMicroscope_IrisBlade_11"
+      ],
+      "weightRange": [
+        0,
+        1
+      ]
+    },
+    "mapping": "t = clamp(angleDegrees / 90, 0, 1); each leaf ApertureOpen weight = t; diameter = diameterMin + t * (diameterMax - diameterMin). Ring rotation relative to rest = angleDegrees - defaultAngleDegrees.",
+    "note": "十二片弧形叶片的连续形变会改变真实中心圆孔；叶片不做整体旋转冒充开度。叶片变形是教学近似，未建实际连杆、轴销或叶片数实测。"
+  },
+  "focusMechanics": {
+    "controlPart": "focusKnob",
+    "controlNode": "GemMicroscope_focusKnob",
+    "angleRangeDegrees": [
+      -180,
+      180
+    ],
+    "defaultAngleDegrees": 0,
+    "translationRangeMeters": [
+      -0.01,
+      0.01
+    ],
+    "translationAxisLocal": [
+      0,
+      1,
+      0
+    ],
+    "translationSpace": "asset-global",
+    "drivenParts": [
+      "focusCarriage",
+      "zoomBody",
+      "zoomKnob",
+      "eyepieceLeft",
+      "eyepieceRight",
+      "photoTube",
+      "analyzer",
+      "analyzerGuide"
+    ],
+    "mapping": "t = clamp((angleDegrees + 180) / 360, 0, 1); translation along asset-global Y = -0.01 + 0.02*t metres, added to each listed rest position.",
+    "note": "立柱大旋钮驱动横支架和光学头整体升降；镜头两侧小旋钮仅表示变倍操作。20 mm 总行程是教学设定，不是厂家测量值。"
+  },
+  "illuminationModes": [
+    {
+      "id": "darkfield",
+      "label": "暗域",
+      "states": {
+        "sources": {
+          "bottom": true,
+          "top": false,
+          "fiber": false
+        },
+        "darkfieldStop": "closed",
+        "irisAngleDegrees": 90,
+        "diffuser": "out",
+        "polarizer": "out",
+        "analyzer": "out"
+      },
+      "note": "部件位置与照明预设；明域叠加外围反射光。网页受光为等效教学示意，不代表实测照度、宝石折射/偏振或目镜成像。"
+    },
+    {
+      "id": "brightfield",
+      "label": "亮域",
+      "states": {
+        "sources": {
+          "bottom": true,
+          "top": false,
+          "fiber": false
+        },
+        "darkfieldStop": "open",
+        "irisAngleDegrees": 90,
+        "diffuser": "out",
+        "polarizer": "out",
+        "analyzer": "out"
+      },
+      "note": "部件位置与照明预设；明域叠加外围反射光。网页受光为等效教学示意，不代表实测照度、宝石折射/偏振或目镜成像。"
+    },
+    {
+      "id": "pinpoint",
+      "label": "点光源",
+      "states": {
+        "sources": {
+          "bottom": true,
+          "top": false,
+          "fiber": false
+        },
+        "darkfieldStop": "open",
+        "irisAngleDegrees": 0,
+        "diffuser": "out",
+        "polarizer": "out",
+        "analyzer": "out"
+      },
+      "note": "部件位置与照明预设；明域叠加外围反射光。网页受光为等效教学示意，不代表实测照度、宝石折射/偏振或目镜成像。"
+    },
+    {
+      "id": "diffused",
+      "label": "漫射",
+      "states": {
+        "sources": {
+          "bottom": true,
+          "top": false,
+          "fiber": false
+        },
+        "darkfieldStop": "open",
+        "irisAngleDegrees": 90,
+        "diffuser": "in",
+        "polarizer": "out",
+        "analyzer": "out"
+      },
+      "note": "部件位置与照明预设；明域叠加外围反射光。网页受光为等效教学示意，不代表实测照度、宝石折射/偏振或目镜成像。"
+    },
+    {
+      "id": "polarized",
+      "label": "偏光",
+      "states": {
+        "sources": {
+          "bottom": true,
+          "top": false,
+          "fiber": false
+        },
+        "darkfieldStop": "open",
+        "irisAngleDegrees": 90,
+        "diffuser": "out",
+        "polarizer": "in",
+        "analyzer": "in"
+      },
+      "note": "部件位置与照明预设；明域叠加外围反射光。网页受光为等效教学示意，不代表实测照度、宝石折射/偏振或目镜成像。"
+    },
+    {
+      "id": "shadowing",
+      "label": "遮光",
+      "states": {
+        "sources": {
+          "bottom": true,
+          "top": false,
+          "fiber": false
+        },
+        "darkfieldStop": "open",
+        "irisAngleDegrees": 30,
+        "diffuser": "out",
+        "polarizer": "out",
+        "analyzer": "out"
+      },
+      "note": "部件位置与照明预设；明域叠加外围反射光。网页受光为等效教学示意，不代表实测照度、宝石折射/偏振或目镜成像。"
+    },
+    {
+      "id": "overhead",
+      "label": "顶光",
+      "states": {
+        "sources": {
+          "bottom": false,
+          "top": true,
+          "fiber": false
+        },
+        "darkfieldStop": "open",
+        "irisAngleDegrees": 90,
+        "diffuser": "out",
+        "polarizer": "out",
+        "analyzer": "out"
+      },
+      "note": "部件位置与照明预设；明域叠加外围反射光。网页受光为等效教学示意，不代表实测照度、宝石折射/偏振或目镜成像。"
+    },
+    {
+      "id": "oblique",
+      "label": "斜射 / 水平",
+      "states": {
+        "sources": {
+          "bottom": false,
+          "top": false,
+          "fiber": true
+        },
+        "darkfieldStop": "open",
+        "irisAngleDegrees": 90,
+        "diffuser": "out",
+        "polarizer": "out",
+        "analyzer": "out"
+      },
+      "note": "部件位置与照明预设；明域叠加外围反射光。网页受光为等效教学示意，不代表实测照度、宝石折射/偏振或目镜成像。"
+    }
+  ],
+  "defaultIlluminationMode": "darkfield",
+  "transparentShellParts": [
+    "darkfield",
+    "lampHousingBase"
+  ],
+  "illuminationMechanics": {
+    "darkfieldStop": {
+      "partId": "darkfieldStop",
+      "node": "GemMicroscope_darkfieldStop",
+      "type": "translation",
+      "axisLocal": [
+        1,
+        0,
+        0
+      ],
+      "space": "asset-global",
+      "positionsMeters": {
+        "closed": 0,
+        "open": 0.0208125
+      },
+      "defaultState": "closed",
+      "motionIllustrative": true
+    },
+    "brightfieldLever": {
+      "partId": "brightfieldLever",
+      "node": "GemMicroscope_brightfieldLever",
+      "type": "translation",
+      "axisLocal": [
+        1,
+        0,
+        0
+      ],
+      "space": "asset-global",
+      "positionsMeters": {
+        "closed": 0,
+        "open": 0.0208125
+      },
+      "defaultState": "closed",
+      "motionIllustrative": true,
+      "drivesPart": "darkfieldStop"
+    },
+    "diffuser": {
+      "partId": "diffuser",
+      "node": "GemMicroscope_diffuser",
+      "type": "translation",
+      "axisLocal": [
+        1,
+        0,
+        0
+      ],
+      "space": "asset-global",
+      "positionsMeters": {
+        "out": 0,
+        "in": -0.0690975
+      },
+      "defaultState": "out",
+      "motionIllustrative": true
+    },
+    "polarizer": {
+      "partId": "polarizer",
+      "node": "GemMicroscope_polarizer",
+      "type": "translation",
+      "axisLocal": [
+        1,
+        0,
+        0
+      ],
+      "space": "asset-global",
+      "positionsMeters": {
+        "out": 0,
+        "in": 0.0690975
+      },
+      "defaultState": "out",
+      "motionIllustrative": true
+    },
+    "analyzer": {
+      "partId": "analyzer",
+      "node": "GemMicroscope_analyzer",
+      "type": "translation",
+      "axisLocal": [
+        1,
+        0,
+        0
+      ],
+      "space": "asset-global",
+      "positionsMeters": {
+        "out": 0,
+        "in": -0.0491175
+      },
+      "defaultState": "out",
+      "motionIllustrative": true,
+      "followsFocus": true,
+      "note": "检偏夹片随物镜升降；插入后覆盖物镜入口，示意相对起偏轴为90°。"
+    }
+  },
+  "sourceNodes": {
+    "bottom": {
+      "partId": "bottomLight",
+      "node": "GemMicroscope_BottomEmission",
+      "emissiveColor": [
+        1,
+        0.84,
+        0.58
+      ],
+      "onIntensity": 3,
+      "offIntensity": 0,
+      "defaultOn": true,
+      "positionMeters": [
+        0.0,
+        0.0724275,
+        0.0191475
+      ],
+      "direction": [
+        0,
+        1,
+        0
+      ]
+    },
+    "top": {
+      "partId": "topLight",
+      "node": "GemMicroscope_TopEmission",
+      "emissiveColor": [
+        1,
+        0.95,
+        0.86
+      ],
+      "onIntensity": 3,
+      "offIntensity": 0,
+      "defaultOn": false,
+      "positionMeters": [
+        0.0,
+        0.1976300041,
+        0.0586025041
+      ],
+      "direction": [
+        0.0,
+        -0.7071067812,
+        -0.7071067812
+      ]
+    },
+    "fiber": {
+      "partId": "lightGuide",
+      "node": "GemMicroscope_FiberEmission",
+      "emissiveColor": [
+        0.9,
+        0.96,
+        1
+      ],
+      "onIntensity": 3,
+      "offIntensity": 0,
+      "defaultOn": false,
+      "positionMeters": [
+        0.026466697,
+        0.1621450046,
+        0.0191475
+      ],
+      "direction": [
+        -0.9889363529,
+        -0.1483404529,
+        -0.0
+      ]
+    }
+  },
+  "samplePositionMeters": [
+    0.0,
+    0.158175,
+    0.0191475
+  ],
+  "objectiveEntrance": {
+    "centerMeters": [
+      0.0,
+      0.259074,
+      0.0191475
+    ],
+    "radiusMeters": 0.01540125,
+    "acceptanceConeIllustrative": true,
+    "focusTravelIncluded": true
+  },
+  "reflectorEllipsoid": {
+    "partId": "reflector",
+    "type": "ellipsoid-of-revolution",
+    "sourceFocusMeters": [
+      0.0,
+      0.0724275,
+      0.0191475
+    ],
+    "sampleFocusMeters": [
+      0.0,
+      0.158175,
+      0.0191475
+    ],
+    "centerMeters": [
+      0.0,
+      0.11530125,
+      0.0191475
+    ],
+    "semiMajorAxisMeters": 0.05661000000000001,
+    "semiMinorAxisMeters": 0.036966656069186206,
+    "surfaceAuthoringZRange": [
+      1.015,
+      1.3
+    ],
+    "dimensionsCalibrated": false
+  },
+  "topLightDirection": [
+    0.0,
+    -0.7071067812,
+    -0.7071067812
+  ],
+  "fiberDirection": [
+    -0.9889363529,
+    -0.1483404529,
+    -0.0
+  ],
+  "illuminationGeometry": {
+    "internalOpticsIllustrative": true,
+    "photometrySimulated": false,
+    "brightfieldIncludesReflectedLight": true,
+    "stagePlan": "rounded rectangle",
+    "topLightElevationDegrees": 45,
+    "report": "assets-source/instruments-2026-10-07/round4/microscope-illumination-check.json",
+    "note": "双焦点椭球、物镜接收锥和附件运动均是共用参数的几何示意，不是KRÜSS内部结构复刻。"
+  },
+  "lampChamberConstruction": {
+    "location": "under-stage suspended lamp chamber, separate from white structural pedestal",
+    "mountingParts": [
+      "darkfield",
+      "lampHousingBase",
+      "lampMount",
+      "bottomLight"
+    ],
+    "supportChain": [
+      "stage",
+      "darkfield upper flange",
+      "darkfield cylinder",
+      "lampHousingBase",
+      "lampMount",
+      "bottomLight"
+    ],
+    "reflectorMaterial": "neutral polished metal; no gold coating asserted",
+    "filterGuides": [
+      "filterGuides",
+      "analyzerGuide"
+    ],
+    "manufacturerInternalGeometryVerified": false,
+    "note": "底盖、灯座、上法兰和附件导轨补足可理解的机械安装关系；内部构造、材料、尺寸与热设计均未按厂家或实物校准。"
+  },
+  "approximateDimensionsMeters": {
+    "width": 0.218947,
+    "depth": 0.202734,
+    "height": 0.399808
+  },
+  "sourceSha256": "fbb352d1a771a5e049e63e0f587e3dfe8445efd1d4d8cf0d114de756f2b8fce0",
+  "sha256": "23ae6ef8d47c341cab52c315da9bc37d37913880ffcb9d9aaf7af144c36fe83d",
+  "byteLength": 2701720
+}

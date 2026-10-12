@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-08T11:34:23.418Z",
+  "inputDirectory": "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi/gem-lab/public/assets/3d/refractometer/paper-optics-v2",
+  "modelSha256": "ca614d532f7fee568998496d9b7299c3226c8cb44e2254dcc8ee9c58bf27e5b2",
+  "modelBytes": 3055888,
+  "casesSha256": "a73ee06ba7a0f7520d5e0259a1c3b615d3f3ab758ac8ddb3f783b09090c6e77b",
+  "validator": {
+    "name": "gltf-validator",
+    "version": "2.0.0-dev.3.10",
+    "node": "v22.22.3"
+  },
+  "entrySha256": "2fd4cc05bb12265b1b952523b84ec3a40b31d394bf30ab3ab7a39071ba87f7c7",
+  "errors": 0,
+  "warnings": 0,
+  "infos": 17,
+  "pass": true,
+  "checks": [
+    {
+      "name": "manifest.modelSha256 equals delivered GLB",
+      "pass": true
+    },
+    {
+      "name": "manifest.modelBytes equals delivered GLB size",
+      "pass": true
+    },
+    {
+      "name": "legacy sha256 agrees where present",
+      "pass": true
+    },
+    {
+      "name": "independent public version label",
+      "pass": true
+    },
+    {
+      "name": "glTF Validator zero errors",
+      "pass": true
+    }
+  ],
+  "scope": "Binary format and local package metadata only; independent optics and browser checks are separate.",
+  "report": {
+    "uri": "model.glb",
+    "mimeType": "model/gltf-binary",
+    "validatorVersion": "2.0.0-dev.3.10",
+    "validatedAt": "2026-10-08T11:34:23.417Z",
+    "issues": {
+      "numErrors": 0,
+      "numWarnings": 0,
+      "numInfos": 17,
+      "numHints": 0,
+      "messages": [
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/meshes/0/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/meshes/1/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/meshes/2/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/meshes/3/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/meshes/5/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/meshes/6/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/meshes/7/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/meshes/8/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/meshes/9/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/meshes/10/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/meshes/11/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/meshes/12/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/meshes/55/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/meshes/57/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/meshes/60/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/meshes/61/primitives/0/attributes/TEXCOORD_0"
+        },
+        {
+          "code": "UNUSED_OBJECT",
+          "message": "This object may be unused.",
+          "severity": 2,
+          "pointer": "/meshes/62/primitives/0/attributes/TEXCOORD_0"
+        }
+      ],
+      "truncated": false
+    },
+    "info": {
+      "version": "2.0",
+      "generator": "Khronos glTF Blender I/O v5.2.40",
+      "extensionsUsed": [
+        "KHR_materials_transmission",
+        "KHR_materials_emissive_strength",
+        "KHR_materials_ior"
+      ],
+      "resources": [
+        {
+          "pointer": "/buffers/0",
+          "mimeType": "application/gltf-buffer",
+          "storage": "glb",
+          "byteLength": 3001408
+        }
+      ],
+      "animationCount": 0,
+      "materialCount": 18,
+      "hasMorphTargets": false,
+      "hasSkins": false,
+      "hasTextures": false,
+      "hasDefaultScene": true,
+      "drawCallCount": 64,
+      "totalVertexCount": 83298,
+      "totalTriangleCount": 101400,
+      "maxUVs": 1,
+      "maxInfluences": 0,
+      "maxAttributes": 3
+    }
+  }
+}

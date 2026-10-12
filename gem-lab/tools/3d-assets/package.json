@@ -1,0 +1,15 @@
+{
+  "name": "gem-lab-3d-asset-tools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "node generate.mjs",
+    "verify": "node verify.mjs",
+    "inspect:import": "node inspect-import.mjs"
+  },
+  "dependencies": {
+    "@gltf-transform/cli": "4.5.1",
+    "gltf-validator": "2.0.0-dev.3.10",
+    "three": "0.183.2"
+  }
+}

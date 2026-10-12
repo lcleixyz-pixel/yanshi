@@ -1,0 +1,79 @@
+/* 宝石显微镜三路照明 3D 页；版式沿用 tools/3d-assets/microscope-ksw-lighting-v3 审阅页。 */
+.mic-explore{display:flex;flex-direction:column;height:100dvh;min-height:560px;background:#f4f7fc;color:var(--iu-ink)}
+.mic-explore__main{display:grid;grid-template-columns:minmax(0,1fr) 320px;flex:1;min-height:0}
+.mic-explore__viewport{position:relative;min-width:0;overflow:hidden;background:#eaf0f8}
+.mic-explore__canvas{display:block;width:100%;height:100%;touch-action:none}
+.mic-explore__views{position:absolute;top:18px;left:20px;display:flex;gap:3px;padding:4px;background:#fafcfff0;border:1px solid #dde6f2;border-radius:10px;box-shadow:0 4px 16px #3d4a5e08}
+.mic-explore__views button{border:0;background:transparent;padding:8px 13px;border-radius:7px;color:#5b6b80;font-size:13px}
+.mic-explore__views button[aria-pressed="true"]{color:#fff;background:var(--iu-accent-strong)}
+.mic-explore__stage-label{position:absolute;top:22px;right:20px;color:#5b6b80;font-size:11px;letter-spacing:.08em;background:#fff9;padding:6px 9px;border-radius:5px}
+.mic-explore__help{position:absolute;left:22px;right:22px;bottom:20px;display:flex;justify-content:space-between;align-items:flex-end;gap:14px;color:#5b6b80;pointer-events:none}
+.mic-explore__help small{font-size:12px}
+.mic-explore__help p{max-width:340px;margin:0;padding:9px 12px;border-radius:8px;background:#fafcffde;font-size:12px;line-height:1.65}
+.mic-explore__loading{position:absolute;inset:0;display:grid;place-content:center;color:#7b8aa0;font-size:13px;pointer-events:none}
+.mic-explore__loading i{display:inline-block;width:8px;height:8px;margin-right:6px;border-radius:50%;background:var(--iu-accent-strong);animation:mic-pulse 1s ease-in-out infinite alternate}
+@keyframes mic-pulse{to{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.mic-explore__loading i{animation:none}}
+.mic-explore__error{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:10px;padding:32px;text-align:center;color:#86401a;background:#eaf0f8}
+.mic-explore__error img{max-width:min(560px,70vw);max-height:52vh;object-fit:contain}
+.mic-explore__error button{border:1px solid #dde6f2;background:#fff;border-radius:7px;padding:8px 14px}
+.mic-explore__sidebar{overflow:auto;padding:18px 22px 24px;background:#fff;border-left:1px solid #dde6f2}
+.mic-explore__block{padding:0 0 18px;margin:0 0 16px;border-bottom:1px solid #eaf0f8}
+.mic-explore__block:last-child{border-bottom:0;margin:0;padding:0}
+.mic-explore__block h2{display:flex;justify-content:space-between;align-items:center;margin:0 0 11px;font-size:12px;font-weight:650;letter-spacing:.05em;color:#5b6b80}
+.mic-explore__block h2 span{color:var(--iu-accent-strong);background:var(--iu-accent-soft);padding:2px 6px;border-radius:4px;font-size:10px;font-weight:500;letter-spacing:0}
+.mic-explore__segmented{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #cbd8ea;border-radius:8px;overflow:hidden}
+.mic-explore__segmented button{padding:9px 4px;border:0;border-right:1px solid #cbd8ea;background:#fff;color:#5b6b80;font-size:13px}
+.mic-explore__segmented button:last-child{border-right:0}
+.mic-explore__segmented button[aria-pressed="true"],.mic-explore__toggle[aria-pressed="true"]{background:var(--iu-accent-soft);color:var(--iu-accent-strong);font-weight:600}
+.mic-explore__toggle{width:100%;padding:9px 10px;border:1px solid #dde6f2;border-radius:7px;background:#fff;color:#3d4a5e;font-size:13px}
+.mic-explore__toggle[aria-pressed="true"]{border-color:var(--iu-accent-strong)}
+.mic-explore__note{min-height:20px;margin:9px 0 4px;color:#5b6b80;font-size:12px;line-height:1.75}
+.mic-explore__hint{margin:8px 0 0;color:#7b8aa0;font-size:11px;line-height:1.7}
+.mic-explore__range{display:block;margin:12px 0 0}
+.mic-explore__range span{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px;color:#5b6b80}
+.mic-explore__range output{font-variant-numeric:tabular-nums;color:#3d4a5e}
+.mic-explore input[type="range"]{width:100%;height:20px;margin:0;accent-color:var(--iu-accent-strong)}
+.mic-explore__check{display:flex;align-items:center;gap:8px;margin:11px 0 0;font-size:12px;color:#5b6b80}
+.mic-explore__check input{width:15px;height:15px;margin:0;accent-color:var(--iu-accent-strong)}
+.mic-explore__row{display:flex;gap:8px;margin-top:12px}
+.mic-explore__row button{flex:1;padding:8px 10px;border:1px solid #dde6f2;border-radius:7px;background:#fff;color:#3d4a5e;font-size:12px}
+.mic-explore__row button[aria-pressed="true"]{background:var(--iu-accent-soft);border-color:#7b8aa0}
+.mic-explore__parts{display:flex;flex-direction:column;gap:2px;max-height:240px;overflow:auto;margin:0 -7px}
+.mic-explore__parts button{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;border:0;border-radius:6px;background:#fff;color:#5b6b80;font-size:12px;text-align:left}
+.mic-explore__parts button:hover{background:#f4f7fc}
+.mic-explore__parts button[aria-pressed="true"]{background:var(--iu-accent-soft);color:var(--iu-accent-ink)}
+.mic-explore__parts button span{color:#7b8aa0;font-size:10px}
+.mic-explore button:disabled{cursor:not-allowed;opacity:.45}
+.mic-explore button:focus-visible,.mic-explore input:focus-visible{outline:2px solid var(--iu-accent-strong);outline-offset:3px}
+.mic-explore details{font-size:11px;line-height:1.8;color:#7b8aa0}
+.mic-explore summary{cursor:pointer;color:#5b6b80}
+.mic-explore details p{margin:9px 0}
+.mic-explore__links{display:flex;gap:12px}
+.mic-explore__links a{color:#7b8aa0;text-decoration:underline;text-underline-offset:3px}
+@media (max-width:900px){
+  .mic-explore{height:auto;min-height:100dvh}
+  .mic-explore__main{grid-template-columns:1fr}
+  .mic-explore__viewport{height:62vh;min-height:360px}
+  .mic-explore__sidebar{border-left:0;border-top:1px solid #dde6f2}
+  .mic-explore__help p,.mic-explore__stage-label{display:none}
+}
+/* 分光镜、折射仪 3D 页（OpticsExplorePage）共用上面的版式，以下为额外部件。 */
+.opt-explore__canvas{display:block;width:100%;height:100%;touch-action:none}
+.opt-explore__select{width:100%;padding:8px 10px;border:1px solid #cbd8ea;border-radius:8px;background:#fff;color:#3d4a5e;font-size:13px}
+.opt-explore__readout{margin:10px 0 0;padding:10px 12px;border-radius:8px;background:#f4f7fc;font-size:12px}
+.opt-explore__readout div{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:3px 0}
+.opt-explore__readout dt{color:#5b6b80;white-space:nowrap}
+.opt-explore__readout dd{margin:0;text-align:right;color:#3d4a5e;font-variant-numeric:tabular-nums}
+.opt-explore__legend{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:8px;font-size:11px;color:#5b6b80}
+.opt-explore__legend span{display:inline-flex;align-items:center;gap:5px}
+.opt-explore__legend i{display:inline-block;width:14px;height:3px;border-radius:2px}
+.opt-explore__warning{color:#8a5313}
+.opt-explore__sources{margin:6px 0;padding-left:16px}
+.opt-explore__link{color:var(--iu-accent-ink);text-decoration:underline;text-underline-offset:3px}
+.mic-explore__help p strong{font-weight:600;color:#3d4a5e}
+/* 课程入口的主要按钮（同偏光镜：讲师演示为主要按钮），优先于面板内通用按钮样式。 */
+.mic-explore .mic-explore__row .iu-button--primary{border-color:var(--iu-accent-strong);background:var(--iu-accent-strong);color:#fff}
+.mic-explore .mic-explore__row .iu-button--primary:hover:not(:disabled){border-color:var(--iu-accent-ink);background:var(--iu-accent-ink)}
+.mic-explore__part-number{margin-right:6px;color:var(--iu-faint);font-family:var(--iu-mono);font-size:10px}
+.mic-explore__parts button[aria-pressed="true"] .mic-explore__part-number{color:var(--iu-accent-ink)}

@@ -1,0 +1,2519 @@
+{
+  "formatVersion": 1,
+  "archiveId": "2026-10-07-yanshi成果保全/snapshot-01",
+  "entries": [
+    {
+      "path": "gem-lab/assets-source/polariscope/polariscope-master.blend",
+      "bytes": 364247,
+      "sha256": "561ee72ee101b51bcb9f63f641e36de64bb9a7a54735676a30e2c08b917ba7bf",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/polariscope-master.blend1",
+      "bytes": 376547,
+      "sha256": "2e2c18561469f477ddb1bf2df45ef1d4c466d75a96379d69ed7690d8f64345ca",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-input-2026-10-05.zip",
+      "bytes": 17197901,
+      "sha256": "89fcbd1180db13a7c0556fa839bc5852808d51e279532263cfc85a116c3e35d6",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/archive-reference-v02/README.md",
+      "bytes": 888,
+      "sha256": "0aadf29cc6363e462c0bbaa30230080c50493faf4e11519ba2329acc6e39902e",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/archive-reference-v02/parameters.json",
+      "bytes": 2490,
+      "sha256": "f8f531f7e906d603cfd8a3ef6cdaa370b0f9f997d743dee2bdfb8d0d513c4bef",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/archive-reference-v02/polariscope-master.blend",
+      "bytes": 368090,
+      "sha256": "8869a0f8884f2d39bb34f2c21ab64e4e4e67afd1cfa14060caa96c7802d53440",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/archive-reference-v02/validation.json",
+      "bytes": 5710,
+      "sha256": "28dec91b2ed1c88390b2daec6868999ca7b581c31c0705cf7ae005ea7b76ef1a",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/development-reference/pre-structure-integration-2026-10-05/PolariscopeExplorePage.tsx.txt",
+      "bytes": 33926,
+      "sha256": "0e9e002f4fcf11c9bdc1b9259b64a693e6fd9b273548e8f218693548febec846",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/development-reference/pre-structure-integration-2026-10-05/PolariscopeScene.tsx.txt",
+      "bytes": 25205,
+      "sha256": "4e9a7e90aca20404c70aa6ae9f1b3035482c544f539c049af5b6e348feffb92e",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/development-reference/pre-structure-integration-2026-10-05/README.md",
+      "bytes": 593,
+      "sha256": "767f100571c9af7e388a4058b54796434dc131c8cf6d62910ed7264fa7826b6f",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/development-reference/pre-structure-integration-2026-10-05/polariscope-explore.css.txt",
+      "bytes": 24070,
+      "sha256": "cd933497af0292b87934dbad7d590c4400bc8345c84256be170faecb80108547",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/development-reference/pre-structure-integration-2026-10-05/polariscope3d-scene.spec.ts.txt",
+      "bytes": 15031,
+      "sha256": "23167daa6f4c06ce87541594ed5de2b99c6ae3bba63793dcc1d387ba5e14d2d8",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/development-reference/pre-structure-integration-2026-10-05/polariscope3d.spec.ts.txt",
+      "bytes": 11748,
+      "sha256": "4481f8a33a8cdb428416613dfe07fc9edcfcf5e6879c52b59d56e04b3261c924",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/development-reference/pre-structure-integration-2026-10-05/protected-hashes.json",
+      "bytes": 775,
+      "sha256": "2c42a83f84b2dab23e7c124c0d0e59fe203b82e9beaae2d743b2c912a291c02f",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/references/original/calcite-polarizing-filter.gif",
+      "bytes": 555391,
+      "sha256": "fe681bdd91ad75b05609077cfbba155f2490a4530b62aea3b1f2b6cf01886449",
+      "groups": [
+        "reference-gallery"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/references/original/historical-biot-polariscope.jpg",
+      "bytes": 8241917,
+      "sha256": "f4b2e0674c3faaad6cadc30241648d8683bf68140564ca7b48cca381a20f55d1",
+      "groups": [
+        "reference-gallery"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/references/original/isochromatics-polariscope.jpg",
+      "bytes": 2636632,
+      "sha256": "53fa21c648eb78b69ef6d304172a370f9803697130a8545420b4993e0b03be30",
+      "groups": [
+        "reference-gallery"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/references/original/peridot-doubling.jpg",
+      "bytes": 1275423,
+      "sha256": "a140776997f4c4a55dee4fc097e3a2c886f822cf38837e6579b06d798476d7d5",
+      "groups": [
+        "reference-gallery"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/references/original/planar-polariscope-zh-hans.svg",
+      "bytes": 174882,
+      "sha256": "ad88f73f91c37abcc60cc3ea37211a7dc9606f3dd70d4278a858fd0385e7058b",
+      "groups": [
+        "reference-gallery"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/references/original/rutile-birefringence.gif",
+      "bytes": 1663506,
+      "sha256": "605a506312f9e9b68a525ea47ba9a05b64f91b193f6d09fdd6b2fdd5f9195815",
+      "groups": [
+        "reference-gallery"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tooling-validation/2026-10-05/npm-audit.json",
+      "bytes": 2111,
+      "sha256": "0bd34a4c7793476241794f388dca4c9830083373d4165b48c4c6175d390d4cd7",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tooling-validation/2026-10-05/tooling-checks.json",
+      "bytes": 2050,
+      "sha256": "6ec6f530a7cb6b1a08ba252fbcdb720f9fb35b41ccf20b875fc73f30e4dec2fb",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tooling-validation/2026-10-05/external-resource-blocked-81316b5e9b55-geX9Md/gltf-inspect.md",
+      "bytes": 100,
+      "sha256": "82bd55ff8293ec3d5768d8ba13b6a501b5b02416e013c9e9ed678c1448467c51",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tooling-validation/2026-10-05/external-resource-blocked-81316b5e9b55-geX9Md/gltf-validation.json",
+      "bytes": 1607,
+      "sha256": "e36ea7d931e7da02cb28ee4727bf79814aa7c734b371e94a39f03a7ff9be4766",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tooling-validation/2026-10-05/external-resource-blocked-81316b5e9b55-geX9Md/summary.json",
+      "bytes": 1536,
+      "sha256": "f69b2220e3f350bc51f8ccb064655066bae63bbfc352d70810485112dbbb6b18",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tooling-validation/2026-10-05/invalid-node-array-b22167814912-sI3gHa/gltf-inspect.md",
+      "bytes": 100,
+      "sha256": "82bd55ff8293ec3d5768d8ba13b6a501b5b02416e013c9e9ed678c1448467c51",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tooling-validation/2026-10-05/invalid-node-array-b22167814912-sI3gHa/gltf-validation.json",
+      "bytes": 819,
+      "sha256": "e61caf6bc121bc81ac4b34c5ab6990d8b6294f62a4cfe3791cc1ea55507c0919",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tooling-validation/2026-10-05/invalid-node-array-b22167814912-sI3gHa/summary.json",
+      "bytes": 1420,
+      "sha256": "16c1c829c8f76824bd37033b817a9a60e798cc7618939c62a94724d60b6142f5",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tooling-validation/2026-10-05/invalid-resource-uri-ccc7af259d05-HDlzSc/gltf-inspect.md",
+      "bytes": 100,
+      "sha256": "82bd55ff8293ec3d5768d8ba13b6a501b5b02416e013c9e9ed678c1448467c51",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tooling-validation/2026-10-05/invalid-resource-uri-ccc7af259d05-HDlzSc/gltf-validation.json",
+      "bytes": 1257,
+      "sha256": "7e996285807fa9b0ea8b5f11c4fa0a5df740facb1355c281943dcff2af3b2e33",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tooling-validation/2026-10-05/invalid-resource-uri-ccc7af259d05-HDlzSc/summary.json",
+      "bytes": 1418,
+      "sha256": "48b8bfc74344504c0ad3a4e8bee3b4386d221535b9f44b6e806dedf789ec61c0",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tooling-validation/2026-10-05/polariscope-c72a598eddf7-GNhBvq/gltf-inspect.md",
+      "bytes": 9505,
+      "sha256": "8c7cc9f8504e882bf15a582484bc53a82a1021642dfc492ee75099f56ed58c7a",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tooling-validation/2026-10-05/polariscope-c72a598eddf7-GNhBvq/gltf-validation.json",
+      "bytes": 5197,
+      "sha256": "96ac224f9e3255483956da3cd91d04b862b4c4c71c43eaced7185f7be7bd4866",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tooling-validation/2026-10-05/polariscope-c72a598eddf7-GNhBvq/summary.json",
+      "bytes": 23609,
+      "sha256": "03e7ad02b1bca64bd3b3c057da190efd99d341f7f6cf1cbf3e12d8f544270449",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tooling-validation/2026-10-05/polariscope-c72a598eddf7-Kp5PwL/gltf-inspect.md",
+      "bytes": 9505,
+      "sha256": "8c7cc9f8504e882bf15a582484bc53a82a1021642dfc492ee75099f56ed58c7a",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tooling-validation/2026-10-05/polariscope-c72a598eddf7-Kp5PwL/gltf-validation.json",
+      "bytes": 5197,
+      "sha256": "0522237c3ab92057de8c53fc6b9770892770f9a3fc39aae268672298dee1ce70",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tooling-validation/2026-10-05/polariscope-c72a598eddf7-Kp5PwL/summary.json",
+      "bytes": 23609,
+      "sha256": "6fa3ac808c45506997091680cdf5a682f9ce594bb771a314f8ab5bef62ae542b",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-input-2026-10-05/index.html",
+      "bytes": 9846,
+      "sha256": "0f0c8bbf86d7cbd7fd747330b7e1e5ff6ff146093f0d9634409be9e6bee3e636",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-input-2026-10-05/A-original/01-original.png",
+      "bytes": 319071,
+      "sha256": "99180744ea3ddceaf5ffd0910f5acc1a5f9bffee4ca4208e3715155dd145c4aa",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-input-2026-10-05/B-multiview/01-front.png",
+      "bytes": 3250722,
+      "sha256": "234136a03a0394dd6692899518cd1534ec46f9f2671abc9bcc93d1d86bd6938d",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-input-2026-10-05/B-multiview/02-left.png",
+      "bytes": 3229642,
+      "sha256": "c6f40058e71975415b8567d08a0a16cacc5448614987c25d7e76cea2e206322f",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-input-2026-10-05/B-multiview/03-back.png",
+      "bytes": 3140587,
+      "sha256": "799d36e1174414adc356f5291b02871b22ef30bd68e9f5f116b49d6a9354ce04",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-input-2026-10-05/B-multiview/04-right.png",
+      "bytes": 3203158,
+      "sha256": "e988cc14d8bd7fccf979a860c9b550283bb9163ceeab8b78c45cbf73911bc281",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-input-2026-10-05/review/front-preview.png",
+      "bytes": 856855,
+      "sha256": "70fb9ea023fe11a2a9ec23bd8a2367a62a869833028155e06eed7059d3fb7c70",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-input-2026-10-05/review/hero.png",
+      "bytes": 876136,
+      "sha256": "21747fa657a837b20844a03af2f0bc9ba618d5907ff49a891873445755106e85",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-input-2026-10-05/review/material-target-ai.png",
+      "bytes": 1459210,
+      "sha256": "487647772cb758ec2bfc663dd8112a3e69bf1dd63d9b0eb5bd89a668343ffee8",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-input-2026-10-05/review/top.png",
+      "bytes": 851045,
+      "sha256": "f52aa019a416834c38c32c7e6067d951587b1da970c2a4504276a7e20a847cc9",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/01-settings.png",
+      "bytes": 193963,
+      "sha256": "e092d6ad2f8be723f43b2b67d9752b89204a987bd7683bd785d06b9c137deda9",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/02-studio-result.png",
+      "bytes": 252121,
+      "sha256": "ad9b5eaa59a533961ba62f628373e50a420cdd9d575a1effea21ec4f1cd64159",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/03-browser-review.png",
+      "bytes": 77627,
+      "sha256": "53d794e9fecaf67664b6beeeaeb03cce471af2d8f83b136f3a167bfbb685cd82",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/browser-validation.json",
+      "bytes": 2345,
+      "sha256": "64657ef02945b872fb176ce3e35eea241289c13216f05883f8aa9aca10038e95",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/candidate.glb",
+      "bytes": 60240236,
+      "sha256": "37886a63481139b2e385b7b531e1308a597c8df7c86b82b1ba4ea88401553e3a",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/independent-review.md",
+      "bytes": 5931,
+      "sha256": "90458d59c2deb50d4067604db4ed245d949b4725d04ae0429bd1038c7bf7b89d",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/index-original.html",
+      "bytes": 7365,
+      "sha256": "0cd4682c727c0533f566d1773efcb7fc3adb21d51ed333601e331bf517aaf31f",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/index.html",
+      "bytes": 33764,
+      "sha256": "90239e91fa63703e0c7dca89bf79677816bae7a5469e2a4f16c72a3b5344f0e9",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/trial.json",
+      "bytes": 2639,
+      "sha256": "3bd3c70f25a7b08a32e5e0deacdb0fcbc64ff41a55156c260a07b8721666a4e1",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/inspection/candidate-37886a634811-iSTEMi/gltf-inspect.md",
+      "bytes": 4491,
+      "sha256": "2d95fc16de5b0cbc4f40937e94d77182be95f28654a587bbccdefad974f61079",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/inspection/candidate-37886a634811-iSTEMi/gltf-validation.json",
+      "bytes": 2287,
+      "sha256": "408677d18f4372ae34ae72524cc9b31ba2977abe684f8c525534f24eaa3391a9",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/inspection/candidate-37886a634811-iSTEMi/summary.json",
+      "bytes": 2628,
+      "sha256": "0ca3094262a136756c91c37867cd730d2edb23ce7eba26f05b6e8cad02c0dee2",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/preview/hero.png",
+      "bytes": 520326,
+      "sha256": "8970929f2ed728f22a7abfbfa71b9814f2762adb54ace76c9e7a90fabd84832c",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/preview/import-description.json",
+      "bytes": 11694,
+      "sha256": "c0a8f7c189652eed1511a5e8a9b602c79159c13a48a2f7fb596f1b0c2bdaf0a2",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/preview/review-report.json",
+      "bytes": 2491,
+      "sha256": "f085a1087a97d7af3aef5ab41aa609aace1df91e5758de090f5c5b2cec14cce7",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/preview/review.blend",
+      "bytes": 74789487,
+      "sha256": "b3e2e18ebb583d44c718737da273be070b6cac9895ad5308e9ea71079b12fb6b",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/renders/back.png",
+      "bytes": 801906,
+      "sha256": "c9a555dc9c56495ca5de3946cc1fae4c261a1159820a43ae465e8fde25943aef",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/renders/contact-sheet.jpg",
+      "bytes": 220453,
+      "sha256": "9557d186fb4daac4454038a09f039fe3c026719209cb522c5ffd139aaeddeff8",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/renders/front.png",
+      "bytes": 798589,
+      "sha256": "33612d93a9725bb8a7004641641e27ae7661dbf9e205fc48a3595f50fed0d36f",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/renders/hero.png",
+      "bytes": 890962,
+      "sha256": "9761e8839a3d84e05477c9164b7fe2a9d840f15331b970b5b86f9874b6454124",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/renders/image-checks.json",
+      "bytes": 1270,
+      "sha256": "8f79d705ebecc709c9d1a1c58ff4e2aa228b72ad8b99b6887458a737ee4dd74c",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/renders/import-description.json",
+      "bytes": 11694,
+      "sha256": "c0a8f7c189652eed1511a5e8a9b602c79159c13a48a2f7fb596f1b0c2bdaf0a2",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/renders/left.png",
+      "bytes": 786017,
+      "sha256": "ad229f9e950c6f5d93076c68d13e52cd41e6789c184859ecfca67285b63225af",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/renders/review-report.json",
+      "bytes": 4131,
+      "sha256": "eb914d06d6606296f79ca53cb66795a382f445d432927e7a5d25972d9cea2831",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/renders/review.blend",
+      "bytes": 74789512,
+      "sha256": "48852ac7f448cb71cf6cc397843c4b69c384783d0f6e462d1ff8a64c06cb383b",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/renders/right.png",
+      "bytes": 806527,
+      "sha256": "81a67e4fd8bd756c483775b903c5c2a4bf059ab66cb19c929d9aded7f0622418",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/renders/top.png",
+      "bytes": 793183,
+      "sha256": "64c4dfacb9d065efc368745bdcdd7dfb845e255adb5df93d05787fb591d5a862",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/README.md",
+      "bytes": 3650,
+      "sha256": "28aca260dadc62b37e9bde84567f288f147c41b87b7222c6f1d1d6a96ec176dc",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/browser-assembled-final.png",
+      "bytes": 93690,
+      "sha256": "a3346f87338dace70269c41de6555c6b667481b2cae8acf0e1ac2dcd85b0cf4b",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/browser-exploded-final.png",
+      "bytes": 94103,
+      "sha256": "dde0934ec0af68e6936c0fddf40b50030a082ae3198fd0100c57d142aef5a97d",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/browser-exploded.png",
+      "bytes": 97022,
+      "sha256": "4fa546cc9e0731231879ebe544508751c1ed6049531860c163ef1420675bb7d2",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/browser-validation.json",
+      "bytes": 1820,
+      "sha256": "c20a45ebe729e6258e2be40a838e499fccc185534d92192a02d035cf784623d3",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/independent-review.md",
+      "bytes": 3996,
+      "sha256": "735502bd3ccdfc51a9085398640d2c7dc8bf66ec07abedfcf1ca4ddd0ec4d9c4",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/index-review-v1.html",
+      "bytes": 26990,
+      "sha256": "51a5e4686e95f1505420b7c5af98ca88799a31fde5076cef790097fa4cf7cb25",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/manifest.json",
+      "bytes": 4096,
+      "sha256": "de3e6312bcf57774c3257236528bde88ae60932024850c4605576024239ea673",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/repaired.blend",
+      "bytes": 26387133,
+      "sha256": "337ce072bb886eebf8dca661cdf89f9b1884090c290a2c8fc46fb8fa50f629b6",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/repaired.glb",
+      "bytes": 30335476,
+      "sha256": "80485d2c3dafb2eeed4dbee0a9f1d3d1627bfbe623a7318c6a05e88e61f96228",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/analysis/analyze_regions.py",
+      "bytes": 6770,
+      "sha256": "abc18d7d4c1abdb26617f9f4baa5672b2d0b6ca55590d31228b29ab509ee6b26",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/analysis/candidate-regions.json",
+      "bytes": 24154,
+      "sha256": "5fb29a2b9365854ca4f8ca8069ade00e88b0d6693964926f89c7130afacd5b32",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/analysis/repair-validation.json",
+      "bytes": 22824,
+      "sha256": "c886ba4554998d3a7c4f12511ebf5396fec9ea48267289e8c13381b392dd34cb",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/analysis/validate_repair.py",
+      "bytes": 8473,
+      "sha256": "485ebb516a48cb1ba4b92d051c9d5cb9478ac9f1cd6587facc119054f25c0ac4",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/analysis/分区与重建建议.md",
+      "bytes": 4172,
+      "sha256": "2c4b11be196339461c5c98a46ec023080b3a32a6f91c47839bd6656a9514655e",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/inspection/repaired-3e21e1c588b5-TcyiQG/gltf-inspect.md",
+      "bytes": 10600,
+      "sha256": "70a7d1f8b9c326575f0e2bdf0d0f17b626cc7d3c30000125799b0c381e86317d",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/inspection/repaired-3e21e1c588b5-TcyiQG/gltf-validation.json",
+      "bytes": 8960,
+      "sha256": "090849685858516b7879504c82a4ea9dd356bf559d7c2d0dc8acc51892c1d60c",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/inspection/repaired-3e21e1c588b5-TcyiQG/summary.json",
+      "bytes": 19405,
+      "sha256": "d3eeb638ce1546d8f90f62e63fd28e1b5d259cec39ee422abf558f4cb5cea104",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/inspection/repaired-80485d2c3daf-xFk8yJ/gltf-inspect.md",
+      "bytes": 10760,
+      "sha256": "09eaa43fa72489f897d34e049abbdd28fe755e413d6a57175634bc25da646b06",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/inspection/repaired-80485d2c3daf-xFk8yJ/gltf-validation.json",
+      "bytes": 8961,
+      "sha256": "70b5f18cd242210ab91eec1a82cbdb7eaeed151bb8a23a430f710e83319e5b99",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/inspection/repaired-80485d2c3daf-xFk8yJ/summary.json",
+      "bytes": 20154,
+      "sha256": "066e88b6d76668bfcb14ccb9846ea7eb316ab776986d7dd4f4742518cb932e9a",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/preview-01/hero.png",
+      "bytes": 844592,
+      "sha256": "6475b3205be5bef81b9a3ad3b80dde4de254ab16c4f5da8a39553c96e0707ec9",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/preview-01/import-description.json",
+      "bytes": 79645,
+      "sha256": "0b0b0a84f554faaaff41a0d5aa1281f61bbb1c6a6775d89a8502c62af0e6de14",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/preview-01/review-report.json",
+      "bytes": 2718,
+      "sha256": "6f0ea238f525d6964db340110e6506357e74bcdf665b6ff6413a457b0f7c6fe5",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/preview-01/review.blend",
+      "bytes": 18875196,
+      "sha256": "1d4ef3343b6558a54437e9bd8ed516912fb0555d482918d248845ec61bb525dd",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/preview-02/hero.png",
+      "bytes": 873615,
+      "sha256": "193fe204f0180dfb586ca89c99f0abe466cc6692404010fb6661479178271999",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/preview-02/import-description.json",
+      "bytes": 83889,
+      "sha256": "bac36f244b2ebee0a4f0413a9e81aa875693850896b724e916979c820ef03368",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/preview-02/review-report.json",
+      "bytes": 2718,
+      "sha256": "a0788cd8f16d5fc46ce688fd1eac9c027d3cbb6169ebca0ffdf78372896da493",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/preview-02/review.blend",
+      "bytes": 28717619,
+      "sha256": "8fab088729f45c4a7ea317cd2c7463b403b959aaa72db6331c9a61ce93bcc959",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders/back.png",
+      "bytes": 778166,
+      "sha256": "eef482b13a6f8b069bdbe4fca6f2e4993adba7bf03a023db114481fc19fefb11",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders/contact-sheet.jpg",
+      "bytes": 227630,
+      "sha256": "b9cfd90fab3893d6ea2ff77c923eadba33f2634dff67250e1c8a2fdc2041e75e",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders/front.png",
+      "bytes": 778436,
+      "sha256": "fa2ce8fd54bcd78a0660eafc711fe9f028c68be45b07fd2a63ed69372887c3c7",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders/hero.png",
+      "bytes": 871706,
+      "sha256": "c37082803d48bae0d944111a1d43dbe51ce32daeb7843b6f300a99e09b7d0233",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders/import-description.json",
+      "bytes": 96406,
+      "sha256": "a49e55854fd801f353a40f99980a135c2110e8fe53fb7909df2d6e696a630d7d",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders/left.png",
+      "bytes": 749492,
+      "sha256": "1d060735cf70a9bb5d3a1741b6acaae82c6030f2c8dd77fec8d7b8cf7a7023cb",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders/review-report.json",
+      "bytes": 4306,
+      "sha256": "27bd8f4a08cfb0294b47be275ffffbccbbfd318bb53126d1cb2d04501009ab30",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders/review.blend",
+      "bytes": 28030991,
+      "sha256": "3fc41f09ce6491f7738eb84fbc7dde49c37cbf5439e98d306ecb5a1481173c4b",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders/right.png",
+      "bytes": 794524,
+      "sha256": "dccc4bd32c11d35890cdd14e2b687e88785cc6dc440763760f1bdeb91c8621c8",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders/top.png",
+      "bytes": 790890,
+      "sha256": "4adc06ae492c8d738b0084ea93f3b451652f342bad8ce8aee690d165b12f1de0",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders-initial/back.png",
+      "bytes": 778711,
+      "sha256": "6b1aec8a03bb28a097ee6c4787facde35ef2abb495c62af01699e1cd98d7478a",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders-initial/contact-sheet.jpg",
+      "bytes": 152099,
+      "sha256": "49542b3d26baf5c0c210b4f7914424b2c9d727749b56e89368ca0046aae9c737",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders-initial/front.png",
+      "bytes": 778603,
+      "sha256": "bc416b8c33f659cfceffd6102d90101f829e610e93d73061f6a806b1f9e83f2a",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders-initial/hero.png",
+      "bytes": 870208,
+      "sha256": "c047f8a65a9de7573acec6157442e04cbd62593dc5075c792eb3c8f5c43d7dd1",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders-initial/import-description.json",
+      "bytes": 83889,
+      "sha256": "bac36f244b2ebee0a4f0413a9e81aa875693850896b724e916979c820ef03368",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders-initial/left.png",
+      "bytes": 750465,
+      "sha256": "244a8e04ac0331f5a5da16adea37cde58adf4ba882fc18708232c49b02b9135f",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders-initial/review-report.json",
+      "bytes": 4304,
+      "sha256": "275ce9f2ad9a7507958b6d13ea29df8ee2e1b446223aa41876cc28426d5b3a56",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders-initial/review.blend",
+      "bytes": 28717549,
+      "sha256": "c5dc9bef32c8c49a81146fcee51bef80031335916db79d17ce260341728e7de5",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders-initial/right.png",
+      "bytes": 794331,
+      "sha256": "e7e19bd199f297713086939edac55411e9c5bc4cca174fd8c608b19a87100fff",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/renders-initial/top.png",
+      "bytes": 790726,
+      "sha256": "1ba5522ee2da0d3ba7017ce37c5a89c245a59f0c9a59105141e0f4735d3d9f58",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v1/source/repair_candidate.py",
+      "bytes": 18265,
+      "sha256": "85267f89fe2930bc0bdc3b252c1a2506a1aeb9e67e8f65eeeb4fea1bc740cbef",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/browser-assembled-on.png",
+      "bytes": 115808,
+      "sha256": "97e11c9759f029c02c1e68d8c1bb5e42c6fd89a6c2b5a57175afc28056afaf30",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/browser-exploded-internal.png",
+      "bytes": 119246,
+      "sha256": "171c582a44d6a946ac9017c4b4ae238ce31d9f7099ba3931d453cbacaccf878e",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/browser-internal-focus.png",
+      "bytes": 118866,
+      "sha256": "bbb0cc644af4f489815b1536b2df6433cf282ef5a9b5291513dddee3623976f9",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/browser-internal-on.png",
+      "bytes": 119089,
+      "sha256": "09a1bb177ba1e1ffaabcdac51e8393e73923bf71ee684f095ff8ea8d0020782a",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/browser-switch-on.png",
+      "bytes": 122958,
+      "sha256": "3e54722bb3987a845673f80d3d6653ffa3dc594a01fba71aa91b3db53529fb2f",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/repaired.blend",
+      "bytes": 26354571,
+      "sha256": "65828cc7e8ce34fd98d2d8fa47132b5f22e99a34781156daf0007eb4714ea97a",
+      "groups": [
+        "current-master",
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/repaired.glb",
+      "bytes": 29512268,
+      "sha256": "0d4eb62f630e74915d31524010e51e1ce031c9b50f00314a1195b7c8ce469a7b",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/analysis/check_viewer.mjs",
+      "bytes": 6029,
+      "sha256": "b3b0c7c16e49209a43401c2a84c7538c254e6c562813b9a86955c15ee356d5b2",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/inspection/repaired-0d4eb62f630e-YTNLCc/gltf-inspect.md",
+      "bytes": 11670,
+      "sha256": "057716cb58670f3375c592e88f6e037e7a8d3d3074d8aa3430240aebdab5ea99",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/inspection/repaired-45f754e87478-6UsPJZ/gltf-inspect.md",
+      "bytes": 100,
+      "sha256": "82bd55ff8293ec3d5768d8ba13b6a501b5b02416e013c9e9ed678c1448467c51",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/inspection/repaired-45f754e87478-6UsPJZ/gltf-validation.json",
+      "bytes": 10739,
+      "sha256": "b0b0730dfa68b8ac15559ec7fdc82e561c55571b5e6cb8f674ef3fc32c99f2bc",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/inspection/repaired-45f754e87478-6UsPJZ/summary.json",
+      "bytes": 1399,
+      "sha256": "5bf7ad769d3587677a3b57e9aeed381970bbc26c803e2eecc5a366beefd7b7b8",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/renders/back.png",
+      "bytes": 777914,
+      "sha256": "0812bfeda051a0365ab0fc160418c40cb07667e54e70c2ac94d03cd16f1081cc",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/renders/contact-sheet.jpg",
+      "bytes": 157017,
+      "sha256": "d96f399e85ba1e8b9dc82292994f3637bf19e01be7e0260b95727f54d173c362",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/renders/front.png",
+      "bytes": 779233,
+      "sha256": "11a89c8956077ffb0fde39dde749d373c047ff878423cee653b93487f99c56ee",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/renders/hero.png",
+      "bytes": 865824,
+      "sha256": "f5f29c5980b738455e1a81c0ec7107460702fba1965ed2485077245a97d1f4e1",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/renders/import-description.json",
+      "bytes": 105779,
+      "sha256": "580ec976b9e0826c8ecf3fa10aab4cd863711f82b464e16bd0d115001738b2f9",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/renders/left.png",
+      "bytes": 749730,
+      "sha256": "f3ba18d1ec5a7592ee53f333c8410f30e983da5c7a2a8b0160a1dfd8bd327dca",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/renders/review-report.json",
+      "bytes": 4307,
+      "sha256": "343c39e00136bdbdec34809de292894b5f30b64630089c11b2a76b441b39fad2",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/renders/review.blend",
+      "bytes": 28085459,
+      "sha256": "f4236c2d10c490f6f2d257a2cea32f4c0fcde541c13d1b2f010afa65507bfc3d",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/renders/right.png",
+      "bytes": 795950,
+      "sha256": "63600c90e3731bcf06486f202acc60f17695803240b6ef410b4847c76e434751",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/renders/top.png",
+      "bytes": 797037,
+      "sha256": "2670ad816aeef59a639297ad463f87fc6fb01f099bc1cebf68fa56cdbde9fc2a",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/renders-initial/back.png",
+      "bytes": 777602,
+      "sha256": "b69c5d2a9223ecebdecc525e77f275252574d98524c6f8a341c5004d4b79d08d",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/renders-initial/front.png",
+      "bytes": 779091,
+      "sha256": "139414e0bb8f387befcd02e976fac771913714d42f0cff4c60123366c8d0e3da",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/renders-initial/hero.png",
+      "bytes": 865842,
+      "sha256": "14300dc6fb493579c571cc6b2fe68d11f5b013cd4a6093101a13ba2b560119ea",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/renders-initial/import-description.json",
+      "bytes": 106216,
+      "sha256": "347411e7e06d9e0f26263f3721f4bb3b5bd677cb8d1684fd40a067ae3dd62e04",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/renders-initial/left.png",
+      "bytes": 749602,
+      "sha256": "948f6ddd9882abff7cb6ec721943d392d5679140a16673bcf3de2a0b4d92d480",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/renders-initial/review-report.json",
+      "bytes": 4307,
+      "sha256": "0f5ac46b9215e18671c4397438cca33926c8e4bb8049c094755d681cc2ac60e3",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/renders-initial/review.blend",
+      "bytes": 28398878,
+      "sha256": "aaed20c4afe4c4b29723957a9336d807cd27b00999d180e99f2d6ecebe43a9e8",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/renders-initial/right.png",
+      "bytes": 795586,
+      "sha256": "cbccb65a1da638c1aab76510a69ac5290d4bf712b3fc53a8e478214669ac7916",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/repair-v2/renders-initial/top.png",
+      "bytes": 797358,
+      "sha256": "b54577067b243a6056c41c7eed60a45c1e4368e471677d37c3a5dd6ad74274ba",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/textures/texture-00.jpg",
+      "bytes": 2207568,
+      "sha256": "a4bd43937e118bb6c3fa0d1885df8e15b4d3f4d24625ef8c72c65d8bc8d2ac45",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/textures/texture-01.jpg",
+      "bytes": 1462332,
+      "sha256": "c7c953debcb263b1c0ea3f2149a2c46080a183cc38f826de117d052d7c6147a8",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/tripo-trials/2026-10-05/A-original/textures/texture-02.png",
+      "bytes": 2221418,
+      "sha256": "92f2d7e9766a3bc3f40dced90f789ea9ecd953b8f36dad041a803f6ce87d5d74",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/gltf-validation.json",
+      "bytes": 5635,
+      "sha256": "b7420fe8426d8a6a161771419e2e6f6482eaa4a978a65819d6f823443c667e41",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/母版与网页六视图对照.html",
+      "bytes": 13715772,
+      "sha256": "0d2b2c24af1c2d29e0c1a205b875fa664b689d421efd7c6f2aa32483feb0f47c",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/browser/01-front.png",
+      "bytes": 85217,
+      "sha256": "9f107fc61f2f39c0975444d5c189a3d3ea99aab8b7039039c0ef9e2b570a0fa9",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/browser/02-side.png",
+      "bytes": 75905,
+      "sha256": "2639e2b84da791143a4d8e5cd0b38246efacb72ba35c9c6925819910dad2adfb",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/browser/03-top.png",
+      "bytes": 90633,
+      "sha256": "346855d3161f980911caad1c85e03e2368f882731fa08489d9536ea7df95619d",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/browser/04-three-quarter.png",
+      "bytes": 158358,
+      "sha256": "52db02e5c33248192c81408f061df4d5d252cab36d7305958793184df368ca1f",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/browser/05-analyzer-close.png",
+      "bytes": 136438,
+      "sha256": "88509668d5f471385ffd5d0e5d4d9f043dca4303ae344b1e01d53d7ee6f21566",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/browser/06-stage-close.png",
+      "bytes": 242044,
+      "sha256": "87f089cf3999c0246ca324200293c2e1c78f9849870541b89c2ae2346b787a2a",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/browser/chrome-desktop.png",
+      "bytes": 174248,
+      "sha256": "df41a66a80e7e9fee98a06d280a9ee995e4fadb96a6c70b258973c89c8037e56",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/browser/chrome-evidence.json",
+      "bytes": 3479,
+      "sha256": "922144ff182c885b272ccb2eb41b1e5365bc9f1f9041576b9d1ff063861e9a95",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/browser/chrome-exploded.png",
+      "bytes": 164629,
+      "sha256": "c9088d251fd8e92ce6b4e4dcf8540b2a73443c14a5b2a87805c6ff96980af57a",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/browser/chrome-practice.png",
+      "bytes": 180449,
+      "sha256": "863dccbcf2b205051e881072dfce84537cf99993ccbb9d023418f7039921aab3",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/browser/page@3c77f1666ae5249841e55c97980137aa.webm",
+      "bytes": 1277263,
+      "sha256": "b3c00e401148218900fd77ec27ec3401bd7d45bfe9be3f03743f260ea6a38319",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/browser/safari-desktop.png",
+      "bytes": 244997,
+      "sha256": "02dfd313a9d43238f7876b78219932e4c2bc1afe74f6edf025faa94bf51183f5",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/browser/safari-evidence.json",
+      "bytes": 3087,
+      "sha256": "620bfddc7b06efbccb9e47b99e69dff2a93018e881e6692fa07b7e58868e563b",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/browser/safari-exploded.png",
+      "bytes": 280687,
+      "sha256": "c90e6939d4d9025ec48f17d7c4dfe442a72f1363947e0da30a7d765901501c1f",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/browser/safari-practice.png",
+      "bytes": 243660,
+      "sha256": "57661ac8a06b0d0ae0e6b1193211e1aa4a6d07a6ec20c196eb52904ae194d0ab",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/browser/web-exploration.webm",
+      "bytes": 1268195,
+      "sha256": "7aa88016fd5f1153e47f25618f3c6f9498317c71061f9808d759e6a94c6cdee1",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/01-front.png",
+      "bytes": 81287,
+      "sha256": "2b15139581478217f2b61a19dc64bccf757a6b94546306688e9c2da007e5263a",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/02-side.png",
+      "bytes": 80235,
+      "sha256": "2e2572dd42c41194a218bd8e3d0ca44c194c7b00def7569f8cb2fb406775b813",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/03-top.png",
+      "bytes": 78474,
+      "sha256": "700dacfbdbc16958df9453f041906869988ffdef1c4b438292abf9d364d77ea4",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/06-stage-close.png",
+      "bytes": 96221,
+      "sha256": "d015c24da4c6e11e82a7cccf5ba07e742dbc6d0bf87c27a2e37d6b837fe4853f",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/chrome-explode-high-ax.txt",
+      "bytes": 22209,
+      "sha256": "5523c2f44ac586db46d449a1d561d349764db9bf0e2327cecf31e155b351c798",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/chrome-exploded-internal-high.png",
+      "bytes": 281620,
+      "sha256": "bb8dd9c625e6f63c0b4216dd7ca89613448a4959fab7a737122998653805c365",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/chrome-standard-ax.txt",
+      "bytes": 549,
+      "sha256": "7c18b6c96c6e1493004ef03e304b9873f66449134b11c30a25c6cb64acf7ff97",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/chrome-standard.png",
+      "bytes": 282660,
+      "sha256": "c26cd9cd216dfa94b87d62d0b6e03e42d56cf75d72e1d57cdc58341e12b4fc80",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/classroom-structure-final.png",
+      "bytes": 87545,
+      "sha256": "2693c76d7a45ca3cb77687fb9715642e98917dffcfbafe6b3306992f24f78341",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/front-switch-off.png",
+      "bytes": 82067,
+      "sha256": "2dfcafddec7de3e9118130d85932b63ba4821e1ec05c7722ab745942813c4a87",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/iab-exploded-1080p.png",
+      "bytes": 90282,
+      "sha256": "d3f7d9b87b89192221c1341aa65c00cb5152c62271482cf05ba7cd3b25c7a586",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/iab-exploded-internal-1080p.png",
+      "bytes": 89672,
+      "sha256": "8ed61014675cea9a016e834eb28031bfa07c0016dc5a25e0f522d158808e0af1",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/iab-projection-close.png",
+      "bytes": 73010,
+      "sha256": "cd0775e7f96d2918feafc4c25e5292f46bf837c7b6195b9c4ef15216c45aaa26",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/isolated-internal-light.png",
+      "bytes": 60446,
+      "sha256": "773f2b449a7ce2e0d38067266219e4a45e33a72d4f03a23b764ce3e74b8593b9",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/load-failure.png",
+      "bytes": 19791,
+      "sha256": "45df5b0e9abeedb26fed130ce64823c9be669d975d5ea2fad47edf60c978b492",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/load-retry.png",
+      "bytes": 27867,
+      "sha256": "f447fc4c0c753d24eb58ae0d31a447321f8ac054073bd1314082a8dd343d9282",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/mobile-layout.png",
+      "bytes": 57232,
+      "sha256": "7c957579ae41686797cfb18ffaae97c5db048265dc6d8ff0c7f1ee96771dc836",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/original-learning-chrome.png",
+      "bytes": 218480,
+      "sha256": "c1a3479893c0afea0de08c2855e51736acde6729b9cf329903a17d77311d6375",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/safari-physical-switch-ax.txt",
+      "bytes": 7782,
+      "sha256": "ef40ae4c31c348c3d24acd9ec14431535543a6327ca7a3cc1b16aaef7fd68f89",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/structure-v1/safari-physical-switch.png",
+      "bytes": 185193,
+      "sha256": "eb62395655d45f3608b78276a57ad8e1000c55a4c276439c1345c223ad74a627",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/teaching-v1/chrome-empty45.txt",
+      "bytes": 1205,
+      "sha256": "67a9853c6948dfdd720028fdd6d58746c829a0bb57161f74bf6ecd3a553bfab0",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/teaching-v1/chrome-empty90.txt",
+      "bytes": 1054,
+      "sha256": "c10d7a64ecc8d079b6296c348e5a532e706ac901fdc9ffa7e326fa264633833b",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/teaching-v1/chrome-principle.png",
+      "bytes": 197061,
+      "sha256": "b12ec48bf99bb2444d16a4ff2e03badcf0088998749071b78510bf433f52dcbf",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/teaching-v1/light-path-desktop.png",
+      "bytes": 89596,
+      "sha256": "9ad088637594cad93fb4eaba9539292f89fb8258327da817e6f32daf18371c27",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/teaching-v1/mobile-layout.png",
+      "bytes": 25761,
+      "sha256": "aa178d7c4db9f418ef66b5873edf4890be42e5e82cd6845c9f7eb26af3f97e18",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/teaching-v1/principle-projection.png",
+      "bytes": 73831,
+      "sha256": "fb73160ef9af01caedf1140d791f119572269520c6ec81e7dac9bf4a24ff85a4",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/teaching-v1/safari-empty45.txt",
+      "bytes": 1065,
+      "sha256": "ead53677081965602ad7102022e8d202828dee379dba1245b7ca0ed3185be573",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/teaching-v1/safari-empty90.txt",
+      "bytes": 1065,
+      "sha256": "98da030b801d2bb63bc530d5f291be443d12349a1dcdc5b7e3f695631bd9ab9d",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/teaching-v1/safari-halfwave45.txt",
+      "bytes": 1076,
+      "sha256": "28b6622ea4b8a872b01ce89c4cc14d2b8a9b8b2cd247feb3f3789a61ec49436d",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/teaching-v1/safari-principle.png",
+      "bytes": 181330,
+      "sha256": "805f9f7d750dd0f46a2d7c90bfb4ed5ccf61b05b53294387ea51d2ca7d68f59f",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/public/assets/3d/polariscope/README.md",
+      "bytes": 2452,
+      "sha256": "1437f45dd9d5da8d200c47561d3984b5c7f94f116f663fb46f419956c3e1015c",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/public/assets/3d/polariscope/manifest.json",
+      "bytes": 14649,
+      "sha256": "13b2d9f528b01a099c065efa34421d0d6b08097783fa574e44eed5cc48ab53c4",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/public/assets/3d/polariscope/polariscope.glb",
+      "bytes": 3608088,
+      "sha256": "c72a598eddf78efddbd5a1dfb9da1deb82e00cc0aa06fc9df22a8fcdd5373559",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/public/assets/3d/polariscope/renders/01-front.png",
+      "bytes": 1458938,
+      "sha256": "d2385bee7b5100235703fc798c335651205b3b922de106e705ce83206f6d7673",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/public/assets/3d/polariscope/renders/02-side.png",
+      "bytes": 1427973,
+      "sha256": "f3fa38108a3cedbd07dba6524e5ca17a80ab82398e92a8d26c0a3f4c4c63138e",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/public/assets/3d/polariscope/renders/03-top.png",
+      "bytes": 1467877,
+      "sha256": "95e460a6cfdebae7256e33a323c327f92958071c74a0fb5337bfca869664e878",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/public/assets/3d/polariscope/renders/04-three-quarter.png",
+      "bytes": 1575679,
+      "sha256": "c13179b23accb553b37dff00180b8463773429902b62ca6280c4a2035bc3cc6f",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/public/assets/3d/polariscope/renders/05-analyzer-close.png",
+      "bytes": 1468020,
+      "sha256": "4eb4bef4dbafc7782aa369d3b69866803d3bd3a9c4079919fea616b1dcb7b938",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/public/assets/3d/polariscope/renders/06-stage-close.png",
+      "bytes": 1618678,
+      "sha256": "c65370d22836cf0382efce8971a143dc4a2918efb679737709f58703b83795d1",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/technical-reference/polariscope/vendor/LICENSE-three.txt",
+      "bytes": 1081,
+      "sha256": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/technical-reference/polariscope/vendor/three.core.min.js",
+      "bytes": 382617,
+      "sha256": "0a9c2f0672c7b8d993ba7639e71919db181ca50c9dff99c78476d3e19057ca9c",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/technical-reference/polariscope/vendor/three.module.min.js",
+      "bytes": 359158,
+      "sha256": "0a61c95f14e0fa015b3083475c73424f360e5f6f5b74c282b50fdbc2f4c228fc",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/technical-reference/polariscope/vendor/addons/controls/OrbitControls.js",
+      "bytes": 40484,
+      "sha256": "09673b997864b8091943d2673637c0f31f7cf67daeddd0902fce9bf098a8d093",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/technical-reference/polariscope/vendor/addons/environments/RoomEnvironment.js",
+      "bytes": 4960,
+      "sha256": "55f466192cc84298755a424c5e040345006b2ee1455589b3b54126c2ea4123f4",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/technical-reference/polariscope/vendor/addons/loaders/GLTFLoader.js",
+      "bytes": 114576,
+      "sha256": "e4e692923224a10bbc00be04365d6356b5e8c48b2bbd1f22a7fe929591646fb8",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/technical-reference/polariscope/vendor/addons/utils/BufferGeometryUtils.js",
+      "bytes": 35539,
+      "sha256": "fda7e946b8e0b5ab39b779206589e7a1079a22eb24efb89d7223e03fdfb1f751",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/technical-reference/polariscope/vendor/addons/utils/SkeletonUtils.js",
+      "bytes": 11062,
+      "sha256": "0761b1e003917b215d25dd81439d854b36034b5a57ce84c2cfe3b02428d7b253",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/README.md",
+      "bytes": 4595,
+      "sha256": "3eee4ffeec7708116f4cf3cfe40ccfaf5fd5f65f3759fb49e6ed13987920e18a",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/Tripo3d_Blender_Bridge-latest.zip",
+      "bytes": 224044,
+      "sha256": "8260e3f9344c56bbc508862131a5a05b24b9f0f8dc1d51281531bf0f2e0440fb",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/apply-local-hardening.py",
+      "bytes": 5076,
+      "sha256": "b7d8461157cf13c66541588f3a188df3ae31c02886e26cfcab8397ea6656fe4d",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/disabled-validation.json",
+      "bytes": 727,
+      "sha256": "abe7814650870672787ce2a54e4e7680bb52cc405e6aa8c025cfc2cda5d29429",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/disabled-validation.log",
+      "bytes": 4378,
+      "sha256": "f9b625ef1438b432cb1d9c1256519a9d3b3ef0a70b08c561a8612473bbfc8c9b",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/enable-in-preferences.py",
+      "bytes": 1642,
+      "sha256": "9079a697b3b675dd78d1657e431db49b6c6334c3b5a8851ccfd46847eac9f969",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/enable-preferences.log",
+      "bytes": 1894,
+      "sha256": "487474c56c25d4a83f0d0f153ff5db35ac9b126969699d181aa23e920db4f4a5",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/hardened-validation.json",
+      "bytes": 1115,
+      "sha256": "0fbcb7e484215fa20a099d76fdf282b5ff0931baafa71d7bf41a2036bf8720d7",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/hardened-validation.log",
+      "bytes": 7662,
+      "sha256": "d2d220bda721c056c6bbb8ef09563b0bd0cabf5afa04562c5a26f85b1cb9a296",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/install-record.json",
+      "bytes": 16322,
+      "sha256": "0be7f04aabdb633be016c712366c9bb9f15c9c7791edbaffc89ad5c253c7e9df",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/local-hardening-files.json",
+      "bytes": 418,
+      "sha256": "3f319dbfc8b6997b324fb856668067a5b4d44a4befac290737a1a2644850fc35",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/local-hardening.patch",
+      "bytes": 6094,
+      "sha256": "9a02561297c3d137ff476de4ced04bf75565d67d7d17a3930425a81a4104a392",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/preferences-validation.json",
+      "bytes": 190,
+      "sha256": "bbc1541d976eb6487a2c9b8c404989739446c688325a684b702bdf50140c1d78",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/preferences-validation.log",
+      "bytes": 901,
+      "sha256": "233d697098af7aaa3a5ebf3d4925bee39beb000d2440f9c05356c52bf4d15203",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/studio-connected.png",
+      "bytes": 29209,
+      "sha256": "e8b42e167b673461a5953c7c2326aeb904a0e15719d8a9d70bfc95d06d641270",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/studio-ui-verification.json",
+      "bytes": 765,
+      "sha256": "52f88bd7776c1cf35d66199f5571a67deb6e3ee99c34288820da6343ef3e8447",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/validate-disabled-install.py",
+      "bytes": 2134,
+      "sha256": "d5f1242b7d9aa75f917fcf2b169ce250eb4f1aa89cb9ed9d378164847db5a8ed",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/validate-hardened-install.py",
+      "bytes": 7558,
+      "sha256": "fec08ec821b1565993f7e289d11d11f21d28f3463203c8921eaa696051c2767a",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/verify-saved-preferences.py",
+      "bytes": 998,
+      "sha256": "dccf6ef71a3df26158e3654720a08110e1ccc5545da59d1eeece856e96f3e397",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/__init__.py",
+      "bytes": 1231,
+      "sha256": "1daf73a15fd98825c0c4438d1fadc49c56dff70fe044345153e372e5b72553c9",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/assets/logo.png",
+      "bytes": 1247,
+      "sha256": "c35d39f94a68c3da0a22922ac62fa5c4a394065b39d128ff8ba02fe18cf38862",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/core/__init__.py",
+      "bytes": 115,
+      "sha256": "d9f8025af42bf5016f30d2906e2303150380c34588fabd2af9f41e00bb8bfa09",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/core/bind_errors.py",
+      "bytes": 2109,
+      "sha256": "a3416cb77d502bae4f241b3b9fc241cadb966e12f6c62b33752e790e83d8fa13",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/core/file_transfer.py",
+      "bytes": 1693,
+      "sha256": "945820e6f8b71aeafcb47ff4fd6585353d13261dd8f8814b93a2f86e97b4ee73",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/core/model_loader.py",
+      "bytes": 19993,
+      "sha256": "50c5c5c7e5132c52f7c65bf863ad8209bf1bcc4b6f20e1e84ffd751c704324c3",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/core/status_manager.py",
+      "bytes": 3895,
+      "sha256": "8606a72e19145b804a7e0b21caa021c586c414df876ffaa62b9512f533a915a1",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/core/task.py",
+      "bytes": 1340,
+      "sha256": "8d1942049d1e198736963e4e57acad5b14121958268592cf56d9efd418ba5bc4",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/core/ws_server.py",
+      "bytes": 25641,
+      "sha256": "00102b902a6c2ff76d1fffb0aec3f7e4bf536af9cf86015b84ad479a85c62bf3",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/i18n/__init__.py",
+      "bytes": 557,
+      "sha256": "0d1b4999783a548be02043a8ba82158e35cd4799c246d4f62af05b7d7baa9cdd",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/i18n/dictionary.py",
+      "bytes": 94116,
+      "sha256": "8603d221451fef88a129d45bb2fb9fb2503fd72442ba9ba6158062a46767eb67",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/__init__.py",
+      "bytes": 26,
+      "sha256": "c7d7b24bbfe6bcb4c79d99e76977a8a9ee77eaf5bb6fa582f7d9db31076da32a",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/__init__.py",
+      "bytes": 7058,
+      "sha256": "002d87abddae49cfd63a8f7fc6f213a46b2127b0f2d0c7799b6ff2c2c752b7f6",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/__main__.py",
+      "bytes": 62,
+      "sha256": "c2ee4ddb093c9af060cafaf68219907f8a6b7b301ed3f8bea75db7555adec987",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/auth.py",
+      "bytes": 568,
+      "sha256": "53f2709a7e7d65143a11e7293af322cd0086fd96c0be051fd6293b85a6510b77",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/cli.py",
+      "bytes": 5336,
+      "sha256": "6277a01f9f73f77271495206897896851de4b6023a935fe97ff0512da9f12ab4",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/client.py",
+      "bytes": 13789,
+      "sha256": "7e58c8e64e6843e49f9b9dcc0a8c9396bda316d38e22e3b5dc7f5b6eda413deb",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/connection.py",
+      "bytes": 323,
+      "sha256": "38b88c56435ddb9ffceac07c43b0ab0b00685f2f6703438281d80b440f16511f",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/datastructures.py",
+      "bytes": 5518,
+      "sha256": "52ad82a639976a4f7fa4f59c3aa877eabcc9328f1e0a2da554f4c5583bcae6c0",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/exceptions.py",
+      "bytes": 12859,
+      "sha256": "6e068c76a406199a2c00450b782077d175b6627c289966b773c60eac47de3a86",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/frames.py",
+      "bytes": 12889,
+      "sha256": "e482b8199a65f2e92bd1b67f500fe38e3ced2b4f72610025f66e4d56618b88ad",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/headers.py",
+      "bytes": 16046,
+      "sha256": "c909cf963559c15d7f57ea4e49128d2c6feef36ef0142d61ef671c8a88dc43c3",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/http.py",
+      "bytes": 659,
+      "sha256": "4f5b4d2e66e41429de5d0eaa7a9066b155435f23fd8b9d34215cd3253781311e",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/http11.py",
+      "bytes": 15619,
+      "sha256": "4fc6a2e417011a45749fd22deb7a0378da66b5033283c0a96afe6b7ffc93d2be",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/imports.py",
+      "bytes": 2795,
+      "sha256": "4ff07d4d4987a1c78a310f8f36985d410007d97771031c1240d790120a882e41",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/protocol.py",
+      "bytes": 27247,
+      "sha256": "bd3aa33c88361e63be6d2c6c733b849963313d3c4f5d4d61995523aa76a1578e",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/proxy.py",
+      "bytes": 4969,
+      "sha256": "a05adb118b5ab185aff960dc9e239b0fd9c1479439aa41e9c8254b9e0c7b58c4",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/py.typed",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/server.py",
+      "bytes": 21790,
+      "sha256": "138496040f166519803a9b149bea02a9a701199adef5ed220e60c8adfa55db54",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/speedups.c",
+      "bytes": 5767,
+      "sha256": "8fe75a9a74f4d8c291a18c3c32d4d3e39a8b197eb3e939eb8aa8539327dc3591",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/speedups.pyi",
+      "bytes": 102,
+      "sha256": "ba78ef04d83eb96e1cef3fbd396e16892cd993f407d9b2c472360032ea128012",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/streams.py",
+      "bytes": 4071,
+      "sha256": "a57aa06bbb6d8ee17a94285662258b49f525b77142690a445f569efe3bdc09e4",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/typing.py",
+      "bytes": 1946,
+      "sha256": "03ac61e26eb9a51cca01bb8eb34905b8684be03588224a3ea694b8c2f2557344",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/uri.py",
+      "bytes": 3125,
+      "sha256": "d9f14cc3e01b289e47547342bb0d51c7532790290d591a688315a184cdf4114e",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/utils.py",
+      "bytes": 1197,
+      "sha256": "030852e149a56cabfb99e01a47b58d6d4a83e491684ad38fd5b032a3db1132eb",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/version.py",
+      "bytes": 3203,
+      "sha256": "cb7ca9483e6697db24f4538b8fde4b7555bca14698a88ed86ea23f85262d13f8",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/asyncio/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/asyncio/async_timeout.py",
+      "bytes": 8971,
+      "sha256": "37ee8cb9bca26a887ae8f0171af0b3860c4233eed5d978919c7df65e2e89e931",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/asyncio/client.py",
+      "bytes": 30850,
+      "sha256": "7b8c6582dcdbdefdbd336bcdf940e2ca852d4e183ef9de46a8a83796dda90dd1",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/asyncio/compatibility.py",
+      "bytes": 786,
+      "sha256": "8247a70c387335b9bafe25d5e4476f6efa7ab8765876b4ef18d8edf0ffc9b724",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/asyncio/connection.py",
+      "bytes": 49099,
+      "sha256": "f3b45d5544628c993c57e4a158059f4c4ca15b96756145ca57c7b3533c6de4bd",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/asyncio/messages.py",
+      "bytes": 11129,
+      "sha256": "bb633958a63dc4fcb0f06de72a85df74ee4ae3586b4e77f831d8b3547ce074ce",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/asyncio/router.py",
+      "bytes": 7520,
+      "sha256": "4beebdbecccaf92a9409c65b5d73ce9eec7e787d9f4c7602d89361eed3ad9a60",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/asyncio/server.py",
+      "bytes": 37941,
+      "sha256": "c10f6805cd1604e2336d7283609f148574537a85eb49f2eee82582ad497ebdc9",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/extensions/__init__.py",
+      "bytes": 98,
+      "sha256": "42466cc5a255965552a75ba1743e6e3c689b75bc7fd3dd46ad555f4b92d7729c",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/extensions/base.py",
+      "bytes": 2903,
+      "sha256": "24d7f2939e370bb56e3c7d103a86e2a8aa06af38c920b8deeaccf920bbce3e5e",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/extensions/permessage_deflate.py",
+      "bytes": 25770,
+      "sha256": "024ba1900285a3996a2503179dc91b4acf5bd8a041ace16c1350c721c6cb2f79",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/legacy/__init__.py",
+      "bytes": 276,
+      "sha256": "c10e7344810d1944bfe5e28d017f42444ef1d53c0a6a92a29ab40515637d4b1b",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/legacy/auth.py",
+      "bytes": 6531,
+      "sha256": "0dc41c09279578ff7725c1fcbc5584d072092fe5fe7f6dcb6740ec2696afd52a",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/legacy/client.py",
+      "bytes": 26815,
+      "sha256": "7d5da66e253dadc8978497c010a5529b41b3b490d46c3a5143e2b910c6e4b90d",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/legacy/exceptions.py",
+      "bytes": 1924,
+      "sha256": "562123a684f4f5fcf1fd9a9fd1a3460d5b510cd8d768ec3481d0ad6b72e48c57",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/legacy/framing.py",
+      "bytes": 6366,
+      "sha256": "afd3f5c225efff55ee015430f1238f92e13d778799d2bfc9a30024cfdf96578c",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/legacy/handshake.py",
+      "bytes": 5285,
+      "sha256": "d8dcebe40376c6f0c2e4474d3fe901de539cac069436562e8fffa1aff8efee93",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/legacy/http.py",
+      "bytes": 7061,
+      "sha256": "70e0909835a120a4269bc5161973d6ec20d9834df08e8802b1bd0b3fda1eb4d4",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/legacy/protocol.py",
+      "bytes": 63758,
+      "sha256": "78057846c881d62b5b8f05319bf4d8057a653b5bd41b73b64f5c4c761f7b6c37",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/legacy/server.py",
+      "bytes": 45251,
+      "sha256": "ee6c18fb20f4963345f77a0f62e993583ece2156c25ad6843b0d451490612003",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/sync/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/sync/client.py",
+      "bytes": 22108,
+      "sha256": "ff612bcadc357f77fd3bfbb68cbb52d68355e07b07522fe1de51af4fd6446834",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/sync/connection.py",
+      "bytes": 41824,
+      "sha256": "6e40f85b4a5a5ded49e62215e057c840a067cd635bf29e8611de964b715468e1",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/sync/messages.py",
+      "bytes": 12858,
+      "sha256": "c99575ce1634ed90f4bd11796f5c836bbba0d2b6c0e540ce082090996c0071db",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/sync/router.py",
+      "bytes": 7172,
+      "sha256": "06a29200a35962d45688ec6897da987b27e0c9746b30d27a16b4d364b35c5cc8",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/sync/server.py",
+      "bytes": 27655,
+      "sha256": "b34ec734aff6b3590b37ad94a9cefbbaf343d33ec2d184d719e3ec0a206d5da1",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/sync/utils.py",
+      "bytes": 1107,
+      "sha256": "4ed5be9dc605bc99a2496da03bcea7804d8156c9e705d2fee07f3c91634361b8",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/trio/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/trio/connection.py",
+      "bytes": 43952,
+      "sha256": "cfa712ed9010a7310a7f08f7bb26b443a1e11b34cf5a4e8c5e818dc13e459118",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/trio/messages.py",
+      "bytes": 10302,
+      "sha256": "bf86cf61cab20d07ed4ec41d55d837d898cb73b704f2e8e9b3af19f8de6ec2e0",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/lib/websockets/trio/utils.py",
+      "bytes": 1095,
+      "sha256": "666ee6cc591ce8d55c2e13d61862a8d7783b99906c3787dd43f60e04aa65a617",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/ui/__init__.py",
+      "bytes": 124,
+      "sha256": "96b73c863e90187e01cb8e02e89cfdd392d28cfdb578f4f36ffdaf53b655a867",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/ui/sidebar_panel.py",
+      "bytes": 4191,
+      "sha256": "cf8459b515b9b19aaac1107ac79fa3120ccad82b7bf31c9d9b63633774464b52",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/utils/__init__.py",
+      "bytes": 107,
+      "sha256": "e017174a67bee00e1d1417a5142081db32c78c1df7c9d5f447a45557555675c8",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/utils/logger.py",
+      "bytes": 1354,
+      "sha256": "66790656fdf7fc3a76ba939f7af90517d10e09a6df095187d319169a18aa661b",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/tools/3d-assets/vendor/tripo-bridge/original-source/Tripo3d_Blender_Bridge/utils/text_wrap.py",
+      "bytes": 4278,
+      "sha256": "e1f6f882519157d5f4f9f4e11d0f793fd19bb06ca1bfc861a100028f5162775f",
+      "groups": [
+        "legacy"
+      ]
+    }
+  ]
+}

@@ -576,6 +576,9 @@ export default function RefractometerDemo({
                   className="mx-auto h-44 w-44 rounded-xl bg-brand-50/40 object-contain p-2 ring-1 ring-line"
                   draggable={false}
                 />
+                {SAMPLES_BY_ID[previewSampleId]?.imageNote && (
+                  <p className="mt-2 text-[10px] leading-relaxed text-ink-3">{SAMPLES_BY_ID[previewSampleId].imageNote}</p>
+                )}
               </div>
             </div>
           )}

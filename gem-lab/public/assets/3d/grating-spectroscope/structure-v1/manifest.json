@@ -1,0 +1,330 @@
+{
+  "id": "grating-spectroscope-structure-v1",
+  "version": "structure-3",
+  "revision": "repair-v3",
+  "model": "model.glb",
+  "sha256": "bc1ae40ae18b12942b5edbd13a4ca5506fe5351d603293ce5274d54d1757e16b",
+  "byteLength": 1204720,
+  "units": "meters",
+  "dimensionsCalibrated": false,
+  "teachingOpticsSimulated": false,
+  "internalOpticsIllustrative": true,
+  "opticalSimulation": false,
+  "opticalAxisLocal": [
+    0,
+    0,
+    1
+  ],
+  "entryDirection": "-Z",
+  "observationDirection": "+Z",
+  "parts": [
+    {
+      "id": "barrel",
+      "label": "独立消光镜筒外壳",
+      "node": "GratingSpectroscope_barrel",
+      "pivot": [
+        0,
+        0,
+        0
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        -0.105
+      ],
+      "hotspot": [
+        0,
+        0.00725,
+        0
+      ],
+      "transparentShell": true,
+      "shellMode": "independent-closed-hollow-mesh",
+      "materialIntent": "matte-black-anodised-aluminium"
+    },
+    {
+      "id": "slitHousing",
+      "label": "入光端与固定狭缝座",
+      "node": "GratingSpectroscope_slitHousing",
+      "pivot": [
+        0,
+        0,
+        -0.0245
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        -0.043
+      ],
+      "hotspot": [
+        0,
+        0,
+        -0.0275
+      ],
+      "illustrative": true
+    },
+    {
+      "id": "slitLeft",
+      "label": "左狭缝刃口（固定）",
+      "node": "GratingSpectroscope_slitLeft",
+      "pivot": [
+        -0.003,
+        0,
+        -0.019
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        -0.025
+      ],
+      "hotspot": [
+        -0.003,
+        0,
+        -0.019
+      ],
+      "motionEvidence": "GIA fixed slit; no movable control."
+    },
+    {
+      "id": "slitRight",
+      "label": "右狭缝刃口（固定）",
+      "node": "GratingSpectroscope_slitRight",
+      "pivot": [
+        0.003,
+        0,
+        -0.019
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        -0.025
+      ],
+      "hotspot": [
+        0.003,
+        0,
+        -0.019
+      ],
+      "motionEvidence": "GIA fixed slit; no movable control."
+    },
+    {
+      "id": "collimator",
+      "label": "准直透镜（示意）",
+      "node": "GratingSpectroscope_collimator",
+      "pivot": [
+        0,
+        0,
+        -0.0115
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        -0.011
+      ],
+      "hotspot": [
+        0,
+        0,
+        -0.0115
+      ],
+      "illustrative": true
+    },
+    {
+      "id": "grating",
+      "label": "透射式复制光栅（树脂复制母版刻线）",
+      "node": "GratingSpectroscope_grating",
+      "pivot": [
+        0,
+        0,
+        0.003
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        0.011
+      ],
+      "hotspot": [
+        0,
+        0,
+        0.003
+      ],
+      "illustrative": true,
+      "opticalSimulation": false,
+      "manufacturingPrinciple": "复制光栅（树脂复制母版刻线）",
+      "rulingsEnlarged": true
+    },
+    {
+      "id": "gratingFrame",
+      "label": "光栅固定框（示意）",
+      "node": "GratingSpectroscope_gratingFrame",
+      "pivot": [
+        0,
+        0,
+        0.003
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        0.028
+      ],
+      "hotspot": [
+        0,
+        0,
+        0.003
+      ],
+      "illustrative": true
+    },
+    {
+      "id": "eyepiece",
+      "label": "固定目镜与目口",
+      "node": "GratingSpectroscope_eyepiece",
+      "pivot": [
+        0,
+        0,
+        0.0235
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        0.054
+      ],
+      "hotspot": [
+        0,
+        0,
+        0.0235
+      ],
+      "motionEvidence": "GIA confirms fixed focus and slit. This asset has no movable part."
+    },
+    {
+      "id": "baffles",
+      "label": "内部消光环（示意）",
+      "node": "GratingSpectroscope_baffles",
+      "pivot": [
+        0,
+        0,
+        0.0135
+      ],
+      "rotationAxisLocal": [
+        0,
+        0,
+        1
+      ],
+      "rotatable": false,
+      "translatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        0.041
+      ],
+      "hotspot": [
+        0,
+        0,
+        0.0135
+      ],
+      "illustrative": true
+    }
+  ],
+  "createdAt": "2026-10-07",
+  "transparentShellParts": [
+    "barrel"
+  ],
+  "explodeAlongOpticalAxis": true,
+  "constructionNotes": [
+    "Relative scale is educational and uncalibrated. All exported geometry and metadata use metres.",
+    "Internal optics, glass recipes, supports and mechanical ranges are illustrative.",
+    "No side slot, side knob, external wavelength tube, brand/logo or reference photograph pixels.",
+    "Exploded layout separates only along the optical axis; it is not a mechanical travel limit."
+  ],
+  "boundsNominalMeters": {
+    "length": 0.055,
+    "diameter": 0.0145,
+    "barrelDiameter": 0.0145,
+    "lengthAtMaximumFocus": 0.055
+  },
+  "opticalPath": [
+    "fixedSlit",
+    "collimator",
+    "replicaTransmissionGrating",
+    "eyepiece"
+  ],
+  "wavelengthScale": {
+    "externalTube": false,
+    "physicalReticleIncluded": false,
+    "plannedDisplay": "Future webpage eyepiece-view teaching overlay only."
+  },
+  "teachingComparison": {
+    "grating": "光栅式波长分布较线性、均匀；本袖珍款狭缝和焦距固定。",
+    "prism": "棱镜式紫端展开、红端压缩；通常透光效率较高，亮度取决于狭缝、镀膜和照明；此款可调狭缝与抽拉调焦。",
+    "sourceConflict": {
+      "taskText": "棱镜式紫端压缩、红端展开",
+      "adoptedText": "棱镜式紫端展开、红端压缩",
+      "reason": "Lotus Gemology primary practitioner article describes prism models as pulling violet and pushing red. Skyjems handheld page agrees; its Beck page contradicts both. Use Lotus and retain discrepancy for review.",
+      "primarySource": "https://lotusgemology.com/index.php/en/resources/articles/282-gem-testing-with-the-spectroscope-lotus-gemology"
+    }
+  },
+  "controlLinkages": [],
+  "fixedSlitAndFocus": true,
+  "sizeBasis": {
+    "length": "55 mm from OPL comparable pocket model; not specified by GIA.",
+    "diameter": "14.5 mm is the round-2 requested illustrative diameter. OPL specifies 12.5 mm; no 14.5 mm manufacturer measurement claimed."
+  },
+  "replicaGrating": {
+    "description": "复制光栅（树脂复制母版刻线）",
+    "transmission": true,
+    "rulingCountIllustrative": 36,
+    "rulingsEnlarged": true,
+    "grooveDensityCalibrated": false
+  }
+}

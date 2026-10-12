@@ -1,0 +1,93 @@
+/* 分光镜仿真三屏（认识 / 实验 / 挑战）：操作区、面板小组件与任务卡补充样式。
+   颜色取 instrument-ui.css 的设计变量（主色随仪器，分光镜为 #0369a1）；
+   外壳与抽屉见 sim-shell.css；阶段 2 约束见 docs/整体重构规划-PhET风格-2026-10-11.md。 */
+
+/* 操作区：三维宿主铺满，提示与错误态浮在上面 */
+.sim-stage { position: absolute; inset: 0; }
+.sim-stage__host { position: absolute; inset: 0; }
+.sim-stage__host canvas { display: block; width: 100%; height: 100%; }
+.sim-stage__hint { position: absolute; left: 12px; bottom: 12px; margin: 0; color: var(--iu-faint); font-size: 11px; pointer-events: none; }
+.sim-stage__note { position: absolute; inset: auto 0 50%; display: flex; justify-content: center; align-items: center; gap: 8px; margin: 0; color: var(--iu-muted); font-size: 12px; }
+.sim-stage__note i { width: 8px; height: 8px; border-radius: 50%; background: var(--iu-accent-strong); animation: sim-stage-pulse 1.2s ease-in-out infinite; }
+@keyframes sim-stage-pulse { 50% { opacity: .25; } }
+.sim-stage__error { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 10px; padding: 24px; text-align: center; background: #fffffff2; }
+.sim-stage__error img { max-width: min(420px, 80%); border-radius: 8px; }
+.sim-stage__error p { margin: 0; max-width: 44ch; color: var(--iu-ink-2); font-size: 13px; }
+
+/* 面板里的小组件 */
+.sim-select { width: 100%; padding: 5px 7px; border: 1px solid var(--iu-line-2); border-radius: 7px; background: #fff; color: var(--iu-ink); font: inherit; font-size: 12px; }
+.sim-note { margin: 0; color: var(--iu-muted); font-size: 12px; line-height: 1.6; }
+.sim-note strong { color: var(--iu-ink); font-weight: 500; }
+.sim-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.sim-seg { display: flex; gap: 4px; }
+.sim-seg button { flex: 1; padding: 6px 4px; border: 1px solid var(--iu-line-2); border-radius: 7px; background: #fff; color: var(--iu-ink-2); font-size: 12px; }
+.sim-seg button[aria-pressed="true"] { border-color: var(--iu-accent-strong); color: #fff; background: var(--iu-accent-strong); }
+.sim-fieldset { margin: 0; padding: 0; border: 0; }
+.sim-parts { display: flex; flex-wrap: wrap; gap: 4px; }
+.sim-parts button { padding: 4px 8px; border: 1px solid var(--iu-line-2); border-radius: 999px; background: #fff; color: var(--iu-ink-2); font-size: 12px; }
+.sim-parts button[aria-pressed="true"] { border-color: var(--iu-accent-strong); color: var(--iu-accent-ink); background: var(--iu-accent-soft); }
+.sim-readout-list { display: grid; gap: 4px; margin: 0; }
+.sim-readout-list div { display: flex; justify-content: space-between; gap: 10px; }
+.sim-readout-list dt { color: var(--iu-muted); }
+.sim-readout-list dd { margin: 0; color: var(--iu-ink); font-family: var(--iu-mono); }
+.sim-legend { display: flex; flex-wrap: wrap; gap: 10px; color: var(--iu-muted); font-size: 11px; }
+.sim-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.sim-legend i { width: 12px; height: 3px; border-radius: 2px; }
+.sim-sources { border: 1px solid var(--iu-line); border-radius: 9px; background: #fff; padding: 7px 11px; font-size: 12px; color: var(--iu-muted); }
+.sim-sources summary { cursor: pointer; color: var(--iu-ink); font-size: 12px; }
+.sim-sources p { margin: 6px 0; }
+.sim-sources ul { margin: 0; padding-left: 16px; }
+
+/* 任务卡补充：本步的「为什么」、跨屏提示、完成与记录 */
+.sim-task__why { margin: 0; padding: 6px 8px; border-left: 2px solid var(--iu-accent-line); background: var(--iu-accent-soft); color: var(--iu-ink-2); font-size: 12px; line-height: 1.6; }
+.sim-task__note { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0; color: var(--iu-muted); font-size: 12px; }
+.sim-task__finish { display: grid; gap: 6px; }
+.sim-task__finish p { margin: 0; color: var(--iu-ink-2); font-size: 12px; }
+.sim-task .course-shell__question { margin: 0; }
+
+@media (max-width: 680px) {
+  .sim-stage__hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .sim-stage__note i { animation: none; } }
+
+/* 实验屏：记录观察、开关、观察方式与对照谱 */
+.sim-record__inputs { display: grid; gap: 8px; }
+.sim-record__row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.sim-record__row label { color: var(--iu-ink-2); font-size: 12px; }
+.sim-record__row input[type="number"] { width: 74px; padding: 5px 7px; border: 1px solid var(--iu-line-2); border-radius: 7px; background: #fff; color: var(--iu-ink); font: inherit; font-size: 12px; }
+.sim-record__row span { color: var(--iu-muted); font-size: 11px; }
+.sim-record__check { display: flex; align-items: center; gap: 6px; color: var(--iu-ink-2); font-size: 12px; }
+.sim-record__notes { display: block; margin: 8px 0 4px; color: var(--iu-ink-2); font-size: 12px; }
+.sim-record textarea { width: 100%; padding: 6px 8px; border: 1px solid var(--iu-line-2); border-radius: 7px; background: #fff; color: var(--iu-ink); font: inherit; font-size: 12px; resize: vertical; }
+.sim-record__groups { display: grid; gap: 4px; padding: 7px 9px; border: 1px solid var(--iu-line); border-radius: 9px; background: #fff; font-size: 12px; }
+.sim-record__groups ul { margin: 0; padding-left: 16px; color: var(--iu-ink-2); }
+.sim-record__groups p { margin: 0; color: var(--iu-muted); }
+.sim-record__confirm { display: grid; gap: 6px; padding: 8px 10px; border: 1px solid var(--iu-accent-line); border-radius: 9px; background: var(--iu-accent-soft); font-size: 12px; }
+.sim-record__confirm p { margin: 0; color: var(--iu-ink-2); }
+.sim-record__saved { display: grid; gap: 4px; padding: 8px 10px; border: 1px solid var(--iu-success); border-radius: 9px; background: #fff; font-size: 12px; }
+.sim-record__saved[data-stale="true"] { border-color: var(--iu-line-2); background: #fff; }
+.sim-record__saved p { margin: 0; color: var(--iu-muted); }
+
+/* 光源开关（与练习页同一形态，改用外壳的设计变量） */
+.iu-switch { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border: 1px solid var(--iu-line-2); border-radius: 999px; background: #fff; color: var(--iu-muted); font-size: 11px; }
+.iu-switch::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--iu-line-2); }
+.iu-switch.is-on { border-color: var(--iu-accent-strong); color: var(--iu-accent-ink); background: var(--iu-accent-soft); }
+.iu-switch.is-on::before { background: var(--iu-accent-strong); }
+
+/* 观察方式：竖排带编号（同练习页） */
+.sim-methods { display: flex; flex-direction: column; gap: 4px; }
+.sim-methods button { display: flex; gap: 9px; padding: 7px 9px; border: 1px solid var(--iu-line-2); border-radius: 7px; background: #fff; color: var(--iu-ink-2); font-size: 12px; text-align: left; }
+.sim-methods button span { color: var(--iu-faint); font-family: var(--iu-mono); font-size: 11px; }
+.sim-methods button[aria-pressed="true"] { border-color: var(--iu-accent-strong); background: var(--iu-accent-soft); color: var(--iu-accent-ink); }
+.sim-field { display: grid; gap: 4px; color: var(--iu-ink-2); font-size: 12px; }
+
+/* 任务卡里的本步操作与对照谱 */
+.sim-task__step { display: grid; gap: 7px; padding: 7px 0; border-top: 1px solid var(--iu-line); }
+.sim-compare { display: grid; gap: 5px; }
+.sim-compare h3 { margin: 0; color: var(--iu-ink); font-size: 12px; font-weight: 500; }
+.sim-compare h3 span { color: var(--iu-muted); font-size: 11px; font-weight: 400; }
+.sim-compare small { color: var(--iu-muted); font-size: 11px; }
+
+/* 读数框收起后缩成小标签：停靠在操作区里，别挡住模型上的拖动点（狭缝环、目镜套筒、灯头）。 */
+.sim-readout[data-open="false"] { width: max-content; max-width: min(380px, 60%); }
+.sim-readout[data-open="false"] .sim-readout__head { width: auto; }

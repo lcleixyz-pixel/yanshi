@@ -1,0 +1,154 @@
+{
+  "checkedAt": "2026-10-05T10:24:26.311994+00:00",
+  "workspace": "gem-lab",
+  "kind": "final non-UI verification and independent scope audit",
+  "protectedBaseline": "assets-source/polariscope/development-reference/pre-structure-integration-2026-10-05/protected-hashes.json",
+  "protectedFiles": [
+    {
+      "path": "src/components/polariscope/PolariscopeDemo.tsx",
+      "expected": "21b2c95cc2ade5592afc4b4c379016c74795f97bec4bdc062193aa99d87c3075",
+      "actual": "21b2c95cc2ade5592afc4b4c379016c74795f97bec4bdc062193aa99d87c3075",
+      "unchanged": true
+    },
+    {
+      "path": "src/store/progressStore.ts",
+      "expected": "adaa40afea91b8acc195c453af8a6db85ce66fd650182c2a2673750039a5dc03",
+      "actual": "adaa40afea91b8acc195c453af8a6db85ce66fd650182c2a2673750039a5dc03",
+      "unchanged": true
+    },
+    {
+      "path": "src/store/detectionStore.ts",
+      "expected": "a38cf77d238bb4ff914115841fdf6542fee323cf888a81e75b35a8a4271cec0d",
+      "actual": "a38cf77d238bb4ff914115841fdf6542fee323cf888a81e75b35a8a4271cec0d",
+      "unchanged": true
+    },
+    {
+      "path": "src/pages/DetectionWorkflowPage.tsx",
+      "expected": "f9d4d14720423d9fda2cbbda709607c35454c261b12457dc5df5a838dd1a4405",
+      "actual": "f9d4d14720423d9fda2cbbda709607c35454c261b12457dc5df5a838dd1a4405",
+      "unchanged": true
+    },
+    {
+      "path": "src/domain/polariscope3d.ts",
+      "expected": "5acfe3395fec5ddf2dacb8bd83dcf916ef317d3ebae632f8f7a9eb4d35c1dde2",
+      "actual": "5acfe3395fec5ddf2dacb8bd83dcf916ef317d3ebae632f8f7a9eb4d35c1dde2",
+      "unchanged": true
+    },
+    {
+      "path": "public/assets/3d/polariscope/polariscope.glb",
+      "expected": "c72a598eddf78efddbd5a1dfb9da1deb82e00cc0aa06fc9df22a8fcdd5373559",
+      "actual": "c72a598eddf78efddbd5a1dfb9da1deb82e00cc0aa06fc9df22a8fcdd5373559",
+      "unchanged": true
+    },
+    {
+      "path": "assets-source/polariscope/polariscope-master.blend",
+      "expected": "561ee72ee101b51bcb9f63f641e36de64bb9a7a54735676a30e2c08b917ba7bf",
+      "actual": "561ee72ee101b51bcb9f63f641e36de64bb9a7a54735676a30e2c08b917ba7bf",
+      "unchanged": true
+    }
+  ],
+  "allProtectedFilesUnchanged": true,
+  "originalTeachingDetectionStorage": "The protected PolariscopeDemo, DetectionWorkflowPage, progressStore and detectionStore remain byte-identical to the integration-start snapshot. This is not a claim that their pre-existing HEAD diffs are absent.",
+  "scope": {
+    "currentTrackedDiffPaths": [
+      ".github/workflows/frontend-demo.yml",
+      "README.md",
+      "gem-lab/README.md",
+      "gem-lab/package-lock.json",
+      "gem-lab/package.json",
+      "gem-lab/src/App.tsx",
+      "gem-lab/src/components/polariscope/PolariscopeDemo.tsx",
+      "gem-lab/src/data/instruments.ts",
+      "gem-lab/src/pages/DetectionWorkflowPage.tsx",
+      "gem-lab/src/pages/HomePage.tsx",
+      "gem-lab/src/pages/KnowledgeBasePage.tsx",
+      "gem-lab/src/pages/NamingAssessmentPage.tsx",
+      "gem-lab/src/store/detectionStore.ts",
+      "gem-lab/src/store/progressStore.ts",
+      "gem-lab/src/styles/global.css",
+      "package.json"
+    ],
+    "preexistingDirtyTrackedPathsAtTaskStart": [
+      ".github/workflows/frontend-demo.yml",
+      "README.md",
+      "gem-lab/README.md",
+      "gem-lab/package-lock.json",
+      "gem-lab/package.json",
+      "gem-lab/src/App.tsx",
+      "gem-lab/src/components/polariscope/PolariscopeDemo.tsx",
+      "gem-lab/src/pages/DetectionWorkflowPage.tsx",
+      "gem-lab/src/pages/HomePage.tsx",
+      "gem-lab/src/pages/KnowledgeBasePage.tsx",
+      "gem-lab/src/pages/NamingAssessmentPage.tsx",
+      "gem-lab/src/store/detectionStore.ts",
+      "gem-lab/src/store/progressStore.ts",
+      "gem-lab/src/styles/global.css",
+      "package.json"
+    ],
+    "newTrackedDiffPaths": [
+      "gem-lab/src/data/instruments.ts"
+    ],
+    "allowedNewTrackedDiffPaths": [
+      "gem-lab/src/data/instruments.ts"
+    ],
+    "unexpectedNewTrackedDiffPaths": [],
+    "instrumentsDataChanges": "Only the three existing polariscope light/switch descriptions were updated to the user-confirmed internal light and side switch positions; no instrument behavior or state schema changed.",
+    "newRouteStorageOrBackendReferences": [],
+    "indexHtmlTrackedDiff": false,
+    "limitations": "The shared workspace had unrelated uncommitted changes before integration. Hash verification establishes preservation only for the seven explicitly protected files. No new unexpected tracked diff path was identified."
+  },
+  "asset": {
+    "sha256": "0d4eb62f630e74915d31524010e51e1ce031c9b50f00314a1195b7c8ce469a7b",
+    "bytes": 29512268,
+    "matchesEditableV2Export": true,
+    "productionCopyMatches": true
+  },
+  "browserSpecifications": {
+    "files": [
+      "tests/polariscope3d.spec.ts",
+      "tests/polariscope3d-scene.spec.ts"
+    ],
+    "caseCount": 20,
+    "typeChecked": true,
+    "executed": false,
+    "note": "20 browser specifications were type-checked only; no Playwright browser was launched. Actual CUA browser evidence is recorded separately."
+  },
+  "buildWarnings": [
+    "Browserslist caniuse-lite data is 6 months old.",
+    "The lazy PolariscopeExplorePage bundle is 654.64 kB minified (171.65 kB gzip), exceeding the default 500 kB warning threshold. The route remains lazy-loaded."
+  ],
+  "unitSummary": {
+    "tests": 12,
+    "passed": 12,
+    "failed": 0,
+    "note": "Includes retained experimental optics-evidence domain and learning-score logic; unit success is separate from UI acceptance."
+  },
+  "commands": [
+    {
+      "name": "build",
+      "exitCode": 0,
+      "elapsedSeconds": 4.2381075,
+      "output": "\n> gem-lab@0.1.0 build\n> tsc -b && vite build\n\nvite v5.4.21 building for production...\ntransforming...\nBrowserslist: browsers data (caniuse-lite) is 6 months old. Please run:\n  npx update-browserslist-db@latest\n  Why you should do it regularly: https://github.com/browserslist/update-db#readme\n✓ 100 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                                    0.81 kB │ gzip:   0.47 kB\ndist/assets/SpectroscopeDemo-aRHMmuw2.css          1.30 kB │ gzip:   0.40 kB\ndist/assets/PolariscopeExplorePage-cKXora-6.css   17.54 kB │ gzip:   4.06 kB\ndist/assets/index-D4xfzDRM.css                    77.36 kB │ gzip:  13.85 kB\ndist/assets/Pill-BPXnnbHD.js                       0.57 kB │ gzip:   0.31 kB\ndist/assets/InteractiveDemoPage-CiDzZP1G.js        0.69 kB │ gzip:   0.39 kB\ndist/assets/Header-DJ-glkCK.js                     1.81 kB │ gzip:   0.88 kB\ndist/assets/detectionStore-CiD0I1pN.js             3.03 kB │ gzip:   1.25 kB\ndist/assets/ProgressPage-nMulxSVs.js               6.82 kB │ gzip:   2.91 kB\ndist/assets/instruments-5_FL6WgX.js                9.00 kB │ gzip:   7.16 kB\ndist/assets/progressStore-Cp0tAmc7.js              9.41 kB │ gzip:   3.68 kB\ndist/assets/HomePage-Bad66SRG.js                   9.70 kB │ gzip:   3.89 kB\ndist/assets/DetectionWorkflowPage-CRF-qKFA.js     13.47 kB │ gzip:   4.62 kB\ndist/assets/samples-BNA_jy-v.js                   14.41 kB │ gzip:   4.51 kB\ndist/assets/KnowledgeBasePage-RqrnabqP.js         17.73 kB │ gzip:   6.31 kB\ndist/assets/NamingAssessmentPage-B4QrkiLn.js      21.82 kB │ gzip:   7.46 kB\ndist/assets/index-BFZ1MHqH.js                    167.89 kB │ gzip:  55.04 kB\ndist/assets/SpectroscopeDemo-CBL0z4gX.js         177.80 kB │ gzip:  56.13 kB\ndist/assets/PolariscopeExplorePage-MPV5h87n.js   654.64 kB │ gzip: 171.65 kB\n\n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\n✓ built in 1.57s\n",
+      "verifiedAt": "2026-10-05 10:28:52 UTC"
+    },
+    {
+      "name": "unit",
+      "exitCode": 0,
+      "elapsedSeconds": 0.170115709,
+      "output": "\n> gem-lab@0.1.0 test:unit\n> tsx --test tests/unit/*.test.ts\n\nTAP version 13\n# Subtest: ideal empty field follows analyzer angle and is independent of stage angle and selection\nok 1 - ideal empty field follows analyzer angle and is independent of stage angle and selection\n  ---\n  duration_ms: 0.7845\n  type: 'test'\n  ...\n# Subtest: factory starts with the entire instrument and does not share mutable practice history\nok 2 - factory starts with the entire instrument and does not share mutable practice history\n  ---\n  duration_ms: 0.26425\n  type: 'test'\n  ...\n# Subtest: power, exploded assembly and isolation block optical observation before considering evidence\nok 3 - power, exploded assembly and isolation block optical observation before considering evidence\n  ---\n  duration_ms: 0.431917\n  type: 'test'\n  ...\n# Subtest: shipped data is empty and pending and cannot complete sample practice even with claimed progress\nok 4 - shipped data is empty and pending and cannot complete sample practice even with claimed progress\n  ---\n  duration_ms: 0.248583\n  type: 'test'\n  ...\n# Subtest: approved labels cannot replace full-turn angle, timestamp, media and review evidence\nok 5 - approved labels cannot replace full-turn angle, timestamp, media and review evidence\n  ---\n  duration_ms: 1.422042\n  type: 'test'\n  ...\n# Subtest: actual-media eligibility is specific to sample, orientation and recorded angles, with no interpolation\nok 6 - actual-media eligibility is specific to sample, orientation and recorded angles, with no interpolation\n  ---\n  duration_ms: 0.175542\n  type: 'test'\n  ...\n# Subtest: sample workflow needs alignment, a full rotation, every recorded observation and interpretation\nok 7 - sample workflow needs alignment, a full rotation, every recorded observation and interpretation\n  ---\n  duration_ms: 0.231625\n  type: 'test'\n  ...\n# Subtest: evaluation is pure and rejects malformed external observation data without throwing\nok 8 - evaluation is pure and rejects malformed external observation data without throwing\n  ---\n  duration_ms: 0.122667\n  type: 'test'\n  ...\n# Subtest: practice selection prefers unseen and incorrect samples while allowing exploration\nok 9 - practice selection prefers unseen and incorrect samples while allowing exploration\n  ---\n  duration_ms: 0.481375\n  type: 'test'\n  ...\n# Subtest: a revealed-answer retry does not count toward mastery\nok 10 - a revealed-answer retry does not count toward mastery\n  ---\n  duration_ms: 0.115666\n  type: 'test'\n  ...\n# Subtest: two independent correct attempts establish mastery and a later miss reopens review\nok 11 - two independent correct attempts establish mastery and a later miss reopens review\n  ---\n  duration_ms: 0.06125\n  type: 'test'\n  ...\n# Subtest: score rewards only independent answers and keeps hint penalty after reveal\nok 12 - score rewards only independent answers and keeps hint penalty after reveal\n  ---\n  duration_ms: 0.050167\n  type: 'test'\n  ...\n1..12\n# tests 12\n# suites 0\n# pass 12\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 122.746667\n"
+    },
+    {
+      "name": "browserSpecsTypecheck",
+      "exitCode": 0,
+      "elapsedSeconds": 0.368277459,
+      "output": ""
+    }
+  ],
+  "buildUpdatedAt": "2026-10-05 10:28:52 UTC",
+  "finalBuildSource": {
+    "file": "src/components/polariscope3d/PolariscopeScene.tsx",
+    "sha256": "8723ee1a1b01f60ce731f5bb7c1a22e9488a5d6b02eb363a0f841bbf76f513b3",
+    "lastChange": "All projected hotspots avoid the physical side-switch hit region."
+  },
+  "finalBuildNote": "Rebuilt after the final hotspot-layout change. Unit tests and protected-file hashes retain their earlier successful verification; they were not unnecessarily rerun because the final change affects only Scene hotspot placement."
+}

@@ -1,28 +1,47 @@
 import { useEffect, useMemo, useState } from 'react';
+import { reactionLabel } from '@/domain/polariscopeRules';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from '@/components/shared/Header';
 import Pill from '@/components/shared/Pill';
+import PracticeReport from '@/components/report/PracticeReport';
 import { SAMPLES, SAMPLES_BY_DIFFICULTY, SAMPLES_BY_ID } from '@/data/samples';
-import { useDetection } from '@/store/detectionStore';
+import type { SpectrumFeatures } from '@/data/types';
+import { computeScore } from '@/domain/assessment';
+import { checkRI, formatRIReference } from '@/domain/refractometerAssessment';
+import { countValidObservations, isLegacyDetectionSample, isSpectroscopeObservationPending, useDetection } from '@/store/detectionStore';
 import { useProgress } from '@/store/progressStore';
 import { formatDR, formatRI, OPTICAL_LABEL } from '@/utils/format';
 import clsx from '@/utils/clsx';
 
-type Stage = 'review' | 'quiz' | 'feedback';
+type Evidence = 'ri' | 'optical' | 'spectrum';
+
+const EVIDENCE: Array<{ id: Evidence; title: string; instrument: 'refractometer' | 'polariscope' | 'spectroscope'; detail: string }> = [
+  { id: 'ri', title: '折射率', instrument: 'refractometer', detail: '比较读数和候选宝石范围' },
+  { id: 'optical', title: '光性现象', instrument: 'polariscope', detail: '辨认均质、非均质或集合体' },
+  { id: 'spectrum', title: '吸收光谱', instrument: 'spectroscope', detail: '寻找具有区分力的吸收特征' },
+];
 
 export default function NamingAssessmentPage() {
   const navigate = useNavigate();
   const session = useDetection();
   const resetSession = useDetection((s) => s.resetSession);
+  const recordAssessment = useDetection((s) => s.recordAssessment);
+  const clearAssessment = useDetection((s) => s.clearAssessment);
   const pushDetection = useProgress((s) => s.pushDetection);
 
-  const [stage, setStage] = useState<Stage>('review');
   const [selected, setSelected] = useState<string | null>(null);
+  const [evidence, setEvidence] = useState<Evidence | null>(null);
   const [confidence, setConfidence] = useState(70);
   const [showHint, setShowHint] = useState(false);
-  const [attempts, setAttempts] = useState(1);
+  const [hintUsed, setHintUsed] = useState(false);
 
   const correctSample = session.sampleId ? SAMPLES_BY_ID[session.sampleId] : null;
+  const legacySample = isLegacyDetectionSample(session.sampleId);
+  const validObservationCount = countValidObservations(session);
+  const spectrumUnverified = isSpectroscopeObservationPending(session);
+  const spectrumNonDiagnostic = correctSample?.spectrum.diagnosticStatus === 'non-diagnostic' || correctSample?.spectrum.features.length === 0;
+  const assessment = session.assessment;
+  const attempts = assessment?.attemptNumber ?? session.assessmentAttemptCount + 1;
 
   // 没有进行中的检测会话，引导回去
   useEffect(() => {
@@ -32,6 +51,10 @@ export default function NamingAssessmentPage() {
       return () => clearTimeout(t);
     }
   }, [correctSample, navigate]);
+
+  useEffect(() => {
+    if (spectrumUnverified && evidence === 'spectrum') setEvidence(null);
+  }, [spectrumUnverified, evidence]);
 
   // 6 个候选项：正确答案 + 5 个干扰项（同难度池中随机）
   const options = useMemo(() => {
@@ -50,37 +73,51 @@ export default function NamingAssessmentPage() {
     return all;
   }, [correctSample]);
 
-  const isCorrect = selected !== null && selected === correctSample?.id;
+  const answerId = assessment?.selectedSampleId ?? selected;
+  const isCorrect = answerId !== null && answerId === correctSample?.id;
 
   const handleSubmit = () => {
-    if (!selected || !correctSample || !session.difficulty) return;
-    setStage('feedback');
+    if (!selected || !evidence || !correctSample || !session.difficulty || assessment || legacySample || validObservationCount < 2) return;
+    if (evidence === 'spectrum' && spectrumUnverified) return;
     const score = computeScore(
       isCorrect,
       session.difficulty,
       attempts,
       confidence,
-      showHint,
+      hintUsed,
     );
+    const completedAt = Date.now();
+    if (!recordAssessment({
+      selectedSampleId: selected,
+      evidence,
+      confidence,
+      hintUsed,
+      attemptNumber: attempts,
+      score,
+      completedAt,
+    })) return;
     pushDetection({
-      id: `${Date.now()}`,
+      id: `${completedAt}-${correctSample.id}-${attempts}`,
       sampleId: correctSample.id,
       difficulty: session.difficulty,
       userAnswer: SAMPLES_BY_ID[selected]?.name ?? null,
       correct: isCorrect,
       attempts,
       score,
-      completedAt: Date.now(),
+      completedAt,
+      evidence,
     });
   };
 
   const handleRetry = () => {
-    setStage('quiz');
+    if (legacySample) return;
+    clearAssessment();
     setSelected(null);
-    setAttempts((a) => a + 1);
+    setEvidence(null);
   };
 
   const handleNext = () => {
+    if (legacySample && !window.confirm('重新练习将清空这次旧版会话的检测记录；历史成绩仍保留。确定使用已拆分的新样品重新开始吗？')) return;
     resetSession();
     navigate('/detection');
   };
@@ -100,8 +137,22 @@ export default function NamingAssessmentPage() {
     );
   }
 
+  if (validObservationCount < 2 && !assessment && !legacySample) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-brand-50/40 px-4">
+        <div className="max-w-md rounded-2xl bg-white p-8 text-center shadow-card">
+          <div className="text-3xl">🔎</div>
+          <h2 className="mt-2 font-display text-lg font-semibold">检测数据尚不充分</h2>
+          <p className="mt-2 text-sm leading-6 text-ink-3">当前已完成 {validObservationCount} 项有效观察，请先完成至少两项，再根据记录进行命名。</p>
+          {spectrumUnverified && session.instrumentsUsed.includes('spectroscope') && <p className="mt-2 text-sm leading-6 text-amber-800">本次方法的教学谱图未核定：已保留分光镜尝试记录，不计入有效观察。请补充其他仪器的观察。</p>}
+          <Link to="/detection" className="btn-primary mt-5 inline-flex text-xs">返回检测流程</Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-brand-50/40">
+    <div className="assessment-screen min-h-screen bg-brand-50/40">
       <Header
         title="命名评估"
         subtitle="实训系统"
@@ -114,6 +165,16 @@ export default function NamingAssessmentPage() {
       />
 
       <div className="mx-auto max-w-[1100px] space-y-6 px-10 py-8">
+        {legacySample && (
+          <section className="rounded-2xl border border-amber-200 bg-amber-50 p-5" data-testid="legacy-sample-notice">
+            <h2 className="font-semibold text-amber-900">旧版石榴石记录已保留</h2>
+            <p className="mt-2 text-sm leading-6 text-amber-900">旧版混合数据已拆分为铁铝榴石和镁铝榴石。已有评估保留作历史复盘；尚未评估的记录不再评分，也不会转为新样品的掌握度。</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Link to="/detection" className="btn-ghost text-xs">查看原始检测记录</Link>
+              <button type="button" onClick={handleNext} className="btn-ghost text-xs">使用新样品重新练习</button>
+            </div>
+          </section>
+        )}
         {/* Stage 1: 数据回顾 */}
         <section className="rounded-3xl border border-line bg-white p-6 shadow-soft">
           <div className="mb-4 flex items-center gap-3">
@@ -166,13 +227,7 @@ export default function NamingAssessmentPage() {
               <Row
                 label="正交现象"
                 value={
-                  session.polariscope.phenomenon === 'four-bright-four-dark'
-                    ? '四明四暗'
-                    : session.polariscope.phenomenon === 'all-dark'
-                      ? '全暗'
-                      : session.polariscope.phenomenon === 'all-bright'
-                        ? '全亮'
-                        : '未观察'
+                  reactionLabel(session.polariscope.phenomenon, '未观察')
                 }
               />
             </DataReviewCard>
@@ -197,7 +252,7 @@ export default function NamingAssessmentPage() {
         </section>
 
         {/* Stage 2: 命名 */}
-        {stage !== 'feedback' && (
+        {!assessment && !legacySample && (
           <section className="rounded-3xl border border-line bg-white p-6 shadow-soft">
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -208,12 +263,29 @@ export default function NamingAssessmentPage() {
               </div>
               <button
                 type="button"
-                onClick={() => setShowHint(!showHint)}
+                onClick={() => {
+                  setShowHint(!showHint);
+                  setHintUsed(true);
+                }}
                 className="rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700 ring-1 ring-amber-200 hover:bg-amber-100"
               >
                 💡 {showHint ? '隐藏提示' : '查看提示（-2 分）'}
               </button>
             </div>
+
+            <fieldset className="mt-5 rounded-xl border border-brand-200 bg-brand-50/50 p-4">
+              <legend className="px-1 text-sm font-semibold text-brand-800">你命名时最依赖哪一项检测依据？</legend>
+              <p className="mb-3 text-xs text-ink-3">先选依据，再提交判断；仅显示本次已使用的仪器。</p>
+              <div className="grid gap-2 sm:grid-cols-3">
+                {EVIDENCE.filter((item) => session.instrumentsUsed.includes(item.instrument)).map((item) => (
+                  <label key={item.id} className={clsx('flex cursor-pointer gap-2 rounded-lg border p-3 text-left transition-colors', evidence === item.id ? 'border-brand bg-white shadow-soft' : 'border-line bg-white/70 hover:border-brand-300')}>
+                    <input type="radio" name="evidence" value={item.id} checked={evidence === item.id} disabled={item.id === 'spectrum' && spectrumUnverified} onChange={() => setEvidence(item.id)} className="mt-0.5 accent-brand" />
+                    <span><strong className="block text-xs text-ink">{item.title}</strong><span className="mt-1 block text-[11px] leading-4 text-ink-3">{item.id === 'spectrum' && spectrumUnverified ? '教学谱图未核定，不能作为主要诊断依据' : item.id === 'spectrum' && spectrumNonDiagnostic ? '不特征也是观察信息，但该项不足以单独判断' : item.detail}</span></span>
+                  </label>
+                ))}
+              </div>
+              {spectrumUnverified && <p className="mt-3 text-xs leading-5 text-amber-800">本次观察所需的教学谱图尚未核定，不能将待核状态当作已观察到无吸收。请选用本次其他仪器的有效记录作为主要依据。</p>}
+            </fieldset>
 
             {showHint && (
               <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50/50 p-3 text-xs text-amber-800">
@@ -249,6 +321,8 @@ export default function NamingAssessmentPage() {
                   <button
                     key={opt.id}
                     type="button"
+                    data-testid="answer-option"
+                    data-sample-id={opt.id}
                     onClick={() => setSelected(opt.id)}
                     className={clsx(
                       'group relative flex items-center gap-3 rounded-xl border-2 p-3 text-left transition-all duration-200',
@@ -341,7 +415,7 @@ export default function NamingAssessmentPage() {
               <button
                 type="button"
                 onClick={handleSubmit}
-                disabled={!selected}
+                disabled={!selected || !evidence}
                 className="btn-primary px-6 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 ✈ 提交答案
@@ -351,7 +425,7 @@ export default function NamingAssessmentPage() {
         )}
 
         {/* Stage 3: 反馈 */}
-        {stage === 'feedback' && correctSample && (
+        {assessment && correctSample && (
           <section
             className={clsx(
               'animate-fade-in-up relative overflow-hidden rounded-3xl border-2 p-6 shadow-card',
@@ -392,7 +466,7 @@ export default function NamingAssessmentPage() {
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-sm font-semibold text-white">
                 3
               </span>
-              <h2 className="font-display text-lg font-semibold">反馈结果</h2>
+              <h2 className="font-display text-lg font-semibold">{legacySample ? '历史评估结果（旧版数据）' : '反馈结果'}</h2>
             </div>
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -433,8 +507,14 @@ export default function NamingAssessmentPage() {
                   )}
                   style={{ animationDelay: '0.3s' }}
                 >
-                  {isCorrect ? '+' : ''}
-                  {computeScore(isCorrect, session.difficulty!, attempts, confidence, showHint)} 分
+                  {assessment.score > 0 ? '+' : ''}
+                  {assessment.score} 分
+                </div>
+
+                <div className="mt-4 rounded-xl border border-brand-200 bg-white px-4 py-3 text-xs leading-6 text-ink-2">
+                  <strong className="text-brand-800">你的主要判断依据：</strong>{EVIDENCE.find((item) => item.id === assessment.evidence)?.title}
+                  <span className="ml-1 text-ink-3">请对照右侧特征表，复盘这项依据是否足以区分候选宝石。</span>
+                  {assessment.attemptNumber > 1 && <p className="text-amber-700">本次为答案揭晓后的复盘练习，不再计分或提升掌握度。</p>}
                 </div>
 
                 <div className="mt-5">
@@ -480,11 +560,12 @@ export default function NamingAssessmentPage() {
                             ? '> 1.780'
                           : '—'
                       }
-                      standardValue={formatRI(correctSample.characteristics.refractiveIndex)}
+                      standardValue={formatRIReference(correctSample.characteristics.refractiveIndex, session.refractometer.method)}
                       ok={checkRI(
                         session.refractometer.riMin,
                         session.refractometer.riMax,
                         correctSample.characteristics.refractiveIndex,
+                        session.refractometer.method,
                       )}
                       onRetry={() => navigate('/detection')}
                     />
@@ -519,14 +600,7 @@ export default function NamingAssessmentPage() {
                             ? session.spectroscope.notes
                           : '—'
                       }
-                      standardValue={
-                        correctSample.spectrum.features.length > 0
-                          ? correctSample.spectrum.features
-                              .filter((f) => f.intensity === 'strong')
-                              .map((f) => `${f.wavelength}nm`)
-                              .join(',') || '无显著'
-                          : '无显著'
-                      }
+                      standardValue={formatSpectrumReference(correctSample.spectrum)}
                       ok={null}
                       onRetry={
                         session.spectroscope.markedLines.length === 0 && !session.spectroscope.notes
@@ -537,10 +611,10 @@ export default function NamingAssessmentPage() {
                   </tbody>
                 </table>
 
-                {!isCorrect && selected && (
+                {!isCorrect && answerId && (
                   <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
                     <strong>你可能混淆的原因：</strong>
-                    <p className="mt-1">{generateConfusionAnalysis(selected, correctSample.id)}</p>
+                    <p className="mt-1">{generateConfusionAnalysis(answerId, correctSample.id)}</p>
                   </div>
                 )}
               </div>
@@ -550,10 +624,13 @@ export default function NamingAssessmentPage() {
               <Link to="/" className="btn-ghost text-xs">
                 ← 返回工作台
               </Link>
-              <div className="flex gap-2">
-                {!isCorrect && (
+              <div className="flex flex-wrap gap-2">
+                <button type="button" onClick={() => window.print()} className="btn-ghost text-xs">
+                  打印练习记录
+                </button>
+                {!isCorrect && !legacySample && (
                   <button type="button" onClick={handleRetry} className="btn-ghost text-xs">
-                    🔄 重新选择
+                    🔄 原题复盘（不计分）
                   </button>
                 )}
                 <button type="button" onClick={handleNext} className="btn-primary text-xs">
@@ -564,6 +641,7 @@ export default function NamingAssessmentPage() {
           </section>
         )}
       </div>
+      {assessment && correctSample && <PracticeReport session={session} sample={correctSample} attempt={assessment} />}
     </div>
   );
 }
@@ -671,48 +749,21 @@ function CompareRow({
 }
 
 // ===== 工具函数 =====
+function formatSpectrumReference(spectrum: SpectrumFeatures): string {
+  if (spectrum.diagnosticStatus === 'unverified') return '教学谱图未核定';
+  if (spectrum.features.length === 0) return '不特征';
+  const intensity = { strong: '强', medium: '中等', weak: '弱' };
+  const features = spectrum.features.map((feature) =>
+    `${feature.wavelength} nm ${intensity[feature.intensity]}吸收${feature.type === 'band' ? '带' : '线'}`).join('，');
+  return spectrum.diagnosticStatus === 'non-diagnostic' ? `${features}（不单独作诊断）` : features;
+}
+
 function formatDuration(start: number | null): string {
   if (!start) return '00:00';
   const sec = Math.floor((Date.now() - start) / 1000);
   const m = Math.floor(sec / 60);
   const s = sec % 60;
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-}
-
-function computeScore(
-  correct: boolean,
-  difficulty: 'beginner' | 'intermediate' | 'advanced',
-  attempts: number,
-  confidence: number,
-  hintUsed: boolean,
-): number {
-  if (!correct) return 0;
-  const base = { beginner: 10, intermediate: 20, advanced: 30 }[difficulty];
-  const attemptPenalty = (attempts - 1) * 3;
-  const hintPenalty = hintUsed ? 2 : 0;
-  // 置信度奖惩：50% 是基线，越高奖励越多，过低惩罚
-  const confidenceFactor = 1 + (confidence - 50) / 200; // 0.75 ~ 1.25
-  const raw = (base - attemptPenalty - hintPenalty) * confidenceFactor;
-  return Math.max(1, Math.round(raw));
-}
-
-function checkRI(
-  userMin: number | null,
-  userMax: number | null,
-  standard: import('@/data/types').GemCharacteristics['refractiveIndex'],
-): boolean {
-  if (standard === 'over-1.78') return userMin === null;
-  if (typeof standard === 'number' && standard > 1.78) return userMin === null;
-  if (Array.isArray(standard) && Math.max(standard[0], standard[1]) > 1.78) return userMin === null;
-  if (userMin === null) return false;
-  const TOL = 0.005;
-  if (typeof standard === 'number') {
-    return Math.abs(userMin - standard) <= TOL;
-  }
-  const u = userMax ?? userMin;
-  const minOk = Math.abs(userMin - standard[0]) <= TOL;
-  const maxOk = Math.abs(u - standard[1]) <= TOL;
-  return minOk && maxOk;
 }
 
 function checkOptical(
@@ -753,10 +804,12 @@ function generateConfusionAnalysis(userId: string, correctId: string): string {
       );
     }
   }
-  if (reasons.length === 0) {
-    reasons.push(
-      `两者外观或部分特征相似，但${c.name}的特征光谱和${u.name}有明显不同，建议下次重点关注分光镜数据`,
-    );
+  const spectrumInsufficient = [u.spectrum, c.spectrum].some((spectrum) =>
+    spectrum.features.length === 0 || spectrum.diagnosticStatus === 'non-diagnostic' || spectrum.diagnosticStatus === 'unverified');
+  if (spectrumInsufficient) {
+    reasons.push('其中至少一个样品的光谱不特征或尚未核定，仅该项不足以区分；请结合折射率、光性及其他检测信息');
+  } else if (reasons.length === 0) {
+    reasons.push('两者外观或部分特征相似，请核对具体吸收位置、带形和观察条件，并结合其他检测信息；不能仅凭参考谱图认定两者可被明确区分');
   }
   return reasons.join('；') + '。';
 }

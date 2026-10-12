@@ -1,0 +1,49 @@
+{
+  "checkedAt": "2026-10-05T10:29:52.138854+00:00",
+  "scope": "Local structure/explode teaching integration; original learning and detection preserved",
+  "assetSha256": "0d4eb62f630e74915d31524010e51e1ce031c9b50f00314a1195b7c8ce469a7b",
+  "sceneSha256": "8723ee1a1b01f60ce731f5bb7c1a22e9488a5d6b02eb363a0f841bbf76f513b3",
+  "browserMethod": "CUA native Chrome and Safari UI; in-app browser DOM/visual checks",
+  "desktop": {
+    "Chrome": "1920x1080 CSS; steady approximately 60 fps in both quality settings",
+    "Safari": "approximately 1920x1080 CSS responsive mode; steady 59.8-60.1 fps, warmup and material compilation dips observed; physical switch verified in normal window"
+  },
+  "verified": [
+    "Eight parts and fixed views",
+    "Exploded internal light stays within base",
+    "Physical switch and page power synchronize",
+    "Front-view hotspots do not cover switch",
+    "Internal light isolation retains base context",
+    "Ring drag changes angle without camera/stage motion",
+    "Projection exit restores focus",
+    "Mobile layout and viewport restoration",
+    "503 model fallback and successful explicit retry",
+    "Three route exits/reentries with stable 30 geometry/8 texture counts"
+  ],
+  "browserErrorLogs": [],
+  "automatedBrowserSpecs": {
+    "count": 20,
+    "typechecked": true,
+    "executed": false
+  },
+  "limits": [
+    "No new physical dimension calibration or real sample observation",
+    "Local cached/fast-network loading is not public-network performance",
+    "Mobile is responsive layout verification, not real phone hardware",
+    "Resource counts do not replace long-duration process/GPU memory audit",
+    "Only original teaching entry/start screen was manually exercised, not a full detection exam"
+  ],
+  "keyEvidence": [
+    "classroom-structure-final.png",
+    "front-switch-off.png",
+    "safari-physical-switch-ax.txt",
+    "chrome-explode-high-ax.txt",
+    "chrome-standard-ax.txt",
+    "mobile-layout.png",
+    "load-failure.png",
+    "load-retry.png",
+    "ring-drag-check.json",
+    "route-resource-checks.json",
+    "final-static-checks.json"
+  ]
+}

@@ -1,4 +1,5 @@
 import type { InstrumentDef } from './types';
+import { INTERFERENCE_KEY } from '../domain/polariscopeRules';
 
 export const INSTRUMENTS: Record<string, InstrumentDef> = {
   refractometer: {
@@ -134,9 +135,9 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
     intro: {
       tagline: '判别均质 / 非均质 / 多晶质集合体，进一步判定光性轴性',
       principle: [
-        '偏光镜底部光源发出的自然光，经下偏光片转化为偏振光；当偏振光通过非均质体宝石时，分解为两束传播方向不同、振动方向相互垂直的偏振光。',
-        '上下偏光片振动方向相互垂直时（正交），仅与上偏光片方向一致的光能通过——观察到亮；其他方向不能通过——观察到暗。转动样品 360° 即可看到明暗变化规律。',
-        '通过明暗变化可判断宝石光学性质；配合锥光干涉球可观察干涉图，进一步判定轴性；上下偏光片平行时可观察多色性。',
+        '底座内部光源发出的光，经顶部通光孔进入下偏光片，形成线偏振光。上偏光片只透过沿其透振方向的分量；空载时，两片方向平行最亮，正交最暗。',
+        '放入透明样品后，双折射可能改变出射光的偏振状态。保持两片正交，旋转样品一周观察明暗变化；全暗时还需换方向复查，明暗交替也要区分双折射与异常双折射。',
+        '三维讲解在同一台仪器上展示部件、光路与理想偏振原理；示意薄片的规律不代替具体宝石的实测结果。配合锥光干涉球可进一步观察干涉图。',
       ],
       usage: [
         '判断均质体 / 非均质体 / 多晶质集合体',
@@ -211,7 +212,7 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
         name: 'LED 光源模块',
         shortDesc: '底部均匀面照明',
         description:
-          '在底座内，经窗口可见，提供自下而上的均匀面照明，保证视场亮度与观察条件稳定。',
+          '光源位于底座内部，光线通过底座上部的通光孔进入下偏光片，为观察提供自下而上的照明。',
         // ▼▼▼ 圆点位置：x 水平(0–1)，y 垂直(0–1) ▼▼▼
         position: { x: 0.565, y: 0.74 },
         // ▼▼▼ 标签侧：'left' 或 'right' ▼▼▼
@@ -224,7 +225,7 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
         name: '干涉球（锥光镜）',
         shortDesc: '锥光观察干涉图',
         description:
-          '装在立柱上的小透镜，置于光路中可把近平行光会聚为锥形光穿过样品，便于在正交偏光下观察干涉图（如宝石光性、一轴/二轴晶干涉图样）。',
+          '平时插在立柱上的玻璃球。观察时在正交偏光下把它放到样品上方，靠近或轻触样品上合适的观察区域；它把来自样品、沿不同方向传播的光汇集起来，使视场中每一点对应一个传播方向，从而看到干涉图（区分一轴、二轴晶）。光仍是自下而上先穿过样品，再进入干涉球。',
         // ▼▼▼ 圆点位置：x 水平(0–1)，y 垂直(0–1) ▼▼▼
         position: { x: 0.24, y: 0.28 },
         // ▼▼▼ 标签侧：'left' 或 'right' ▼▼▼
@@ -248,8 +249,8 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
       {
         id: 'switch',
         name: '电源开关',
-        shortDesc: '控制光源通断（位于背面）',
-        description: '控制光源通断，实际位于仪器背面。',
+        shortDesc: '控制光源通断（位于底座侧面）',
+        description: '位于底座侧面的电源按钮，控制底座内部光源的通断。',
         // ▼▼▼ 圆点位置：x 水平(0–1)，y 垂直(0–1) ▼▼▼
         position: { x: 0.18, y: 0.60 },
         // ▼▼▼ 标签侧：'left' 或 'right' ▼▼▼
@@ -279,7 +280,7 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
           { id: 1, iconId: 'power-on', title: '打开光源，调至正交' },
           { id: 2, iconId: 'rotate', title: '上下、左右翻转样品寻找虹彩效应' },
           { id: 3, iconId: 'align', title: '加入锥光干涉球' },
-          { id: 4, iconId: 'observe', title: '观察干涉图', hint: '黑十字 → 一轴晶；单/双臂 → 二轴晶；牛眼 → 水晶' },
+          { id: 4, iconId: 'observe', title: '观察干涉图', hint: INTERFERENCE_KEY },
         ],
       },
       {
@@ -427,31 +428,31 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
             id: 2,
             iconId: 'place-sample',
             title: '宝石台面向下置于黑色背景上（亭部朝上）',
-            hint: '黑色背景吸收漏光、提升对比度；台面贴黑底使光从亭部再反回冠部',
+            hint: '让较大的平面稳定接触黑色背景；刻面样品台面向下、亭部朝上',
           },
           {
             id: 3,
             iconId: 'align',
-            title: '调节入射光与分光镜约成 45°',
-            hint: '光从冠部一侧斜入 → 在亭部刻面全反射 → 从冠部另一侧出射进入分光镜，光程被延长 1.5–2 倍',
+            title: '从两侧斜上方照明与收光，各与台面约成 45°',
+            hint: '灯从一侧亭部斜上方照入，光经底部台面内侧反射后从对侧亭部射出；45° 仅作教学起点，应按实际亮点微调',
           },
           {
             id: 4,
             iconId: 'align',
-            title: '分光镜入光端对准冠部出射的光亮点',
-            hint: '在样品上方略偏对侧可见一明显亮点；微动分光镜对准并锁定',
+            title: '分光镜从对侧斜上方对准出射的光亮点',
+            hint: '使经过样品内部反射的光进入狭缝；按光亮点的位置微调观察方向',
           },
           {
             id: 5,
             iconId: 'focus',
-            title: '调狭缝/焦距（浅色样品狭缝可稍宽以保证亮度）',
-            hint: '吸收特征往往比透射法弱；可结合细微样品姿态调整找到最强谱位',
+            title: '调节狭缝、焦距和观察方向',
+            hint: '在亮度和谱线清晰度之间调整，寻找最清晰的光谱；光栅式固定光学部件按机型操作',
           },
           {
             id: 6,
             iconId: 'record',
-            title: '只记录有把握识别的强吸收线/带',
-            hint: '内反射法读数误差大于透射法；不确定的弱线建议留疑或用透射法复测',
+            title: '记录观察到的吸收线、带及不确定之处',
+            hint: '如实记录强弱与位置；难以确认的特征注明不确定，改变方向或换用适合的方法复核',
           },
         ],
       },
@@ -464,19 +465,19 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
             id: 1,
             iconId: 'power-on',
             title: '开启光纤灯',
-            hint: '反射光通常较弱，光源应近距离对准抛光面',
+            hint: '使用连续白光，调整光源使光照到样品待测上表面',
           },
           {
             id: 2,
             iconId: 'place-sample',
-            title: '将宝石/玉石抛光面朝上置于黑色背景上',
-            hint: '表面越光滑越平整，反射越强；粗糙表面会因漫反射使光谱过弱',
+            title: '将宝石/玉石稳定放在黑色背景上，待测表面朝上',
+            hint: '光源与分光镜分处样品两侧斜上方；镊子可用于转移或调姿，避免遮住照明和收光区域',
           },
           {
             id: 3,
             iconId: 'align',
             title: '调入射角，使尽量多白光从表面反射进入分光镜',
-            hint: '镜面反射规律：入射角 = 反射角；常用范围 30°–60°，先在此范围试探找到最强反射方向',
+            hint: '可从入射方向、收光方向各与台面约成 45° 的教学位置开始，继续微调至反射最亮区域进入分光镜；角度不是统一合格范围',
           },
           {
             id: 4,
@@ -487,8 +488,8 @@ export const INSTRUMENTS: Record<string, InstrumentDef> = {
           {
             id: 5,
             iconId: 'record',
-            title: '识别经典玉石谱线',
-            hint: '翡翠：红区 630–660–690 nm 三阶梯吸收带（"翡翠三脚架"）；染色翡翠仅显模糊吸收带，可凭此区分',
+            title: '记录实际观察到的吸收特征',
+            hint: '记录谱线或谱带的位置、强弱及观察条件；是否天然或经过处理须结合其他检测，不能仅凭几条吸收线定论',
           },
         ],
       },

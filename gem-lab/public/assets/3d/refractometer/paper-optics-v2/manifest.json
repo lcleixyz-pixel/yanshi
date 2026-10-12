@@ -1,0 +1,1225 @@
+{
+  "id": "refractometer-paper-optics-v2",
+  "version": "paper-optics-v2",
+  "revision": "paper-optics-v2",
+  "model": "model.glb",
+  "sha256": "ca614d532f7fee568998496d9b7299c3226c8cb44e2254dcc8ee9c58bf27e5b2",
+  "byteLength": 3055888,
+  "units": "meter",
+  "dimensionsCalibrated": false,
+  "teachingOpticsSimulated": true,
+  "internalOpticsIllustrative": true,
+  "opticalSimulation": "ideal-isotropic-ray-model",
+  "parts": [
+    {
+      "id": "body",
+      "label": "白色机身外壳",
+      "node": "Refractometer_body",
+      "pivot": [
+        0,
+        0,
+        0
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        -0.105,
+        0,
+        0
+      ],
+      "hotspot": [
+        0.034,
+        0.043,
+        0.008
+      ],
+      "evidenceNote": "以项目白色产品图为外形依据；165 mm教学设计比例。",
+      "shell": true
+    },
+    {
+      "id": "metal_stage",
+      "label": "不锈钢测台与一级白色台阶",
+      "node": "Refractometer_metal_stage",
+      "pivot": [
+        0.0,
+        0.0755,
+        -0.026
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0,
+        0.06,
+        0
+      ],
+      "hotspot": [
+        0.017,
+        0.0766868,
+        -0.0258226
+      ],
+      "evidenceNote": "17 × 3.6 mm 窄条开口直接露出同一半圆柱棱镜；仅教学设计比例，非实测。",
+      "steelSizeMeters": [
+        0.044,
+        0.062,
+        0.0016
+      ],
+      "whiteStepSizeMeters": [
+        0.05,
+        0.07,
+        0.0096
+      ],
+      "contactWindowMeters": [
+        0.017,
+        0.0036
+      ],
+      "prismWindowVisible": true
+    },
+    {
+      "id": "test_prism",
+      "label": "半圆柱高折射率棱镜 / 深色接触窗口",
+      "node": "Refractometer_test_prism",
+      "pivot": [
+        0.0,
+        0.0766868,
+        -0.0258226
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.06,
+        0.065,
+        0
+      ],
+      "hotspot": [
+        0.0,
+        0.0766868,
+        -0.0258226
+      ],
+      "evidenceNote": "保留原半径、轴和接触平面，将半圆曲面细化至2048分段，供导出网格法线核查；n=1.88仍为教学参数。",
+      "cylinderAxis": [
+        1,
+        0,
+        0
+      ],
+      "refractiveIndexIllustrative": 1.88,
+      "radiusMeters": 0.006,
+      "lengthMeters": 0.017,
+      "contactNormal": [
+        0,
+        0.9890159,
+        0.1478094
+      ],
+      "curvedSurfaceSegments": 2048
+    },
+    {
+      "id": "cover",
+      "label": "白色盒形翻盖（内外白）",
+      "node": "Refractometer_cover",
+      "pivot": [
+        0.0,
+        0.084,
+        -0.078
+      ],
+      "rotationAxisLocal": [
+        1,
+        0,
+        0
+      ],
+      "rotatable": true,
+      "explodeOffset": [
+        0,
+        0.02,
+        -0.07
+      ],
+      "hotspot": [
+        0.025,
+        0.13,
+        -0.08
+      ],
+      "evidenceNote": "后上方横向铰轴及可见螺钉；默认打开100°。白色盒形盖有侧壁、内腔和前沿斜面；限位为教学参数。",
+      "defaultAngleDegrees": 100,
+      "angleLimitsDegrees": [
+        0,
+        100
+      ],
+      "angleConvention": "localRotationRadians = -openingAngleDegrees * PI / 180; zero closes cover",
+      "motion": {
+        "type": "rotation",
+        "axis": [
+          1,
+          0,
+          0
+        ],
+        "inputRange": [
+          0,
+          100
+        ],
+        "inputUnit": "degree",
+        "rotationMultiplier": -1,
+        "defaultValue": 100
+      },
+      "closedClearanceMeters": 0.0018,
+      "lidConstruction": {
+        "form": "open-bottom box",
+        "sideWallMeters": 0.0028,
+        "depthMeters": 0.021,
+        "innerColor": "white",
+        "frontLip": "sloped",
+        "hingeLocation": "rear upper",
+        "visibleHingeScrews": true
+      }
+    },
+    {
+      "id": "eyepiece",
+      "label": "滚花目镜 / 轴向调焦",
+      "node": "Refractometer_eyepiece",
+      "pivot": [
+        0.0,
+        0.0457048,
+        0.0526991
+      ],
+      "rotationAxisLocal": [
+        0.0,
+        0.8772684,
+        0.4800002
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.0,
+        0.0403543,
+        0.02208
+      ],
+      "hotspot": [
+        0.0,
+        0.0544775,
+        0.0574991
+      ],
+      "evidenceNote": "较粗滚花短筒、凹入镜片和小侧螺钉；沿自身光轴0–6 mm调焦为教学行程。",
+      "translationAxisLocal": [
+        0.0,
+        0.8772684,
+        0.4800002
+      ],
+      "translationRangeMeters": [
+        0,
+        0.006
+      ],
+      "translationIsIllustrative": true,
+      "motion": {
+        "type": "translation",
+        "axis": [
+          0.0,
+          0.8772684,
+          0.4800002
+        ],
+        "inputRange": [
+          0,
+          6
+        ],
+        "inputUnit": "mm",
+        "outputRangeMeters": [
+          0,
+          0.006
+        ],
+        "defaultValue": 0,
+        "followers": [
+          "polarizer"
+        ]
+      }
+    },
+    {
+      "id": "polarizer",
+      "label": "可拆偏光片（目镜外侧圆片）",
+      "node": "Refractometer_polarizer",
+      "pivot": [
+        0.0,
+        0.0584252,
+        0.0596591
+      ],
+      "rotationAxisLocal": [
+        0.0,
+        0.8772684,
+        0.4800002
+      ],
+      "rotatable": true,
+      "explodeOffset": [
+        0.0,
+        0.0780769,
+        0.04272
+      ],
+      "hotspot": [
+        0.0,
+        0.0593024,
+        0.0601391
+      ],
+      "evidenceNote": "按本轮指定教学部件单独制作；旋转/拆卸自由度为教学演示，不宣称该原图中的附件规格经厂家核实。",
+      "detachmentAxis": [
+        0.0,
+        0.8772684,
+        0.4800002
+      ],
+      "angleLimitsDegrees": [
+        0,
+        180
+      ],
+      "defaultAngleDegrees": 0,
+      "followsPart": "eyepiece",
+      "visibilityToggle": true,
+      "defaultVisible": true
+    },
+    {
+      "id": "power_switch",
+      "label": "内置光源电源开关（I / O）",
+      "node": "Refractometer_power_switch",
+      "pivot": [
+        0.0361,
+        0.034,
+        -0.047
+      ],
+      "rotationAxisLocal": [
+        1,
+        0,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.06,
+        0,
+        0
+      ],
+      "hotspot": [
+        0.039,
+        0.034,
+        -0.047
+      ],
+      "evidenceNote": "侧面黑色翘板形态依原图；以0.8 mm按压位移作交互示意，真实翘板机构与电路未实测。",
+      "translationAxisLocal": [
+        1,
+        0,
+        0
+      ],
+      "translationRangeMeters": [
+        -0.0008,
+        0
+      ],
+      "defaultTranslationMeters": 0,
+      "motion": {
+        "type": "translation",
+        "axis": [
+          1,
+          0,
+          0
+        ],
+        "inputRange": [
+          0,
+          1
+        ],
+        "inputUnit": "normalized",
+        "outputRangeMeters": [
+          0,
+          -0.0008
+        ],
+        "defaultValue": 0
+      },
+      "switchStates": {
+        "0": "O / off",
+        "1": "I / on"
+      },
+      "translationIsIllustrative": true
+    },
+    {
+      "id": "internal_light",
+      "label": "后部内置钠黄光示意 LED",
+      "node": "Refractometer_internal_light",
+      "pivot": [
+        0.022,
+        0.0505,
+        -0.057
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.06,
+        0.01,
+        -0.045
+      ],
+      "hotspot": [
+        0.022,
+        0.053,
+        -0.057
+      ],
+      "evidenceNote": "后部独立发光面；颜色示意589 nm钠黄光，不把LED材质当单色波长或照度模拟。",
+      "wavelengthNanometersIllustrative": 589,
+      "internalOpticsIllustrative": true
+    },
+    {
+      "id": "first_mirror",
+      "label": "第一反射镜",
+      "node": "Refractometer_first_mirror",
+      "pivot": [
+        -7.84e-05,
+        0.0625296,
+        -0.0575404
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        -0.045,
+        0.032,
+        -0.025
+      ],
+      "hotspot": [
+        -7.84e-05,
+        0.0625296,
+        -0.0575404
+      ],
+      "evidenceNote": "机内教学示意；位置/法线用于几何通路检查，不代表厂家内部尺寸或读数校准。",
+      "internalOpticsIllustrative": true,
+      "surfaceCenter": [
+        -7.84e-05,
+        0.0625296,
+        -0.0575404
+      ],
+      "surfaceNormal": [
+        -0.6827869,
+        0.0674154,
+        -0.7275006
+      ],
+      "clearRadiusMeters": 0.0115
+    },
+    {
+      "id": "second_mirror",
+      "label": "第二反射镜",
+      "node": "Refractometer_second_mirror",
+      "pivot": [
+        0.0,
+        0.0237731,
+        0.0406991
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        -0.055,
+        0.012,
+        0.04
+      ],
+      "hotspot": [
+        0.0,
+        0.0237731,
+        0.0406991
+      ],
+      "evidenceNote": "机内教学示意；位置/法线用于几何通路检查，不代表厂家内部尺寸或读数校准。",
+      "internalOpticsIllustrative": true,
+      "surfaceCenter": [
+        0.0,
+        0.0237731,
+        0.0406991
+      ],
+      "surfaceNormal": [
+        0.0,
+        -0.980246,
+        0.1977821
+      ],
+      "clearRadiusMeters": 0.009
+    },
+    {
+      "id": "internal_scale",
+      "label": "按教学光路计算的非等距分划",
+      "node": "Refractometer_internal_scale",
+      "pivot": [
+        0.0,
+        0.0629915,
+        -0.0086052
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        -0.06,
+        0.048,
+        0.01
+      ],
+      "hotspot": [
+        0.0,
+        0.0629915,
+        -0.0086052
+      ],
+      "evidenceNote": "位置由 n玻璃·sinθ 与实际接触层和标尺平面映射计算；不是厂家标尺标定。",
+      "internalOpticsIllustrative": true,
+      "surfaceCenter": [
+        0.0,
+        0.0629915,
+        -0.0086052
+      ],
+      "surfaceNormal": [
+        0.0,
+        -0.6225146,
+        0.7826082
+      ],
+      "clearRadiusMeters": 0.009,
+      "tickPositionsCalibrated": false,
+      "teachingTickMapping": [
+        {
+          "index": 1.41,
+          "position": [
+            0.0,
+            0.059439267963171005,
+            -0.01143082045018673
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.05953264608979225,
+            -0.011548211798071861
+          ]
+        },
+        {
+          "index": 1.42,
+          "position": [
+            0.0,
+            0.05958344042301178,
+            -0.011316139250993729
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.059676818549633026,
+            -0.01143353059887886
+          ]
+        },
+        {
+          "index": 1.43,
+          "position": [
+            0.0,
+            0.05972849205136299,
+            -0.01120076049119234
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.05982187017798424,
+            -0.011318151839077473
+          ]
+        },
+        {
+          "index": 1.44,
+          "position": [
+            0.0,
+            0.05987447872757912,
+            -0.011084637604653835
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.05996785685420036,
+            -0.011202028952538967
+          ]
+        },
+        {
+          "index": 1.45,
+          "position": [
+            0.0,
+            0.06002145633101463,
+            -0.01096772588789463
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06011483445763588,
+            -0.011085117235779762
+          ]
+        },
+        {
+          "index": 1.46,
+          "position": [
+            0.0,
+            0.06016949191689491,
+            -0.010849974118173122
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06026287004351616,
+            -0.010967365466058254
+          ]
+        },
+        {
+          "index": 1.47,
+          "position": [
+            0.0,
+            0.06031864508986473,
+            -0.010731332004070282
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06041202321648598,
+            -0.010848723351955414
+          ]
+        },
+        {
+          "index": 1.48,
+          "position": [
+            0.0,
+            0.06046898663043976,
+            -0.010611743666231632
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.060562364757061005,
+            -0.010729135014116764
+          ]
+        },
+        {
+          "index": 1.49,
+          "position": [
+            0.0,
+            0.06062059476971626,
+            -0.010491151362657547
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06071397289633751,
+            -0.010608542710542679
+          ]
+        },
+        {
+          "index": 1.5,
+          "position": [
+            0.0,
+            0.06077353656291962,
+            -0.010369493626058102
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06086691468954086,
+            -0.010486884973943233
+          ]
+        },
+        {
+          "index": 1.51,
+          "position": [
+            0.0,
+            0.06092790514230728,
+            -0.010246705263853073
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06102128326892853,
+            -0.010364096611738205
+          ]
+        },
+        {
+          "index": 1.52,
+          "position": [
+            0.0,
+            0.061083778738975525,
+            -0.010122716426849365
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06117715686559677,
+            -0.010240107774734497
+          ]
+        },
+        {
+          "index": 1.53,
+          "position": [
+            0.0,
+            0.061241257935762405,
+            -0.009997453540563583
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06133463606238365,
+            -0.010114844888448715
+          ]
+        },
+        {
+          "index": 1.54,
+          "position": [
+            0.0,
+            0.061400435864925385,
+            -0.009870837442576885
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06149381399154663,
+            -0.009988228790462017
+          ]
+        },
+        {
+          "index": 1.55,
+          "position": [
+            0.0,
+            0.06156142055988312,
+            -0.00974278338253498
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.061654798686504364,
+            -0.009860174730420113
+          ]
+        },
+        {
+          "index": 1.56,
+          "position": [
+            0.0,
+            0.06172432750463486,
+            -0.009613200090825558
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.061817705631256104,
+            -0.00973059143871069
+          ]
+        },
+        {
+          "index": 1.57,
+          "position": [
+            0.0,
+            0.06188927963376045,
+            -0.00948199164122343
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.0619826577603817,
+            -0.009599382989108562
+          ]
+        },
+        {
+          "index": 1.58,
+          "position": [
+            0.0,
+            0.06205640733242035,
+            -0.009349053725600243
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.062149785459041595,
+            -0.009466445073485374
+          ]
+        },
+        {
+          "index": 1.59,
+          "position": [
+            0.0,
+            0.06222585216164589,
+            -0.009214271791279316
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.062319230288267136,
+            -0.009331663139164448
+          ]
+        },
+        {
+          "index": 1.6,
+          "position": [
+            0.0,
+            0.06239776313304901,
+            -0.009077525697648525
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06249114125967026,
+            -0.009194917045533657
+          ]
+        },
+        {
+          "index": 1.61,
+          "position": [
+            0.0,
+            0.06257231533527374,
+            -0.008938683196902275
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06266569346189499,
+            -0.009056074544787407
+          ]
+        },
+        {
+          "index": 1.62,
+          "position": [
+            0.0,
+            0.06274967640638351,
+            -0.008797602728009224
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06284305453300476,
+            -0.008914994075894356
+          ]
+        },
+        {
+          "index": 1.63,
+          "position": [
+            0.0,
+            0.06293004751205444,
+            -0.008654129691421986
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06302342563867569,
+            -0.008771521039307117
+          ]
+        },
+        {
+          "index": 1.64,
+          "position": [
+            0.0,
+            0.06311363726854324,
+            -0.00850809644907713
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06320701539516449,
+            -0.008625487796962261
+          ]
+        },
+        {
+          "index": 1.65,
+          "position": [
+            0.0,
+            0.06330066919326782,
+            -0.00835932232439518
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06339404731988907,
+            -0.008476713672280312
+          ]
+        },
+        {
+          "index": 1.66,
+          "position": [
+            0.0,
+            0.06349139660596848,
+            -0.008207611739635468
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06358477473258972,
+            -0.0083250030875206
+          ]
+        },
+        {
+          "index": 1.67,
+          "position": [
+            0.0,
+            0.0636860802769661,
+            -0.008052753284573555
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06377945840358734,
+            -0.008170144632458687
+          ]
+        },
+        {
+          "index": 1.68,
+          "position": [
+            0.0,
+            0.06388500332832336,
+            -0.00789452251046896
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06397838145494461,
+            -0.008011913858354092
+          ]
+        },
+        {
+          "index": 1.69,
+          "position": [
+            0.0,
+            0.06408845633268356,
+            -0.0077326856553554535
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06418183445930481,
+            -0.007850077003240585
+          ]
+        },
+        {
+          "index": 1.7,
+          "position": [
+            0.0,
+            0.06429675221443176,
+            -0.007567004766315222
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06439013034105301,
+            -0.007684396114200354
+          ]
+        },
+        {
+          "index": 1.71,
+          "position": [
+            0.0,
+            0.06451014429330826,
+            -0.007397260516881943
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.0646035224199295,
+            -0.007514651864767075
+          ]
+        },
+        {
+          "index": 1.72,
+          "position": [
+            0.0,
+            0.06472885608673096,
+            -0.007223290856927633
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.0648222342133522,
+            -0.007340682204812765
+          ]
+        },
+        {
+          "index": 1.73,
+          "position": [
+            0.0,
+            0.06495289504528046,
+            -0.007045085076242685
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.0650462731719017,
+            -0.007162476424127817
+          ]
+        },
+        {
+          "index": 1.74,
+          "position": [
+            0.0,
+            0.06518177688121796,
+            -0.006863019894808531
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.0652751550078392,
+            -0.006980411242693663
+          ]
+        },
+        {
+          "index": 1.75,
+          "position": [
+            0.0,
+            0.06541372090578079,
+            -0.006678524427115917
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06550709903240204,
+            -0.006795915775001049
+          ]
+        },
+        {
+          "index": 1.76,
+          "position": [
+            0.0,
+            0.06564255803823471,
+            -0.006496499292552471
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06573593616485596,
+            -0.006613890640437603
+          ]
+        },
+        {
+          "index": 1.77,
+          "position": [
+            0.0,
+            0.06584002822637558,
+            -0.006339422892779112
+          ],
+          "markCenter": [
+            0.003800000064074993,
+            0.06593340635299683,
+            -0.006456814240664244
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lens_group",
+      "label": "理想中继透镜（薄透镜计算）",
+      "node": "Refractometer_lens_group",
+      "pivot": [
+        0.0,
+        0.0480511,
+        0.0101773
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.055,
+        0.036,
+        0.02
+      ],
+      "hotspot": [
+        0.0,
+        0.0480511,
+        0.0101773
+      ],
+      "evidenceNote": "指定窄角案例使用理想薄透镜；曲面仅视觉载体，未做厚透镜、像差、光谱或厂家处方复原。",
+      "internalOpticsIllustrative": true,
+      "surfaceCenter": [
+        0.0,
+        0.0480511,
+        0.0101773
+      ],
+      "surfaceNormal": [
+        0.0,
+        -0.6225146,
+        0.7826082
+      ],
+      "clearRadiusMeters": 0.01,
+      "lensCount": 1,
+      "imagingCalibrated": false,
+      "chiefRayModel": "central ray passes without angular change; no lens field or aberration simulation",
+      "idealFocalLengthMeters": 0.021105882352941176
+    },
+    {
+      "id": "optical_path",
+      "label": "案例光路由审阅页计算显示",
+      "node": "Refractometer_optical_path",
+      "pivot": [
+        0,
+        0,
+        0
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0,
+        0,
+        0
+      ],
+      "hotspot": [
+        0,
+        0,
+        0
+      ],
+      "evidenceNote": "静态多样品临界扇已移除；使用 optical-cases.json 同一案例的入射、反射和透射路径。",
+      "defaultVisible": false,
+      "visibilityToggle": true,
+      "teachingOverlay": true,
+      "internalOpticsIllustrative": true
+    },
+    {
+      "id": "oil_bottle",
+      "label": "折射油瓶（独立附件）",
+      "node": "Refractometer_oil_bottle",
+      "pivot": [
+        0.067,
+        0.004,
+        -0.038
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.035,
+        0,
+        -0.025
+      ],
+      "hotspot": [
+        0.067,
+        0.032,
+        -0.038
+      ],
+      "evidenceNote": "独立可隐藏附件，依据原图的棕色瓶和白色盖；无化学配方、折射率、危险品标签或容量承诺。",
+      "accessory": true,
+      "visibilityToggle": true,
+      "defaultVisible": true,
+      "attachment": "separate freestanding accessory",
+      "teachingRole": "接触液附件外观示意"
+    },
+    {
+      "id": "contact_layer",
+      "label": "接触层（液体 / 空气间隙由案例指定）",
+      "node": "Refractometer_contact_layer",
+      "pivot": [
+        0.0,
+        0.07670659935330154,
+        -0.025819672518421873
+      ],
+      "hotspot": [
+        0.0,
+        0.07670659935330154,
+        -0.025819672518421873
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0.02,
+        0.016,
+        0
+      ],
+      "evidenceNote": "40 μm 厚度是假设；光线按平行三层界面计算，不是实测油膜。",
+      "internalOpticsIllustrative": true
+    },
+    {
+      "id": "isotropic_sample",
+      "label": "固定各向同性示例样品",
+      "node": "Refractometer_isotropic_sample",
+      "pivot": [
+        0.0,
+        0.07870441139729262,
+        -0.02552109750794006
+      ],
+      "hotspot": [
+        0.0,
+        0.07870441139729262,
+        -0.02552109750794006
+      ],
+      "rotationAxisLocal": [
+        0,
+        1,
+        0
+      ],
+      "rotatable": false,
+      "explodeOffset": [
+        0,
+        0.028,
+        0
+      ],
+      "evidenceNote": "理想均质抛光块；nD 按所选案例指定，不代表任何天然宝石的校准值。",
+      "internalOpticsIllustrative": true
+    }
+  ],
+  "coordinateSystem": "glTF right-handed Y-up. X width, -Z rearward. Native Blender points converted (x,y,z)->(x,z,-y).",
+  "nominalDimensions": {
+    "bodyWidthMeters": 0.068,
+    "bodyLengthMeters": 0.165,
+    "bodyHeightMeters": 0.079,
+    "note": "教学示意比例，非厂商实测；油瓶为独立附件。"
+  },
+  "boundsNative": {
+    "min": [
+      -0.034117501229047775,
+      -0.08250000327825546,
+      0.0009999999310821295
+    ],
+    "max": [
+      0.0786999985575676,
+      0.1019500270485878,
+      0.17768262326717377
+    ]
+  },
+  "opticalBehavior": "固定各向同性、单色、平行接触膜与理想中继透镜教学；不表示厂家真实内部处方或实测宝石读数。",
+  "attachments": {
+    "oil_bottle": {
+      "defaultVisible": true,
+      "visibilityToggle": true
+    }
+  },
+  "opticalPath": {
+    "node": "Refractometer_optical_path",
+    "partId": "optical_path",
+    "defaultVisible": false,
+    "elementOrder": [
+      "internal_light",
+      "first_mirror",
+      "test_prism",
+      "internal_scale",
+      "lens_group",
+      "second_mirror",
+      "eyepiece"
+    ],
+    "fanValidatedThrough": "example paths through ideal relay to eyepiece",
+    "mainRayPointsMeters": [],
+    "geometryCheck": "validation/candidate-build-audit.json",
+    "scope": "Fixed case optics and independent reimported GLB mesh intersections.",
+    "limitations": [
+      "示例窄角束按三层折射、圆柱出射及理想薄透镜传播至目镜。",
+      "胶合/厚透镜处方、像差、相干薄膜、吸收与各向异性未模拟。",
+      "几何与曲面仅教学设计，不是厂家测绘。"
+    ]
+  },
+  "createdAt": "2026-10-07T10:32:21.145631+00:00",
+  "contactWindow": {
+    "center": [
+      0.0,
+      0.0766868190360343,
+      -0.025822628706644465
+    ],
+    "axes": [
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        -0.14780941112961063,
+        0.9890158633619168
+      ]
+    ],
+    "sizeMeters": [
+      0.017,
+      0.0036
+    ],
+    "normal": [
+      0,
+      0.9890158633619168,
+      0.14780941112961063
+    ],
+    "directExposedPrism": true,
+    "undersideReliefMeters": 0.0124,
+    "topLipThicknessMeters": 0.00016,
+    "steelTopAboveContactMeters": 1e-05,
+    "reliefIllustrative": true,
+    "approval": "User approved narrow top strip with underside relief on 2026-10-08; not manufacturer internal evidence"
+  },
+  "modelSha256": "ca614d532f7fee568998496d9b7299c3226c8cb44e2254dcc8ee9c58bf27e5b2",
+  "modelBytes": 3055888,
+  "poster": "poster.png",
+  "opticalCases": "optical-cases.json",
+  "sources": "sources.json",
+  "provenance": "provenance.json",
+  "publicationStatus": "local-course-candidate"
+}

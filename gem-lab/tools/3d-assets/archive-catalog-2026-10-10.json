@@ -1,0 +1,1959 @@
+{
+  "formatVersion": 1,
+  "archiveId": "2026-10-10-yanshi制作素材快照/snapshot-03",
+  "entries": [
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/course-v1/safari/01-parts.png",
+      "bytes": 688677,
+      "sha256": "cab49f8196e1688c95be6c4be2f8417d8eb2a5a9043fdb974cb4e07a9d50a747",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/course-v1/safari/02-path.png",
+      "bytes": 640130,
+      "sha256": "6bf4ce0f83fd29975efb30d1e0c9b7c1aaabfaf18a052a2dc162f62ecd2514ca",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/course-v1/safari/03-crossed.png",
+      "bytes": 630474,
+      "sha256": "2034c30791cd8200a22763823a741254f274a6d64121ad4d6849c40f27a9e174",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/course-v1/safari/04-rotate.png",
+      "bytes": 591541,
+      "sha256": "09d6e3687a1a5553e474e6703192d9358970e33c70ecd347b3386c8daebbbad3",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/course-v1/safari/05-reorient.png",
+      "bytes": 612663,
+      "sha256": "f175efe4c8d47f27cacb602dea642edee25d11d7a323abf15488cd787f6e040a",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/course-v1/safari/06-quiz.png",
+      "bytes": 284759,
+      "sha256": "f693f688c4f0d035248d6eebdc0d8e1af314a317ce95b24fc7c539c7a839e54d",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/course-v1/safari/07-complete.png",
+      "bytes": 223633,
+      "sha256": "311870b85e696e58f8eac1d2dd16161076aa19b1ee830ac649f20e6939827938",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/course-v1/safari/08-projection-reorient.png",
+      "bytes": 719830,
+      "sha256": "976adc210e10ffc318560540fa4564100abef3bdb905c42f900790bccf6fca78",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/course-v1/safari/failure.png",
+      "bytes": 341795,
+      "sha256": "fbfad015c2e4ef6a6ce1ccb7894c20aeb0c784c1c9e08f729cfeb8841c2d06f9",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/polariscope/validation/course-v1/safari/result.json",
+      "bytes": 2170,
+      "sha256": "b56e5362e4e6f39d130683c085b1432a7c6387e35c70616ad2e2b4afbacce421",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/acceptance-summary.json",
+      "bytes": 1356,
+      "sha256": "c9314e0191298bbc8ddbc80d188bf28e210f97b4ae3fab15989f4237a48a2efe",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/all-browser-results.json",
+      "bytes": 427855,
+      "sha256": "cfa51028170891a4fd09874abbc1d01c1e5c62eff2ab126cb90e9d5ea488033a",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/audit.json",
+      "bytes": 33548,
+      "sha256": "a750f759794d8a320b5babc84e3ee52bb61979bb3d00eda6ce1dd9dc0c82a270",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/browser-results.json",
+      "bytes": 3359,
+      "sha256": "2f3cc24a1f2d6b8b701e8014454a729eb1ee12dddc7a5133e5379884d5a7501f",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/browser/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/build-app.log",
+      "bytes": 3403,
+      "sha256": "2bede09f1ce77942f27fda8d318f6182e761145bdd22e4b4ee73970ff8a04f65",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/build.log",
+      "bytes": 13680,
+      "sha256": "439a2a7fae94a08f0e166f4333825fb8415f51a930b7e4189bc9824330b636de",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/ci-checks.log",
+      "bytes": 1254,
+      "sha256": "c1769c17fbb3618ee1abf1daa5944d9f3df2911f032fd3f44399ce57e261a3e5",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/e2e-all.log",
+      "bytes": 101401,
+      "sha256": "a6f5cc3ec75c188f4b32f1bb0c4e5ef9f24277ae6baf3d97efa4c984486abd78",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/e2e-final.log",
+      "bytes": 2358,
+      "sha256": "e82a0c18b2ecc9dc2fd7533cdd2a4884d78fbe5aedb4549bbe7cacddfb6ab130",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/e2e-new.log",
+      "bytes": 1950,
+      "sha256": "cc47d2417f466456b5b25e99bb185c1e9a45235f2ae62c96304f192bc6df43e5",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/e2e-visual.log",
+      "bytes": 746,
+      "sha256": "468968370ccef56f64572077994975acd1c57430c7fe0223f58f4818935714c2",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/editable.blend",
+      "bytes": 2260360,
+      "sha256": "5bac68990d4c5a6a980853dec86cba1a0f9c5b887c5fbd4be1db2b51d40df51a",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/editable.blend1",
+      "bytes": 2260807,
+      "sha256": "98fa9c42fc49e65de001e8d373436cd6711d708ebdfe58ee894073c4e686828a",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/final-browser-results.json",
+      "bytes": 15553,
+      "sha256": "fe9d0c51f57edf2038413bc180b765271b43a11f53778a20861ddbbe143998ab",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/manifest.json",
+      "bytes": 29518,
+      "sha256": "df74e27ed9777774f91908082df06411332ebe8be65c806e52e55b5d7ce4eff8",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/model.glb",
+      "bytes": 3055888,
+      "sha256": "ca614d532f7fee568998496d9b7299c3226c8cb44e2254dcc8ee9c58bf27e5b2",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/narrow-stage-top.png",
+      "bytes": 1614972,
+      "sha256": "21529d65b8a43af242e9f9e0f1ffcfe058dbc53bcf7dd7aae81469108d098bd6",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/optical-cases.json",
+      "bytes": 90484,
+      "sha256": "a73ee06ba7a0f7520d5e0259a1c3b615d3f3ab758ac8ddb3f783b09090c6e77b",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/poster-render.json",
+      "bytes": 275,
+      "sha256": "4078e920de9f33c3ba311be30e3fd7b6d0dc78a5066eb30ed91eb0cf91d12f77",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/poster-studio.blend",
+      "bytes": 2255367,
+      "sha256": "453be95a1a95b9ea22761a6a1ef5ed058a8d88aa0e7427566580f117ae000589",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/poster-studio.blend1",
+      "bytes": 2256393,
+      "sha256": "bdbd8e39ee77622202fcfdec2503f1a65b4e214a7744f6c6e9515784b50378cf",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/poster.png",
+      "bytes": 2207084,
+      "sha256": "dcd20f5e92a69a30737623d4917e6f05363b8059f21442e1c6d9e9d3f5ffb8fa",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/protected-after.json",
+      "bytes": 148,
+      "sha256": "e29bfd313fb3e88e5500dc89cb470acfcc8df7c7b8c87b814f33e53db2c68d91",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/protected-before.json",
+      "bytes": 11110,
+      "sha256": "9491b87671f91982ea815188cf89ca2667fa46ef0ed6ef3c7f11fd76e406e5b5",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/render.log",
+      "bytes": 1273,
+      "sha256": "e9445ca2c7510fdb2e0cfaf071a4dc5b1f54744aec3b3895b3d690a80cdf1c71",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/sample-input.json",
+      "bytes": 36,
+      "sha256": "cf5fa038742cd818fd50fbea8574d61991f81e298ddd87db31913c76fdec1ed9",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/types.log",
+      "bytes": 65,
+      "sha256": "0515b48811858107c14a319fb9ebb5fdbf152a91a4fb52601b6435a7e6c8b4e0",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/unit.log",
+      "bytes": 17820,
+      "sha256": "0113dfadd4384c3b133abd5d732e62e53f5650e6eab191cc9e70cb8865c24d52",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/validation/independent-refractometer.json",
+      "bytes": 110302,
+      "sha256": "98996471e896ed52f61c04258bfa01dfdf773007ada84c6cb34c25701d942cce",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/visual/desktop-reading.png",
+      "bytes": 275146,
+      "sha256": "48f4673509b08312c3c68fce783f0e704a551d5d57eb716f27d37fcb3b58dff2",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/visual/mobile-reading.png",
+      "bytes": 107035,
+      "sha256": "fa9d06d3a5b09827d8ddde415e50d386d52fae0296b49ffbfebccdcf72565019",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/refractometer/course-v2/visual/window-comparison.png",
+      "bytes": 279113,
+      "sha256": "38a83fa2eac94cc6acf6cbd75e992d8be50d6da58b65dffa67ddd7bfcb320a88",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image1.jpeg",
+      "bytes": 146752,
+      "sha256": "3c340926c7135ab8e1d68c3a4658b2c1defb942647d1c619f90f02fa3db125aa",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image10.jpeg",
+      "bytes": 79167,
+      "sha256": "d67fdad0a052a5b690f2c1b746afb0888faf7383e92f1a94579f81000d3cf135",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image11.jpeg",
+      "bytes": 84094,
+      "sha256": "68c66d710c9ec7f1b93c8e4f7d36fadf483542de18409ac3085e0190ab8f64dc",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image12.jpeg",
+      "bytes": 315490,
+      "sha256": "762488558afc6cc1641344651c0d62f51a2e652b7fd968d3c1b113b24c0651bc",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image13.jpeg",
+      "bytes": 220002,
+      "sha256": "5822faec45d59d05cf908b9c8ce3ffd31d024a612941d2e0eaee02dfe5ffb332",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image14.jpeg",
+      "bytes": 283925,
+      "sha256": "3c22fef97db1e1a0eb3e1b8bba0e5c914b034b698918edae74738a285bd7ca30",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image15.jpeg",
+      "bytes": 318721,
+      "sha256": "8c0b51450ee0344c63c399943dbf8b2b7b6d048f10f9034e26167979d15863e8",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image16.jpeg",
+      "bytes": 231743,
+      "sha256": "6bbf9fa5b37ce4ed9718fc4b55d23a4900ec2d9d27c4644e2b68cea1547e4a99",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image17.jpeg",
+      "bytes": 232382,
+      "sha256": "26865b01f3753c55e5008f24449ec2c9d49ea2109643bf959f7c2a113ad47eec",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image18.jpeg",
+      "bytes": 230375,
+      "sha256": "9c892aaab1da51e186f87e1c504fe74c27e47d49492cab4db515e2aef130ed80",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image19.jpeg",
+      "bytes": 83211,
+      "sha256": "0fbd04d059cf9090e1bf141900929d1798338acf308792775c3a865d0a0403a8",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image2.jpeg",
+      "bytes": 320215,
+      "sha256": "48e19356329e29d856873351fb753042afb0e42dc3b59de30f9b43b31b1be5b3",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image20.jpeg",
+      "bytes": 230645,
+      "sha256": "9975a9d2dd4d9b121f071f1c0d82104ead0ece4f923e6d411fedbe8487f77c0d",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image21.jpeg",
+      "bytes": 317496,
+      "sha256": "b05083eba8238ef0394988d7a2e3789f8ae822a68f93072fb9e69b30c90bf495",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image22.jpeg",
+      "bytes": 306837,
+      "sha256": "e3eea95b5d51a4ad26db50d7499d0fdf9dc2e51a38cd35c899abd83d38d10a26",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image23.jpeg",
+      "bytes": 81413,
+      "sha256": "f943894a1928a6ae2725710dce16e24933e57c5b3a9970e58a434cf3d5e3be83",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image24.jpeg",
+      "bytes": 80122,
+      "sha256": "65810369ae3f8d7c3fc4f1d1ab85e75ba34e969eee886d5764b84370487a88e8",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image25.jpeg",
+      "bytes": 145997,
+      "sha256": "660b1d34da9f2eea103d8ae03205db1b10294f0dbd25e43d7d6893fb7259c75c",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image26.jpeg",
+      "bytes": 254479,
+      "sha256": "4165d3cfeff72e9dd0214f231fdbffed298a7c98bceac8aeffad33b4366d2a75",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image27.jpeg",
+      "bytes": 324522,
+      "sha256": "a52cf11370925f2c4e9bb449e03472042e98c02cee8a0732b4ed56460b7bf5a3",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image28.jpeg",
+      "bytes": 230226,
+      "sha256": "5f2e63778da616d82efce9b48e04d0416eca16f01b3373040bd88f119d2a369d",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image29.jpeg",
+      "bytes": 227367,
+      "sha256": "8d4b1369506b1375310793bfdb20a2bb3225a5aa45c97e67eb16deaf587ce3b2",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image3.jpeg",
+      "bytes": 688492,
+      "sha256": "59f4cf856f074ceebd9204295f4dd713a9dd5bbb49327363c88e556f128045d2",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image30.jpeg",
+      "bytes": 229969,
+      "sha256": "375479251dc356b2d919d52691f3db078102351407e1ccf48a7f723bd5294d9b",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image31.jpeg",
+      "bytes": 339570,
+      "sha256": "c6a48d92318a0a4784427590f840c439110a23f210cb4bd7fcff62692f1d2870",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image32.jpeg",
+      "bytes": 147260,
+      "sha256": "39ef99691c1f54f42388964d81d76445f6b6d5999fa9f62239c115dead20d2f2",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image33.jpeg",
+      "bytes": 145861,
+      "sha256": "ec4e981a1ed10270e65de498528721f3a475c3940bc8ede09a8e76d194b45535",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image34.jpeg",
+      "bytes": 226949,
+      "sha256": "c2f3f3c10d10426a3dc581823d82a52ded5e74096c18e6c339bc519820ce49c3",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image35.jpeg",
+      "bytes": 226559,
+      "sha256": "33eb4eddec70663eb6b2f84214d137bf806aa1f56a360ea758ac8dbae6ba9967",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image36.jpeg",
+      "bytes": 227231,
+      "sha256": "3cce382c297f6076a4a58200ee388a388ac5a0be5caf82300635bb197957422e",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image37.jpeg",
+      "bytes": 145409,
+      "sha256": "58400cc1ef8872b55a5708e3c8aeaebfd1718e9923e662972d7bf4acc1b43558",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image38.jpeg",
+      "bytes": 146314,
+      "sha256": "2fb4cb67ffcba88b3ca8633c9358590c25a6d99f6634494e63323fe55642a948",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image39.jpeg",
+      "bytes": 227923,
+      "sha256": "8c67ad6c4269102f3f78802774071bb5e7cd6183bbbdc8bc2ff607429e272ed1",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image4.jpeg",
+      "bytes": 318315,
+      "sha256": "2b8cb5a31e51a267f6963b5b0544583e8f5c9e2df0148142951e2677fda14af7",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image40.jpeg",
+      "bytes": 226101,
+      "sha256": "c131cbddd5e41cb93a33a6ebd0a236006ec3b0c9cab5d0375aa8525f6447a588",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image41.jpeg",
+      "bytes": 225769,
+      "sha256": "ae6537d972631f72cf6eba30b2058a7e0b678dcce6cac79eb928f49ef8abb829",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image42.jpeg",
+      "bytes": 226504,
+      "sha256": "8cf3de89a7a40ce7bda60ea642636033bc6323e14d37be4b180dd19030a962bb",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image43.jpeg",
+      "bytes": 227258,
+      "sha256": "ef23e5e115cd8b9a417efe2167332bd3a96b74f94d6d853c44f680a1add3df67",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image44.jpeg",
+      "bytes": 226080,
+      "sha256": "d06bfc8cf4d44d87320cafc028c2e4945ff1fab6df306177f6647343f06455e9",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image45.jpeg",
+      "bytes": 226556,
+      "sha256": "4daebb302df369239115aacf36361f4f3f6e0d14a4b3bd8a37698d1456ed38b6",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image46.jpeg",
+      "bytes": 284527,
+      "sha256": "cab11991f020091275f49dff9ac685739c6d16edc49c59c79ff9a69e65c4ab0b",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image47.jpeg",
+      "bytes": 225533,
+      "sha256": "cfdf50086cecbf18f7aba2fa76900172ec7b78f0d83a0e359dea6ef6c8e8a207",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image48.jpeg",
+      "bytes": 228442,
+      "sha256": "5786245c1b915ba5071064e5d4a528e74de712db5f5ed34ee60020a7a410bfc4",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image49.jpeg",
+      "bytes": 225170,
+      "sha256": "3f5268b6a285d45f178831d7d3fbbbcb04ce8acf134d2cf0c31207b2866c5a6a",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image5.jpeg",
+      "bytes": 308997,
+      "sha256": "b32803813db7632e27c0c01c64dec7b6f527e6d82dd5555dca46c6db25e03655",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image50.jpeg",
+      "bytes": 229466,
+      "sha256": "7cf81107f93097090ff0a30e01cd067f439261b7a9050285cbed18eb2cd1496c",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image51.jpeg",
+      "bytes": 226376,
+      "sha256": "0f73f5a455ff95fd9f5c09350905b8dbbdf037261ea6a98461be2a639636f14e",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image52.jpeg",
+      "bytes": 227545,
+      "sha256": "2a0ed970fa8765bdeb81e956d65e365fc9d51b50da76ca6eb67640878b22c483",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image53.jpeg",
+      "bytes": 231114,
+      "sha256": "28a90675d00651986d6b5ab2f86e1354706842f15d4e4159c07224a45d952dc0",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image54.jpeg",
+      "bytes": 216516,
+      "sha256": "8e7de1506a8a0713300fdd74520e72b7b06cffa9d8dbb81a50c1f23d63e4764a",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image55.jpeg",
+      "bytes": 224915,
+      "sha256": "1b323a4b440698044c323cb4c6394f4272b74f2a4e42be2b1740c756d49d0cbd",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image56.jpeg",
+      "bytes": 228162,
+      "sha256": "8bb420b2d1f4fbb511957fad4a273a3d54ec2e6bdfa7c852c2d3eb9da35178b0",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image57.jpeg",
+      "bytes": 225691,
+      "sha256": "8db884a9ba519969951a5487a248c5a468be823f99ed85dec7d4ef3594e642ad",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image58.jpeg",
+      "bytes": 226154,
+      "sha256": "868acc788dc83b41e82fd307a8a565e8b7efd7a2383ce4d676b758273b64c176",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image6.jpeg",
+      "bytes": 235875,
+      "sha256": "e03929511eeba6b1f2dffc9f92f10c02c1fc470c3a909e483b9b0b768bda35fa",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image7.jpeg",
+      "bytes": 147932,
+      "sha256": "c7513832d0d079125dfd5b00053891a0011479de17785b5df49b8720cab9bed9",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image8.jpeg",
+      "bytes": 317703,
+      "sha256": "c6fcf175d51bed0d5f87000ecdfb1126952e91d483f95cfef58b5de2d56cc6ec",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/images/image9.jpeg",
+      "bytes": 230310,
+      "sha256": "55e7ad627d86ffc051910b6cd0acaba631deea84ae5aa892cf420af2828ab1b6",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/index.json",
+      "bytes": 18484,
+      "sha256": "d7732e7d96f66c707153f8b1f46748026989b73b8ce5b03490104f623f876144",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/sheet0.png",
+      "bytes": 149967,
+      "sha256": "f0c50085af1e2068b3bcf60f4a717ef14362a5eaf17ac191db16935cdedac58f",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/sheet1.png",
+      "bytes": 130046,
+      "sha256": "705f3dc80b47d5dd34747c652b7ae0037935a31eca1593bd58d3c881936d7f54",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/sheet2.png",
+      "bytes": 99893,
+      "sha256": "a18e47ec67080d6624c6aeb871577be3f18465758fcbc453455bcacfe5049e58",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/特征吸收光谱(1).doc",
+      "bytes": 13893120,
+      "sha256": "4e227f3d1c04a10d276ad83b22fc7d1eab4bc35a3bf68ed11d5f6f591e23b83e",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-reference/2026-10-08-特征吸收光谱/特征吸收光谱(1).docx",
+      "bytes": 13446280,
+      "sha256": "a20a36a6badba10931e361b9976cc49ec95f129fd6b968829853d37c382737a2",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/editable/build_bench.py",
+      "bytes": 27984,
+      "sha256": "1ec5042cf68e5bb738ce7e3736a8e44ca3dbf81520c80692a897e93449f8f1e1",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/editable/simple-v2/build_simple.py",
+      "bytes": 25549,
+      "sha256": "e35deccf970c7f6ab009e465bdfab0ebc2e2f1bd75196fa4aab63c9c1e062470",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/editable/simple-v2/spectroscope-simple-master.blend",
+      "bytes": 1053648,
+      "sha256": "781937364cdc326a5d1f79d2137ef35c5d1f7725a4faf62f43d054f4bacfde3b",
+      "groups": [
+        "current-master",
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/editable/simple-v2/superseded-kruess-style/build_simple.py",
+      "bytes": 26283,
+      "sha256": "e0a2386bef421769b2e1758d721e4af20d5250b42b0a0b15195add20022dd562",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/editable/simple-v2/superseded-kruess-style/spectroscope-simple-master.blend",
+      "bytes": 1081935,
+      "sha256": "c463b6f444f29876816312b3df72e40eccddb7f093e1699870659b9809af332e",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/editable/spectroscope-workbench-master.blend",
+      "bytes": 1238331,
+      "sha256": "4a0a829c307bd63345cb53fe8be1491306b1ceb7449884fe073cb317c6409501",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/raw/container-inspection.json",
+      "bytes": 344,
+      "sha256": "09198a172324c012713047b37454bdd02b134fc3697f76f94b3545b48dfd2b4c",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/raw/spectroscope-light-source-20261010-tripo-original.glb",
+      "bytes": 64899892,
+      "sha256": "3ea6a99801785d7ac7b6b6e56c989e4a75d89e8f174842e896e34af5b9767f92",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/references/baoguang-IW.jpg",
+      "bytes": 201201,
+      "sha256": "b9b138b5077a850f40470e1d90f5280d444fb636c4c99b503f4138e360634392",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/references/baoguang-IW_FULL.jpg",
+      "bytes": 113429,
+      "sha256": "af3799eb290a95f04b7b7e0dab60354c97167f73634acf1066e2d95351820a0f",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/references/baoguang-iw.html",
+      "bytes": 4680,
+      "sha256": "83e1b42cc3959926770c30e6c35caa149c9196bf228faa6db1a8497d2ce65bfe",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/references/baoguang-work.jpg",
+      "bytes": 192285,
+      "sha256": "ec84fc9ee90e857104d440b09eebf04a22f99507db729c77ded3557aeb38e954",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/references/fable-fcl100-alt.jpg",
+      "bytes": 20084,
+      "sha256": "8aeb24201586a9a18b13f8eb05965880461185616876b5e2f32722229b5108fa",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/references/fable-fcl100-front.jpg",
+      "bytes": 28464,
+      "sha256": "90d7a08c4374fc97e0cae32dff46c9c6b42828dad2d1f7b150bd15247a082443",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/references/fable-fcl150.jpg",
+      "bytes": 31352,
+      "sha256": "4a51ceb34460aa5671b85892a53f84050ec94bfec27bd9569a05658a27346be2",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/references/fable-tweezers-dtm.jpg",
+      "bytes": 24727,
+      "sha256": "e6a2f3b6d5b948ad92dfd2931c5792a5c5eda2e61d15835b296b0169e880a6a3",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/references/kruess-kl5120.jpg",
+      "bytes": 30642,
+      "sha256": "ced6350e2ff1db245942a42a11bb464fd87e8675b5cb9df9282a3864cfa3e278",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/references/kruess-single-guide.jpg",
+      "bytes": 32792,
+      "sha256": "6ae53886ec441a5b6661aa74a33aba5aa1ba0cb7e755dde865e3152202f43977",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/references/lotus-opl-stand.jpg",
+      "bytes": 169726,
+      "sha256": "6cced0f165eedf802c63797bd4f1cdbb77132e7df9b64dff8fbb0da0711bcf72",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/references/reference-notes.md",
+      "bytes": 4544,
+      "sha256": "309ae141e044863ed3cddaf7d5a5c2dff9f1c081838a96859209188fa582f517",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/references/simple-v2-sources.json",
+      "bytes": 1943,
+      "sha256": "dedb8f47a985a5ee9d07e9e01bbd7aa94b4cd61be5ebd4c52beec75f3f9ba09d",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/references/sources.json",
+      "bytes": 1727,
+      "sha256": "f63c1377892366554c8d912a3fe1f07d13cf14bef7b23ec378d808066cb547ee",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/superseded/bench-v1-web/manifest.json",
+      "bytes": 8913,
+      "sha256": "5fd1ec9fa8d34d0e978156de7261e1e30903f19cdc8217093aa81ac4942452e4",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/superseded/bench-v1-web/model.glb",
+      "bytes": 2478180,
+      "sha256": "3c775ff3b8807063cd9b8b76a003a45c2977220720e6fe366f282343bc2715b8",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/superseded/bench-v1-web/poster.png",
+      "bytes": 1917316,
+      "sha256": "37b92d6c927bbadb45e123a69ff636814d2b61e903280c406010aab2a1ab488d",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/superseded/bench-v1-web/provenance.json",
+      "bytes": 1459,
+      "sha256": "edb852913bb9e813f62f821a19998df87cbac101f252a889b10a0342e409be04",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/tripo-ledger.json",
+      "bytes": 4420,
+      "sha256": "c35378dbbcdd870bfc33b969c59854da30b82c9a8e8fd0121650d0e4a59690ef",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/browser-grating.png",
+      "bytes": 141487,
+      "sha256": "c9bbabf18c8f07784c52aaf12f2c0b4c13cd18f92a495839bd05f539e453d825",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/browser-mobile.png",
+      "bytes": 214860,
+      "sha256": "1cdc299f4219466ca14b51ec81468ddcad9e55947a67444c98d547fd75a5a7b2",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/browser-prism-desktop.png",
+      "bytes": 321995,
+      "sha256": "33be6bf7753c434068fbb5bf3ae524754d16abd37075b8c04eebd78302e71c76",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/browser-sample-focus.png",
+      "bytes": 317506,
+      "sha256": "9c167194c77608ab6bfe215cf59b82561e0716e3f58225e199a3cf191a97109a",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/browser-visual-check.json",
+      "bytes": 142,
+      "sha256": "9c813bea13e0bc29bac6af179e1ca0446915ee7ccf36726283b9500a693246bc",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/build.log",
+      "bytes": 27202,
+      "sha256": "c75747c268481f51f36646d1dd708c991b5a8d42d3af1d33083087595b1900dc",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/delivery-summary.json",
+      "bytes": 3161,
+      "sha256": "ca0b4b9e168123d0764b1bd9b84d024da694c1d22c5fee184e57b7f37c8949b8",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/gltf-validation.json",
+      "bytes": 27740,
+      "sha256": "4ff4d081ebaaf6ffc0a90d36d72332ead05ab103538dab3f516ec329e91c3835",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/lamp-head.png",
+      "bytes": 2017853,
+      "sha256": "464f684bc6a60892eaee894ae5cb8058f39997cd2768934df8ff9682cde46510",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/light-source.png",
+      "bytes": 2089690,
+      "sha256": "fab7beacb1fbc49829a908d6cad674eddd1cd81cf36513bc228d96dc68dda61b",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/mesh-check.json",
+      "bytes": 33982,
+      "sha256": "8dc6f2bc63503ccc19be3c1740cc1acafbd50a18314059f1889c3698a2fa3dc3",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/overview.png",
+      "bytes": 1917316,
+      "sha256": "37b92d6c927bbadb45e123a69ff636814d2b61e903280c406010aab2a1ab488d",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/rear.png",
+      "bytes": 1910038,
+      "sha256": "b212e77380e00bd559aa386df486246600c4c707d628712f5c4565d7fb7757ea",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/2d-reflection-review.png",
+      "bytes": 91752,
+      "sha256": "126fc3301ef869c2fb31c2ba27a12dfe45888618565f34548a0953ac6b296b9e",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/application-validation.json",
+      "bytes": 2372,
+      "sha256": "8b76e0ed163dd8ada2fcd71eb8981d6923b3e5c7e1d05fcdcb15e137a01b5948",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/asset-check.log",
+      "bytes": 2315,
+      "sha256": "794c4e2e6f0f8446a99935d9b1f30c3273d2ee4b7af36ce35b16b8b8a4b3bffe",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/browser-grating-internal-sample.png",
+      "bytes": 88692,
+      "sha256": "cb1aae85cae0fa76702906a022366d6b77f0882a3c1462aa801cab410fe450df",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/browser-grating-internal-whole.png",
+      "bytes": 58737,
+      "sha256": "c390669c31c9696a80f5a794a21c0c54dd11517868d1ed45fe4488acc219a7d3",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/browser-grating-surface-sample.png",
+      "bytes": 88661,
+      "sha256": "ca2e9c670d2875f449871cdf04a58c1c135bcc3c941f4084d26c3be40f691b16",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/browser-grating-surface-whole.png",
+      "bytes": 59164,
+      "sha256": "d6e44d6526fa77c4429dbd07f0eec8beb59669aac3ce0792276c4c150b88d952",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/browser-instrument-focus.png",
+      "bytes": 139408,
+      "sha256": "cd985714ad55df988185fed55b3eaf9d672b09914adc9820f72c0c472ea76a6c",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/browser-lamp-focus.png",
+      "bytes": 82492,
+      "sha256": "13d353c893e254002e09cac748b06eae57f1d2d645d23a52a72adc74b5795cb7",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/browser-mobile.png",
+      "bytes": 187754,
+      "sha256": "a5b0347815dc0f71dbe21e73fcc8ad251ac16bfeb05347f366b3c27e8f4792c9",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/browser-optics-check.json",
+      "bytes": 19060,
+      "sha256": "09a3f2c937ca4c0c26beb9327a9a772d4bc7018ab76f8413f12f0d8f98c26cbd",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/browser-prism-internal-sample.png",
+      "bytes": 93297,
+      "sha256": "8c060ea4d9c5d2dab252c34c9729c94db3bdee4d5f84737b910293708141747e",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/browser-prism-internal-whole.png",
+      "bytes": 60407,
+      "sha256": "f12dbbfc986e8fa102ec5033af60ae150a10e98bd64d4fdf965f03273e6ba73b",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/browser-prism-surface-sample.png",
+      "bytes": 93087,
+      "sha256": "821eca6a9c16aea9c6f03f9e59c35a6de5d5728d646ec900aace032c7609a9f1",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/browser-prism-surface-whole.png",
+      "bytes": 60665,
+      "sha256": "9d1a6b679932687f92ecd9f7721cfc9409898d725b786a231cd6372d94d60fb9",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/browser-regression.log",
+      "bytes": 4602,
+      "sha256": "e8e9a52911e9b19cafaa89e61c506c6620d355faa83c42ecb937fe5c0f98b25c",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/browser-surface-cabochon.png",
+      "bytes": 88902,
+      "sha256": "695d0837980a606132d4ba85e24fbd2bf44e066d5ac68dd2bb32750989b61d23",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/build.log",
+      "bytes": 8458,
+      "sha256": "268a9cc33a8ca5641c6224dbd089a8e1024ac4de78f3d5733e2902e845af0167",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/intermediate-geometry-check/browser-internal-sample.png",
+      "bytes": 93676,
+      "sha256": "bc4d160c25dd4306ce407a50d99a484909ccc8db073d922dff01b2e048e38651",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/intermediate-geometry-check/browser-internal-whole.png",
+      "bytes": 85139,
+      "sha256": "2bb62ef88d71702adae87846adea78b50cfe99031fd124bb32b4a3a53db9f931",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/intermediate-geometry-check/browser-surface-sample.png",
+      "bytes": 93490,
+      "sha256": "2a0dc4d722f197c7648a4952a6b173ed0877b7cd1d6e664f51d631605e48ac4c",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/intermediate-geometry-check/browser-surface-whole.png",
+      "bytes": 85734,
+      "sha256": "a909a72d638b03613ba2cd8859a6b83fa2e9de020a434faca89f38bd7ad139cc",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/playwright.config.mjs",
+      "bytes": 576,
+      "sha256": "7502a94f2bc78abb2b2d782ed8905a0b14a02a5cac46d15b54d3c4a0f34a7642",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/pre-fix/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/technical-validation.json",
+      "bytes": 2324,
+      "sha256": "92317c5f4146fab6b45db9f1ac82904a4a861f070dc6bc2637a2c9ba68eadfa4",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/pre-fix/docs/分光镜照明与夹样场景-2026-10-10.md",
+      "bytes": 6309,
+      "sha256": "08a26a89ae979425a2e118e4336de910b63ee94e15c885a74b7308bb38427a58",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/pre-fix/public/assets/3d/spectroscope-workbench/simple-v2/manifest.json",
+      "bytes": 9117,
+      "sha256": "d90382ceaccd8e8328325da4914820c47748a6e494954c53bb413b3da0508e09",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/pre-fix/public/assets/3d/spectroscope-workbench/simple-v2/provenance.json",
+      "bytes": 2026,
+      "sha256": "15e4451b6696af90c30bc7df9eba99357512a7bc3f4eb1adb3055533ad074c27",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/pre-fix/src/components/spectroscope/SpectroscopeDemo.tsx",
+      "bytes": 65918,
+      "sha256": "0a9b365d4a9adc355a6cbb479dc8469cff31cefa79163dd6350a2dc828760b96",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/pre-fix/src/components/spectroscope/SpectroscopeIllumination.tsx",
+      "bytes": 14852,
+      "sha256": "391db46ae66af3fff921ee916be4826926d0a1de3e75733a73eadf1cd14921f8",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/pre-fix/src/components/spectroscope3d/SpectroscopePractice3D.tsx",
+      "bytes": 21795,
+      "sha256": "a7cc93ea59d17b9aaadb827d7a81669e6a854866cbf76b8f3023ba47fa2d56ac",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/pre-fix/src/components/spectroscope3d/spectroscopeBenchViewer.ts",
+      "bytes": 32720,
+      "sha256": "4cb9cd0ddf6535bdb8e7b4950ee01e02ec4ba6327a1014dd805eacdc318673ef",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/pre-fix/src/data/instruments.ts",
+      "bytes": 25122,
+      "sha256": "8c9eb1c5a1b76fe6b71b7f1b50f5754b7146442213115a8901341ecd4d5df1d6",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/pre-fix/src/domain/spectroscopeBench.ts",
+      "bytes": 14564,
+      "sha256": "54faa411ed786a3ef3df6ce213ac6e016b641a559d8eb72f3be395ea5c73a071",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/pre-fix/tests/spectroscope-bench.spec.ts",
+      "bytes": 13656,
+      "sha256": "fbdb7d4c593add138725ac1dbd290b0c070a9714f42d9ef690c2e54b7596d7a7",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/pre-fix/tests/unit/spectroscopeBench.test.ts",
+      "bytes": 11685,
+      "sha256": "671adc255d22082b82a6c0bdbdad66d2c5ab6487d8993d43a39a22f8271b783d",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/pre-fix/tools/3d-assets/spectroscope-workbench/build_simple.py",
+      "bytes": 25460,
+      "sha256": "5c6f04eabbcf1a84ae47f51698e2256dfec49298fb783164646c097913a7ac16",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/pre-fix/tools/3d-assets/spectroscope-workbench/verify_simple.mjs",
+      "bytes": 6012,
+      "sha256": "a97ad6a7259793f9c560d73b082e2ddb888fec81b0f279799fe12508ec854de7",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/references/fable-internal.webp",
+      "bytes": 3512,
+      "sha256": "cda82bacd5da5d55185c8621d5f315e5c0f1bb70494c4bcaedb3a6e188d967b0",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/references/fable-realreflection.webp",
+      "bytes": 7458,
+      "sha256": "a2504e4c965089bc811d0fd5ab1be59a11f28a7271bf6e8f948fedba0db8ccef",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/references/fable-surface.webp",
+      "bytes": 3088,
+      "sha256": "15608f7b520efbcc24b365fa8b3c925d0b2f96bc00d718dfb1bdff914632321a",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/references/project-p2.png",
+      "bytes": 289976,
+      "sha256": "5437dfb1577d3016a3c974eff73c59ed32eb193a87f1d492d845a6509e80500c",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/references/project-p8.png",
+      "bytes": 639912,
+      "sha256": "f37a1cbbb9d771cbb0ffd0dc14e956cc77f92cb504aa00d562c1e6f347568e8a",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/references/source-index.json",
+      "bytes": 1105,
+      "sha256": "30948bcc1fe8db15e78ddfaa8e9022e515a5a9358131711d4f3efd1c0e4c4f48",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/references/textbook-p66.png",
+      "bytes": 336694,
+      "sha256": "20b33ce229fe7b2df4704fbf793eb4567069734d3de0dadbbca1699e263190cd",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/review/final-internal-readable-desktop.png",
+      "bytes": 267453,
+      "sha256": "507afbb3ccff36de6815e1e615713cf54292d7d81e9eed83b2c5d3775548524e",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/review/final-internal-readable-mobile.png",
+      "bytes": 203313,
+      "sha256": "f39f17d12e0a8d855760ad62418ca623184537627b2c38dec2c233f53d88a75a",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/review/final-visual-review.json",
+      "bytes": 771,
+      "sha256": "fa4e92b228cf1943406359fd53e9cee89d659dea0bef46d106a8092f5735fb01",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/review/grating-internal-sample.png",
+      "bytes": 259874,
+      "sha256": "0991652c16df2bd6c6d1333943ab8a0e6eb5deba2facd8cc25b596053efd43c2",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/review/grating-internal-whole.png",
+      "bytes": 217364,
+      "sha256": "ee37d1c61e92c72b4158db63b0f813f4d7c2d84f7f8688b1767dc5633d0534d3",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/review/grating-surface-sample.png",
+      "bytes": 260050,
+      "sha256": "5d83c2e754bf17dce98a1d33ed8b11ecbfff31773ab2cfb1839f6b6d0d325a22",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/review/grating-surface-whole.png",
+      "bytes": 218355,
+      "sha256": "e2ba84c12daa191a5c3e042580e40f26849c6053b862d12791deec75e693c116",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/review/grating-transmission.png",
+      "bytes": 207222,
+      "sha256": "7f3e5b5fa1973cbb977f9d8ddb52bc2608df0e3d44c38d1715c4298c1ab50dae",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/review/independent-observations.json",
+      "bytes": 5710,
+      "sha256": "43f96b6ef5b164b434839c5885db005b12a914d6923f04edf1dfe2c83560d288",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/review/mobile-surface-sample.png",
+      "bytes": 200785,
+      "sha256": "4a672bf76b8dd3ab42e76f004dcfedb3ca20f3872ed0b5f9dd1c4d3c9941f291",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/review/prism-internal-sample.png",
+      "bytes": 267943,
+      "sha256": "866c2fe087f5d53949740722c44c9398962486669212ab2ad12d94167ec41933",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/review/prism-internal-whole.png",
+      "bytes": 221594,
+      "sha256": "f0d73bb13fa3e51028e970dded64df6ad6da65d6b0b840ade5417a462afdb1a4",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/review/prism-surface-sample.png",
+      "bytes": 267389,
+      "sha256": "aa84c618cd5c92b4ac55734be6c83e4cf5447d3f9c292af24430a06135db99fb",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/review/prism-surface-whole.png",
+      "bytes": 223063,
+      "sha256": "2c5461d87b9812b0ce3b5425a8ca502b09520c4d0abbae8a036ae63580d914ef",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/review/prism-transmission.png",
+      "bytes": 211684,
+      "sha256": "0f1c5102df9f08a84c2470c14de2b0c55355bd281af53f52621374ccf809158f",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/test-results/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reflection-fix-2026-10-10/unit.log",
+      "bytes": 26904,
+      "sha256": "dab40bed1758635a8d4b873242f82d28351df7870161d7d82cd08771cbb63adf",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/reimport-check.json",
+      "bytes": 196,
+      "sha256": "ce68fa5e63dbd70e352ae57b9a4781de80a6cdb757e8921e06ccdc69754a6c1d",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/sample-shutter.png",
+      "bytes": 2160734,
+      "sha256": "7484ec7a6e13cc38a2da4fdcb0b88b1a6e8cb3f6b165ecb8ae2ca3886412f2bb",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/application-browser.log",
+      "bytes": 4278,
+      "sha256": "0610d3c00f1a8c4b4663549ba78cc98c34bad86beae7050e1e6e2903d7f1d433",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/application-preview-build.log",
+      "bytes": 8296,
+      "sha256": "20515bbd3530fc5e277a9032733a2facd69f924e9e156aefdef9636d624e59ad",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/application-typescript-build.log",
+      "bytes": 3956,
+      "sha256": "9640129e004ff0a6639bde911ec33c3789996b47a2a64e3196bc92aa60be3a85",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/application-unit.log",
+      "bytes": 26421,
+      "sha256": "0a2f1f803562c55d922e1a62522a9d43015ac95cbc7d7cfb5b4ca8f43b31145a",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/application-validation.json",
+      "bytes": 1368,
+      "sha256": "aa2a669412751167ae4bb6bce69ea0d2aaa41213ca0d941b65ca62e823ec6bc0",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/browser-grating-whole.png",
+      "bytes": 108059,
+      "sha256": "c49eed4e2a77325f89b00f28beba969f6fcb5fc2d995ea87211d960118568aa7",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/browser-internal-table-contact.png",
+      "bytes": 218424,
+      "sha256": "7134ec9dc3ad007c94eb92401dee072fb703c7030250702311acd7cd9b0e34d6",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/browser-mobile.png",
+      "bytes": 176394,
+      "sha256": "598bb3d7ee029e4565a90dfecaf49c41f082cf13dea125e9308150a047e6daed",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/browser-prism-whole.png",
+      "bytes": 112392,
+      "sha256": "7232e8ec72bb76b996478ae27edd5531570ee6ed45aa15f06a449e09fc18f85e",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/browser-reflection-lamp-focus.png",
+      "bytes": 142639,
+      "sha256": "e0614be4d0f9ea8c9dd85eda1c678f97ec50a612543427f54f9d46be129b55d4",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/browser-tweezers-contact.png",
+      "bytes": 187116,
+      "sha256": "e377610585ffa8a4352003a87a5f46c0f7fbc8206a1cbf62568b9699f0b27700",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/browser-viewer-check.json",
+      "bytes": 4209,
+      "sha256": "97a6de92d7bc9b7d4abc78d8c3b2a85b22557dca8329c43eec774e6c6bbf581c",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/build.log",
+      "bytes": 18259,
+      "sha256": "863772744897c063545d2a8c59089b309978a3c64ca61d6089cd3e78910bdf29",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/delivery-summary.json",
+      "bytes": 2880,
+      "sha256": "aa2f2fb3959895d9f854b2369d6fbfe36ec37e49252100f9276cfea731046671",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/gltf-validation.json",
+      "bytes": 17856,
+      "sha256": "71a01a52264bd1a4f33296e5cb8ee657bf403be98b39a21a52f7c54ae1d26073",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/light-source.png",
+      "bytes": 2214524,
+      "sha256": "5d1af6fbfb46ae2d784947ebf385d4ec4c9fa15b94e18190807c9e67a956982e",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/mesh-check.json",
+      "bytes": 21734,
+      "sha256": "a8b960b9f9588d9c93515eb89b35a8c1ced272d7ca2feb3ba7f5d1dff89883d9",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/overview.png",
+      "bytes": 2078333,
+      "sha256": "bcd6799527265eb487141cc5bdff7b1bae72cb6186c157f969668bb6d26e8775",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/reflection-table.png",
+      "bytes": 2068489,
+      "sha256": "c9c98fc7e81dbd69d475b12e695bb4dca673807ae667912e4806dfa206b6b59c",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/reimport-check.json",
+      "bytes": 196,
+      "sha256": "65e37cfc5b9316ea37bdb8974160cf426e15e5339a2848fd9bf7505d05c6763f",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/superseded-kruess-style/light-source.png",
+      "bytes": 2338529,
+      "sha256": "c8fea577a04b75e2e6f066c77b86332caad1bce44596893eb1f22cdcf3d78488",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/superseded-kruess-style/manifest.json",
+      "bytes": 8918,
+      "sha256": "968e9f744377636327488c92bc9e075fd394e0f3e49091e7c680abeb294144b7",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/superseded-kruess-style/mesh-check.json",
+      "bytes": 27996,
+      "sha256": "4b06e3c2301725a503fa59502ba734243ca18a19bde10a1395c9a71de1c66f5e",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/superseded-kruess-style/model.glb",
+      "bytes": 1977584,
+      "sha256": "f9f0d607e48a817415c1d40cb536d97056ecfc12c1b0dcb6fb3e2376921c4f72",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/superseded-kruess-style/overview.png",
+      "bytes": 2153480,
+      "sha256": "4a4ccbc85c7f48c5b7a93ff4ff549d565db322278ce70fd28d1615220810c456",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/superseded-kruess-style/provenance.json",
+      "bytes": 1332,
+      "sha256": "4d85ebc987ad8da81be1ad2737b3a4ccaed7aa3ef170afc6cf9d367fe8907ca7",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/superseded-kruess-style/reflection-table.png",
+      "bytes": 2168551,
+      "sha256": "e37196d5b710da84cf139175b08af15f9b300f43547c1f41ca0ca8cdc10a7faa",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/superseded-kruess-style/reimport-check.json",
+      "bytes": 196,
+      "sha256": "7281f73cbfe3d2a0d95b9d0b9ec6d193a47664a3a9ed39067a1f3aaf766ba9c5",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/superseded-kruess-style/tweezers.png",
+      "bytes": 2147206,
+      "sha256": "3486e58669f0f4a05430dfaf3d58f9bd02e25c9444cd389c3509b49ab61d093b",
+      "groups": [
+        "legacy"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/technical-validation.json",
+      "bytes": 2315,
+      "sha256": "794c4e2e6f0f8446a99935d9b1f30c3273d2ee4b7af36ce35b16b8b8a4b3bffe",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/simple-v2/tweezers.png",
+      "bytes": 2073430,
+      "sha256": "51741e623a64c1f621a2604847e7d7cd0bd981ce5d3c7dcf464210ba0ae28626",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/technical-validation.json",
+      "bytes": 2068,
+      "sha256": "ea4109de1fc6726c6f9b2cad94fbadd38ffbae4a3c22848b26c6070cca906559",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/top.png",
+      "bytes": 1873583,
+      "sha256": "dff7eb7ed3400836b12eeb44a90796959cae7e17224c13be8b01a4020ff8e4b9",
+      "groups": [
+        "current-rebuild"
+      ]
+    },
+    {
+      "path": "gem-lab/assets-source/spectroscope-workbench/2026-10-10/validation/visual-review.md",
+      "bytes": 1192,
+      "sha256": "db8268abf7dc99ae84531a6edc6635938bd111db569d01f3ddaad38a780d7163",
+      "groups": [
+        "current-rebuild"
+      ]
+    }
+  ]
+}

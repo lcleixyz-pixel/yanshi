@@ -1,0 +1,119 @@
+/* 仿真外壳（PhET 风格）：操作区为主、控制面板贴右侧、底部屏幕导航。颜色取 instrument-ui.css 设计变量，主色随仪器。 */
+.sim-shell {
+  --sim-reset: #f08a24;
+  --sim-reset-edge: #c86a12;
+  --sim-bar: #1a2332;
+  --sim-bar-ink: #c8d3e2;
+  --sim-play: #f7faff;
+  height: 100dvh;
+  min-height: 560px;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+.sim-shell button { cursor: pointer; }
+
+.sim-shell__top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 16px; border-bottom: 1px solid var(--iu-line); background: #fff; }
+.sim-shell__name { display: flex; align-items: baseline; gap: 10px; }
+.sim-shell__name strong { font-size: 16px; font-weight: 500; }
+.sim-shell__name span { color: var(--iu-muted); font-size: 12px; }
+
+.sim-shell__main { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 256px; gap: 10px; padding: 10px; min-height: 0; }
+.sim-shell__play { position: relative; min-width: 0; min-height: 0; overflow: hidden; border: 1px solid var(--iu-line); border-radius: 10px; background: radial-gradient(120% 90% at 40% 30%, #fff, var(--sim-play)); }
+.sim-shell__panels { display: grid; gap: 8px; align-content: start; min-width: 0; min-height: 0; overflow: auto; }
+.sim-shell .sim-shell__controls-toggle { display: none; }
+
+.sim-shell__screens { position: relative; display: flex; justify-content: center; align-items: center; gap: 6px; padding: 6px 12px calc(6px + env(safe-area-inset-bottom, 0px)); background: var(--sim-bar); }
+.sim-shell .sim-shell__screen { display: grid; justify-items: center; gap: 1px; min-width: 64px; padding: 4px 12px; border: 2px solid transparent; border-radius: 8px; color: var(--sim-bar-ink); background: transparent; font-size: 11px; }
+.sim-shell .sim-shell__screen svg { width: 34px; height: 22px; }
+.sim-shell .sim-shell__screen[aria-current="page"] { border-color: var(--iu-accent); color: #fff; }
+.sim-shell .sim-shell__screen:hover:not([aria-current]) { color: #fff; }
+.sim-shell__home { position: absolute; right: 16px; display: flex; gap: 4px; align-items: center; color: var(--sim-bar-ink); font-size: 12px; text-decoration: none; }
+.sim-shell__home:hover { color: #fff; }
+.sim-shell__screens :focus-visible { outline-color: #fff; }
+
+/* 面板 */
+.sim-panel { border: 1px solid var(--iu-line); border-radius: 9px; background: #fff; }
+.sim-panel h3 { margin: 0; }
+.sim-panel h3 button { display: flex; width: 100%; align-items: baseline; gap: 6px; padding: 8px 11px; border: 0; background: transparent; color: var(--iu-ink); font-size: 12px; font-weight: 500; text-align: left; }
+.sim-panel h3 small { color: var(--iu-muted); font-weight: 400; font-size: 11px; }
+.sim-panel h3 i { margin-left: auto; color: var(--iu-faint); font-style: normal; }
+.sim-panel__body { display: grid; gap: 8px; padding: 0 11px 10px; font-size: 12px; }
+.sim-checks { display: grid; gap: 5px; padding: 2px 4px; font-size: 12px; }
+.sim-checks label { display: flex; align-items: center; gap: 7px; }
+.sim-shell .sim-reset { justify-self: end; width: 44px; height: 44px; border: 0; border-radius: 50%; color: #fff; background: var(--sim-reset); box-shadow: 0 2px 0 var(--sim-reset-edge); font-size: 22px; line-height: 1; }
+.sim-shell .sim-reset:active { transform: translateY(1px); box-shadow: 0 1px 0 var(--sim-reset-edge); }
+
+/* 读数框 */
+.sim-readout { position: absolute; z-index: 3; width: min(380px, 60%); border: 1px solid var(--iu-line-2); border-radius: 9px; background: #fff; box-shadow: 0 6px 16px #1a233214; }
+.sim-readout--bottom-left { left: 12px; bottom: 12px; }
+.sim-readout--top-right { right: 12px; top: 12px; width: min(220px, 45%); }
+.sim-shell .sim-readout__head { display: flex; width: 100%; align-items: baseline; gap: 8px; padding: 7px 10px; border: 0; background: transparent; color: var(--iu-ink); font-size: 12px; text-align: left; }
+.sim-shell .sim-readout__head strong { font-weight: 500; }
+.sim-shell .sim-readout__head span { color: var(--iu-muted); font-size: 11px; }
+.sim-shell .sim-readout__head i { margin-left: auto; color: var(--iu-faint); font-style: normal; }
+.sim-readout__body { display: grid; gap: 6px; padding: 0 10px 9px; font-size: 12px; }
+/* 收起读数框要真的收起来：display 覆盖了 hidden 属性，需要显式声明（否则卡片仍挡住操作区）。 */
+.sim-readout__body[hidden] { display: none; }
+
+/* 工具箱与放置位 */
+.sim-toolbox { position: absolute; z-index: 3; right: 12px; bottom: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; max-width: calc(100% - 24px); padding: 6px; border: 1px solid var(--iu-line); border-radius: 10px; background: #fff; }
+.sim-shell .sim-tool { display: grid; justify-items: center; gap: 2px; width: 54px; padding: 4px 0; border: 1px solid transparent; border-radius: 7px; color: var(--iu-muted); background: transparent; font-size: 11px; }
+.sim-shell .sim-tool[aria-pressed="true"] { border-color: var(--iu-accent-strong); color: var(--iu-accent-ink); background: var(--iu-accent-soft); }
+.sim-shell .sim-tool:disabled { opacity: .4; cursor: default; }
+.sim-shell .sim-tool span { font-size: 18px; line-height: 1.2; }
+.sim-toolbox__hint { flex-basis: 100%; color: var(--iu-accent-ink); font-size: 11px; text-align: center; }
+.sim-shell .sim-dropzone { display: grid; place-items: center; min-width: 96px; min-height: 64px; padding: 6px 10px; border: 2px dashed var(--iu-line-2); border-radius: 10px; color: var(--iu-muted); background: #ffffffb3; font-size: 12px; }
+.sim-shell .sim-dropzone[data-armed="true"], .sim-shell .sim-dropzone[data-over="true"] { border-color: var(--iu-accent-strong); color: var(--iu-accent-ink); background: var(--iu-accent-soft); }
+.sim-shell .sim-dropzone:disabled { cursor: default; }
+
+/* 引导任务 */
+.sim-task { position: absolute; z-index: 4; left: 12px; top: 12px; width: min(290px, 60%); display: grid; gap: 6px; padding: 9px 11px; border: 1px solid var(--iu-line-2); border-left: 3px solid var(--iu-accent-strong); border-radius: 8px; background: #fff; box-shadow: 0 6px 16px #1a233214; font-size: 12px; }
+.sim-task header { display: flex; justify-content: space-between; align-items: center; color: var(--iu-muted); font-size: 11px; }
+.sim-shell .sim-task header button, .sim-shell .sim-task__restart { border: 0; background: transparent; color: var(--iu-muted); font-size: 11px; padding: 0; }
+.sim-shell .sim-task header button:hover, .sim-shell .sim-task__restart:hover { color: var(--iu-accent-ink); }
+.sim-task strong { font-size: 13px; font-weight: 500; }
+.sim-task ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.sim-task li { display: flex; gap: 6px; }
+.sim-task li[data-done="true"] { color: var(--iu-success); }
+.sim-shell .sim-task__restart { justify-self: start; text-decoration: underline; text-underline-offset: 2px; }
+.sim-shell .sim-task-line { position: absolute; z-index: 4; left: 12px; top: 12px; display: flex; align-items: center; gap: 8px; max-width: calc(100% - 24px); padding: 6px 12px; border: 1px solid var(--iu-line-2); border-left: 3px solid var(--iu-accent-strong); border-radius: 999px 8px 8px 999px; background: #fff; color: var(--iu-ink); font-size: 12px; }
+.sim-shell .sim-task-line span { color: var(--iu-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sim-shell .sim-task-line i { font-style: normal; color: var(--iu-accent-ink); }
+
+/* 记录面板（操作区内） */
+.sim-sheet { position: absolute; z-index: 3; right: 12px; top: 12px; width: min(360px, 56%); max-height: calc(100% - 24px); overflow: auto; border: 1px solid var(--iu-line-2); border-radius: 9px; background: #fff; box-shadow: 0 6px 16px #1a233214; font-size: 12px; }
+.sim-sheet header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 7px 10px; border-bottom: 1px solid var(--iu-line); }
+.sim-sheet header strong { font-weight: 500; }
+.sim-shell .sim-sheet header button { border: 0; background: transparent; color: var(--iu-muted); font-size: 11px; }
+.sim-sheet__body { display: grid; gap: 7px; padding: 9px 10px; }
+
+/* 占位屏（迁移中） */
+.sim-placeholder { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 10px; padding: 70px 24px 90px; text-align: center; }
+.sim-placeholder h2 { margin: 0; font-size: 17px; font-weight: 500; }
+.sim-placeholder p { margin: 0; max-width: 46ch; color: var(--iu-muted); font-size: 13px; }
+.sim-placeholder nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.sim-placeholder__stage { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.sim-placed { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; background: var(--iu-accent-soft); color: var(--iu-accent-ink); font-size: 12px; }
+
+@media (max-width: 680px) {
+  .sim-shell { min-height: 0; }
+  .sim-shell__top { padding: 6px 12px; }
+  .sim-shell__main { grid-template-columns: 1fr; padding: 8px; }
+  /* 控制面板收为底部抽屉；切换按钮浮在操作区右下。 */
+  .sim-shell .sim-shell__controls-toggle { display: block; position: absolute; z-index: 8; right: 16px; bottom: 16px; padding: 8px 14px; border: 1px solid var(--iu-line-2); border-radius: 999px; background: #fff; color: var(--iu-ink); font-size: 12px; box-shadow: 0 4px 12px #1a233218; }
+  .sim-shell__panels { position: absolute; z-index: 5; left: 0; right: 0; bottom: 0; max-height: 62%; padding: 12px 12px 60px; border-top: 1px solid var(--iu-line); border-radius: 14px 14px 0 0; background: var(--iu-paper); box-shadow: 0 -8px 24px #1a23321a; }
+  .sim-shell__panels[data-open="false"] { display: none; }
+  .sim-shell .sim-shell__screen { min-width: 56px; padding: 3px 8px; }
+  .sim-shell__home { right: 10px; font-size: 11px; }
+  .sim-readout, .sim-readout--top-right { width: auto; left: 8px; right: 8px; }
+  .sim-readout--bottom-left { bottom: 64px; }
+  .sim-toolbox { left: 8px; right: auto; bottom: 8px; }
+  .sim-shell .sim-task-line { left: 8px; right: 8px; top: 8px; }
+  /* 引导任务与记录都收为底部抽屉；被后打开的抽屉压住的那个隐藏（收起不是卸载，输入与进度都保留）。 */
+  .sim-task { left: 0; right: 0; top: auto; bottom: 0; width: auto; max-height: 70%; overflow: auto; border-left: 0; border-top: 3px solid var(--iu-accent-strong); border-radius: 14px 14px 0 0; padding: 12px 14px 16px; z-index: 7; }
+  .sim-sheet { left: 0; right: 0; top: auto; bottom: 0; width: auto; max-height: 70%; border-radius: 14px 14px 0 0; border-top: 3px solid var(--iu-accent-strong); box-shadow: 0 -8px 24px #1a23321a; z-index: 7; }
+  .sim-shell__panels[data-suppressed="true"],
+  .sim-task[data-suppressed="true"],
+  .sim-sheet[data-suppressed="true"] { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .sim-reset:active { transform: none; } }

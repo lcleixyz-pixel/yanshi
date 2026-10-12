@@ -679,6 +679,15 @@ test('polariscope learning mode uses a live use state with direct stage rotation
     .poll(() => page.getByTestId('polariscope-live-observation').getAttribute('data-stage-angle'))
     .not.toBe(initialStageAngle);
   await expect(page.getByTestId('polariscope-live-progress')).toContainText(/已见|继续旋转/);
+  // 还没转满一周：提示累计角度，完成按钮不可用。
+  await expect(page.getByTestId('polariscope-sweep-progress')).toContainText('/ 360°');
+  await expect(page.getByRole('button', { name: '完成本轮观察' })).toBeDisabled();
+  const ringAt = (deg: number) => ({ x: stageCenter.x + Math.sin((deg * Math.PI) / 180) * stageDragRadius, y: stageCenter.y - Math.cos((deg * Math.PI) / 180) * stageDragRadius });
+  await page.mouse.move(ringAt(180).x, ringAt(180).y);
+  await page.mouse.down();
+  for (let deg = 190; deg <= 400; deg += 10) await page.mouse.move(ringAt(deg).x, ringAt(deg).y);
+  await page.mouse.up();
+  await expect(page.getByTestId('polariscope-sweep-progress')).toHaveCount(0);
   await page.getByRole('button', { name: '完成本轮观察' }).click();
   await expect(page.getByTestId('polariscope-result-summary-state')).toBeVisible();
   await expect(page.getByTestId('polariscope-focus-transition')).toHaveCount(0);
@@ -757,8 +766,14 @@ test('polariscope learning mode treats opaque samples as transmitted-light not a
   await expect(page.getByRole('button', { name: '完成本轮观察' })).toBeEnabled();
 });
 
+test('polariscope learning mode requires a full turn before the observation can be completed', async ({ page }) => {
+  await enterPolariscopeLiveUse(page, 'tourmaline', 90, false);
+  // 只转了 90°：已能看到亮位和暗位，但步骤要求旋转 360°，还不能完成。
+  await expect(page.getByRole('button', { name: '完成本轮观察' })).toBeDisabled();
+});
+
 test('polariscope learning mode explains isotropic samples as continuously dark', async ({ page }) => {
-  await enterPolariscopeLiveUse(page, 'garnet', 90);
+  await enterPolariscopeLiveUse(page, 'almandine', 90);
 
   await expect(page.getByTestId('polariscope-live-observation')).toHaveAttribute(
     'data-sample-shape',
@@ -792,7 +807,8 @@ test('polariscope learning mode maps cabochon samples to oval silhouettes', asyn
   await expect(page.getByTestId('polariscope-phenomenon-status')).not.toContainText('持续亮');
 });
 
-async function enterPolariscopeLiveUse(page: Page, sampleId: string, stageAngle = 45) {
+/** 进入「边转边看」并沿圆环拖动载物台：先转满一周（学习模式的完成门槛），最后停在 stageAngle。 */
+async function enterPolariscopeLiveUse(page: Page, sampleId: string, stageAngle = 45, fullTurn = true) {
   await page.goto('/demo/polariscope');
   await page.locator('select').selectOption(sampleId);
   await page.getByTestId('polariscope-start-learning').click();
@@ -819,13 +835,15 @@ async function enterPolariscopeLiveUse(page: Page, sampleId: string, stageAngle 
     y: stageBox!.y + stageBox!.height / 2,
   };
   const stageDragRadius = stageBox!.width * 0.42;
-  await page.mouse.move(stageCenter.x, stageCenter.y - stageDragRadius);
+  const at = (deg: number) => ({
+    x: stageCenter.x + Math.sin((deg * Math.PI) / 180) * stageDragRadius,
+    y: stageCenter.y - Math.cos((deg * Math.PI) / 180) * stageDragRadius,
+  });
+  await page.mouse.move(at(0).x, at(0).y);
   await page.mouse.down();
-  await page.mouse.move(
-    stageCenter.x + Math.sin((stageAngle * Math.PI) / 180) * stageDragRadius,
-    stageCenter.y - Math.cos((stageAngle * Math.PI) / 180) * stageDragRadius,
-    { steps: 8 },
-  );
+  const total = (fullTurn ? 360 : 0) + stageAngle;
+  for (let deg = 10; deg < total; deg += 10) await page.mouse.move(at(deg).x, at(deg).y);
+  await page.mouse.move(at(total).x, at(total).y);
   await page.mouse.up();
 }
 

@@ -67,6 +67,13 @@ export const STEP_SHORT: Record<StepId, string> = {
   parts: '认识部件', path: '跟随光路', light: '对光与照明', tune: '调节与对准', observe: '标记吸收特征', explain: '解释与适用条件',
 };
 
+/** 问答题在任务卡里的短标题（「检查一下」条目）。 */
+export const QUESTION_SHORT: Record<string, string> = {
+  dispersion: '光谱怎样形成', continuous: '连续光谱说明什么', slit: '狭缝过宽会怎样',
+  dark: '透光太弱怎么处理', grating: '光栅式有何不同', evidence: '能下什么结论',
+  diffraction: '光栅式光谱怎样形成', fixed: '偏暗先怎么做', scale: '两种刻度有何不同',
+};
+
 /** 每个机型当前机型的步骤表（供任务卡与屏内指引共用）。 */
 export const stepsOf = (variant: CourseVariant) => COURSE_CONFIG[variant].steps;
 

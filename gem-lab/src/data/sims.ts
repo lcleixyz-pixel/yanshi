@@ -38,9 +38,9 @@ export const SIMS: Record<SimId, SimDef> = {
     ],
   },
   spectroscope: {
-    id: 'spectroscope', name: '分光镜', migrated: [],
+    id: 'spectroscope', name: '分光镜', migrated: ['learn'],
     screens: [
-      { id: 'learn', summary: '棱镜式与光栅式的结构和光路，屏内切换机型。', current: [{ label: '棱镜式 3D', to: '/explore/optics/prism-spectroscope' }, { label: '光栅式 3D', to: '/explore/optics/grating-spectroscope' }] },
+      { id: 'learn', summary: '结构与光路：棱镜式与光栅式屏内切换、部件名称、单色光路与引导任务前两步。', current: [] },
       { id: 'lab', summary: '照明、夹样、调节与观察记录；可换机型、样品与观察方式。', current: [{ label: '照明与夹样练习', to: '/explore/spectroscope-bench' }, { label: '棱镜式观察课', to: '/explore/optics/prism-spectroscope?course=basic&mode=student' }, { label: '光栅式观察课', to: '/explore/optics/grating-spectroscope?course=basic&mode=student' }] },
       { id: 'challenge', summary: '抽未知样品独立观察并记录吸收特征。', current: [{ label: '综合检测', to: '/detection' }] },
     ],

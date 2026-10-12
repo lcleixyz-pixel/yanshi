@@ -198,6 +198,10 @@ export interface CourseView {
   progress: { done: number; total: number };
   /** 本屏的步骤是否都已做完。 */
   screenDone: boolean;
+  /** 六个步骤全部完成（可以完成课程并写入学习进度）。 */
+  allComplete: boolean;
+  /** 下一处未完成步骤所在的其他屏幕（本屏做完了才用得上）。 */
+  nextScreen: SimScreenId | null;
 }
 
 /** 任务卡要显示的一切：本屏当前步骤、清单、检查一下与总进度。 */
@@ -215,9 +219,38 @@ export function courseView(task: SpectroscopeTaskData, scene: LabScene, machine:
     questions: questionIds.map((id) => ({ id, label: QUESTION_SHORT[id] ?? id, done: state.answers[id] === QUESTIONS.find((q) => q.id === id)?.correct })),
     progress: { done: config.steps.filter((item) => isComplete(merged, item.id)).length, total: config.steps.length },
     screenDone: own.every((item) => isComplete(merged, item.id)),
+    allComplete: allComplete(merged),
+    nextScreen: config.steps.filter((item) => STEP_SCREEN[item.id] !== screen && !isComplete(merged, item.id)).map((item) => STEP_SCREEN[item.id])[0] ?? null,
   };
 }
 
 /** 引导任务里固定使用的教学样品与观察方式（与课程页一致）。 */
 export const courseSample = (): SampleDef => COURSE_SAMPLE;
 export { STEP_SCREEN, STEP_SHORT };
+
+/** 会话选项里的机型；未设置或不认识时为棱镜式。 */
+export const readMachine = (options: Record<string, unknown> | undefined): Machine => isMachine(options?.machine) ? options.machine : 'prism';
+
+/**
+ * 进入仿真时的初始状态：从地址读机型、样品、观察方法、讲师 / 学员与步骤（深链只在进入时生效一次）。
+ * 直达中间步骤与课程页一致记为跳步（当轮不写入学习进度）。
+ */
+export function spectroscopeInitial(search: URLSearchParams) {
+  const machine = isMachine(search.get('machine')) ? search.get('machine') as Machine : 'prism';
+  const methodParam = search.get('method');
+  const method: BenchMethod = methodParam && methodParam in BENCH_METHOD_LABELS ? methodParam as BenchMethod : 'transmission';
+  const sampleParam = search.get('sample');
+  const sampleId = SAMPLES.some((item) => item.id === sampleParam) ? sampleParam! : 'ruby';
+  const modeParam = search.get('mode');
+  const mode: CourseMode | null = modeParam === 'student' || modeParam === 'teacher' ? modeParam : null;
+  const stepParam = search.get('step');
+  const stepIndex = isStepId(stepParam) ? STEP_IDS.indexOf(stepParam) : -1;
+  const task = emptyTaskData();
+  task.mode = mode;
+  if (stepIndex >= 0) { task.step = stepParam as StepId; task.hasSkipped = stepIndex > 0; }
+  return {
+    scenes: { learn: LEARN_INITIAL, lab: labInitial(machine, sampleId, method), challenge: labInitial(machine, sampleId, method) },
+    options: { machine },
+    taskData: task as unknown as Record<string, unknown>,
+  };
+}

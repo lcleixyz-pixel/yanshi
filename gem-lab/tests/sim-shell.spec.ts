@@ -20,33 +20,33 @@ test("仿真地址：未写屏幕时进入第一块屏幕，底部导航标出�
 });
 
 test("换屏保留各屏场景与任务进度；全部重置只恢复当前屏；工具可拖入或点选后放置", async ({ page }) => {
-  await page.goto("/sim/spectroscope/learn");
+  await page.goto("/sim/refractometer/learn");
   // 点选工具 → 点放置位（拖动替代）。
-  await page.getByTestId("sim-tool-sample").click();
-  await expect(page.getByTestId("sim-toolbox")).toContainText("点操作区放置「样品」");
+  await page.getByTestId("sim-tool-liquid").click();
+  await expect(page.getByTestId("sim-toolbox")).toContainText("点操作区放置「接触液」");
   await page.getByTestId("sim-drop").click();
-  await expect(page.getByTestId("sim-placed-sample")).toBeVisible();
-  await expect(page.getByTestId("sim-tool-sample")).toBeDisabled();
+  await expect(page.getByTestId("sim-placed-liquid")).toBeVisible();
+  await expect(page.getByTestId("sim-tool-liquid")).toBeDisabled();
   await page.getByTestId("sim-check-names").check();
   // 切到实验屏：URL 更新，实验屏是自己的初始场景。
   await page.getByTestId("sim-screen-lab").click();
-  await expect(page).toHaveURL(/\/sim\/spectroscope\/lab$/);
-  await expect(page.getByTestId("sim-placed-sample")).toHaveCount(0);
+  await expect(page).toHaveURL(/\/sim\/refractometer\/lab$/);
+  await expect(page.getByTestId("sim-placed-liquid")).toHaveCount(0);
   await expect(page.getByTestId("sim-check-names")).not.toBeChecked();
-  await page.getByTestId("sim-tool-tweezers").dragTo(page.getByTestId("sim-drop"));
-  await expect(page.getByTestId("sim-placed-tweezers")).toBeVisible();
+  await page.getByTestId("sim-tool-sample").dragTo(page.getByTestId("sim-drop"));
+  await expect(page.getByTestId("sim-placed-sample")).toBeVisible();
   await expect(page.getByTestId("sim-task")).toContainText("引导任务 · 3 / 3");
   // 回到认识屏：场景还在。
   await page.getByTestId("sim-screen-learn").click();
-  await expect(page.getByTestId("sim-placed-sample")).toBeVisible();
+  await expect(page.getByTestId("sim-placed-liquid")).toBeVisible();
   await expect(page.getByTestId("sim-check-names")).toBeChecked();
   // 全部重置只恢复认识屏；任务进度与实验屏不受影响。
   await page.getByTestId("sim-reset").click();
-  await expect(page.getByTestId("sim-placed-sample")).toHaveCount(0);
+  await expect(page.getByTestId("sim-placed-liquid")).toHaveCount(0);
   await expect(page.getByTestId("sim-check-names")).not.toBeChecked();
   await expect(page.getByTestId("sim-task")).toContainText("引导任务 · 3 / 3");
   await page.getByTestId("sim-screen-lab").click();
-  await expect(page.getByTestId("sim-placed-tweezers")).toBeVisible();
+  await expect(page.getByTestId("sim-placed-sample")).toBeVisible();
 });
 
 test("收起任务卡只隐藏、进度保留；重新开始任务只清任务，场景不动", async ({ page }) => {

@@ -262,8 +262,9 @@ test("光栅式引导任务学员：固定狭缝焦距，靠亮度与对准排�
   for (const wl of [694, 580, 476]) await mark(page, wl, "grating");
   await openRecord(page);
   await review(page);
-  await expect(page.getByTestId("marks-feedback")).toContainText("找到 3 组诊断特征");
+  await expect(page.getByTestId("marks-feedback")).toHaveCount(0);
   await page.getByTestId("sim-record-save").click();
+  await expect(page.getByTestId("marks-feedback")).toContainText("找到 3 组诊断特征");
   await page.getByTestId("sim-record-close").click();
   await expect(task(page)).toContainText("解释与适用条件");
   await expect(page.getByTestId("scale-comparison")).toBeVisible();
@@ -297,7 +298,7 @@ test("跳步后不能完成课程：直达解释步做完也不给完成课程",
   await expect(page.getByTestId("sim-task-finish")).toHaveCount(0);
 });
 
-test("棱镜视场里 694 / 692 看成一条细线；核对不足三组时给出口径说明", async ({ page }) => {
+test("棱镜视场里 694 / 692 看成一条细线；保存不足三组的观察后给出口径说明", async ({ page }) => {
   await page.goto(`${route}?mode=student&step=observe`);
   await expect(canvas(page)).toHaveAttribute("data-loaded", "true", { timeout: 60_000 });
   await page.getByTestId("sim-bench-place").click();
@@ -306,9 +307,11 @@ test("棱镜视场里 694 / 692 看成一条细线；核对不足三组时给出
   await mark(page, 694);
   await mark(page, 530);
   await openRecord(page);
-  // 核对前不给答案；核对后才给出分组与「附近没有吸收特征」。
+  // 核对只预览自己的输入，确认保存后才给出分组与「附近没有吸收特征」。
   await expect(page.getByTestId("marks-feedback")).toHaveCount(0);
   await review(page);
+  await expect(page.getByTestId("marks-feedback")).toHaveCount(0);
+  await page.getByTestId("sim-record-save").click();
   await expect(page.getByTestId("marks-feedback")).toContainText("至少需要 3 组");
   await expect(page.getByTestId("marks-feedback")).toContainText("附近没有吸收特征");
   await page.getByTestId("sim-record-close").click();

@@ -112,6 +112,22 @@ test('opening ?course=basic directly starts the course at step 1, and exit resto
   await expect(page.getByTestId('explore-lesson-components')).toBeVisible();
 });
 
+test('changing orientation stops the previous turn and requires a fresh full observation', async ({ page }) => {
+  await page.goto(polariscopeUrl('/explore/polariscope?lesson=sample'));
+  await expect(scene(page)).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
+  await page.getByTestId('sample-demo-mode').click();
+  const rotation = page.getByTestId('sample-auto-rotate');
+  await rotation.click();
+  await expect(rotation).toHaveText('停止转动');
+  await page.getByTestId('sample-orientation').click();
+  // 换方向应立即结束旧一轮，不能等它自然转完（约 9 秒）。
+  await expect(rotation).toHaveText('自动转动一周', { timeout: 1_500 });
+  await expect(page.getByTestId('sample-reveal')).toHaveCount(0);
+  await rotation.click();
+  await expect(rotation).toHaveText('停止转动');
+  await expect(page.getByTestId('sample-reveal')).toHaveAttribute('data-observation', 'axis-dark', { timeout: 20_000 });
+});
+
 test('course in projection mode keeps the step bar and its controls usable', async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
   await page.goto(polariscopeUrl('/explore/polariscope?course=basic'));

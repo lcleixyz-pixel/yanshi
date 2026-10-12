@@ -18,9 +18,9 @@ export interface SpectroscopeRecordProps {
   saved: SavedRecord | null;
   /** 三维工作台已就绪，才允许记录。 */
   ready: boolean;
-  /** 引导任务进行中：核对时给出本课诊断特征分组，并记课程核对。 */
+  /** 引导任务进行中：确认保存有效观察后给出本课诊断特征分组。 */
   guided?: boolean;
-  /** 已经核对过本步（课程 observe 步的核对）：核对前不显示分组与参考，避免提前看到答案。 */
+  /** 兼容课程核对状态；仅核对不开放参考，参考门禁以有效的已保存记录为准。 */
   reviewed?: boolean;
   /** 记录里写的样品名；未知样品（挑战屏）不传，等于不写品种。 */
   sampleName?: string;
@@ -43,7 +43,7 @@ export interface SpectroscopeRecordProps {
  * 条件一变旧记录保留但标为过期，调回原设置也不会自动恢复确认（同练习页）。
  */
 export default function SpectroscopeRecord(props: SpectroscopeRecordProps) {
-  const { onClose, state, evaluation, marks, bands, noAbsorption, notes, saved, ready, guided, reviewed, sampleName, onAddMark, onRemoveMark, onAddBand, onRemoveBand, onNoAbsorption, onNotes, onReview, onSave, reference } = props;
+  const { onClose, state, evaluation, marks, bands, noAbsorption, notes, saved, ready, guided, sampleName, onAddMark, onRemoveMark, onAddBand, onRemoveBand, onNoAbsorption, onNotes, onReview, onSave, reference } = props;
   const [line, setLine] = useState('');
   const [bandStart, setBandStart] = useState('');
   const [bandEnd, setBandEnd] = useState('');
@@ -52,6 +52,8 @@ export default function SpectroscopeRecord(props: SpectroscopeRecordProps) {
   const mayObserve = evaluation.canRecord && ready;
   const canSave = canSaveRecord(input, ready);
   const pending = evaluation.recordStatus === 'unverified' || evaluation.recordStatus === 'setup-only';
+  // 核对只预览本次输入；确认保存才开放答案。条件改变会让旧记录过期并重新锁住参考。
+  const referenceUnlocked = !!saved && !saved.stale && !saved.pending;
   const review = () => { onReview?.(); setConfirming(true); };
   const save = () => { onSave(recordData(input)); setConfirming(false); };
   const found = checkMarks(marks);
@@ -89,7 +91,7 @@ export default function SpectroscopeRecord(props: SpectroscopeRecordProps) {
       )}
       <label className="sim-record__notes" htmlFor="sim-record-notes">补充说明</label>
       <textarea id="sim-record-notes" rows={2} value={notes} onChange={(event) => { onNotes(event.target.value); setConfirming(false); }} placeholder="例如蓝紫区较暗、弱带不确定，或需要换向复核…" data-testid="sim-record-notes" />
-      {guided && reviewed && (
+      {guided && referenceUnlocked && (
         <div className="sim-record__groups" data-testid="marks-feedback">
           <strong>{found.foundCount >= REQUIRED_GROUPS ? `找到 ${found.foundCount} 组诊断特征` : `找到 ${found.foundCount} 组，至少需要 ${REQUIRED_GROUPS} 组`}</strong>
           <ul>{FEATURE_GROUPS.map((group, index) => <li key={group.label}>{found.found[index] ? '✓' : '○'} {group.label}</li>)}</ul>
@@ -119,7 +121,7 @@ export default function SpectroscopeRecord(props: SpectroscopeRecordProps) {
           {saved.stale && <p>请重新观察；调回原设置也不会自动确认旧结果。</p>}
         </div>
       )}
-      {saved && !saved.stale && !saved.pending && reference}
+      {referenceUnlocked && reference}
     </SimSheet>
   );
 }

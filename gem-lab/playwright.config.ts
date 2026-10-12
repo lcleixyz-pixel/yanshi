@@ -1,8 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-import { existsSync } from 'node:fs';
 
-const useLocalChrome =
-  !process.env.CI && existsSync('/Applications/Google Chrome.app');
 const useMesa = process.env.CI_WEBGL_BACKEND === 'mesa';
 
 export default defineConfig({
@@ -32,8 +29,9 @@ export default defineConfig({
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        // Use regular Chromium's new headless mode in CI, closer to local Chrome.
-        channel: useLocalChrome ? 'chrome' : 'chromium',
+        // Use Playwright's matching Chromium locally and in CI (new headless mode).
+        // System Chrome on macOS can leave crashpad holding stderr open, blocking teardown.
+        channel: 'chromium',
         // Xvfb + Mesa exercises the same WebGL app without SwiftShader's
         // severe vertex-throughput bottleneck on the hosted Linux runner.
         headless: !useMesa,

@@ -364,6 +364,11 @@ export default function PolariscopeExplorePage() {
     update({ principleExample: example, ...(example === 'half-wave' ? { analyzerAngle: 90, stageAngle: 0 } : {}) });
   };
   const chooseSample = (id: string) => { setAutoRotate(false); update({ sampleId: id, orientation: state.lesson === 'conoscope' ? 'optic-axis' : 'general', strain: null, stageAngle: 0, conoscopeInserted: false, brazilTwin: false }); };
+  const changeOrientation = (orientation: PolariscopeStructureState['orientation']) => {
+    // 换方向后必须重新转一周，不能沿用旧动画的剩余转角。
+    setAutoRotate(false);
+    update({ orientation });
+  };
   const runAdrCheck = () => {
     if (!fieldMap || !optics.active) return;
     const result = parallelCheck(profile, settings, fieldMap);
@@ -456,7 +461,7 @@ export default function PolariscopeExplorePage() {
           <LessonTabs value={state.lesson} onChange={changeLesson} />
         </div>}
       </section>
-      {courseActive && <CourseGuide step={courseStep} reached={courseReached} progress={courseProgress} onStep={changeCourseStep} onFinish={finishCourse} onExit={exitCourse} onPickSample={chooseSample} onReorient={state.lesson === 'sample' && state.orientation === 'optic-axis' ? () => update({ orientation: 'general' }) : null} mode={studentMode ? 'student' : 'teacher'} onMode={changeCourseMode} />}
+      {courseActive && <CourseGuide step={courseStep} reached={courseReached} progress={courseProgress} onStep={changeCourseStep} onFinish={finishCourse} onExit={exitCourse} onPickSample={chooseSample} onReorient={state.lesson === 'sample' && state.orientation === 'optic-axis' ? () => changeOrientation('general') : null} mode={studentMode ? 'student' : 'teacher'} onMode={changeCourseMode} />}
       <div className="pol-explore__workbench">
         <aside className="pol-explore__parts" aria-label="教学目录">
           {state.lesson === 'components' ? <>
@@ -492,7 +497,7 @@ export default function PolariscopeExplorePage() {
               brightness={sampleBrightness} active={optics.active} crossed={crossed} autoRotate={autoRotate} onAutoRotate={() => setAutoRotate(!autoRotate)}
               trace={<RotationTrace curve={curve} visited={visited} current={state.stageAngle} reveal={revealed} analyzerDeg={state.analyzerAngle} />}
               onCrossed={() => changeAngle('analyzer', 90)} onPower={() => update({ power: true })}
-              onReorient={profile.observation === 'anisotropic' && state.orientation === 'optic-axis' && revealed ? () => update({ orientation: 'general' }) : null} />
+              onReorient={profile.observation === 'anisotropic' && state.orientation === 'optic-axis' && revealed ? () => changeOrientation('general') : null} />
           </div> : <div className="pol-explore__eyepiece-dock">
             <EyepieceView content={eyepieceContent} stageDeg={state.stageAngle} analyzerDeg={state.analyzerAngle} active={optics.active} label={eyepieceLabel} onRendered={onFieldRendered} onCanvas={setFieldCanvas} />
           </div>)}
@@ -515,7 +520,7 @@ export default function PolariscopeExplorePage() {
             {state.lesson === 'principle' && halfWave && <button className="pol-explore__button" aria-pressed={crossed} onClick={() => changeAngle('analyzer', 90)}>90° 正交</button>}
             {state.lesson === 'sample' && !studentObserve && <select className="pol-explore__quality" aria-label="投屏预测" value={prediction ?? ''} disabled={revealed} onChange={(event) => setPrediction(event.target.value || null)}><option value="">先选预测…</option>{PHENOMENA.map((item) => <option key={item.id} value={item.id}>预测：{item.label}</option>)}<option value="demo">教师演示（不预测）</option></select>}
             {state.lesson === 'sample' && <button className="pol-explore__button" aria-pressed={autoRotate} onClick={() => setAutoRotate(!autoRotate)} disabled={!optics.active} aria-label={autoRotate ? '投屏停止转动' : '投屏转动一周'}>{autoRotate ? '停止转动' : '转动一周'}</button>}
-            {state.lesson === 'sample' && profile.observation === 'anisotropic' && <button className="pol-explore__button" aria-pressed={state.orientation === 'optic-axis'} onClick={() => update({ orientation: state.orientation === 'optic-axis' ? 'general' : 'optic-axis' })} aria-label="投屏样品方向">{state.orientation === 'optic-axis' ? '换个方向放置' : '沿光轴放置'}</button>}
+            {state.lesson === 'sample' && profile.observation === 'anisotropic' && <button className="pol-explore__button" aria-pressed={state.orientation === 'optic-axis'} onClick={() => changeOrientation(state.orientation === 'optic-axis' ? 'general' : 'optic-axis')} aria-label="投屏样品方向">{state.orientation === 'optic-axis' ? '换个方向放置' : '沿光轴放置'}</button>}
             {state.lesson === 'conoscope' && <button className="pol-explore__button" aria-pressed={state.conoscopeInserted} onClick={() => update({ conoscopeInserted: !state.conoscopeInserted, analyzerAngle: 90 })}>{state.conoscopeInserted ? '取下干涉球' : '放上干涉球'}</button>}
             {state.lesson === 'components' && <button className="pol-explore__button" aria-pressed={state.internalView} onClick={toggleInternal}>内部光源</button>}
             <PowerSwitch checked={state.power} onChange={() => update({ power: !state.power })} label="投屏电源开关" />
@@ -555,7 +560,7 @@ export default function PolariscopeExplorePage() {
             </div>
             <div className="pol-explore__sample-tools">
               {profile.quartz && <button className="pol-explore__button" aria-pressed={state.brazilTwin} onClick={() => update({ brazilTwin: !state.brazilTwin })} data-testid="sample-brazil-twin">巴西律双晶示意{state.brazilTwin ? '（已开启）' : ''}</button>}
-              {profile.observation === 'anisotropic' && <button className="pol-explore__button" aria-pressed={state.orientation === 'optic-axis'} onClick={() => update({ orientation: state.orientation === 'optic-axis' ? 'general' : 'optic-axis' })} data-testid="sample-orientation">{state.orientation === 'optic-axis' ? '换个方向放置' : '沿光轴方向放置'}</button>}
+              {profile.observation === 'anisotropic' && <button className="pol-explore__button" aria-pressed={state.orientation === 'optic-axis'} onClick={() => changeOrientation(state.orientation === 'optic-axis' ? 'general' : 'optic-axis')} data-testid="sample-orientation">{state.orientation === 'optic-axis' ? '换个方向放置' : '沿光轴方向放置'}</button>}
               {profile.observation === 'isotropic' && <label className="pol-explore__inline-range">内部应变<input type="range" min="0" max="1" step="0.05" value={strain} onChange={(event) => update({ strain: Number(event.target.value) })} aria-label="内部应变强度" /><output>{strain > 0.05 ? '有' : '无'}</output></label>}
               {(profile.observation === 'isotropic' || profile.observation === 'anisotropic') && <button className="pol-explore__button" onClick={runAdrCheck} disabled={!optics.active} data-testid="sample-adr-check">平行复核（区分 ADR）</button>}
               {adrCheck && <p className="pol-explore__adr" data-testid="sample-adr-result" data-verdict={adrCheck.verdict}>{adrCheck.verdict === 'along-axis' ? '当前为沿光轴观察，平行复核不适用。水晶仍可能因旋光呈现颜色；请换个方向放置后复查。'
@@ -574,7 +579,7 @@ export default function PolariscopeExplorePage() {
             </div>
             {crystal && <div className="pol-explore__sample-tools">
               <span className="pol-explore__detail-label">样品方向</span>
-              <div className="pol-explore__choice-grid" data-testid="conoscope-orientation">{profile.orientations.map((view) => <button key={view} aria-pressed={state.orientation === view} onClick={() => update({ orientation: view })}>{ORIENTATION_LABEL[view]}</button>)}</div>
+              <div className="pol-explore__choice-grid" data-testid="conoscope-orientation">{profile.orientations.map((view) => <button key={view} aria-pressed={state.orientation === view} onClick={() => changeOrientation(view)}>{ORIENTATION_LABEL[view]}</button>)}</div>
               <label className="pol-explore__inline-range">样品厚度<input type="range" min="0.5" max="5" step="0.1" value={state.thicknessMm} onChange={(event) => update({ thicknessMm: Number(event.target.value) })} aria-label="样品厚度" /><output>{state.thicknessMm.toFixed(1)} mm</output></label>
               {profile.quartz && <button className="pol-explore__button" aria-pressed={state.brazilTwin} onClick={() => update({ brazilTwin: !state.brazilTwin })}>巴西律双晶示意{state.brazilTwin ? '（已开启）' : ''}</button>}
               <p className="pol-explore__hint">厚度越大、双折射率越高，色环越多越密（本样品双折射率 {profile.birefringence.toFixed(3)}）。</p>

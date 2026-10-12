@@ -42,7 +42,7 @@ function SimSessionView({ sim, requested }: { sim: SimDef; requested: string | u
   const available = sim.screens.map((item) => item.id);
   const screen = parseSimScreen(requested, available);
   const impl = SIM_IMPLEMENTATIONS[sim.id];
-  const [session, dispatch] = useReducer(simReducer, undefined, () => {
+  const [session, dispatch] = useReducer(impl?.reducer ?? simReducer, undefined, () => {
     const init = impl?.initial(searchParams);
     const scenes = init?.scenes ?? Object.fromEntries(available.map((id) => [id, INITIAL_SCENE]));
     return createSimSession(screen, scenes, !window.matchMedia('(max-width: 680px)').matches, init ? { options: init.options, taskData: init.taskData, teacherUsed: init.teacherUsed } : undefined);

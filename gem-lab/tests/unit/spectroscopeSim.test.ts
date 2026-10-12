@@ -11,7 +11,7 @@ const start = () => ({ task: emptyTaskData(), scene: labInitial(machine) });
 
 test("任务状态：缺失或残缺的数据回落到初值，不认识的值不沿用", () => {
   const empty = readTaskData(undefined);
-  assert.deepEqual(empty.byVariant.prism, { partsSeen: [], casesSeen: [], answers: {}, continuousRecorded: false, completed: [] });
+  assert.deepEqual(empty.byVariant.prism, { partsSeen: [], casesSeen: [], answers: {}, continuousRecorded: false, observationChecked: false, completed: [] });
   assert.equal(empty.mode, null);
   assert.equal(empty.step, "parts");
   const broken = readTaskData({ mode: "guest", step: "bogus", hasSkipped: "yes", byVariant: { prism: { partsSeen: [7, "slitHousing"] } } });
@@ -176,9 +176,11 @@ test("完成证据：重置画面前已完成的步骤算数，重新开始任�
 
 test("换机型：旧记录保留但标为过期；引导任务回到该机型的课程起点", () => {
   const saved = { notes: "记一笔", stale: false, pending: false };
-  const scene = { ...labInitial("prism"), marks: [694], saved };
+  const scene = { ...labInitial("prism"), marks: [694], checked: true, saved };
   const free = changeLabMachine(scene, "grating");
   assert.equal(free.bench.dispersion, "grating");
+  assert.equal(free.dispersion, "grating");
+  assert.equal(free.checked, false, "机型改变后须重新核对");
   assert.deepEqual(free.marks, [694], "标记的 nm 波长不随机型改变");
   assert.deepEqual(free.saved, { notes: "记一笔", stale: true, pending: false });
   const guided = changeLabMachine(scene, "grating", true);

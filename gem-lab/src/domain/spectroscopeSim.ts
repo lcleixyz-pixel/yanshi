@@ -3,7 +3,7 @@ import type { SampleDef } from '../data/types';
 import type { CourseMode } from './course';
 import { BENCH_METHOD_LABELS, benchMethodSetup, createBenchState, type BenchMethod, type BenchState } from './spectroscopeBench';
 import {
-  allComplete, configOf, COURSE_CONFIG, COURSE_SAMPLE, courseChecklist, initialCourse, isComplete,
+  configOf, COURSE_CONFIG, COURSE_SAMPLE, courseChecklist, initialCourse, isComplete,
   operate, QUESTIONS, type CourseState, type CourseVariant, type Operation, type StepId,
 } from './spectroscopeCourse';
 import { QUESTION_SHORT, STEP_SCREEN, STEP_SHORT } from './spectroscopeCopy';
@@ -41,6 +41,8 @@ export interface VariantTask {
   casesSeen: string[];
   answers: Record<string, number>;
   continuousRecorded: boolean;
+  /** 本轮任务是否核对过当前观察；场景里的旧核对不能作为新一轮任务证据。 */
+  observationChecked: boolean;
   /**
    * 完成过的步骤（证据）。步骤的「当前是否满足」随画面条件实时判断，所以改条件、换机型或全部重置
    * 都会让某些步骤暂时不满足；这里记下真正做完过的步骤，进度与「可以完成课程」据此判断，
@@ -49,7 +51,7 @@ export interface VariantTask {
   completed: StepId[];
 }
 
-export const emptyVariantTask = (): VariantTask => ({ partsSeen: [], casesSeen: [], answers: {}, continuousRecorded: false, completed: [] });
+export const emptyVariantTask = (): VariantTask => ({ partsSeen: [], casesSeen: [], answers: {}, continuousRecorded: false, observationChecked: false, completed: [] });
 
 export function emptyTaskData(): SpectroscopeTaskData {
   return { mode: null, step: 'parts', hasSkipped: false, byVariant: { prism: emptyVariantTask(), grating: emptyVariantTask() } };
@@ -72,6 +74,7 @@ export function readTaskData(data: Record<string, unknown> | undefined): Spectro
       casesSeen: Array.isArray(slice.casesSeen) ? slice.casesSeen.filter((id): id is string => typeof id === 'string') : [],
       answers: slice.answers && typeof slice.answers === 'object' ? { ...slice.answers } as Record<string, number> : {},
       continuousRecorded: slice.continuousRecorded === true,
+      observationChecked: slice.observationChecked === true,
       completed: Array.isArray(slice.completed) ? slice.completed.filter(isStepId) : [],
     };
   }
@@ -178,7 +181,7 @@ export function mergeCourse(task: SpectroscopeTaskData, scene: LabScene, machine
     continuousRecorded: slice.continuousRecorded,
     bench: { ...scene.bench, dispersion: machine },
     marks: [...scene.marks],
-    checked: scene.checked,
+    checked: slice.observationChecked && scene.checked,
   };
 }
 
@@ -193,18 +196,35 @@ export function applyOperation(task: SpectroscopeTaskData, scene: LabScene, mach
     ...(changed ? { bands: [] as LabScene['bands'], noAbsorption: false, saved: scene.saved ? { ...scene.saved, stale: true } : null } : {}),
   };
   const slice = task.byVariant[machine] ?? emptyVariantTask();
-  // 完成证据：把当前满足的步骤并进已完成列表（重置、换机型都不清）。
-  const done = configOf(next).steps.filter((item) => isComplete(next, item.id)).map((item) => item.id);
-  const completed = [...new Set([...slice.completed, ...done])];
   const byVariant = {
     ...task.byVariant,
     [machine]: {
-      partsSeen: next.partsSeen, casesSeen: next.casesSeen, continuousRecorded: next.continuousRecorded, answers: next.answers, completed,
+      ...slice, partsSeen: next.partsSeen, casesSeen: next.casesSeen, continuousRecorded: next.continuousRecorded,
+      answers: next.answers, observationChecked: next.checked,
     },
   };
   // 未选讲师 / 学员时保持未选：自由探索不该被自动当成学员课。
   const taskNext: SpectroscopeTaskData = { ...task, mode: task.mode, step: next.step, hasSkipped: next.hasSkipped, byVariant };
-  return { task: advanceStep(taskNext, sceneNext, machine), scene: sceneNext };
+  return { task: recordSceneProgress(taskNext, sceneNext, machine), scene: sceneNext };
+}
+
+/** 每次实验场景操作都收集本轮证据，包括先答题、后夹样/调节的完成顺序。 */
+export function recordSceneProgress(task: SpectroscopeTaskData, scene: LabScene, machine: Machine): SpectroscopeTaskData {
+  const slice = task.byVariant[machine];
+  const current = mergeCourse(task, scene, machine);
+  const done = configOf(current).steps.filter((item) => isComplete(current, item.id)).map((item) => item.id);
+  const next = {
+    ...task,
+    byVariant: {
+      ...task.byVariant,
+      [machine]: {
+        ...slice,
+        observationChecked: slice.observationChecked && scene.checked,
+        completed: [...new Set([...slice.completed, ...done])],
+      },
+    },
+  };
+  return advanceStep(next, scene, machine);
 }
 
 const sameBench = (a: BenchState, b: BenchState) => (Object.keys(b) as (keyof BenchState)[]).every((key) => a[key] === b[key]);
@@ -220,7 +240,7 @@ export function changeLabSample(scene: LabScene, sampleId: string): LabScene {
  */
 export function changeLabMachine(scene: LabScene, machine: Machine, guided = false): LabScene {
   const saved = scene.saved ? { ...scene.saved, stale: true } : null;
-  if (!guided) return { ...scene, bench: { ...scene.bench, dispersion: machine }, saved };
+  if (!guided) return { ...scene, dispersion: machine, bench: { ...scene.bench, dispersion: machine }, checked: false, saved };
   return { ...courseInitialLab(machine), saved, difficulty: scene.difficulty };
 }
 

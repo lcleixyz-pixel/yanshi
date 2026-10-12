@@ -176,11 +176,11 @@ npm run test:smoke
 npm run test:matrix
 ```
 
-如果本地首次运行烟测时提示缺少浏览器，请执行：
+本地与 CI 都使用 Playwright 配套 Chromium。首次安装或升级 Playwright 后，请执行：
 
 ```bash
 cd gem-lab
-npx playwright install chromium
+npx playwright install chromium --no-shell
 ```
 
 ## 手动验收清单

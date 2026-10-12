@@ -3,7 +3,7 @@ import { SimPanel } from '../SimShell';
 import SpectroscopeChallenge from './SpectroscopeChallenge';
 import type { SimScreenProps } from '../registry';
 import { SAMPLES_BY_DIFFICULTY, SAMPLES_BY_ID } from '../../../data/samples';
-import { changeLabMachine, drawChallenge, readLabScene, readMachine, DIFFICULTY_LABELS, type ChallengeDifficulty, type LabScene } from '../../../domain/spectroscopeSim';
+import { drawChallenge, readLabScene, readMachine, DIFFICULTY_LABELS, type ChallengeDifficulty, type LabScene } from '../../../domain/spectroscopeSim';
 import type { SpectroscopeData } from '../../../store/detectionStore';
 
 const DIFFICULTIES: readonly ChallengeDifficulty[] = ['beginner', 'intermediate', 'advanced'];
@@ -16,7 +16,7 @@ export default function SpectroscopeChallengeScreen({ sim, screen, onScreen, ses
   const machine = readMachine(session.options);
   const scene: LabScene = readLabScene(session.scenes[screen], machine);
   const patch = (next: Partial<LabScene>) => dispatch({ type: 'patch-scene', screen, patch: next });
-  // 抽样身份存在场景里：换屏与「重新开始任务」都不丢，只有重置本屏才回到未抽取。
+  // 抽样身份存在场景里：换屏、重新开始任务和重置观察条件都保留，重选难度才重新抽样。
   const drawn = scene.difficulty;
 
   // 抽样品：随机取一颗，连同难度一起写进场景（保存后屏内揭示答案）。
@@ -45,8 +45,6 @@ export default function SpectroscopeChallengeScreen({ sim, screen, onScreen, ses
       sim={sim} machine={machine} scene={scene} patch={patch} unknown reveal idle={drawn === null}
       onMachine={(next) => {
         dispatch({ type: 'patch-options', patch: { machine: next } });
-        // 换机型：刻度与可调部件都变了，已保存的记录标为过期；抽样身份与已标记波长照旧。
-        patch(changeLabMachine(scene, next) as unknown as Partial<LabScene>);
       }}
       onScreen={onScreen} onSave={save} header={header}
       reference={answer && <details className="sim-sources" data-testid="sim-record-reference"><summary>参考谱与说明</summary><p>{answer.spectrum.description}</p>{answer.spectrum.observationNote && <p>{answer.spectrum.observationNote}</p>}</details>}

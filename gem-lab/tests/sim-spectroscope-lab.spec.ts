@@ -84,12 +84,26 @@ test("引导任务学员：对光、调狭缝焦距、标记核对、解释，�
   // 第三步：标出三组以上诊断特征并核对。
   for (const wl of [694, 580, 476]) await mark(page, wl);
   await page.getByTestId("sim-spectro-record-open").click();
-  // 核对前不给答案：分组与参考都在核对之后才出现。
+  // 核对只预览自己的输入：确认保存前（包括返回修改、关闭再打开）分组与参考均不开放。
   await expect(page.getByTestId("marks-feedback")).toHaveCount(0);
   await page.getByTestId("sim-record-review").click();
-  await expect(page.getByTestId("marks-feedback")).toContainText("找到 3 组诊断特征");
-  await page.getByTestId("sim-record-save").click();
+  await expect(page.getByTestId("marks-feedback")).toHaveCount(0);
+  await expect(page.getByTestId("sim-record-reference")).toHaveCount(0);
+  await page.getByRole("button", { name: "返回修改", exact: true }).click();
+  await expect(page.getByTestId("marks-feedback")).toHaveCount(0);
   await page.getByTestId("sim-record-close").click();
+  // 核对后解释任务卡变长，先收起它，再通过可见的记录入口重新打开。
+  await page.getByTestId("sim-task-close").click();
+  await page.getByTestId("sim-spectro-record-open").click();
+  await expect(page.getByTestId("marks-feedback")).toHaveCount(0);
+  await expect(page.getByTestId("sim-record-reference")).toHaveCount(0);
+  await page.getByTestId("sim-record-review").click();
+  await expect(page.getByTestId("marks-feedback")).toHaveCount(0);
+  await page.getByTestId("sim-record-save").click();
+  await expect(page.getByTestId("marks-feedback")).toContainText("找到 3 组诊断特征");
+  await expect(page.getByTestId("sim-record-reference")).toBeVisible();
+  await page.getByTestId("sim-record-close").click();
+  await page.getByTestId("sim-task-open").click();
   await expect(task(page)).toContainText("解释与适用条件");
   // 第四步：解释与适用条件（含弱光对照）。
   await expect(page.getByTestId("weak-light-comparison")).toBeVisible();

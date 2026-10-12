@@ -13,7 +13,7 @@ import { IDEAL, MACHINE_LABELS, WEAK_LIGHT } from '../../../domain/spectroscopeC
 import { isPendingReference } from '../../../domain/spectroscopeRecord';
 import { COURSE_SAMPLE } from '../../../domain/spectroscopeCourse';
 import {
-  applyOperation, changeLabMachine, changeLabSample, courseInitialLab, courseView, labInitial, patchLab, readLabScene, readMachine, readTaskData,
+  applyOperation, changeLabSample, courseInitialLab, courseView, labInitial, patchLab, readLabScene, readMachine, readTaskData,
   type LabScene, type Machine,
 } from '../../../domain/spectroscopeSim';
 import type { SpectroscopeData } from '../../../store/detectionStore';
@@ -149,9 +149,6 @@ export default function SpectroscopeLabScreen({ sim, screen, onScreen, session, 
         <div className="sim-seg">
           {MACHINES.map((item) => <button key={item} type="button" aria-pressed={item === machine} disabled={item === machine} onClick={() => {
             dispatch({ type: 'patch-options', patch: { machine: item } });
-            // 换机型：刻度与可调部件都变了，已保存的记录标为过期（标记的 nm 波长照旧）；
-            // 引导任务还要回到该机型的课程起点（两门课的起始条件不同）。
-            dispatch({ type: 'patch-scene', screen, patch: changeLabMachine(lab, item, guided) as unknown as Record<string, unknown> });
           }} data-testid={`sim-machine-${item}`}>{MACHINE_LABELS[item]}</button>)}
         </div>
         <p className="sim-note">{MACHINE_LABELS[machine]}分光镜：{machine === 'prism' ? '狭缝与焦距可调，红端压缩、紫端展开。' : '固定狭缝与焦距，刻度近似线性，整体较暗。'}</p>

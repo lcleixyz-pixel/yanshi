@@ -181,13 +181,16 @@ npm run build        # tsc 项目引用类型检查 + Vite 生产构建
 npm run test:smoke   # 核心路由烟测（自动启动 vite preview:4173）
 npm run test:matrix  # 当前全部样品 × 3 仪器检测矩阵（较慢，交互/数据改动后运行）
 npm run test:unit    # 练习抽样、掌握度和计分纯逻辑
+npx playwright test # 全量浏览器回归（包括运行器正常收尾）
 ```
 
-首次运行若提示缺少浏览器：
+本地与 CI 都使用当前 Playwright 版本配套的 Chromium（`channel: 'chromium'`），不自动调用系统 Chrome。首次安装或升级 Playwright 后安装对应浏览器：
 
 ```bash
-npx playwright install chromium
+npx playwright install chromium --no-shell
 ```
+
+使用 Chromium 的新 headless 模式，不需要另装 headless shell。固定浏览器版本可避免系统 Chrome 自动升级造成的不兼容；本机 Chrome 155 曾因 crashpad 子进程持续持有 stderr，导致测试全部通过后仍卡在浏览器关闭阶段。
 
 GitHub Actions（`.github/workflows/frontend-demo.yml`）会在推送或向 `main` 发起 PR 时执行构建、纯逻辑测试与烟测。
 

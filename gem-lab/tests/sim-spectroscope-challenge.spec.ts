@@ -67,28 +67,48 @@ test("独立挑战：抽未知样品全程不显示品种名，保存核对后�
   await expect(page.getByTestId("sim-challenge-detection")).toHaveAttribute("href", "/detection");
 });
 
-test("重新开始任务不清掉抽样身份：挑战的样品与已保存记录始终对得上", async ({ page }) => {
-  await page.goto("/sim/spectroscope/challenge");
-  await ready(page);
-  await page.getByTestId("sim-challenge-beginner").click();
-  await page.getByTestId("sim-bench-power").click();
-  await page.getByTestId("sim-bench-place").click();
-  await openRecord(page);
-  await page.getByTestId("sim-record-no-absorption").check();
-  await review(page);
-  await page.getByTestId("sim-record-save").click();
-  await page.getByTestId("sim-record-close").click();
-  const answer = (await page.getByTestId("sim-spectro-answer").locator("strong").textContent())!;
-  // 去实验屏开始学员任务并「重新开始任务」：任务进度清空，挑战的抽样身份与记录照旧。
-  await page.getByTestId("sim-screen-lab").click();
-  await page.getByTestId("sim-task-student").click();
-  await page.getByTestId("sim-task-restart").click();
-  await page.getByTestId("sim-screen-challenge").click();
-  await expect(page.getByTestId("sim-challenge-beginner")).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByTestId("sim-record-saved")).toHaveCount(0);
-  await expect(page.getByTestId("sim-spectro-answer").locator("strong")).toHaveText(answer);
-  expect(await page.locator("body").textContent()).not.toContain("红宝石");
-});
+for (const sampleId of ["ruby", "amethyst"] as const) {
+  test(`${sampleId}：重新开始任务不清掉抽样身份，挑战的样品与已保存记录始终对得上`, async ({ page }) => {
+    const pool = SAMPLES_BY_DIFFICULTY.beginner;
+    const index = pool.findIndex((sample) => sample.id === sampleId);
+    expect(index).toBeGreaterThanOrEqual(0);
+    const expected = pool[index];
+    await page.goto("/sim/spectroscope/challenge");
+    await ready(page);
+    const beginner = page.getByTestId("sim-challenge-beginner");
+    // 只固定本次点击触发的抽样随机数，随后立即恢复，避免影响三维模型等其他随机数用途。
+    await beginner.evaluate((button, draw) => {
+      button.addEventListener("click", () => {
+        const random = Math.random;
+        Math.random = () => { Math.random = random; return draw; };
+      }, { capture: true, once: true });
+    }, (index + 0.5) / pool.length);
+    await beginner.click();
+    await expect(page.getByTestId("sim-spectro-answer")).toHaveCount(0);
+    await expect(page.locator("body")).not.toContainText(expected.name);
+    await page.getByTestId("sim-bench-power").click();
+    await page.getByTestId("sim-bench-place").click();
+    await openRecord(page);
+    await page.getByTestId("sim-record-no-absorption").check();
+    await review(page);
+    await expect(page.locator("body")).not.toContainText(expected.name);
+    await page.getByTestId("sim-record-save").click();
+    await page.getByTestId("sim-record-close").click();
+    const answerLabel = page.getByTestId("sim-spectro-answer").locator("strong");
+    await expect(answerLabel).toHaveText(expected.name);
+    const answer = (await answerLabel.textContent())!;
+    // 去实验屏开始学员任务并「重新开始任务」：任务进度清空，挑战的抽样身份与记录照旧。
+    await page.getByTestId("sim-screen-lab").click();
+    await page.getByTestId("sim-task-student").click();
+    await page.getByTestId("sim-task-restart").click();
+    await page.getByTestId("sim-screen-challenge").click();
+    await expect(beginner).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByTestId("sim-record-saved")).toHaveCount(0);
+    await expect(answerLabel).toHaveText(answer);
+    // 红宝石本来就能抽中并在保存后揭示；非红宝石案例额外防止串入默认教学样品。
+    if (sampleId !== "ruby") await expect(page.locator("body")).not.toContainText("红宝石");
+  });
+}
 
 test("检测流程内联：不显示屏幕导航、不揭示身份，保存逐字写回检测记录", async ({ page }) => {
   await detectionSample(page, "ruby");

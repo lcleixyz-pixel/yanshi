@@ -7,6 +7,7 @@ import { useResponsiveViewport } from '../shared/useResponsiveViewport';
 import SpectrumStrip from '../spectroscope/SpectrumStrip';
 import { SAMPLES, SAMPLES_BY_ID } from '../../data/samples';
 import { BENCH_METHOD_LABELS, benchMethodSetup, createBenchState, evaluateBench, type BenchMethod, type BenchState } from '../../domain/spectroscopeBench';
+import { canSaveRecord, isPendingReference, isSetupOnly, observationText, recordData } from '../../domain/spectroscopeRecord';
 import { useDetection, type SpectroscopeData } from '../../store/detectionStore';
 import { benchSpecimenAppearance, createSpectroscopeBenchViewer } from './spectroscopeBenchViewer';
 import '../../styles/spectroscope-bench.css';
@@ -89,11 +90,11 @@ export default function SpectroscopePractice3D({ sampleId, onDetectionComplete, 
   updateRef.current = update;
   const changeSample = (id: string) => { invalidate(); setSelectedId(id); setNotes(''); setSaved(null); };
   const changeView = (next: View) => { setView(next); viewerRef.current?.focus(next); };
-  const setupOnly = state.method !== 'transmission';
-  const pending = evaluation.referenceStatus === 'unverified' || setupOnly;
+  const setupOnly = isSetupOnly(state);
+  const pending = isPendingReference(state, evaluation);
   const mayObserve = evaluation.canRecord && status === 'ready';
-  const hasObservation = marks.length > 0 || bands.length > 0 || noAbsorption;
-  const canSave = status === 'ready' && (pending || (mayObserve && hasObservation));
+  const recordInput = { state, evaluation, marks, bands, noAbsorption, notes };
+  const canSave = canSaveRecord(recordInput, status === 'ready');
   const addMark = (wl: number) => {
     if (!mayObserve || !Number.isFinite(wl) || wl < 400 || wl > 700) return;
     setMarks((previous) => [...new Set([...previous, Math.round(wl)])].sort((a, b) => a - b));
@@ -105,17 +106,9 @@ export default function SpectroscopePractice3D({ sampleId, onDetectionComplete, 
     setBands((previous) => [...previous, { start, end }]); setNoAbsorption(false); setConfirmation(false);
     setBandStart(''); setBandEnd('');
   };
-  const observationText = setupOnly ? '照明布置练习：缺少该样品对应方法的参考谱，未作有效吸收观察' : pending ? '教学谱图未核定，无法判断吸收情况'
-    : noAbsorption ? '本次条件下未见明显特征吸收'
-    : [...marks.map((wl) => `${wl} nm 线`), ...bands.map((band) => `${band.start}–${band.end} nm 带`)].join('；');
-  const recordNotes = [observationText, `三维教学观察；${state.dispersion === 'prism' ? '棱镜式' : '光栅式'}；${BENCH_METHOD_LABELS[state.method]}`,
-    `亮度 ${Math.round(state.brightness * 100)}%；灯位 ${Math.round(state.lampLateral * 110)} mm / ${setupOnly ? '相对台面俯角' : '水平偏转'} ${state.lampAngle}°；样品横移 ${Math.round(state.sampleOffset * 35)} mm / 转角 ${state.sampleRotation}°`,
-    state.dispersion === 'prism' ? `狭缝 ${Math.round(state.slit * 100)}%；调焦 ${Math.round(state.focus * 100)}%` : '本机型狭缝与焦距固定',
-    evaluation.lightPath === 'weak' ? '收光较弱：受限观察，需改善条件复核' : '',
-    setupOnly ? '仅保存布置条件，未显示或推定该样品的反射光谱' : '', notes.trim()].filter(Boolean).join('；');
   const save = () => {
     if (!canSave || !confirmation) return;
-    const data: SpectroscopeData = { observationStatus: setupOnly ? 'setup-only' : pending ? 'pending-reference' : 'observed', method: state.method, markedLines: pending ? [] : marks, bandRanges: pending ? [] : bands, notes: recordNotes };
+    const data = recordData(recordInput);
     setSaved({ data, state: { ...state }, stale: false, pending }); setConfirmation(false);
     if (detection) {
       useDetection.getState().setSpectroscope(data);
@@ -160,7 +153,7 @@ export default function SpectroscopePractice3D({ sampleId, onDetectionComplete, 
             </fieldset>
             {(marks.length > 0 || bands.length > 0) && <div className="sb-chips">{marks.map((wl) => <button key={wl} onClick={() => { setMarks((previous) => previous.filter((value) => value !== wl)); setConfirmation(false); }}>{wl} nm 线 ×</button>)}{bands.map((band, index) => <button key={`${index}-${band.start}`} onClick={() => { setBands((previous) => previous.filter((_, i) => i !== index)); setConfirmation(false); }}>{band.start}–{band.end} nm 带 ×</button>)}</div>}
             <label className="sb-notes-label">补充说明<textarea aria-label="观察补充说明" value={notes} onChange={(event) => { setNotes(event.target.value); setConfirmation(false); }} placeholder="例如蓝紫区较暗、弱带不确定，或需要换向复核…" rows={2} /></label>
-            {confirmation ? <div className="sb-confirm" role="region" aria-label="核对本次记录"><strong>核对本次记录</strong><p>{observationText}</p><p>{state.dispersion === 'prism' ? '棱镜式' : '光栅式'} · {BENCH_METHOD_LABELS[state.method]} · {pending ? '仅作待核说明，不计有效观察' : evaluation.lightPath === 'weak' ? '受限观察，需复核' : '观察条件可用'}</p>{notes && <p>{notes}</p>}<div><button onClick={() => setConfirmation(false)}>返回修改</button><button className="sb-primary" onClick={save} disabled={!canSave} data-testid="bench-confirm-save">确认保存</button></div></div> : <button className="sb-primary sb-save" onClick={() => setConfirmation(true)} disabled={!canSave} data-testid="bench-review-record">{pending ? '核对待核说明' : '核对并保存观察'}</button>}
+            {confirmation ? <div className="sb-confirm" role="region" aria-label="核对本次记录"><strong>核对本次记录</strong><p>{observationText(recordInput)}</p><p>{state.dispersion === 'prism' ? '棱镜式' : '光栅式'} · {BENCH_METHOD_LABELS[state.method]} · {pending ? '仅作待核说明，不计有效观察' : evaluation.lightPath === 'weak' ? '受限观察，需复核' : '观察条件可用'}</p>{notes && <p>{notes}</p>}<div><button onClick={() => setConfirmation(false)}>返回修改</button><button className="sb-primary" onClick={save} disabled={!canSave} data-testid="bench-confirm-save">确认保存</button></div></div> : <button className="sb-primary sb-save" onClick={() => setConfirmation(true)} disabled={!canSave} data-testid="bench-review-record">{pending ? '核对待核说明' : '核对并保存观察'}</button>}
             {saved && <div className={`sb-saved ${saved.stale ? 'is-stale' : ''}`} data-testid="bench-saved" data-stale={saved.stale}><strong>{saved.stale ? '先前记录已保留，当前条件已改变' : saved.pending ? '待核说明已保存' : '本次观察已保存'}</strong><p>{saved.data.notes}</p>{saved.stale && <p>请重新观察；调回原设置也不会自动确认旧结果。</p>}</div>}
             {!detection && saved && !saved.stale && !pending && <details className="sb-reference" data-testid="bench-reference"><summary>记录后对照资料</summary><p>{sample.spectrum.description}</p>{sample.spectrum.observationNote && <p>{sample.spectrum.observationNote}</p>}<p>模型中的样品形态、体色与收光程度为教学示意，不能代替这颗样品的实测资料。</p></details>}
           </section>

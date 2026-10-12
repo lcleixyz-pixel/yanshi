@@ -11,41 +11,10 @@ import '../../styles/spectroscope-bench.css';
 import SpectrumStrip from './SpectrumStrip';
 import { allComplete, checkMarks, COURSE_CONFIG, COURSE_SAMPLE, courseChecklist, display, FEATURE_GROUPS, initialCourse, isComplete, navigateCourse, operate, QUESTIONS, REQUIRED_GROUPS, type CourseState, type CourseVariant, type Operation, type StepId } from '../../domain/spectroscopeCourse';
 import { BENCH_GEOMETRY, evaluateBench } from '../../domain/spectroscopeBench';
-import { displaySpectrum, IDEAL_CONDITIONS, type SpectrumProblem } from '../../domain/spectrumDisplay';
+import { BENCH_VIEWS, IDEAL, PROBLEM_TEXT, VARIANT_TEXT, WEAK_LIGHT } from '../../domain/spectroscopeCopy';
 
-const PROBLEM_TEXT: Record<SpectrumProblem, string> = {
-  'not-through-sample': '光没有穿过样品：只看到光源的连续光谱。',
-  'weak-light': '透光太弱：整体偏暗，蓝紫端先变黑。',
-  'slit-wide': '狭缝过宽：谱线发糊，相邻细线并在一起，弱线消失。',
-  'slit-narrow': '狭缝过窄：视场变暗，紫端和弱线看不清。',
-  defocus: '焦距偏离：所有谱线发虚。',
-};
-
-/** 认识部件、跟随光路看仪器内部；从对光起换到照明与夹样工作台，与独立练习共用同一场景。 */
 const INSTRUMENT_STEPS: readonly StepId[] = ['parts', 'path'];
 const SPECIMEN = benchSpecimenAppearance(COURSE_SAMPLE);
-const BENCH_VIEWS = [['whole', '整体'], ['lamp', '灯头'], ['sample', '样品与镊子'], ['instrument', '分光镜']] as const;
-
-/** 用于「透光太弱」问题的对照：同一份参考光谱，只把光强降下来。 */
-const WEAK_LIGHT = { prism: displaySpectrum(COURSE_SAMPLE.spectrum.features, { ...IDEAL_CONDITIONS, light: 'weak' }), grating: displaySpectrum(COURSE_SAMPLE.spectrum.features, { ...IDEAL_CONDITIONS, dispersion: 'grating', light: 'weak' }) };
-/** 光栅课对照：同一份参考光谱在两种刻度上的位置。 */
-const IDEAL = { prism: displaySpectrum(COURSE_SAMPLE.spectrum.features, IDEAL_CONDITIONS), grating: displaySpectrum(COURSE_SAMPLE.spectrum.features, { ...IDEAL_CONDITIONS, dispersion: 'grating' }) };
-
-/** 两种机型共用课程流程，差别集中在这里与 COURSE_CONFIG。 */
-const VARIANT_TEXT = {
-  prism: {
-    instrument: 'prism-spectroscope', title: '分光镜基础观察课', minutes: 8, scale: '棱镜式刻度', poster: '棱镜式分光镜静态预览',
-    opticsParts: ['collimator', 'prismTrain'], ok: '光穿过样品，狭缝与焦距合适。',
-    finish: '你已完成对光、调节狭缝与焦距、标记吸收特征和解释。学习完成与独立检测掌握分别记录。',
-    scope: '狭缝、焦距、对光与透光条件对光谱的影响为显示变换模拟，不是实拍；三维模型的内部处方和尺寸未经实物标定。光栅式另有观察课。',
-  },
-  grating: {
-    instrument: 'grating-spectroscope', title: '光栅式分光镜观察课', minutes: 7, scale: '光栅式刻度（近似线性）', poster: '光栅式分光镜静态预览',
-    opticsParts: ['collimator', 'grating'], ok: '光穿过样品，光强与对准足够。',
-    finish: '你已完成对光、调整亮度与对准、在线性刻度上标记吸收特征和解释。学习完成与独立检测掌握分别记录。',
-    scope: '手持光栅式按固定狭缝、固定焦距处理；对光与光强对光谱的影响为显示变换模拟，不是实拍；刻度为教学用线性映射，未按某台仪器标定。三维模型的光栅线密度与尺寸未经实物标定。',
-  },
-} as const;
 
 type CourseProps = { mode: CourseState['mode']; onMode: (mode: CourseState['mode']) => void; onExit: () => void; initialStep?: string | null };
 

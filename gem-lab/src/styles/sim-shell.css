@@ -78,6 +78,13 @@
 .sim-shell .sim-task-line span { color: var(--iu-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .sim-shell .sim-task-line i { font-style: normal; color: var(--iu-accent-ink); }
 
+/* 记录面板（操作区内） */
+.sim-sheet { position: absolute; z-index: 3; right: 12px; top: 12px; width: min(360px, 56%); max-height: calc(100% - 24px); overflow: auto; border: 1px solid var(--iu-line-2); border-radius: 9px; background: #fff; box-shadow: 0 6px 16px #1a233214; font-size: 12px; }
+.sim-sheet header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 7px 10px; border-bottom: 1px solid var(--iu-line); }
+.sim-sheet header strong { font-weight: 500; }
+.sim-shell .sim-sheet header button { border: 0; background: transparent; color: var(--iu-muted); font-size: 11px; }
+.sim-sheet__body { display: grid; gap: 7px; padding: 9px 10px; }
+
 /* 占位屏（迁移中） */
 .sim-placeholder { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 10px; padding: 70px 24px 90px; text-align: center; }
 .sim-placeholder h2 { margin: 0; font-size: 17px; font-weight: 500; }
@@ -100,9 +107,11 @@
   .sim-readout--bottom-left { bottom: 64px; }
   .sim-toolbox { left: 8px; right: auto; bottom: 8px; }
   .sim-shell .sim-task-line { left: 8px; right: 8px; top: 8px; }
-  /* 任务卡展开为底部抽屉。 */
-  /* 两个抽屉不叠放：打开控制抽屉时任务抽屉让开。 */
-  .sim-shell__main:has(.sim-shell__panels[data-open="true"]) .sim-task { display: none; }
-  .sim-task { padding-bottom: 60px; left: 0; right: 0; top: auto; bottom: 0; width: auto; border-left: 0; border-top: 3px solid var(--iu-accent-strong); border-radius: 14px 14px 0 0; padding: 12px 14px 16px; z-index: 7; }
+  /* 引导任务与记录都收为底部抽屉；被后打开的抽屉压住的那个隐藏（收起不是卸载，输入与进度都保留）。 */
+  .sim-task { left: 0; right: 0; top: auto; bottom: 0; width: auto; max-height: 70%; overflow: auto; border-left: 0; border-top: 3px solid var(--iu-accent-strong); border-radius: 14px 14px 0 0; padding: 12px 14px 16px; z-index: 7; }
+  .sim-sheet { left: 0; right: 0; top: auto; bottom: 0; width: auto; max-height: 70%; border-radius: 14px 14px 0 0; border-top: 3px solid var(--iu-accent-strong); box-shadow: 0 -8px 24px #1a23321a; z-index: 7; }
+  .sim-shell__panels[data-suppressed="true"],
+  .sim-task[data-suppressed="true"],
+  .sim-sheet[data-suppressed="true"] { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .sim-reset:active { transform: none; } }

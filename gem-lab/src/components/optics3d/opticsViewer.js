@@ -264,7 +264,11 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
       const part = parts.find(p => p.id === id); if (!part?.hotspotLocal) return;
       const button = document.createElement('button');
       button.type = 'button'; button.className = 'opt-hotspot'; button.dataset.testid = 'hotspot-' + id; button.dataset.done = String(hotspots.done?.includes(id) ?? false); button.dataset.selected = String(hotspots.selected === id); button.setAttribute('aria-pressed', String(hotspots.selected === id));
-      button.textContent = String(index + 1).padStart(2, '0'); button.setAttribute('aria-label', `模型热点 ${button.textContent}：${hotspots.labels?.[id] || part.label}${button.dataset.done === 'true' ? '（已查看）' : ''}`);
+      // labelMode='name' 时用短名称标签代替编号（PhET 式），默认仍为编号（折射仪、偏光镜不变）。
+      const named = hotspots.labelMode === 'name';
+      button.textContent = named ? (hotspots.labels?.[id] || part.label) : String(index + 1).padStart(2, '0');
+      if (named) button.dataset.named = 'true';
+      button.setAttribute('aria-label', `${named ? '部件' : '模型热点'} ${button.textContent}：${hotspots.labels?.[id] || part.label}${button.dataset.done === 'true' ? '（已查看）' : ''}`);
       // 点热点只选中、不推近镜头，其余热点仍在画面中（同偏光镜学员模式）。
       button.addEventListener('click', () => select(id, false));
       hotspotLayer.append(button); hotspotButtons.set(id, button);

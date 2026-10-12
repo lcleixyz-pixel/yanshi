@@ -2,6 +2,7 @@ import { useId, useState, type DragEvent, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { SIM_SCREEN_LABELS, type SimScreenId } from '../../domain/simSession';
 import type { SimDef } from '../../data/sims';
+import { SimDrawerProvider, useSimDrawer } from './SimDrawer';
 import '../../styles/instrument-ui.css';
 import '../../styles/sim-shell.css';
 
@@ -9,7 +10,7 @@ import '../../styles/sim-shell.css';
  * 仿真外壳（PhET 风格）：顶栏（仿真名、引导任务入口）、操作区为主、控制面板贴右侧、底部屏幕导航。
  * 手机上控制面板收为底部抽屉，任务卡收为顶部一行、展开为底部抽屉。
  */
-export function SimShell({ sim, screen, onScreen, taskSlot, play, panels }: {
+export function SimShell(props: {
   sim: SimDef;
   screen: SimScreenId;
   onScreen: (screen: SimScreenId) => void;
@@ -17,8 +18,23 @@ export function SimShell({ sim, screen, onScreen, taskSlot, play, panels }: {
   taskSlot?: ReactNode;
   play: ReactNode;
   panels: ReactNode;
+  /** 检测流程内联使用时不显示底部屏幕导航（避免离开检测流程）。 */
+  hideScreens?: boolean;
+}) {
+  return <SimDrawerProvider><SimShellBody {...props} /></SimDrawerProvider>;
+}
+
+function SimShellBody({ sim, screen, onScreen, taskSlot, play, panels, hideScreens }: {
+  sim: SimDef;
+  screen: SimScreenId;
+  onScreen: (screen: SimScreenId) => void;
+  taskSlot?: ReactNode;
+  play: ReactNode;
+  panels: ReactNode;
+  hideScreens?: boolean;
 }) {
   const [controlsOpen, setControlsOpen] = useState(false);
+  const suppressed = useSimDrawer('controls', controlsOpen);
   const panelsId = useId();
   return (
     <div className="sim-shell iu" data-instrument={sim.id} data-testid="sim-shell" data-sim={sim.id} data-screen={screen}>
@@ -29,17 +45,19 @@ export function SimShell({ sim, screen, onScreen, taskSlot, play, panels }: {
       <main className="sim-shell__main">
         <section className="sim-shell__play" aria-label={`${sim.name}${SIM_SCREEN_LABELS[screen]}操作区`} data-testid="sim-play">{play}</section>
         <button type="button" className="sim-shell__controls-toggle" aria-expanded={controlsOpen} aria-controls={panelsId} onClick={() => setControlsOpen((open) => !open)} data-testid="sim-controls-toggle">控制 {controlsOpen ? '▾' : '▴'}</button>
-        <aside id={panelsId} className="sim-shell__panels" data-open={controlsOpen} aria-label="控制面板">{panels}</aside>
+        <aside id={panelsId} className="sim-shell__panels" data-open={controlsOpen} data-suppressed={suppressed} aria-label="控制面板">{panels}</aside>
       </main>
-      <nav className="sim-shell__screens" aria-label="屏幕">
-        {sim.screens.map((item) => (
-          <button key={item.id} type="button" className="sim-shell__screen" aria-current={item.id === screen ? 'page' : undefined} onClick={() => onScreen(item.id)} data-testid={`sim-screen-${item.id}`}>
-            <ScreenIcon id={item.id} />
-            <span>{SIM_SCREEN_LABELS[item.id]}</span>
-          </button>
-        ))}
-        <Link to="/" className="sim-shell__home" data-testid="sim-home"><span aria-hidden="true">⌂</span>首页</Link>
-      </nav>
+      {!hideScreens && (
+        <nav className="sim-shell__screens" aria-label="屏幕">
+          {sim.screens.map((item) => (
+            <button key={item.id} type="button" className="sim-shell__screen" aria-current={item.id === screen ? 'page' : undefined} onClick={() => onScreen(item.id)} data-testid={`sim-screen-${item.id}`}>
+              <ScreenIcon id={item.id} />
+              <span>{SIM_SCREEN_LABELS[item.id]}</span>
+            </button>
+          ))}
+          <Link to="/" className="sim-shell__home" data-testid="sim-home"><span aria-hidden="true">⌂</span>首页</Link>
+        </nav>
+      )}
     </div>
   );
 }
@@ -127,24 +145,44 @@ export interface SimTaskItem { id: string; label: string; done: boolean }
 /**
  * 引导任务卡：可收起（只隐藏卡片，不清进度）；「重新开始任务」单独一个按钮。
  * 桌面浮在操作区左上；手机收起时为顶部一行，展开为底部抽屉。
+ * progress 给定时按步骤数显示 n / N（条目数多于步骤时更贴近实际进度）。
  */
-export function SimTaskCard({ title, items, open, onOpen, onRestart, children }: {
+export function SimTaskCard({ title, items, open, onOpen, onRestart, progress, children }: {
   title: string;
   items: readonly SimTaskItem[];
   open: boolean;
   onOpen: (open: boolean) => void;
   onRestart: () => void;
+  progress?: { done: number; total: number };
   children?: ReactNode;
 }) {
-  const done = items.filter((item) => item.done).length;
-  if (!open) return <button type="button" className="sim-task-line" onClick={() => onOpen(true)} aria-expanded="false" data-testid="sim-task-open"><strong>引导任务 {done} / {items.length}</strong><span>{title}</span><i aria-hidden="true">▸</i></button>;
+  const suppressed = useSimDrawer('task', open);
+  const done = progress?.done ?? items.filter((item) => item.done).length;
+  const total = progress?.total ?? items.length;
+  if (!open) return <button type="button" className="sim-task-line" onClick={() => onOpen(true)} aria-expanded="false" data-testid="sim-task-open"><strong>引导任务 {done} / {total}</strong><span>{title}</span><i aria-hidden="true">▸</i></button>;
   return (
-    <section className="sim-task" aria-label="引导任务" data-testid="sim-task">
-      <header><span>引导任务 · {done} / {items.length}</span><button type="button" onClick={() => onOpen(false)} aria-expanded="true" data-testid="sim-task-close">收起 ▾</button></header>
+    <section className="sim-task" aria-label="引导任务" data-testid="sim-task" data-suppressed={suppressed}>
+      <header><span>引导任务 · {done} / {total}</span><button type="button" onClick={() => onOpen(false)} aria-expanded="true" data-testid="sim-task-close">收起 ▾</button></header>
       <strong>{title}</strong>
       <ul>{items.map((item) => <li key={item.id} data-done={item.done}><span aria-hidden="true">{item.done ? '✓' : '○'}</span>{item.label}<span className="iu-sr">{item.done ? '（已完成）' : '（未完成）'}</span></li>)}</ul>
       {children}
       <button type="button" className="sim-task__restart" onClick={onRestart} data-testid="sim-task-restart">重新开始任务</button>
+    </section>
+  );
+}
+
+/** 操作区里的记录面板：桌面为右上浮卡，手机为底部抽屉；与任务、控制抽屉互不叠放。由外部按钮控制开合。 */
+export function SimSheet({ title, onClose, children, testId }: {
+  title: string;
+  onClose: () => void;
+  children: ReactNode;
+  testId?: string;
+}) {
+  const suppressed = useSimDrawer('record', true);
+  return (
+    <section className="sim-sheet" data-suppressed={suppressed} data-testid={testId} aria-label={title}>
+      <header><strong>{title}</strong><button type="button" onClick={onClose} data-testid={testId ? `${testId}-close` : undefined}>收起 ▾</button></header>
+      <div className="sim-sheet__body">{children}</div>
     </section>
   );
 }

@@ -97,6 +97,8 @@
 .opt-hotspot[data-done="true"] { border-color: var(--iu-success, #22a86a); color: #fff; background: var(--iu-success, #22a86a); box-shadow: none; }
 .opt-hotspot[data-selected="true"] { border-color: var(--iu-accent-strong, #6d28d9); color: #fff; background: var(--iu-accent-strong, #6d28d9); box-shadow: 0 0 0 5px color-mix(in srgb, var(--iu-accent, #7c3aed) 22%, transparent); }
 .opt-hotspot[hidden], .opt-coach[hidden] { display: none; }
+/* 显示名称：短名称标签（PhET 式），宽度随文字，仍可点选高亮。 */
+.opt-hotspot[data-named="true"] { width: auto; min-width: 0; height: 26px; padding: 0 9px; border-radius: 7px; font-family: inherit; font-size: 12px; white-space: nowrap; }
 .opt-coach { position: absolute; left: 0; top: 0; padding: 7px 12px; border: 1px solid var(--iu-line-2, #d4dfee); border-radius: 8px; color: var(--iu-ink, #1a2332); background: #fff; box-shadow: 0 6px 18px #1a233218; font-size: 13px; white-space: nowrap; pointer-events: none; }
 .opt-coach::before { content: "→"; display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 8px; border-radius: 50%; color: #fff; background: var(--iu-accent-strong, #6d28d9); font-size: 11px; }
 @media (max-width: 680px) { .opt-hotspot { width: 30px; height: 30px; font-size: 10px; } .opt-coach { font-size: 12px; padding: 5px 9px; } }

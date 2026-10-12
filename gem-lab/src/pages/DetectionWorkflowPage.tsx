@@ -8,7 +8,7 @@ import RefractometerDemo from '@/components/refractometer/RefractometerDemo';
 import PolariscopeDemo from '@/components/polariscope/PolariscopeDemo';
 // 偏光镜检测默认使用 3D；三维依赖按需加载，WebGL 不可用或加载失败时回退到 2D 检测模式。
 const PolariscopeDetection3D = lazy(() => import('@/components/polariscope3d/PolariscopeDetection3D'));
-const SpectroscopePractice3D = lazy(() => import('@/components/spectroscope3d/SpectroscopePractice3D'));
+const SpectroscopeDetectionChallenge = lazy(() => import('@/components/sim/spectroscope/SpectroscopeDetectionChallenge'));
 function supportsWebGL() {
   try { const canvas = document.createElement('canvas'); return !!(canvas.getContext('webgl2') ?? canvas.getContext('webgl')); } catch { return false; }
 }
@@ -110,7 +110,7 @@ export default function DetectionWorkflowPage() {
   if (step === 4 && activeInstrument === 'spectroscope' && drawnSample && !spectroscope2D) {
     return (
       <Suspense fallback={<div className="grid min-h-screen place-items-center text-sm text-ink-3">正在载入分光镜三维工作台…</div>}>
-        <SpectroscopePractice3D sampleId={drawnSample} onDetectionComplete={handleDetectionComplete} onUse2D={() => setSpectroscope2D(true)} />
+        <SpectroscopeDetectionChallenge sampleId={drawnSample} onDetectionComplete={handleDetectionComplete} onUse2D={() => setSpectroscope2D(true)} />
       </Suspense>
     );
   }

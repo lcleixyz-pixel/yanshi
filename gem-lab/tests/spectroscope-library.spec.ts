@@ -26,8 +26,10 @@ test('从检测流程进入分光镜不能切学习揭示身份，独立演示�
   await page.goto('/detection');
   await expect(page.getByRole('heading', { name: '选择检测仪器' })).toBeVisible();
   await page.getByRole('button', { name: /分光镜/ }).click();
-  await expect(page.getByTestId('spectroscope-practice-3d')).toBeVisible();
-  await expect(page.getByTestId('unknown-sample-label')).toBeVisible();
+  // 检测流程的分光镜一步现在是仿真外壳里的挑战屏（内联，不显示屏幕导航）。
+  await expect(page.getByTestId('sim-shell')).toHaveAttribute('data-screen', 'challenge');
+  await expect(page.getByTestId('sim-screen-learn')).toHaveCount(0);
+  await expect(page.getByTestId('sim-spectro-unknown')).toBeVisible();
   await expect(page.locator('body')).not.toContainText('碧玺');
   await page.getByTestId('detection-use-2d').click();
   await expect(page.getByTestId('unknown-sample-label').first()).toBeVisible();

@@ -2,6 +2,7 @@ import type { ComponentType, Dispatch } from 'react';
 import type { SimDef, SimId } from '../../data/sims';
 import type { SimAction, SimScene, SimScreenId, SimSession } from '../../domain/simSession';
 import { spectroscopeInitial } from '../../domain/spectroscopeSim';
+import SpectroscopeChallengeScreen from './spectroscope/SpectroscopeChallengeScreen';
 import SpectroscopeLabScreen from './spectroscope/SpectroscopeLabScreen';
 import SpectroscopeLearnScreen from './spectroscope/SpectroscopeLearnScreen';
 
@@ -25,5 +26,8 @@ export interface SimImplementation {
 }
 
 export const SIM_IMPLEMENTATIONS: Partial<Record<SimId, SimImplementation>> = {
-  spectroscope: { initial: spectroscopeInitial, screens: { learn: SpectroscopeLearnScreen, lab: SpectroscopeLabScreen } },
+  spectroscope: {
+    initial: spectroscopeInitial,
+    screens: { learn: SpectroscopeLearnScreen, lab: SpectroscopeLabScreen, challenge: SpectroscopeChallengeScreen },
+  },
 };

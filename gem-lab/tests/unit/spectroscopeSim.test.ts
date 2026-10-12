@@ -146,8 +146,7 @@ test("课程操作同时写回任务与场景；改条件后标带与已保存�
   const next = applyOperation(task, scene, machine, { type: "slit", value: 0.8 });
   assert.deepEqual(next.scene.marks, []);
   assert.deepEqual(next.scene.bands, []);
-  assert.equal(next.scene.saved.stale, true);
-  assert.equal(next.scene.saved.notes, "旧记录");
+  assert.deepEqual(next.scene.saved, { notes: "旧记录", stale: true, pending: false });
   // 答题不改条件，已保存的记录不受影响。
   const answered = applyOperation(task, scene, machine, { type: "answer", id: "dispersion", option: 0 });
   assert.deepEqual(answered.scene.saved, { notes: "旧记录", stale: false, pending: false });

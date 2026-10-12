@@ -19,6 +19,13 @@ import type { SimScreenId } from './simSession';
  */
 
 export type Machine = CourseVariant;
+export type ChallengeDifficulty = 'beginner' | 'intermediate' | 'advanced';
+
+/** 挑战屏抽到的未知样品（只在本屏用：难度与样品 id，保存后由屏内揭示答案）。 */
+export interface ChallengeDraw { difficulty: ChallengeDifficulty; sampleId: string }
+
+export const DIFFICULTY_LABELS: Record<ChallengeDifficulty, string> = { beginner: '初级', intermediate: '中级', advanced: '高级' };
+export const isDifficulty = (value: unknown): value is ChallengeDifficulty => value === 'beginner' || value === 'intermediate' || value === 'advanced';
 
 /** 引导任务状态（会话的任务自有状态）。mode 为 null 表示还没选讲师演示 / 学员自学。 */
 export interface SpectroscopeTaskData {
@@ -27,6 +34,8 @@ export interface SpectroscopeTaskData {
   step: StepId;
   hasSkipped: boolean;
   byVariant: Record<Machine, VariantTask>;
+  /** 挑战屏在本轮抽到的未知样品；未抽取时为 null。 */
+  challenge: ChallengeDraw | null;
 }
 
 export interface VariantTask {
@@ -39,7 +48,7 @@ export interface VariantTask {
 export const emptyVariantTask = (): VariantTask => ({ partsSeen: [], casesSeen: [], answers: {}, continuousRecorded: false });
 
 export function emptyTaskData(): SpectroscopeTaskData {
-  return { mode: null, step: 'parts', hasSkipped: false, byVariant: { prism: emptyVariantTask(), grating: emptyVariantTask() } };
+  return { mode: null, step: 'parts', hasSkipped: false, byVariant: { prism: emptyVariantTask(), grating: emptyVariantTask() }, challenge: null };
 }
 
 const STEP_IDS = COURSE_CONFIG.prism.steps.map((item) => item.id);
@@ -61,11 +70,16 @@ export function readTaskData(data: Record<string, unknown> | undefined): Spectro
       continuousRecorded: slice.continuousRecorded === true,
     };
   }
+  const raw = data.challenge as Partial<ChallengeDraw> | undefined;
+  const challenge = raw && isDifficulty(raw.difficulty) && SAMPLES.some((item) => item.id === raw.sampleId)
+    ? { difficulty: raw.difficulty, sampleId: raw.sampleId as string }
+    : null;
   return {
     mode: data.mode === 'student' || data.mode === 'teacher' ? data.mode : null,
     step: isStepId(data.step) ? data.step : base.step,
     hasSkipped: data.hasSkipped === true,
     byVariant,
+    challenge,
   };
 }
 

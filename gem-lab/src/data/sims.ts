@@ -38,11 +38,11 @@ export const SIMS: Record<SimId, SimDef> = {
     ],
   },
   spectroscope: {
-    id: 'spectroscope', name: '分光镜', migrated: ['learn', 'lab'],
+    id: 'spectroscope', name: '分光镜', migrated: ['learn', 'lab', 'challenge'],
     screens: [
       { id: 'learn', summary: '结构与光路：棱镜式与光栅式屏内切换、部件名称、单色光路与引导任务前两步。', current: [] },
       { id: 'lab', summary: '照明与夹样工作台：调光、夹样、狭缝与调焦，标记吸收特征并记录；引导任务后四步也在这屏。', current: [] },
-      { id: 'challenge', summary: '抽未知样品独立观察并记录吸收特征。', current: [{ label: '综合检测', to: '/detection' }] },
+      { id: 'challenge', summary: '抽一颗未知样品独立观察并记录吸收特征，保存后揭示答案；检测流程也走这一屏。', current: [] },
     ],
   },
   microscope: {

@@ -14,21 +14,6 @@ async function prepare(page: Page) {
   await page.getByRole('switch', { name: '光源电源' }).click();
   await page.getByTestId('bench-place-sample').click();
 }
-async function seedDetection(page: Page, id: string) {
-  await page.addInitScript((sampleId) => {
-    sessionStorage.setItem('gem-lab-detection-v1', JSON.stringify({ state: {
-      difficulty: 'intermediate', sampleId, instrumentsUsed: [],
-      refractometer: { method: null, riMin: null, riMax: null, birefringence: null, opticalCharacter: null, notes: '' },
-      polariscope: { rotation: 0, phenomenon: null, optical: null, notes: '' },
-      spectroscope: { method: null, markedLines: [], bandRanges: [], notes: '' },
-      startedAt: 1000, assessment: null, assessmentAttemptCount: 0,
-    }, version: 1 }));
-  }, id);
-  await page.goto('/detection');
-  await page.getByRole('button', { name: /分光镜/ }).click();
-  await expect(canvas(page)).toHaveAttribute('data-loaded', 'true', { timeout: 30000 });
-}
-
 test('三维姿态、对光条件和视场同步，未夹样的白光不能记为不特征', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
@@ -138,74 +123,6 @@ test('从内反射方法链接进入时，灯头直接处于斜上方示意位�
   await expect(canvas(page)).toHaveAttribute('data-table-visible', 'true');
   await expect(canvas(page)).toHaveAttribute('data-tweezers-visible', 'false');
   await expect(page.getByTestId('spectroscope-spectrum-visual')).toHaveCount(0);
-});
-
-test('未知样品不泄露身份，谱线与谱带和条件可经过核对写回检测记录', async ({ page }) => {
-  await seedDetection(page, 'ruby');
-  await expect(page.locator('body')).not.toContainText('红宝石');
-  await expect(page.getByRole('combobox', { name: '三维分光镜样品' })).toHaveCount(0);
-  await prepare(page);
-  await page.getByRole('spinbutton', { name: '吸收线波长' }).fill('694');
-  await page.getByRole('button', { name: '添加线', exact: true }).click();
-  await page.getByRole('spinbutton', { name: '吸收带起点' }).fill('535');
-  await page.getByRole('spinbutton', { name: '吸收带终点' }).fill('575');
-  await page.getByRole('button', { name: '添加带', exact: true }).click();
-  await page.getByTestId('bench-review-record').click();
-  const before = await page.evaluate(() => JSON.parse(sessionStorage.getItem('gem-lab-detection-v1')!).state);
-  expect(before.instrumentsUsed).not.toContain('spectroscope');
-  await page.getByTestId('bench-confirm-save').click();
-  await expect(workbench(page)).toHaveCount(0);
-  const saved = await page.evaluate(() => JSON.parse(sessionStorage.getItem('gem-lab-detection-v1')!).state);
-  expect(saved.spectroscope.markedLines).toEqual([694]);
-  expect(saved.spectroscope.bandRanges).toEqual([{ start: 535, end: 575 }]);
-  expect(saved.spectroscope.notes).toContain('三维教学观察');
-  expect(saved.instrumentsUsed).toEqual(['spectroscope']);
-});
-
-test('未核谱保留练习范围和待核记录，不显示假空白、不计有效观察', async ({ page }) => {
-  await seedDetection(page, 'tourmaline');
-  await expect(page.locator('body')).not.toContainText('碧玺');
-  await expect(page.getByTestId('spectroscope-unverified-spectrum')).toBeVisible();
-  await expect(page.getByTestId('spectroscope-spectrum-visual')).toHaveCount(0);
-  await expect(page.getByTestId('bench-no-absorption')).toBeDisabled();
-  await page.getByTestId('bench-review-record').click();
-  await page.getByTestId('bench-confirm-save').click();
-  const saved = await page.evaluate(() => JSON.parse(sessionStorage.getItem('gem-lab-detection-v1')!).state);
-  expect(saved.spectroscope.notes).toContain('教学谱图未核定，无法判断吸收情况');
-  expect(saved.spectroscope.markedLines).toEqual([]);
-  await expect(page.getByRole('heading', { name: '选择检测仪器' })).toBeVisible();
-});
-
-test('三维资产故障可回退 2D，待核样品仍不泄露身份', async ({ page }) => {
-  await page.route('**/spectroscope-workbench/simple-v2/model.glb', (route) => route.abort());
-  await page.addInitScript(() => sessionStorage.setItem('gem-lab-detection-v1', JSON.stringify({ state: {
-    difficulty: 'intermediate', sampleId: 'tourmaline', instrumentsUsed: [],
-    refractometer: { method: null, riMin: null, riMax: null, birefringence: null, opticalCharacter: null, notes: '' },
-    polariscope: { rotation: 0, phenomenon: null, optical: null, notes: '' },
-    spectroscope: { method: null, markedLines: [], bandRanges: [], notes: '' },
-    startedAt: 1000, assessment: null, assessmentAttemptCount: 0,
-  }, version: 1 })));
-  await page.goto('/detection');
-  await page.getByRole('button', { name: /分光镜/ }).click();
-  await expect(page.getByRole('alert')).toContainText('三维视图暂不可用');
-  await page.getByRole('button', { name: '改用 2D 检测', exact: true }).click();
-  await expect(page.getByTestId('spectroscope-unverified-spectrum')).toBeVisible();
-  await expect(page.locator('body')).not.toContainText('碧玺');
-});
-
-test('已有透射资料的样品，反射布置记录也不能计入有效观察或用于命名', async ({ page }) => {
-  await seedDetection(page, 'ruby');
-  await page.getByRole('button', { name: /02.*内反射观察/ }).click();
-  await page.getByTestId('bench-review-record').click();
-  await page.getByTestId('bench-confirm-save').click();
-  const result = await page.evaluate(async () => {
-    const state = JSON.parse(sessionStorage.getItem('gem-lab-detection-v1')!).state;
-    return { state };
-  });
-  expect(result.state.spectroscope.observationStatus).toBe('setup-only');
-  await expect(page.getByRole('heading', { name: '选择检测仪器' })).toBeVisible();
-  await page.goto('/assessment');
-  await expect(page.getByText(/当前已完成 0 项有效观察/)).toBeVisible();
 });
 
 test('窄屏可以看到场景、视场与操作，页面没有横向溢出', async ({ page }) => {

@@ -20,6 +20,10 @@ export interface SpectroscopeRecordProps {
   ready: boolean;
   /** 引导任务进行中：核对时给出本课诊断特征分组，并记课程核对。 */
   guided?: boolean;
+  /** 已经核对过本步（课程 observe 步的核对）：核对前不显示分组与参考，避免提前看到答案。 */
+  reviewed?: boolean;
+  /** 记录里写的样品名；未知样品（挑战屏）不传，等于不写品种。 */
+  sampleName?: string;
   onAddMark: (wavelength: number) => void;
   onRemoveMark: (wavelength: number) => void;
   onAddBand: (band: BandRange) => void;
@@ -39,12 +43,12 @@ export interface SpectroscopeRecordProps {
  * 条件一变旧记录保留但标为过期，调回原设置也不会自动恢复确认（同练习页）。
  */
 export default function SpectroscopeRecord(props: SpectroscopeRecordProps) {
-  const { onClose, state, evaluation, marks, bands, noAbsorption, notes, saved, ready, guided, onAddMark, onRemoveMark, onAddBand, onRemoveBand, onNoAbsorption, onNotes, onReview, onSave, reference } = props;
+  const { onClose, state, evaluation, marks, bands, noAbsorption, notes, saved, ready, guided, reviewed, sampleName, onAddMark, onRemoveMark, onAddBand, onRemoveBand, onNoAbsorption, onNotes, onReview, onSave, reference } = props;
   const [line, setLine] = useState('');
   const [bandStart, setBandStart] = useState('');
   const [bandEnd, setBandEnd] = useState('');
   const [confirming, setConfirming] = useState(false);
-  const input: RecordInput = { state, evaluation, marks, bands, noAbsorption, notes };
+  const input: RecordInput = { state, evaluation, marks, bands, noAbsorption, notes, sampleName };
   const mayObserve = evaluation.canRecord && ready;
   const canSave = canSaveRecord(input, ready);
   const pending = evaluation.recordStatus === 'unverified' || evaluation.recordStatus === 'setup-only';
@@ -85,7 +89,7 @@ export default function SpectroscopeRecord(props: SpectroscopeRecordProps) {
       )}
       <label className="sim-record__notes" htmlFor="sim-record-notes">补充说明</label>
       <textarea id="sim-record-notes" rows={2} value={notes} onChange={(event) => { onNotes(event.target.value); setConfirming(false); }} placeholder="例如蓝紫区较暗、弱带不确定，或需要换向复核…" data-testid="sim-record-notes" />
-      {guided && (
+      {guided && reviewed && (
         <div className="sim-record__groups" data-testid="marks-feedback">
           <strong>{found.foundCount >= REQUIRED_GROUPS ? `找到 ${found.foundCount} 组诊断特征` : `找到 ${found.foundCount} 组，至少需要 ${REQUIRED_GROUPS} 组`}</strong>
           <ul>{FEATURE_GROUPS.map((group, index) => <li key={group.label}>{found.found[index] ? '✓' : '○'} {group.label}</li>)}</ul>

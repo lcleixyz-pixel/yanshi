@@ -1,4 +1,5 @@
 import { SAMPLES_BY_ID } from '../data/samples';
+import type { BenchEvaluation } from './spectroscopeBench';
 import { COURSE_CONFIG, COURSE_SAMPLE, type CourseVariant, type StepId } from './spectroscopeCourse';
 import { displaySpectrum, IDEAL_CONDITIONS, type SpectrumProblem } from './spectrumDisplay';
 import type { SimScreenId } from './simSession';
@@ -32,6 +33,37 @@ export const VARIANT_TEXT = {
     scope: '手持光栅式按固定狭缝、固定焦距处理；对光与光强对光谱的影响为显示变换模拟，不是实拍；刻度为教学用线性映射，未按某台仪器标定。三维模型的光栅线密度与尺寸未经实物标定。',
   },
 } as const;
+
+/**
+ * 目镜视场此刻的状态：谱进来了没有、范围与特征数怎么说、一行状态文字。
+ * 读数的分寸：没光、旁路、偏轴、反射布置时不报「吸收特征 无」，也不报 400–700 nm 的假范围；
+ * 参考谱待核时写明待核，不把空白谱当成「未见吸收」。
+ */
+export function fieldChecks(evaluation: BenchEvaluation, dispersion: CourseVariant) {
+  const mode = evaluation.spectrumMode;
+  const unverified = mode === 'unverified' || mode === 'method-unverified';
+  /** 目镜里真的看得到光谱：穿样后看参考谱，或光绕过样品时看到光源的连续谱。其余（无光、偏轴、布置练习）都没有谱。 */
+  const visible = mode === 'reference-simulation' || mode === 'continuous-light';
+  return {
+    scale: VARIANT_TEXT[dispersion].scale,
+    /** 待核时不画空白光谱条，改为说明；其余情况照常显示（暗场就是暗的）。 */
+    showSpectrum: !unverified,
+    noSpectrumText: mode === 'method-unverified'
+      ? '本方法先做布置练习：尚无该样品对应方法的参考谱，这里不显示推定谱图，也不把它当成「未见吸收」。'
+      : '本样品的参考谱尚未核定：这里不显示空白光谱，也不把它当成「未见吸收」；可先练习摆样与照明。',
+    range: visible && !unverified ? '400–700 nm' : '—',
+    features: mode === 'reference-simulation'
+      ? (evaluation.display.features.length ? `${evaluation.display.features.length} 条` : '无')
+      : unverified ? '参考谱待核定' : '未显示',
+  };
+}
+
+/** 目镜视场下面的一行状态：先用工作台自己的问题（无光、未放样、偏轴…），再落到光谱显示问题与「合适」。 */
+export function yardstickStatus(evaluation: BenchEvaluation, dispersion: CourseVariant): string {
+  if (evaluation.problems.length) return evaluation.problems.slice(0, 2).join(' ');
+  if (evaluation.display.problems.length) return evaluation.display.problems.map((problem) => PROBLEM_TEXT[problem]).join(' ');
+  return VARIANT_TEXT[dispersion].ok;
+}
 
 /** 工作台的观察视角。 */
 export const BENCH_VIEWS = [['whole', '整体'], ['lamp', '灯头'], ['sample', '样品与镊子'], ['instrument', '分光镜']] as const;

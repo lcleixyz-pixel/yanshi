@@ -12,8 +12,10 @@ import { isStepId, STEP_SCREEN } from './spectroscopeSim';
 export const SPECTROSCOPE_MACHINES = ['prism', 'grating'] as const;
 
 /** 返回新地址；不是已迁移的旧入口时返回 null（调用方照常渲染原页面）。 */
-export function spectroscopeRedirect(pathname: string, search: string): string | null {
+export function spectroscopeRedirect(rawPath: string, search: string): string | null {
   const params = new URLSearchParams(search);
+  // 尾斜杠（/explore/spectroscope-bench/）与重复斜杠都按同一地址处理。
+  const pathname = rawPath.length > 1 ? rawPath.replace(/\/+$/, '') : rawPath;
   const explore = /^\/explore\/optics\/(prism|grating)-spectroscope$/.exec(pathname);
   if (explore) {
     const out = new URLSearchParams({ machine: explore[1] });

@@ -15,7 +15,12 @@ export interface RecordInput {
   bands: readonly BandRange[];
   noAbsorption: boolean;
   notes: string;
+  /** 引导任务里用的是教学样品；记录里写样品名便于比对（涂层屏用不到）。 */
+  sampleName?: string;
 }
+
+/** 位置一律给 0–10 相对刻度：狭缝、调焦未标定，灯位与样品横移也不写毫米（规划第六节）。 */
+const relative = (value: number) => (value * 10).toFixed(1);
 
 /** 反射法（内反射 / 表面反射）只练布置：谱图待核，记录为「仅布置练习」。 */
 export const isSetupOnly = (state: BenchState) => state.method !== 'transmission';
@@ -31,11 +36,11 @@ export function observationText({ state, evaluation, marks, bands, noAbsorption 
 }
 
 export function recordNotes(input: RecordInput): string {
-  const { state, evaluation, notes } = input;
+  const { state, evaluation, notes, sampleName } = input;
   const setupOnly = isSetupOnly(state);
-  return [observationText(input), `三维教学观察；${state.dispersion === 'prism' ? '棱镜式' : '光栅式'}；${BENCH_METHOD_LABELS[state.method]}`,
-    `亮度 ${Math.round(state.brightness * 100)}%；灯位 ${Math.round(state.lampLateral * 110)} mm / ${setupOnly ? '相对台面俯角' : '水平偏转'} ${state.lampAngle}°；样品横移 ${Math.round(state.sampleOffset * 35)} mm / 转角 ${state.sampleRotation}°`,
-    state.dispersion === 'prism' ? `狭缝 ${Math.round(state.slit * 100)}%；调焦 ${Math.round(state.focus * 100)}%` : '本机型狭缝与焦距固定',
+  return [observationText(input), `三维教学观察；${state.dispersion === 'prism' ? '棱镜式' : '光栅式'}；${BENCH_METHOD_LABELS[state.method]}${sampleName ? `；样品：${sampleName}` : ''}`,
+    `亮度 ${Math.round(state.brightness * 100)}%；灯位 ${relative(state.lampLateral)} / 10（${setupOnly ? '相对台面俯角' : '水平偏转'} ${state.lampAngle}°）；样品横移 ${relative(state.sampleOffset)} / 10、转角 ${state.sampleRotation}°`,
+    state.dispersion === 'prism' ? `狭缝 ${relative(state.slit)} / 10；调焦 ${relative(state.focus)} / 10` : '本机型狭缝与焦距固定',
     evaluation.lightPath === 'weak' ? '收光较弱：受限观察，需改善条件复核' : '',
     setupOnly ? '仅保存布置条件，未显示或推定该样品的反射光谱' : '', notes.trim()].filter(Boolean).join('；');
 }

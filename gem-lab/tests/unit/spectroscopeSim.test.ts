@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { COURSE_CONFIG } from "../../src/domain/spectroscopeCourse";
 import {
-  applyOperation, changeLabSample, courseInitialLab, courseView, emptyTaskData, labInitial, patchLab, readLabScene, readLearnScene, readTaskData,
+  applyOperation, changeLabMachine, changeLabSample, courseInitialLab, courseView, drawChallenge, emptyTaskData, labInitial, patchLab, readLabScene, readLearnScene, readTaskData,
 } from "../../src/domain/spectroscopeSim";
 
 const machine = "prism";
@@ -11,7 +11,7 @@ const start = () => ({ task: emptyTaskData(), scene: labInitial(machine) });
 
 test("任务状态：缺失或残缺的数据回落到初值，不认识的值不沿用", () => {
   const empty = readTaskData(undefined);
-  assert.deepEqual(empty.byVariant.prism, { partsSeen: [], casesSeen: [], answers: {}, continuousRecorded: false });
+  assert.deepEqual(empty.byVariant.prism, { partsSeen: [], casesSeen: [], answers: {}, continuousRecorded: false, completed: [] });
   assert.equal(empty.mode, null);
   assert.equal(empty.step, "parts");
   const broken = readTaskData({ mode: "guest", step: "bogus", hasSkipped: "yes", byVariant: { prism: { partsSeen: [7, "slitHousing"] } } });
@@ -150,4 +150,49 @@ test("课程操作同时写回任务与场景；改条件后标带与已保存�
   // 答题不改条件，已保存的记录不受影响。
   const answered = applyOperation(task, scene, machine, { type: "answer", id: "dispersion", option: 0 });
   assert.deepEqual(answered.scene.saved, { notes: "旧记录", stale: false, pending: false });
+});
+
+test("自由探索不写身份：没选讲师 / 学员时操作不把 mode 变成 student", () => {
+  let { task, scene } = start();
+  ({ task, scene } = applyOperation(task, scene, machine, { type: "see-part", id: parts[0] }));
+  assert.equal(task.mode, null, "点部件不该把自由探索变成学员课");
+  ({ task, scene } = applyOperation(task, scene, machine, { type: "slit", value: 0.3 }));
+  assert.equal(task.mode, null);
+});
+
+test("完成证据：重置画面前已完成的步骤算数，重新开始任务才清零", () => {
+  let { task, scene } = start();
+  for (const id of parts) ({ task, scene } = applyOperation(task, scene, machine, { type: "see-part", id }));
+  for (const id of COURSE_CONFIG.prism.cases.map((item) => item.id)) ({ task, scene } = applyOperation(task, scene, machine, { type: "see-case", id }));
+  ({ task, scene } = applyOperation(task, scene, machine, { type: "answer", id: "dispersion", option: 0 }));
+  assert.deepEqual(courseView(task, scene, machine, "learn").progress, { done: 2, total: 6 });
+  const wiped = { ...scene, bench: courseInitialLab(machine).bench, marks: [], checked: false };
+  const afterReset = courseView(task, wiped, machine, "learn");
+  assert.deepEqual(afterReset.progress, { done: 2, total: 6 }, "重置画面不该把做完的步骤退回去");
+  assert.equal(afterReset.allComplete, false);
+  const restarted = courseView(emptyTaskData(), wiped, machine, "learn");
+  assert.deepEqual(restarted.progress, { done: 0, total: 6 }, "重新开始任务才清零");
+});
+
+test("换机型：旧记录保留但标为过期；引导任务回到该机型的课程起点", () => {
+  const saved = { notes: "记一笔", stale: false, pending: false };
+  const scene = { ...labInitial("prism"), marks: [694], saved };
+  const free = changeLabMachine(scene, "grating");
+  assert.equal(free.bench.dispersion, "grating");
+  assert.deepEqual(free.marks, [694], "标记的 nm 波长不随机型改变");
+  assert.deepEqual(free.saved, { notes: "记一笔", stale: true, pending: false });
+  const guided = changeLabMachine(scene, "grating", true);
+  assert.equal(guided.bench.slit, 0.32, "引导任务回到光栅式课程起点");
+  assert.deepEqual(guided.saved, { notes: "记一笔", stale: true, pending: false });
+});
+
+test("挑战抽样存在场景里：换屏、换机型、任务重启都不丢；重置本屏才回到未抽取", () => {
+  const drawn = drawChallenge(labInitial("prism"), "prism", { difficulty: "intermediate", sampleId: "amethyst" });
+  assert.equal(drawn.difficulty, "intermediate");
+  assert.equal(drawn.sampleId, "amethyst");
+  const switched = changeLabMachine(drawn, "grating");
+  assert.equal(switched.sampleId, "amethyst");
+  assert.equal(switched.difficulty, "intermediate");
+  const reset = labInitial("prism");
+  assert.equal(reset.difficulty, null, "重置本屏回到未抽取");
 });

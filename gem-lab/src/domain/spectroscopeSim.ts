@@ -34,8 +34,6 @@ export interface SpectroscopeTaskData {
   step: StepId;
   hasSkipped: boolean;
   byVariant: Record<Machine, VariantTask>;
-  /** 挑战屏在本轮抽到的未知样品；未抽取时为 null。 */
-  challenge: ChallengeDraw | null;
 }
 
 export interface VariantTask {
@@ -43,12 +41,18 @@ export interface VariantTask {
   casesSeen: string[];
   answers: Record<string, number>;
   continuousRecorded: boolean;
+  /**
+   * 完成过的步骤（证据）。步骤的「当前是否满足」随画面条件实时判断，所以改条件、换机型或全部重置
+   * 都会让某些步骤暂时不满足；这里记下真正做完过的步骤，进度与「可以完成课程」据此判断，
+   * 不会因为一次重置把已完成的课程退回去。
+   */
+  completed: StepId[];
 }
 
-export const emptyVariantTask = (): VariantTask => ({ partsSeen: [], casesSeen: [], answers: {}, continuousRecorded: false });
+export const emptyVariantTask = (): VariantTask => ({ partsSeen: [], casesSeen: [], answers: {}, continuousRecorded: false, completed: [] });
 
 export function emptyTaskData(): SpectroscopeTaskData {
-  return { mode: null, step: 'parts', hasSkipped: false, byVariant: { prism: emptyVariantTask(), grating: emptyVariantTask() }, challenge: null };
+  return { mode: null, step: 'parts', hasSkipped: false, byVariant: { prism: emptyVariantTask(), grating: emptyVariantTask() } };
 }
 
 const STEP_IDS = COURSE_CONFIG.prism.steps.map((item) => item.id);
@@ -68,18 +72,14 @@ export function readTaskData(data: Record<string, unknown> | undefined): Spectro
       casesSeen: Array.isArray(slice.casesSeen) ? slice.casesSeen.filter((id): id is string => typeof id === 'string') : [],
       answers: slice.answers && typeof slice.answers === 'object' ? { ...slice.answers } as Record<string, number> : {},
       continuousRecorded: slice.continuousRecorded === true,
+      completed: Array.isArray(slice.completed) ? slice.completed.filter(isStepId) : [],
     };
   }
-  const raw = data.challenge as Partial<ChallengeDraw> | undefined;
-  const challenge = raw && isDifficulty(raw.difficulty) && SAMPLES.some((item) => item.id === raw.sampleId)
-    ? { difficulty: raw.difficulty, sampleId: raw.sampleId as string }
-    : null;
   return {
     mode: data.mode === 'student' || data.mode === 'teacher' ? data.mode : null,
     step: isStepId(data.step) ? data.step : base.step,
     hasSkipped: data.hasSkipped === true,
     byVariant,
-    challenge,
   };
 }
 
@@ -102,6 +102,8 @@ export interface LabScene extends Record<string, unknown> {
   beams: boolean; names: boolean; values: boolean;
   view: 'whole' | 'lamp' | 'sample' | 'instrument';
   saved: SavedRecord | null;
+  /** 挑战屏抽样的难度（只用在该屏）；未抽取为 null。抽到的样品就是场景的 sampleId。 */
+  difficulty: ChallengeDifficulty | null;
 }
 
 const VIEWS = ['whole', 'lamp', 'sample', 'instrument'] as const;
@@ -116,7 +118,7 @@ export function labInitial(machine: Machine, sampleId = 'ruby', method: BenchMet
     sampleId, method, dispersion: machine,
     bench: { ...createBenchState(machine), method, ...benchMethodSetup(method) },
     marks: [], bands: [], noAbsorption: false, notes: '', checked: false,
-    beams: true, names: false, values: true, view: 'whole', saved: null,
+    beams: true, names: false, values: true, view: 'whole', saved: null, difficulty: null,
   };
 }
 
@@ -153,7 +155,13 @@ export function readLabScene(scene: Record<string, unknown> | undefined, machine
     saved: raw.saved && typeof raw.saved === 'object' && typeof raw.saved.notes === 'string'
       ? { notes: raw.saved.notes, stale: raw.saved.stale === true, pending: raw.saved.pending === true }
       : null,
+    difficulty: isDifficulty(raw.difficulty) ? raw.difficulty : null,
   };
+}
+
+/** 挑战屏抽样：把抽到的样品与难度一起写进场景（换屏与任务重启都不丢，重置当前屏才回到未抽取）。 */
+export function drawChallenge(scene: LabScene, machine: Machine, draw: ChallengeDraw): LabScene {
+  return { ...labInitial(machine, draw.sampleId), difficulty: draw.difficulty };
 }
 
 /** 把任务切片与实验屏场景合成课程域认识的状态。 */
@@ -184,13 +192,18 @@ export function applyOperation(task: SpectroscopeTaskData, scene: LabScene, mach
     ...scene, bench, marks: next.marks, checked: next.checked,
     ...(changed ? { bands: [] as LabScene['bands'], noAbsorption: false, saved: scene.saved ? { ...scene.saved, stale: true } : null } : {}),
   };
+  const slice = task.byVariant[machine] ?? emptyVariantTask();
+  // 完成证据：把当前满足的步骤并进已完成列表（重置、换机型都不清）。
+  const done = configOf(next).steps.filter((item) => isComplete(next, item.id)).map((item) => item.id);
+  const completed = [...new Set([...slice.completed, ...done])];
   const byVariant = {
     ...task.byVariant,
     [machine]: {
-      partsSeen: next.partsSeen, casesSeen: next.casesSeen, continuousRecorded: next.continuousRecorded, answers: next.answers,
+      partsSeen: next.partsSeen, casesSeen: next.casesSeen, continuousRecorded: next.continuousRecorded, answers: next.answers, completed,
     },
   };
-  const taskNext: SpectroscopeTaskData = { ...task, mode: next.mode, step: next.step, hasSkipped: next.hasSkipped, byVariant };
+  // 未选讲师 / 学员时保持未选：自由探索不该被自动当成学员课。
+  const taskNext: SpectroscopeTaskData = { ...task, mode: task.mode, step: next.step, hasSkipped: next.hasSkipped, byVariant };
   return { task: advanceStep(taskNext, sceneNext, machine), scene: sceneNext };
 }
 
@@ -199,6 +212,16 @@ const sameBench = (a: BenchState, b: BenchState) => (Object.keys(b) as (keyof Be
 /** 换样品：清掉旧标记、标带、核对与补充说明，已保存的记录不再适用（同练习页）。 */
 export function changeLabSample(scene: LabScene, sampleId: string): LabScene {
   return { ...scene, sampleId, marks: [], bands: [], noAbsorption: false, checked: false, notes: '', saved: null };
+}
+
+/**
+ * 换机型：光谱刻度与可调部件都变了，已保存的记录只保留并标为过期；标记（nm 波长）与标带不受机型影响，照旧保留。
+ * guided 时工作台回到该机型的课程起点（两门课的起始条件不同）。
+ */
+export function changeLabMachine(scene: LabScene, machine: Machine, guided = false): LabScene {
+  const saved = scene.saved ? { ...scene.saved, stale: true } : null;
+  if (!guided) return { ...scene, bench: { ...scene.bench, dispersion: machine }, saved };
+  return { ...courseInitialLab(machine), saved, difficulty: scene.difficulty };
 }
 
 /** 引导任务的起始工作台：光源已开、未放样，狭缝与焦距（光栅式为亮度与对光）按课程标准故意不合适（与课程页一致）。 */
@@ -256,21 +279,24 @@ export interface CourseView {
 
 /** 任务卡要显示的一切：本屏当前步骤、清单、检查一下与总进度。 */
 export function courseView(task: SpectroscopeTaskData, scene: LabScene, machine: Machine, screen: SimScreenId): CourseView {
-  const merged = mergeCourse(task, scene, machine);
+  const slice = task.byVariant[machine] ?? emptyVariantTask();
+  const merged = { ...mergeCourse(task, scene, machine), byVariantCompleted: slice.completed };
   const config = configOf(merged);
   const own = config.steps.filter((item) => STEP_SCREEN[item.id] === screen);
   const hinted = own.find((item) => item.id === task.step && !isComplete(merged, item.id));
   const step = (hinted ?? own.find((item) => !isComplete(merged, item.id)) ?? own[own.length - 1]).id;
   const state: CourseState = { ...merged, step };
   const questionIds = step === 'explain' ? [...config.explainQuestions] : [config.stepQuestions[step as 'path' | 'light' | 'tune']].filter(Boolean);
+  // 进度按「做完过」判断：重置或换机型让当前条件不再满足时，已完成的事实仍然保留。
+  const done = (id: StepId) => merged.byVariantCompleted.includes(id) || isComplete(merged, id);
   return {
     state, config,
     items: courseChecklist(state).map((item) => ({ ...item })),
     questions: questionIds.map((id) => ({ id, label: QUESTION_SHORT[id] ?? id, done: state.answers[id] === QUESTIONS.find((q) => q.id === id)?.correct })),
-    progress: { done: config.steps.filter((item) => isComplete(merged, item.id)).length, total: config.steps.length },
-    screenDone: own.every((item) => isComplete(merged, item.id)),
-    allComplete: allComplete(merged),
-    nextScreen: config.steps.filter((item) => STEP_SCREEN[item.id] !== screen && !isComplete(merged, item.id)).map((item) => STEP_SCREEN[item.id])[0] ?? null,
+    progress: { done: config.steps.filter((item) => done(item.id)).length, total: config.steps.length },
+    screenDone: own.every((item) => done(item.id)),
+    allComplete: config.steps.every((item) => done(item.id)),
+    nextScreen: config.steps.filter((item) => STEP_SCREEN[item.id] !== screen && !done(item.id)).map((item) => STEP_SCREEN[item.id])[0] ?? null,
   };
 }
 

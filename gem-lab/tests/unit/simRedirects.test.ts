@@ -25,6 +25,13 @@ test("照明夹样练习页转入实验屏，保留样品、观察方法与机�
   assert.equal(to("/explore/spectroscope-bench", "?method=bogus&instrument=goniometer"), "/sim/spectroscope/lab");
 });
 
+test("尾斜杠按同一地址处理：旧练习页与两个探索页都照样重定向", () => {
+  assert.equal(to("/explore/spectroscope-bench/"), "/sim/spectroscope/lab");
+  assert.equal(to("/explore/spectroscope-bench//", "?sample=ruby"), "/sim/spectroscope/lab?sample=ruby");
+  assert.equal(to("/explore/optics/prism-spectroscope/"), "/sim/spectroscope/learn?machine=prism");
+  assert.equal(to("/explore/optics/grating-spectroscope/", "?course=basic&mode=student"), "/sim/spectroscope/learn?machine=grating&mode=student");
+});
+
 test("其他地址不改动：2D 演示与别的仪器照常", () => {
   assert.equal(to("/demo/spectroscope"), null);
   assert.equal(to("/explore/optics/refractometer"), null);

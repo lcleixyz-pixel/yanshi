@@ -35,8 +35,13 @@ export default function SpectroscopeLearnScreen({ sim, screen, onScreen, session
   const patchVariant = (next: Partial<LearnScene['byVariant'][Machine]>) => patch({ byVariant: { ...learn.byVariant, [machine]: { ...variant, ...next } } });
   const setMachine = (next: Machine) => dispatch({ type: 'patch-options', patch: { machine: next } });
   // 一次操作同时写回任务与场景（本屏只用得到 see-part / see-case / answer）。
+  // 用 ref 取最新会话状态：连点两下时第二下不会用上一次渲染的旧状态计算，进度不会丢。
+  const latest = useRef(session);
+  latest.current = session;
   const operate = (op: Parameters<typeof applyOperation>[3]) => {
-    const next = applyOperation(task, lab, machine, op);
+    const current = latest.current;
+    const machineNow = readMachine(current.options);
+    const next = applyOperation(readTaskData(current.task.data), readLabScene(current.scenes.lab, machineNow), machineNow, op);
     dispatch({ type: 'task-patch', patch: next.task as unknown as Record<string, unknown> });
   };
 

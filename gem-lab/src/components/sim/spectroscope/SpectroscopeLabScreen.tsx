@@ -8,12 +8,12 @@ import SpectroscopeTaskCard from './SpectroscopeTaskCard';
 import { useSpectroscopeBench, type BenchView } from './useSpectroscopeBench';
 import type { SimScreenProps } from '../registry';
 import { SAMPLES, SAMPLES_BY_ID } from '../../../data/samples';
-import { BENCH_METHOD_LABELS, BENCH_GEOMETRY, benchMethodSetup, type BenchMethod, type BenchState } from '../../../domain/spectroscopeBench';
+import { BENCH_METHOD_LABELS, benchMethodSetup, type BenchMethod, type BenchState } from '../../../domain/spectroscopeBench';
 import { IDEAL, MACHINE_LABELS, WEAK_LIGHT } from '../../../domain/spectroscopeCopy';
 import { isPendingReference } from '../../../domain/spectroscopeRecord';
 import { COURSE_SAMPLE } from '../../../domain/spectroscopeCourse';
 import {
-  applyOperation, changeLabSample, courseInitialLab, courseView, labInitial, patchLab, readLabScene, readMachine, readTaskData,
+  applyOperation, changeLabMachine, changeLabSample, courseInitialLab, courseView, labInitial, patchLab, readLabScene, readMachine, readTaskData,
   type LabScene, type Machine,
 } from '../../../domain/spectroscopeSim';
 import type { SpectroscopeData } from '../../../store/detectionStore';
@@ -41,8 +41,13 @@ export default function SpectroscopeLabScreen({ sim, screen, onScreen, session, 
 
   const patch = (next: Partial<LabScene>) => dispatch({ type: 'patch-scene', screen, patch: next });
   // 引导任务的课程操作（标记、核对、记录连续光谱、回答）与被引导时的滑杆都走课程域，进度才会记上。
+  // 用 ref 取最新会话状态：连点两下时第二下不会用上一次渲染的旧状态计算，进度不会丢。
+  const latest = useRef(session);
+  latest.current = session;
   const operate = (op: Parameters<typeof applyOperation>[3]) => {
-    const next = applyOperation(task, lab, machine, op);
+    const current = latest.current;
+    const machineNow = readMachine(current.options);
+    const next = applyOperation(readTaskData(current.task.data), readLabScene(current.scenes[screen], machineNow), machineNow, op);
     dispatch({ type: 'patch-scene', screen, patch: next.scene as unknown as Record<string, unknown> });
     dispatch({ type: 'task-patch', patch: next.task as unknown as Record<string, unknown> });
   };
@@ -72,7 +77,7 @@ export default function SpectroscopeLabScreen({ sim, screen, onScreen, session, 
     <>
       <SpectroscopeStage
         hostRef={hostRef} status={bench.status} error={bench.error} onRetry={bench.retry}
-        display={bench.evaluation.display} dispersion={machine} marks={lab.marks} interactive={mayObserve}
+        evaluation={bench.evaluation} dispersion={machine} marks={lab.marks} interactive={mayObserve}
         onAddMark={addMark} onRemoveMark={removeMark} values={lab.values}
       >
         <div className="sim-row">
@@ -123,7 +128,8 @@ export default function SpectroscopeLabScreen({ sim, screen, onScreen, session, 
       {recording && (
         <SpectroscopeRecord
           onClose={() => setRecording(false)} state={lab.bench} evaluation={bench.evaluation} marks={lab.marks} bands={lab.bands}
-          noAbsorption={lab.noAbsorption} notes={lab.notes} saved={lab.saved} ready={bench.status === 'ready'} guided={guided}
+          noAbsorption={lab.noAbsorption} notes={lab.notes} saved={lab.saved} ready={bench.status === 'ready'}
+          guided={guided} reviewed={lab.checked} sampleName={guided ? sample.name : undefined}
           onAddMark={addMark} onRemoveMark={removeMark}
           onAddBand={(band) => patch({ bands: [...lab.bands, band], noAbsorption: false, checked: false })}
           onRemoveBand={(index) => patch({ bands: lab.bands.filter((_, i) => i !== index), checked: false })}
@@ -141,10 +147,11 @@ export default function SpectroscopeLabScreen({ sim, screen, onScreen, session, 
     <>
       <SimPanel title="仪器" hint="三屏共用" testId="sim-panel-machine">
         <div className="sim-seg">
-          {MACHINES.map((item) => <button key={item} type="button" aria-pressed={item === machine} onClick={() => {
+          {MACHINES.map((item) => <button key={item} type="button" aria-pressed={item === machine} disabled={item === machine} onClick={() => {
             dispatch({ type: 'patch-options', patch: { machine: item } });
-            // 引导任务换机型：工作台回到该机型的课程起点（两门课的起始条件不同）。
-            if (guided) dispatch({ type: 'patch-scene', screen, patch: courseInitialLab(item) as unknown as Record<string, unknown> });
+            // 换机型：刻度与可调部件都变了，已保存的记录标为过期（标记的 nm 波长照旧）；
+            // 引导任务还要回到该机型的课程起点（两门课的起始条件不同）。
+            dispatch({ type: 'patch-scene', screen, patch: changeLabMachine(lab, item, guided) as unknown as Record<string, unknown> });
           }} data-testid={`sim-machine-${item}`}>{MACHINE_LABELS[item]}</button>)}
         </div>
         <p className="sim-note">{MACHINE_LABELS[machine]}分光镜：{machine === 'prism' ? '狭缝与焦距可调，红端压缩、紫端展开。' : '固定狭缝与焦距，刻度近似线性，整体较暗。'}</p>
@@ -183,7 +190,7 @@ export default function SpectroscopeLabScreen({ sim, screen, onScreen, session, 
       <SimPanel title="灯头" testId="sim-panel-lamp">
         <RangeControl label="灯头横移" min={-10} max={10} step={0.1} value={Number((lab.bench.lampLateral * 10).toFixed(1))} display={`${(lab.bench.lampLateral * 10).toFixed(1)} / 10`} ends={['左', '右']} onChange={(value) => setBench({ lampLateral: value / 10 })} />
         <RangeControl label={lab.bench.method === 'transmission' ? '灯头角度' : '灯头俯角（相对台面）'} min={lab.bench.method === 'transmission' ? -75 : 5} max={75} value={lab.bench.lampAngle} display={`${lab.bench.lampAngle}°`} ends={lab.bench.method === 'transmission' ? ['−75°', '75°'] : ['5°', '75°']} onChange={(lampAngle) => setBench({ lampAngle })} />
-        <p className="sim-note">灯头也可以在三维里左右拖动。示意起点：横移 {Math.round(benchMethodSetup(lab.bench.method).lampLateral * 110)} mm · {lab.bench.method === 'transmission' ? '水平偏转' : '相对台面俯角'} {benchMethodSetup(lab.bench.method).lampAngle}°（约 {Math.round(BENCH_GEOMETRY.scopeEntryDistance * 1000)} cm 处的教学示意，需按样品逐步寻找合适位置）。</p>
+        <p className="sim-note">灯头也可以在三维里左右拖动。示意起点：横移 {Math.round(benchMethodSetup(lab.bench.method).lampLateral * 10)} / 10 · {lab.bench.method === 'transmission' ? '水平偏转' : '相对台面俯角'} {benchMethodSetup(lab.bench.method).lampAngle}°。位置按相对刻度给出，未经实物标定；需按样品逐步寻找合适位置。</p>
         <div className="sim-row"><button type="button" className="iu-button" onClick={() => setBench(benchMethodSetup(lab.bench.method))}>摆到示意起点</button></div>
       </SimPanel>
       <SimPanel title="视角与显示" testId="sim-panel-display">
@@ -201,7 +208,12 @@ export default function SpectroscopeLabScreen({ sim, screen, onScreen, session, 
         <p>基于资料参考谱的教学模拟。三维光源、镊子与台面为教学示意；光量、可见性与刻度未作实物标定。记录观察不等同于掌握鉴定技能。</p>
         <p>透光太弱时整体偏暗、蓝紫端先变黑，不能当成蓝紫区强吸收：先加强照明或换个方向、换照明方法再看。</p>
       </details>
-      <ResetAllButton onReset={() => { setRecording(false); dispatch({ type: 'reset-scene', screen, initial: guided ? { ...courseInitialLab(machine), saved: lab.saved } as unknown as Record<string, unknown> : labInitial(machine, lab.sampleId, lab.bench.method) as unknown as Record<string, unknown> }); }} />
+      {/* 全部重置：只恢复本屏场景（观察条件随之改变），旧记录保留但标为过期；任务进度与学习记录不受影响。 */}
+      <ResetAllButton onReset={() => {
+        setRecording(false);
+        const reset = guided ? courseInitialLab(machine) : labInitial(machine, lab.sampleId, lab.bench.method);
+        dispatch({ type: 'reset-scene', screen, initial: { ...reset, saved: lab.saved ? { ...lab.saved, stale: true } : null } as unknown as Record<string, unknown> });
+      }} />
     </>
   );
 

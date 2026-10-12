@@ -8,7 +8,7 @@ import type { SimDef } from '../../../data/sims';
 import { SAMPLES_BY_ID } from '../../../data/samples';
 import { BENCH_METHOD_LABELS, benchMethodSetup, type BenchMethod, type BenchState } from '../../../domain/spectroscopeBench';
 import { MACHINE_LABELS } from '../../../domain/spectroscopeCopy';
-import { labInitial, patchLab, type LabScene, type Machine } from '../../../domain/spectroscopeSim';
+import { changeLabMachine, labInitial, patchLab, type LabScene, type Machine } from '../../../domain/spectroscopeSim';
 import type { SimScreenId } from '../../../domain/simSession';
 import type { SpectroscopeData } from '../../../store/detectionStore';
 import '../../../styles/spectroscope-sim.css';
@@ -21,7 +21,7 @@ const VIEWS: readonly (readonly [BenchView, string])[] = [['whole', '整体'], [
  * 挑战屏的工作台与记录：与实验屏同一套三维与记录流程，差别只在样品来源与保存去向。
  * 不显示品种名与参考资料（保存后由屏内决定是否揭示）；机型仍在面板里切换。
  */
-export default function SpectroscopeChallenge({ sim, machine, onMachine, scene, patch, unknown, reveal, reference, header, extraPanel, embedded, onScreen, onSave, onUse2D }: {
+export default function SpectroscopeChallenge({ sim, machine, onMachine, scene, patch, unknown, idle, reveal, reference, header, extraPanel, embedded, onScreen, onSave, onUse2D }: {
   sim: SimDef;
   machine: Machine;
   onMachine?: (machine: Machine) => void;
@@ -29,6 +29,8 @@ export default function SpectroscopeChallenge({ sim, machine, onMachine, scene, 
   patch: (next: Partial<LabScene>) => void;
   /** 未知样品：面板与读数里都不写品种名。 */
   unknown: boolean;
+  /** 还没抽样品（独立挑战的初始态）：不显示目镜视场。 */
+  idle?: boolean;
   /** 保存后揭示答案（独立挑战）；检测流程不揭示。 */
   reveal: boolean;
   /** 揭示时显示的对照资料。 */
@@ -55,10 +57,10 @@ export default function SpectroscopeChallenge({ sim, machine, onMachine, scene, 
     <>
       <SpectroscopeStage
         hostRef={hostRef} status={bench.status} error={bench.error} onRetry={bench.retry}
-        display={bench.evaluation.display} dispersion={machine} marks={scene.marks} interactive={mayObserve}
+        evaluation={bench.evaluation} dispersion={machine} marks={scene.marks} interactive={mayObserve}
         onAddMark={(wl) => patch({ marks: [...new Set([...scene.marks, Math.round(wl)])].sort((a, b) => b - a), noAbsorption: false, checked: false })}
         onRemoveMark={(wl) => patch({ marks: scene.marks.filter((value) => value !== wl), checked: false })}
-        values={scene.values}
+        values={scene.values} idle={idle}
       >
         <div className="sim-row">
           <button type="button" className="iu-button" onClick={() => setRecording(true)} data-testid="sim-spectro-record-open">记录观察</button>
@@ -95,7 +97,7 @@ export default function SpectroscopeChallenge({ sim, machine, onMachine, scene, 
       {extraPanel}
       <SimPanel title="仪器" hint="三屏共用" testId="sim-panel-machine">
         <div className="sim-seg">
-          {MACHINES.map((item) => <button key={item} type="button" aria-pressed={item === machine} onClick={() => (onMachine ? onMachine(item) : patch({ bench: { ...scene.bench, dispersion: item }, dispersion: item }))} data-testid={`sim-machine-${item}`}>{MACHINE_LABELS[item]}</button>)}
+          {MACHINES.map((item) => <button key={item} type="button" aria-pressed={item === machine} disabled={item === machine} onClick={() => (onMachine ? onMachine(item) : patch(changeLabMachine(scene, item) as unknown as Partial<LabScene>))} data-testid={`sim-machine-${item}`}>{MACHINE_LABELS[item]}</button>)}
         </div>
         <p className="sim-note">{MACHINE_LABELS[machine]}分光镜：{machine === 'prism' ? '狭缝与焦距可调，红端压缩、紫端展开。' : '固定狭缝与焦距，刻度近似线性，整体较暗。'}</p>
       </SimPanel>
@@ -135,7 +137,11 @@ export default function SpectroscopeChallenge({ sim, machine, onMachine, scene, 
           { id: 'values', label: '显示数值', checked: scene.values },
         ]} onChange={(id, checked) => patch(id === 'beams' ? { beams: checked } : { values: checked })} />
       </SimPanel>
-      <ResetAllButton onReset={() => { setRecording(false); patch({ ...labInitial(machine, scene.sampleId, scene.bench.method), saved: scene.saved } as unknown as Partial<LabScene>); }} />
+      {/* 全部重置：只恢复本屏场景；旧记录保留但标为过期，抽到的未知样品与难度照旧。 */}
+      <ResetAllButton onReset={() => {
+        setRecording(false);
+        patch({ ...labInitial(machine, scene.sampleId, scene.bench.method), difficulty: scene.difficulty, saved: scene.saved ? { ...scene.saved, stale: true } : null } as unknown as Partial<LabScene>);
+      }} />
     </>
   );
 

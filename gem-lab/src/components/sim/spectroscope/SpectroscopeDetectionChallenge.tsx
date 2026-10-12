@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import SpectroscopeChallenge from './SpectroscopeChallenge';
 import { SIMS } from '../../../data/sims';
-import { labInitial, type LabScene, type Machine } from '../../../domain/spectroscopeSim';
+import { changeLabMachine, labInitial, type LabScene, type Machine } from '../../../domain/spectroscopeSim';
 import { useDetection, type SpectroscopeData } from '../../../store/detectionStore';
 import '../../../styles/spectroscope-sim.css';
 
@@ -28,7 +28,12 @@ export default function SpectroscopeDetectionChallenge({ sampleId, onDetectionCo
 
   return (
     <SpectroscopeChallenge
-      sim={SIMS.spectroscope} machine={machine} onMachine={(next) => { setMachine(next); setScene((previous) => ({ ...labInitial(next, sampleId, previous.bench.method), saved: previous.saved })); }}
+      sim={SIMS.spectroscope} machine={machine}
+      onMachine={(next) => {
+        setMachine(next);
+        // 换机型：条件变了，旧记录只保留并标为过期；抽到的未知样品与观察方法不变。
+        setScene((previous) => ({ ...labInitial(next, sampleId, previous.bench.method), saved: previous.saved ? { ...previous.saved, stale: true } : null }));
+      }}
       scene={scene} patch={patch} unknown reveal={false} embedded onSave={save} onUse2D={onUse2D}
     />
   );

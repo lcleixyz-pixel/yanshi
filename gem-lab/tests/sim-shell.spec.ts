@@ -110,6 +110,9 @@ test("逐台迁移：分光镜旧入口重定向到仿真，其余仪器与 2D �
     ["/explore/optics/prism-spectroscope?course=basic&mode=student&step=tune", /\/sim\/spectroscope\/lab\?machine=prism&mode=student&step=tune$/],
     ["/explore/optics/grating-spectroscope?course=basic&mode=student", /\/sim\/spectroscope\/learn\?machine=grating&mode=student$/],
     ["/explore/spectroscope-bench?sample=ruby&method=internal-reflection", /\/sim\/spectroscope\/lab\?sample=ruby&method=internal-reflection$/],
+    // 尾斜杠也是同一个地址，不能漏到旧页面。
+    ["/explore/spectroscope-bench/", /\/sim\/spectroscope\/lab$/],
+    ["/explore/optics/prism-spectroscope/", /\/sim\/spectroscope\/learn\?machine=prism$/],
   ] as const) {
     await page.goto(from);
     await expect(page).toHaveURL(target);

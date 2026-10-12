@@ -37,7 +37,11 @@ test("独立挑战：抽未知样品全程不显示品种名，保存核对后�
   await ready(page);
   await expect(page.getByTestId("sim-shell")).toHaveAttribute("data-screen", "challenge");
   await expect(page.getByTestId("sim-spectro-unknown")).toBeVisible();
+  // 还没抽样品：不显示目镜视场。
+  await expect(page.getByTestId("sim-spectro-idle")).toBeVisible();
+  await expect(page.getByTestId("sim-spectro-field")).toHaveCount(0);
   await page.getByTestId("sim-challenge-beginner").click();
+  await expect(page.getByTestId("sim-spectro-idle")).toHaveCount(0);
   await expect(page.getByTestId("sim-challenge-beginner")).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByTestId("sim-spectro-answer")).toHaveCount(0);
   // 摆好光路并留下一笔观察，保存前不揭示答案。
@@ -61,6 +65,29 @@ test("独立挑战：抽未知样品全程不显示品种名，保存核对后�
   // 本屏记录不进检测存储：独立挑战不碰检测会话。
   expect(await page.evaluate(() => sessionStorage.getItem("gem-lab-detection-v1"))).toBeNull();
   await expect(page.getByTestId("sim-challenge-detection")).toHaveAttribute("href", "/detection");
+});
+
+test("重新开始任务不清掉抽样身份：挑战的样品与已保存记录始终对得上", async ({ page }) => {
+  await page.goto("/sim/spectroscope/challenge");
+  await ready(page);
+  await page.getByTestId("sim-challenge-beginner").click();
+  await page.getByTestId("sim-bench-power").click();
+  await page.getByTestId("sim-bench-place").click();
+  await openRecord(page);
+  await page.getByTestId("sim-record-no-absorption").check();
+  await review(page);
+  await page.getByTestId("sim-record-save").click();
+  await page.getByTestId("sim-record-close").click();
+  const answer = (await page.getByTestId("sim-spectro-answer").locator("strong").textContent())!;
+  // 去实验屏开始学员任务并「重新开始任务」：任务进度清空，挑战的抽样身份与记录照旧。
+  await page.getByTestId("sim-screen-lab").click();
+  await page.getByTestId("sim-task-student").click();
+  await page.getByTestId("sim-task-restart").click();
+  await page.getByTestId("sim-screen-challenge").click();
+  await expect(page.getByTestId("sim-challenge-beginner")).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByTestId("sim-record-saved")).toHaveCount(0);
+  await expect(page.getByTestId("sim-spectro-answer").locator("strong")).toHaveText(answer);
+  expect(await page.locator("body").textContent()).not.toContain("红宝石");
 });
 
 test("检测流程内联：不显示屏幕导航、不揭示身份，保存逐字写回检测记录", async ({ page }) => {
@@ -93,15 +120,23 @@ test("检测流程内联：不显示屏幕导航、不揭示身份，保存逐�
   expect(saved.spectroscope.markedLines).toEqual([694]);
   expect(saved.spectroscope.bandRanges).toEqual([{ start: 535, end: 575 }]);
   expect(saved.spectroscope.notes).toContain("三维教学观察；棱镜式；透射观察");
+  // 位置一律写 0–10 相对刻度，不再出现毫米。
+  expect(saved.spectroscope.notes).toContain("狭缝 3.2 / 10");
+  expect(saved.spectroscope.notes).not.toContain("mm");
   expect(saved.instrumentsUsed).toContain("spectroscope");
 });
 
 test("检测流程：未核定参考谱只保存待核说明，不计有效观察", async ({ page }) => {
   await detectionSample(page, "tourmaline");
   await expect(page.locator("body")).not.toContainText("碧玺");
-  await expect(page.getByTestId("sim-spectro-status")).toContainText("光没有穿过样品");
+  // 未开灯时说未开灯，不说「只看到连续光谱」；待核也写在状态行里。
+  await expect(page.getByTestId("sim-spectro-status")).toContainText("光源尚未开启");
   await page.getByTestId("sim-bench-power").click();
+  await expect(page.getByTestId("sim-spectro-status")).toContainText("样品尚未放入光路");
   await page.getByTestId("sim-bench-place").click();
+  // 待核：读数框写明参考谱待核，不把空白写成「无特征」。
+  await expect(page.getByTestId("sim-spectro-field")).toContainText("参考谱待核定");
+  await expect(page.getByTestId("sim-spectro-nospectrum")).toContainText("参考谱尚未核定");
   await openRecord(page);
   await review(page);
   await expect(page.getByTestId("sim-record-confirm")).toContainText("仅作待核说明，不计有效观察");

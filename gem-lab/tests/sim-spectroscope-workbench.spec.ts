@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { SAMPLES } from "../src/data/samples";
 
 const route = "/sim/spectroscope/lab";
 const canvas = (page: Page) => page.getByTestId("spectroscope-bench-canvas");
@@ -29,6 +30,7 @@ async function prepare(page: Page) {
   await page.getByTestId("sim-bench-place").click();
 }
 const openRecord = (page: Page) => page.getByTestId("sim-spectro-record-open").click();
+const review = (page: Page) => page.getByTestId("sim-record-review").click();
 
 test.beforeEach(async ({ page }) => {
   test.setTimeout(120_000);
@@ -107,7 +109,7 @@ test("反射照明在样品两侧上方布置，缺少方法证据只保存布�
 
 test("先记录后对照：改变条件保留旧记录但不能自动恢复确认", async ({ page }) => {
   await open(page, "?sample=amethyst");
-  await expect(page.getByTestId("sim-sample-select").locator("option")).toHaveCount((await page.getByTestId("sim-sample-select").locator("option").count()));
+  await expect(page.getByTestId("sim-sample-select").locator("option")).toHaveCount(SAMPLES.length);
   await expect(page.getByTestId("sim-record-reference")).toHaveCount(0);
   await prepare(page);
   await openRecord(page);
@@ -259,8 +261,8 @@ test("光栅式引导任务学员：固定狭缝焦距，靠亮度与对准排�
   await expect(task(page)).toContainText("标记吸收特征");
   for (const wl of [694, 580, 476]) await mark(page, wl, "grating");
   await openRecord(page);
+  await review(page);
   await expect(page.getByTestId("marks-feedback")).toContainText("找到 3 组诊断特征");
-  await page.getByTestId("sim-record-review").click();
   await page.getByTestId("sim-record-save").click();
   await page.getByTestId("sim-record-close").click();
   await expect(task(page)).toContainText("解释与适用条件");
@@ -304,6 +306,9 @@ test("棱镜视场里 694 / 692 看成一条细线；核对不足三组时给出
   await mark(page, 694);
   await mark(page, 530);
   await openRecord(page);
+  // 核对前不给答案；核对后才给出分组与「附近没有吸收特征」。
+  await expect(page.getByTestId("marks-feedback")).toHaveCount(0);
+  await review(page);
   await expect(page.getByTestId("marks-feedback")).toContainText("至少需要 3 组");
   await expect(page.getByTestId("marks-feedback")).toContainText("附近没有吸收特征");
   await page.getByTestId("sim-record-close").click();

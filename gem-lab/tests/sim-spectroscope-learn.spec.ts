@@ -135,6 +135,21 @@ test("换屏与全部重置：认识屏的场景各屏独立，重置不动任�
   await expect(task(page)).toContainText("点选关键部件 1 / 5");
 });
 
+test("自由探索不会被当成学员课：点部件、看光路都还留在身份选择前", async ({ page }) => {
+  await page.goto(route);
+  await ready(page);
+  await expect(page.getByTestId("sim-task-student")).toBeVisible();
+  await page.getByTestId("sim-part-slitHousing").click();
+  await page.getByTestId("sim-spectro-case-select").selectOption("wavelength-550");
+  // 身份没选，就不进入引导任务：选择仍在，任务卡不出现步骤清单。
+  await expect(page.getByTestId("sim-task-student")).toBeVisible();
+  await expect(page.getByTestId("sim-task")).not.toContainText("点选关键部件");
+  // 实验屏也照旧是自由练习（样品可选、观察方式可换）。
+  await page.getByTestId("sim-screen-lab").click();
+  await expect(page.getByTestId("sim-sample-select")).toBeVisible();
+  await expect(page.getByTestId("sim-method-surface-reflection")).toBeEnabled();
+});
+
 test("窄屏：认识屏无横向溢出，控制面板与任务卡收为抽屉且不叠放", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(`${route}?mode=student`);

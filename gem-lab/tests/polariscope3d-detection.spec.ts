@@ -1,13 +1,20 @@
 import { expect, test, type Page } from '@playwright/test';
+import { useCiSceneQuality } from './fixtures/polariscope';
 
 test.setTimeout(120_000);
 
-async function openPolariscopeDetection(page: Page) {
+async function openPolariscopeDetection(page: Page, useStandardQuality = false) {
   await page.goto('/detection');
   await page.getByTestId('difficulty-beginner').click();
   await page.getByRole('button', { name: '🎲 抽取样品' }).click();
   await page.getByRole('button', { name: /偏光镜/ }).click();
   await expect(page.getByTestId('polariscope-detection-3d')).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByRole('combobox', { name: '三维画质', exact: true })).toHaveValue('high');
+  if (useStandardQuality) {
+    await page.getByRole('combobox', { name: '三维画质', exact: true }).selectOption('standard');
+  } else {
+    await useCiSceneQuality(page);
+  }
   await expect(page.getByTestId('polariscope-scene')).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
 }
 
@@ -16,8 +23,13 @@ test('3D detection unlocks steps in order and saves the same record as the 2D de
   await page.goto('/demo/polariscope');
   const sampleNames = (await page.locator('select option').allInnerTexts()).map((name) => name.trim()).filter(Boolean);
   expect(sampleNames.length).toBeGreaterThan(20);
-  await openPolariscopeDetection(page);
+  await openPolariscopeDetection(page, true);
   const detection = page.getByTestId('polariscope-detection-3d');
+  const canvas = page.getByTestId('polariscope-canvas');
+  await expect(canvas).toHaveAttribute('data-quality', 'standard');
+  await expect(canvas).toHaveAttribute('data-loaded', 'true');
+  await expect(canvas).toHaveAttribute('data-parts', '8');
+  await expect(canvas).toHaveAttribute('data-shadows', 'false');
   await expect(detection).toHaveAttribute('data-step', 'power');
   // 不出现讲解、揭晓或动作提示。
   await expect(page.getByTestId('sample-reveal')).toHaveCount(0);

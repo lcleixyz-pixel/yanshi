@@ -40,6 +40,7 @@ export default function PolariscopeDetection3D({ sampleId, onDetectionComplete, 
   const profile = getPolariscopeProfile(sampleId)!;
   const [state, setState] = useState<PolariscopeStructureState>(() => createInitialStructureState({ lesson: 'components', power: false, analyzerAngle: 0, showAnnotations: false, sampleId, orientation: 'general' }));
   const [sceneStatus, setSceneStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [quality, setQuality] = useState<'standard' | 'high'>('high');
   const [fieldCanvas, setFieldCanvas] = useState<HTMLCanvasElement | null>(null);
   const [fieldVersion, setFieldVersion] = useState(0);
   const [reaction, setReaction] = useState<Reaction | null>(null);
@@ -104,7 +105,7 @@ export default function PolariscopeDetection3D({ sampleId, onDetectionComplete, 
         <section className="pol-explore relative min-h-[560px] overflow-hidden rounded-2xl ring-1 ring-line" aria-label="偏光镜三维检测台" style={{ minHeight: 'min(720px, calc(100dvh - 120px))' }}>
           <div className="pol-explore__viewport" style={{ position: 'absolute', inset: 0, border: 0 }}>
             <div className="pol-explore__scene">
-              <PolariscopeScene state={state} quality="high" resetViewKey={0} viewPreset="free" onSelectPart={() => {}} onAngleChange={changeAngle} onPowerChange={(power) => update({ power })} onStatus={setSceneStatus} field={field} focusOnSelect={false} />
+              <PolariscopeScene state={state} quality={quality} resetViewKey={0} viewPreset="free" onSelectPart={() => {}} onAngleChange={changeAngle} onPowerChange={(power) => update({ power })} onStatus={setSceneStatus} field={field} focusOnSelect={false} />
             </div>
             <div className="pol-explore__eyepiece-dock" style={{ top: 20 }}>
               <EyepieceView content={eyepiece} stageDeg={state.stageAngle} analyzerDeg={state.analyzerAngle} active={optics.active} label={placed ? '目镜视场 · 未知样品' : '目镜视场 · 空载'} onRendered={onRendered} onCanvas={setFieldCanvas} />
@@ -123,6 +124,11 @@ export default function PolariscopeDetection3D({ sampleId, onDetectionComplete, 
             ))}</ol>
           </div>
           <div className="space-y-3 text-sm">
+            <label className="flex items-center justify-between gap-3"><span className="text-ink-2">三维画质</span>
+              <select value={quality} onChange={(event) => setQuality(event.target.value as 'standard' | 'high')} aria-label="三维画质" className="rounded-lg border border-line-2 bg-white px-3 py-2">
+                <option value="high">精细画质</option><option value="standard">流畅画质</option>
+              </select>
+            </label>
             <label className="flex items-center justify-between gap-3"><span className="text-ink-2">电源</span>
               <button role="switch" aria-checked={state.power} aria-label="电源开关" onClick={() => update({ power: !state.power })} className={`rounded-full px-3 py-1 text-xs ${state.power ? 'bg-polariscope text-white' : 'bg-line text-ink-3'}`}>{state.power ? '已开启' : '已关闭'}</button>
             </label>

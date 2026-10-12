@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { useCiSceneQuality } from './fixtures/polariscope';
 
 const legacySession = {
   difficulty: 'beginner',
@@ -139,6 +140,7 @@ test('an unverified spectrum does not satisfy the two-observation gate and a rec
   expect(await savedSession(page)).toEqual(session);
   await page.getByRole('link', { name: '返回检测流程' }).click();
   await page.getByRole('button', { name: /偏光镜/ }).click();
+  await useCiSceneQuality(page);
   await expect(page.getByTestId('polariscope-scene')).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
   if (process.env.CI_WEBGL_BACKEND === 'mesa') {
     // 在离开三维页前核验，避免收尾时已到评估页而漏查渲染后端。

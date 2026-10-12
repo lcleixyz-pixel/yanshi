@@ -3,7 +3,7 @@ import { SimPanel } from '../SimShell';
 import SpectroscopeChallenge from './SpectroscopeChallenge';
 import type { SimScreenProps } from '../registry';
 import { SAMPLES_BY_DIFFICULTY, SAMPLES_BY_ID } from '../../../data/samples';
-import { changeLabMachine, drawChallenge, labInitial, readLabScene, readMachine, DIFFICULTY_LABELS, type ChallengeDifficulty, type LabScene } from '../../../domain/spectroscopeSim';
+import { changeLabMachine, drawChallenge, readLabScene, readMachine, DIFFICULTY_LABELS, type ChallengeDifficulty, type LabScene } from '../../../domain/spectroscopeSim';
 import type { SpectroscopeData } from '../../../store/detectionStore';
 
 const DIFFICULTIES: readonly ChallengeDifficulty[] = ['beginner', 'intermediate', 'advanced'];

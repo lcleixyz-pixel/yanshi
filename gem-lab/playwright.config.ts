@@ -12,7 +12,8 @@ export default defineConfig({
   },
   fullyParallel: true,
   workers: process.env.CI ? 4 : 4,
-  reporter: process.env.CI ? [['github'], ['json', { outputFile: 'test-results/results.json' }]] : 'list',
+  // Emit each test start on its own line so a hung worker is identifiable in CI.
+  reporter: process.env.CI ? [['line'], ['github'], ['json', { outputFile: 'test-results/results.json' }]] : 'list',
   use: {
     baseURL: 'http://127.0.0.1:4173',
     trace: 'retain-on-failure',

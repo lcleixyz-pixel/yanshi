@@ -146,6 +146,7 @@ jobs:
       LIBGL_ALWAYS_SOFTWARE: 'true'
       GALLIUM_DRIVER: llvmpipe
       PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/instruments/results.json
+      DEBUG: pw:browser
 
     steps:
       - uses: actions/checkout@v4
@@ -173,13 +174,24 @@ jobs:
           xvfb-run --auto-servernum glxinfo -B
           xvfb-run --auto-servernum npx playwright test tests/optics3d.spec.ts tests/microscope3d.spec.ts tests/refractometer3d-course.spec.ts tests/spectroscope-grating.spec.ts tests/spectroscope-library.spec.ts tests/instrument-ui.spec.ts tests/sim-shell.spec.ts tests/sim-spectroscope-learn.spec.ts tests/sim-spectroscope-lab.spec.ts tests/sim-spectroscope-challenge.spec.ts tests/sim-spectroscope-workbench.spec.ts tests/sim-spectroscope-acceptance.spec.ts \
             --workers=1 --max-failures=1 --output=test-results/instruments
+          test -s test-results/instruments/results.json
+
+      - name: Capture browser process state
+        if: always()
+        run: |
+          mkdir -p test-results/instrument-diagnostics
+          date -u > test-results/instrument-diagnostics/processes.txt
+          ps -eo pid,ppid,stat,pcpu,rss,time,comm | awk 'NR == 1 || $7 ~ /^(node|chrome|chromium|Xvfb)/' >> test-results/instrument-diagnostics/processes.txt
+          cat test-results/instrument-diagnostics/processes.txt
 
       - name: Save instrument browser evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: instrument-browser-evidence
-          path: gem-lab/test-results/instruments/
+          path: |
+            gem-lab/test-results/instruments/
+            gem-lab/test-results/instrument-diagnostics/
           if-no-files-found: error
           retention-days: 14
 

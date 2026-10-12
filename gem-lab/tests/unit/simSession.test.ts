@@ -27,7 +27,7 @@ test("全部重置只恢复当前屏场景，不动其他屏和任务进度、�
     { type: "reset-scene", screen: "lab", initial });
   assert.equal(s.scenes.lab?.lamp, 0);
   assert.equal(s.scenes.learn?.lamp, 3);
-  assert.deepEqual(s.task, { open: true, done: ["a"], hasSkipped: true, teacherUsed: true });
+  assert.deepEqual(s.task, { open: true, done: ["a"], hasSkipped: true, teacherUsed: true, data: {} });
 });
 
 test("重置得到初始场景的副本，之后修改不会改动初始值", () => {
@@ -41,8 +41,30 @@ test("收起任务卡只隐藏，不清进度；重新开始任务清进度与�
   assert.equal(s.task.open, false);
   assert.deepEqual(s.task.done, ["a"]);
   s = simReducer(s, { type: "task-restart" });
-  assert.deepEqual(s.task, { open: true, done: [], hasSkipped: false, teacherUsed: true });
+  assert.deepEqual(s.task, { open: true, done: [], hasSkipped: false, teacherUsed: true, data: {} });
   assert.equal(s.scenes.learn?.lamp, 5);
+});
+
+test("会话选项与任务自有状态：换屏与全部重置都不动，重新开始任务清任务状态", () => {
+  const s = run(createSimSession("learn", { learn: initial, lab: initial }, true, { options: { machine: "prism" }, taskData: { step: "parts" } }),
+    { type: "patch-options", patch: { machine: "grating" } },
+    { type: "task-patch", patch: { step: "path", answers: { q1: 0 } } },
+    { type: "patch-scene", screen: "learn", patch: { lamp: 9 } },
+    { type: "reset-scene", screen: "learn", initial });
+  assert.equal(s.options.machine, "grating");
+  assert.deepEqual(s.task.data, { step: "path", answers: { q1: 0 } });
+  const restarted = simReducer(s, { type: "task-restart" });
+  assert.deepEqual(restarted.task.data, {});
+  assert.deepEqual(restarted.options, { machine: "grating" });
+  assert.deepEqual(restarted.scenes.learn, initial);
+});
+
+test("初始场景与任务自有状态都是副本，之后修改不会改动传入值", () => {
+  const taskData = { step: "parts" };
+  const s = run(createSimSession("learn", { learn: initial }, true, { taskData }),
+    { type: "task-patch", patch: { step: "path" } });
+  assert.equal(taskData.step, "parts");
+  assert.equal(s.task.data.step, "path");
 });
 
 test("地址里不认识或该仿真没有的屏幕，退回第一块可用屏幕", () => {

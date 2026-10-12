@@ -21,29 +21,40 @@ export interface SimTaskState {
   hasSkipped: boolean;
   /** 本轮是否用过讲师演示（用过则不写入学员学习记录）。 */
   teacherUsed: boolean;
+  /** 任务自有状态（分光镜：机型切片、当前步骤、讲师 / 学员）；「重新开始任务」清空，换屏与全部重置不动。 */
+  data: SimScene;
 }
 
 export interface SimSession {
   screen: SimScreenId;
   scenes: Partial<Record<SimScreenId, SimScene>>;
   task: SimTaskState;
+  /** 会话级选项（分光镜：机型），跨屏共享；「全部重置」不动它。 */
+  options: SimScene;
 }
 
-export const EMPTY_TASK: SimTaskState = { open: true, done: [], hasSkipped: false, teacherUsed: false };
+export const EMPTY_TASK: SimTaskState = { open: true, done: [], hasSkipped: false, teacherUsed: false, data: {} };
 
 /** taskOpen：任务卡初始是否展开（手机上默认收起为一行，避免盖住操作区）。 */
-export function createSimSession(screen: SimScreenId, initialScenes: Partial<Record<SimScreenId, SimScene>>, taskOpen = true): SimSession {
-  return { screen, scenes: structuredClone(initialScenes), task: { ...EMPTY_TASK, open: taskOpen } };
+export function createSimSession(screen: SimScreenId, initialScenes: Partial<Record<SimScreenId, SimScene>>, taskOpen = true, init?: { options?: SimScene; taskData?: SimScene }): SimSession {
+  return {
+    screen,
+    scenes: structuredClone(initialScenes),
+    task: { ...EMPTY_TASK, open: taskOpen, data: structuredClone(init?.taskData ?? {}) },
+    options: structuredClone(init?.options ?? {}),
+  };
 }
 
 export type SimAction =
   | { type: 'screen'; screen: SimScreenId }
   | { type: 'patch-scene'; screen: SimScreenId; patch: SimScene }
   | { type: 'reset-scene'; screen: SimScreenId; initial: SimScene }
+  | { type: 'patch-options'; patch: SimScene }
   | { type: 'task-open'; open: boolean }
   | { type: 'task-done'; id: string }
   | { type: 'task-skip' }
   | { type: 'task-teacher' }
+  | { type: 'task-patch'; patch: SimScene }
   | { type: 'task-restart' };
 
 export function simReducer(s: SimSession, action: SimAction): SimSession {
@@ -51,11 +62,13 @@ export function simReducer(s: SimSession, action: SimAction): SimSession {
     case 'screen': return action.screen === s.screen ? s : { ...s, screen: action.screen };
     case 'patch-scene': return { ...s, scenes: { ...s.scenes, [action.screen]: { ...s.scenes[action.screen], ...action.patch } } };
     case 'reset-scene': return { ...s, scenes: { ...s.scenes, [action.screen]: structuredClone(action.initial) } };
+    case 'patch-options': return { ...s, options: { ...s.options, ...action.patch } };
     case 'task-open': return { ...s, task: { ...s.task, open: action.open } };
     case 'task-done': return s.task.done.includes(action.id) ? s : { ...s, task: { ...s.task, done: [...s.task.done, action.id] } };
-    case 'task-skip': return { ...s, task: { ...s.task, hasSkipped: true } };
+    case 'task-skip': return s.task.hasSkipped ? s : { ...s, task: { ...s.task, hasSkipped: true } };
     case 'task-teacher': return s.task.teacherUsed ? s : { ...s, task: { ...s.task, teacherUsed: true } };
-    // 重新开始：清进度与跳步；讲师使用记录保留（同一轮里用过讲师演示，仍不写入学员记录）。
+    case 'task-patch': return { ...s, task: { ...s.task, data: { ...s.task.data, ...action.patch } } };
+    // 重新开始：清进度、跳步与任务自有状态；讲师使用记录保留（同一轮里用过讲师演示，仍不写入学员记录）。
     case 'task-restart': return { ...s, task: { ...EMPTY_TASK, open: true, teacherUsed: s.task.teacherUsed } };
   }
 }

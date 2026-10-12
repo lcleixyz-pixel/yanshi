@@ -21,7 +21,10 @@ async function openPolariscopeDetection(page: Page, useStandardQuality = false) 
 test('3D detection unlocks steps in order and saves the same record as the 2D detection mode', async ({ page }) => {
   // 样品库全部名称（取自 2D 演示的样品选择器），用于确认检测页不泄露样品名。
   await page.goto('/demo/polariscope');
-  const sampleNames = (await page.locator('select option').allInnerTexts()).map((name) => name.trim()).filter(Boolean);
+  const sampleOptions = page.locator('select option');
+  // 路由懒加载完成后再读取；allInnerTexts 本身不会等待选项出现。
+  await expect.poll(() => sampleOptions.count()).toBeGreaterThan(20);
+  const sampleNames = (await sampleOptions.allInnerTexts()).map((name) => name.trim()).filter(Boolean);
   expect(sampleNames.length).toBeGreaterThan(20);
   await openPolariscopeDetection(page, true);
   const detection = page.getByTestId('polariscope-detection-3d');

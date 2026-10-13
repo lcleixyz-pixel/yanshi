@@ -5,6 +5,7 @@ import { polariscopeInitial } from '../../domain/polariscopeSim';
 import { refractometerInitial, refractometerSessionReducer } from '../../domain/refractometerSession';
 import { spectroscopeInitial } from '../../domain/spectroscopeSim';
 import { spectroscopeSessionReducer } from '../../domain/spectroscopeSession';
+import MicroscopeLearnScreen from './microscope/MicroscopeLearnScreen';
 import PolariscopeChallengeScreen from './polariscope/PolariscopeChallengeScreen';
 import PolariscopeLabScreen from './polariscope/PolariscopeLabScreen';
 import PolariscopeLearnScreen from './polariscope/PolariscopeLearnScreen';
@@ -44,6 +45,11 @@ export const SIM_IMPLEMENTATIONS: Partial<Record<SimId, SimImplementation>> = {
   polariscope: {
     initial: polariscopeInitial,
     screens: { learn: PolariscopeLearnScreen, lab: PolariscopeLabScreen, challenge: PolariscopeChallengeScreen },
+  },
+  // 显微镜只有认识屏，仪器状态由三维查看器自己管理，会话里不存场景。
+  microscope: {
+    initial: () => ({ scenes: { learn: {} }, options: {}, taskData: {} }),
+    screens: { learn: MicroscopeLearnScreen },
   },
   spectroscope: {
     initial: spectroscopeInitial,

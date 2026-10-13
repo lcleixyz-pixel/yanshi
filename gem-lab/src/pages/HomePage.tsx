@@ -58,7 +58,7 @@ export default function HomePage() {
           <ProgressChip label="掌握" value={`${masteredCount}/${SAMPLES.length}`} />
           <ProgressChip label="积分" value={`${totalPoints}`} highlight />
           <Link
-            to="/explore/microscope"
+            to="/sim/microscope/learn"
             data-testid="home-microscope-link"
             className="rounded-lg border border-white/15 bg-white/10 px-3 py-2 text-xs font-medium text-white transition hover:bg-white/20"
           >
@@ -162,7 +162,7 @@ export default function HomePage() {
               <span aria-hidden="true" className="text-lab-cyan">→</span>
             </Link>
           ))}
-          <Link to="/explore/microscope" className="flex items-center justify-between rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/20">
+          <Link to="/sim/microscope/learn" className="flex items-center justify-between rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/20">
             <span><span className="mr-2 font-mono text-xs text-lab-cyan">3D</span>宝石显微镜</span>
             <span aria-hidden="true" className="text-lab-cyan">→</span>
           </Link>

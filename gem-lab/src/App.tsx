@@ -33,7 +33,7 @@ export default function App() {
         <Route path="/knowledge/:instrumentId" element={<KnowledgeBasePage />} />
         <Route path="/demo/:instrumentId" element={<InteractiveDemoPage />} />
         <Route path="/explore/polariscope" element={<LegacySimRedirect><PolariscopeExplorePage /></LegacySimRedirect>} />
-        <Route path="/explore/microscope" element={<MicroscopeExplorePage />} />
+        <Route path="/explore/microscope" element={<LegacySimRedirect><MicroscopeExplorePage /></LegacySimRedirect>} />
         {/* 已迁入仿真的仪器：旧入口转到新地址（保留参数）；未迁入的照常渲染原页面。 */}
         <Route path="/explore/optics/:instrumentId" element={<LegacySimRedirect><OpticsExplorePage /></LegacySimRedirect>} />
         <Route path="/explore/spectroscope-bench" element={<LegacySimRedirect><SpectroscopePractice3D /></LegacySimRedirect>} />

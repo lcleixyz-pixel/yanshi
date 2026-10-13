@@ -8,7 +8,8 @@ import { legacySimRedirect } from '../domain/simRedirects';
  * 见 docs/整体重构规划-PhET风格-2026-10-11.md 第六节第 5 条。
  */
 export default function LegacySimRedirect({ children }: { children: ReactNode }) {
-  const { pathname, search } = useLocation();
+  const { pathname, search, hash } = useLocation();
   const to = legacySimRedirect(pathname, search);
-  return to ? <Navigate to={`${to}`} replace /> : <>{children}</>;
+  // 地址里的 #…（显微镜的相机深链 #cam=）原样带到新地址。
+  return to ? <Navigate to={`${to}${hash}`} replace /> : <>{children}</>;
 }

@@ -19,37 +19,7 @@ test("仿真地址：未写屏幕时进入第一块屏幕，底部导航标出�
   await expect(page).toHaveURL(/\/$/);
 });
 
-test("占位屏演练外壳规则：工具可拖入或点选后放置；全部重置只恢复场景，任务进度保留", async ({ page }) => {
-  // 只剩显微镜是占位屏（一块屏）；换屏保留场景由各仪器的 spec 与 simSession 单元测试覆盖。
-  await page.goto("/sim/microscope/learn");
-  await page.getByTestId("sim-tool-sample").click();
-  await expect(page.getByTestId("sim-toolbox")).toContainText("点操作区放置「样品」");
-  await page.getByTestId("sim-drop").click();
-  await expect(page.getByTestId("sim-placed-sample")).toBeVisible();
-  await expect(page.getByTestId("sim-tool-sample")).toBeDisabled();
-  await page.getByTestId("sim-check-names").check();
-  await expect(page.getByTestId("sim-task")).toContainText("引导任务 · 2 / 2");
-  await page.getByTestId("sim-reset").click();
-  await expect(page.getByTestId("sim-placed-sample")).toHaveCount(0);
-  await expect(page.getByTestId("sim-check-names")).not.toBeChecked();
-  await expect(page.getByTestId("sim-task")).toContainText("引导任务 · 2 / 2");
-});
-
-test("收起任务卡只隐藏、进度保留；重新开始任务只清任务，场景不动", async ({ page }) => {
-  await page.goto("/sim/microscope/learn");
-  await page.getByTestId("sim-tool-sample").click();
-  await page.getByTestId("sim-drop").click();
-  await expect(page.getByTestId("sim-task")).toContainText("1 / 2");
-  await page.getByTestId("sim-task-close").click();
-  await expect(page.getByTestId("sim-task")).toHaveCount(0);
-  await expect(page.getByTestId("sim-task-open")).toContainText("引导任务 1 / 2");
-  await page.getByTestId("sim-task-open").click();
-  await page.getByTestId("sim-task-restart").click();
-  await expect(page.getByTestId("sim-task")).toContainText("0 / 2");
-  await expect(page.getByTestId("sim-placed-sample")).toBeVisible();
-});
-
-test("各仿真主色随仪器；未迁入的屏幕指向现有页面", async ({ page }) => {
+test("各仿真主色随仪器", async ({ page }) => {
   const accent = () => shell(page).evaluate((el) => getComputedStyle(el).getPropertyValue("--iu-accent-strong").trim());
   await page.goto("/sim/refractometer/lab");
   expect(await accent()).toBe("#b45309");
@@ -57,13 +27,11 @@ test("各仿真主色随仪器；未迁入的屏幕指向现有页面", async ({
   expect(await accent()).toBe("#0369a1");
   await page.goto("/sim/polariscope/challenge");
   expect(await accent()).toBe("#6d28d9");
-  await page.goto("/sim/microscope/learn");
-  await expect(page.getByTestId("sim-placeholder").getByRole("link", { name: "3D 三路照明" })).toHaveAttribute("href", "/explore/microscope");
   // 外壳按钮的字号不被全站按钮样式覆盖（橙色重置钮图标清晰可见）。
   expect(await page.getByTestId("sim-reset").evaluate((el) => getComputedStyle(el).fontSize)).toBe("22px");
 });
 
-test("手机：控制面板收为底部抽屉，任务卡展开后在顶部且不挡读数框，底栏与首页始终可用，无横向溢出", async ({ page }) => {
+test("手机：控制面板收为底部抽屉，底栏与首页始终可用，无横向溢出", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/sim/microscope/learn");
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
@@ -72,26 +40,10 @@ test("手机：控制面板收为底部抽屉，任务卡展开后在顶部且�
   await expect(page.getByTestId("sim-panel-display")).toBeVisible();
   await page.getByTestId("sim-controls-toggle").click();
   await expect(page.getByTestId("sim-panel-display")).toBeHidden();
-  // 手机上任务卡默认收起为顶部一行，点开后仍在操作区顶部，底部读数框照常可见。
-  await expect(page.getByTestId("sim-task")).toHaveCount(0);
-  await page.getByTestId("sim-task-open").click();
-  const task = await page.getByTestId("sim-task").boundingBox();
-  const play = await page.getByTestId("sim-play").boundingBox();
-  const readout = await page.getByTestId("sim-readout").boundingBox();
-  expect(Math.abs(task!.y - play!.y)).toBeLessThanOrEqual(12);
-  expect(task!.y + task!.height).toBeLessThanOrEqual(readout!.y);
-  // 任务抽屉打开时仍能打开控制抽屉，两者不叠放。
-  await page.getByTestId("sim-controls-toggle").click();
-  await expect(page.getByTestId("sim-task")).toBeHidden();
-  await expect(page.getByTestId("sim-panel-display")).toBeVisible();
-  await page.getByTestId("sim-controls-toggle").click();
-  await page.getByTestId("sim-task-close").click();
-  await expect(page.getByTestId("sim-task-open")).toBeVisible();
   await expect(page.getByTestId("sim-screen-learn")).toBeVisible();
   await expect(page.getByTestId("sim-home")).toBeVisible();
 });
-
-test("逐台迁移：分光镜、折射仪与偏光镜的旧入口重定向到仿真，显微镜与 2D 演示照常打开", async ({ page }) => {
+test("四台仪器的旧入口都重定向到仿真，2D 演示照常打开", async ({ page }) => {
   // 已迁完的仪器：旧地址转到新屏（保留参数）。
   for (const [from, target] of [
     ["/explore/optics/prism-spectroscope", /\/sim\/spectroscope\/learn\?machine=prism$/],
@@ -107,13 +59,14 @@ test("逐台迁移：分光镜、折射仪与偏光镜的旧入口重定向到�
     ["/explore/optics/refractometer/", /\/sim\/refractometer\/learn$/],
     ["/explore/polariscope", /\/sim\/polariscope\/learn$/],
     ["/explore/polariscope?lesson=sample", /\/sim\/polariscope\/lab\?lesson=sample$/],
+    ["/explore/microscope", /\/sim\/microscope\/learn$/],
   ] as const) {
     await page.goto(from);
     await expect(page).toHaveURL(target);
     await expect(page.getByTestId("sim-shell")).toHaveCount(1);
   }
-  // 还没迁的仪器与 2D 演示：原页面照常，不被重定向。
-  for (const path of ["/explore/microscope", "/demo/polariscope", "/demo/refractometer", "/demo/spectroscope"]) {
+  // 2D 演示：原页面照常，不被重定向（设备较旧时使用）。
+  for (const path of ["/demo/polariscope", "/demo/refractometer", "/demo/spectroscope"]) {
     await page.goto(path);
     await expect(page).toHaveURL(new RegExp(path.replace(/[/?]/g, (c) => `\\${c}`)));
     await expect(page.getByTestId("sim-shell")).toHaveCount(0);

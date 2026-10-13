@@ -85,3 +85,8 @@ test("偏光镜：五讲按屏落位并带上讲次，课程入口保留讲师 /
   assert.equal(go("/explore/polariscope?lesson=bogus&quality=ultra"), "/sim/polariscope/learn");
   assert.equal(go("/demo/polariscope"), null);
 });
+
+test("显微镜：3D 三路照明页转到认识屏（尾斜杠同一地址）", () => {
+  assert.equal(legacySimRedirect("/explore/microscope", ""), "/sim/microscope/learn");
+  assert.equal(legacySimRedirect("/explore/microscope/", ""), "/sim/microscope/learn");
+});

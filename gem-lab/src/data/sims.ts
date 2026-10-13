@@ -46,9 +46,9 @@ export const SIMS: Record<SimId, SimDef> = {
     ],
   },
   microscope: {
-    id: 'microscope', name: '显微镜', migrated: [],
+    id: 'microscope', name: '显微镜', migrated: ['learn'],
     screens: [
-      { id: 'learn', summary: '底光、顶光、侧光三路照明与暗域 / 明域。', current: [{ label: '3D 三路照明', to: '/explore/microscope' }] },
+      { id: 'learn', summary: '结构与三路照明：底光（暗域 / 明域、光阑）、顶光、侧光，灯室剖解与散射体近景。', current: [] },
     ],
   },
 };

@@ -12,12 +12,13 @@ const canvas = (page: Page) => page.getByTestId('microscope3d-canvas');
 const incident = async (page: Page) => JSON.parse(await canvas(page).getAttribute('data-incident') ?? '{}');
 const bottom = async (page: Page) => JSON.parse(await canvas(page).getAttribute('data-illumination') ?? '{}');
 
-test('首页进入显微镜 3D，三路照明独立开关，离开时释放画布', async ({ page }) => {
+test('首页进入显微镜仿真认识屏，三路照明独立开关，离开时释放画布', async ({ page }) => {
   test.setTimeout(90_000);
   const errors: string[] = [];
   page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
   await page.goto('/');
   await page.getByTestId('home-microscope-link').click();
+  await expect(page).toHaveURL(/\/sim\/microscope\/learn$/);
   await expect(page.getByTestId('microscope-explore-page')).toBeVisible();
   await expect(canvas(page)).toHaveAttribute('data-loaded', 'true', { timeout: 60_000 });
   await expect(canvas(page)).toHaveAttribute('data-part-count', '44');
@@ -32,10 +33,16 @@ test('首页进入显微镜 3D，三路照明独立开关，离开时释放画�
 
   await page.getByRole('slider', { name: '连续拆解' }).fill('40');
   expect((await incident(page)).lights.every((light: { intensity: number }) => light.intensity === 0)).toBe(true);
-  await page.getByRole('button', { name: '全部复位' }).click();
+  await page.getByTestId('sim-reset').click();
   expect((await incident(page)).topActive).toBe(false);
 
-  await page.getByRole('link', { name: /宝石检测实训系统/ }).click();
+  await page.getByTestId('sim-home').click();
   await expect(page.locator('canvas')).toHaveCount(0);
   expect(errors).toEqual([]);
+});
+
+test('旧的 3D 三路照明地址转到仿真认识屏，相机深链 #cam= 原样保留', async ({ page }) => {
+  await page.goto('/explore/microscope#cam=1,1,1,0,0,0');
+  await expect(page).toHaveURL(/\/sim\/microscope\/learn#cam=1,1,1,0,0,0$/);
+  await expect(page.getByTestId('sim-shell')).toHaveAttribute('data-sim', 'microscope');
 });

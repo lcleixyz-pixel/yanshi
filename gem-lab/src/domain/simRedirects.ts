@@ -94,7 +94,13 @@ export function polariscopeRedirect(rawPath: string, search: string): string | n
   return `/sim/polariscope/${screen}${queryOf(out)}`;
 }
 
+/** 显微镜的旧入口（阶段 4）：3D 三路照明页 → 认识屏。相机深链在地址的 #cam= 里，由页面层原样带过去。 */
+export function microscopeRedirect(rawPath: string): string | null {
+  const pathname = rawPath.length > 1 ? rawPath.replace(/\/+$/, '') : rawPath;
+  return pathname === '/explore/microscope' ? '/sim/microscope/learn' : null;
+}
+
 /** 全部已迁移仪器的旧入口映射：命中谁就转谁。 */
 export function legacySimRedirect(rawPath: string, search: string): string | null {
-  return spectroscopeRedirect(rawPath, search) ?? refractometerRedirect(rawPath, search) ?? polariscopeRedirect(rawPath, search);
+  return spectroscopeRedirect(rawPath, search) ?? refractometerRedirect(rawPath, search) ?? polariscopeRedirect(rawPath, search) ?? microscopeRedirect(rawPath);
 }

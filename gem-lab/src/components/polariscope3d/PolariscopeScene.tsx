@@ -27,6 +27,11 @@ export interface PolariscopeSceneProps {
   viewShift?: number;
   /** 选中部件时镜头是否推近（学员模式保持整机视图，只淡化其余部件）。默认推近。 */
   focusOnSelect?: boolean;
+  /**
+   * 仿真外壳的部件标注：给定时标号改为短名称，只显示 show 列出的部件与当前选中的部件（PhET「显示名称」）。
+   * 不给时沿用编号标注（认识部件讲显示全部编号）。
+   */
+  labels?: { text: Partial<Record<StructurePartId, string>>; show: readonly StructurePartId[] };
 }
 export interface SceneCoach { part: StructurePartId; text: string; tone?: 'action' | 'done' }
 type VectorTuple = [number, number, number];
@@ -633,7 +638,9 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
       for (const [id, part] of runtimes) {
         const marker = markers.current.get(id); if (!marker) continue;
         projected.copy(part.hotspot); part.node.localToWorld(projected); projected.project(camera);
-        const relevant = state.showAnnotations && (state.lesson === 'components' || state.selectedPart === id);
+        const labels = current.labels;
+        const relevant = labels ? labels.show.includes(id as StructurePartId) || state.selectedPart === id
+          : state.showAnnotations && (state.lesson === 'components' || state.selectedPart === id);
         const visible = relevant && part.node.visible && projected.z > -1 && projected.z < 1 && Math.abs(projected.x) < .99 && Math.abs(projected.y) < .99;
         marker.style.display = visible ? '' : 'none';
         const anchorX = (projected.x + 1) * width / 2, anchorY = (1 - projected.y) * height / 2;
@@ -744,7 +751,7 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
           style={{ position: 'absolute', transform: 'translate(-50%, -50%)', zIndex: 2 }}
           data-part-id={part.id} aria-label={`定位${part.label}`} aria-pressed={props.state.selectedPart === part.id}
           onClick={() => props.onSelectPart(part.id)} title={part.label}>
-          <span>{String(index + 1).padStart(2, '0')}</span>
+          <span>{props.labels?.text[part.id] ?? String(index + 1).padStart(2, '0')}</span>
         </button>
       ))}
       {status !== 'ready' && (

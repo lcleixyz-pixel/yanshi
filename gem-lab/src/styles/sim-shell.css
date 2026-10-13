@@ -120,8 +120,8 @@
   .sim-shell__panels[data-open="false"] { display: none; }
   .sim-shell .sim-shell__screen { min-width: 56px; padding: 3px 8px; }
   .sim-shell__home { right: 10px; font-size: 11px; }
-  .sim-readout, .sim-readout--top-right { width: auto; left: 8px; right: 8px; }
-  .sim-readout--bottom-left { bottom: 64px; }
+  /* 手机上读数框一律贴底（顶部留给展开的任务卡），右上停靠的目镜视场也一样。 */
+  .sim-readout, .sim-readout--top-right { width: auto; left: 8px; right: 8px; top: auto; bottom: 64px; }
   .sim-toolbox { left: 8px; right: auto; bottom: 8px; }
   .sim-shell .sim-task-line { left: 8px; right: 8px; top: 8px; }
   .sim-shell__side { display: contents; }

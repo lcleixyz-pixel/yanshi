@@ -20,8 +20,8 @@ test("仿真地址：未写屏幕时进入第一块屏幕，底部导航标出�
 });
 
 test("换屏保留各屏场景与任务进度；全部重置只恢复当前屏；工具可拖入或点选后放置", async ({ page }) => {
-  // 用还没迁入的偏光镜占位屏演练外壳规则（已迁入的仪器由各自的 spec 覆盖）。
-  await page.goto("/sim/polariscope/learn");
+  // 用还没迁入的偏光镜实验 / 挑战占位屏演练外壳规则（已迁入的屏由各自的 spec 覆盖）。
+  await page.goto("/sim/polariscope/lab");
   // 点选工具 → 点放置位（拖动替代）。
   await page.getByTestId("sim-tool-sample").click();
   await expect(page.getByTestId("sim-toolbox")).toContainText("点操作区放置「样品」");
@@ -29,35 +29,35 @@ test("换屏保留各屏场景与任务进度；全部重置只恢复当前屏�
   await expect(page.getByTestId("sim-placed-sample")).toBeVisible();
   await expect(page.getByTestId("sim-tool-sample")).toBeDisabled();
   await page.getByTestId("sim-check-names").check();
-  // 切到实验屏：URL 更新，实验屏是自己的初始场景。
-  await page.getByTestId("sim-screen-lab").click();
-  await expect(page).toHaveURL(/\/sim\/polariscope\/lab$/);
+  // 切到挑战屏：URL 更新，挑战屏是自己的初始场景。
+  await page.getByTestId("sim-screen-challenge").click();
+  await expect(page).toHaveURL(/\/sim\/polariscope\/challenge$/);
   await expect(page.getByTestId("sim-placed-sample")).toHaveCount(0);
   await expect(page.getByTestId("sim-check-names")).not.toBeChecked();
   await page.getByTestId("sim-tool-sphere").dragTo(page.getByTestId("sim-drop"));
   await expect(page.getByTestId("sim-placed-sphere")).toBeVisible();
   await expect(page.getByTestId("sim-task")).toContainText("引导任务 · 3 / 3");
-  // 回到认识屏：场景还在。
-  await page.getByTestId("sim-screen-learn").click();
+  // 回到实验屏：场景还在。
+  await page.getByTestId("sim-screen-lab").click();
   await expect(page.getByTestId("sim-placed-sample")).toBeVisible();
   await expect(page.getByTestId("sim-check-names")).toBeChecked();
-  // 全部重置只恢复认识屏；任务进度与实验屏不受影响。
+  // 全部重置只恢复实验屏；任务进度与挑战屏不受影响。
   await page.getByTestId("sim-reset").click();
   await expect(page.getByTestId("sim-placed-sample")).toHaveCount(0);
   await expect(page.getByTestId("sim-check-names")).not.toBeChecked();
   await expect(page.getByTestId("sim-task")).toContainText("引导任务 · 3 / 3");
-  await page.getByTestId("sim-screen-lab").click();
+  await page.getByTestId("sim-screen-challenge").click();
   await expect(page.getByTestId("sim-placed-sphere")).toBeVisible();
 });
 
 test("收起任务卡只隐藏、进度保留；重新开始任务只清任务，场景不动", async ({ page }) => {
-  await page.goto("/sim/polariscope/learn");
+  await page.goto("/sim/polariscope/lab");
   await page.getByTestId("sim-tool-sample").click();
   await page.getByTestId("sim-drop").click();
-  await expect(page.getByTestId("sim-task")).toContainText("1 / 3");
+  await expect(page.getByTestId("sim-task")).toContainText("2 / 3");
   await page.getByTestId("sim-task-close").click();
   await expect(page.getByTestId("sim-task")).toHaveCount(0);
-  await expect(page.getByTestId("sim-task-open")).toContainText("引导任务 1 / 3");
+  await expect(page.getByTestId("sim-task-open")).toContainText("引导任务 2 / 3");
   await page.getByTestId("sim-task-open").click();
   await page.getByTestId("sim-task-restart").click();
   await expect(page.getByTestId("sim-task")).toContainText("0 / 3");
@@ -70,9 +70,9 @@ test("各仿真主色随仪器；未迁入的屏幕指向现有页面", async ({
   expect(await accent()).toBe("#b45309");
   await page.goto("/sim/spectroscope/learn");
   expect(await accent()).toBe("#0369a1");
-  await page.goto("/sim/polariscope/learn");
+  await page.goto("/sim/polariscope/lab");
   expect(await accent()).toBe("#6d28d9");
-  await expect(page.getByTestId("sim-placeholder").getByRole("link", { name: "认识部件" })).toHaveAttribute("href", "/explore/polariscope?lesson=components");
+  await expect(page.getByTestId("sim-placeholder").getByRole("link", { name: "样品观察" })).toHaveAttribute("href", "/explore/polariscope?lesson=sample");
   // 外壳按钮的字号不被全站按钮样式覆盖（橙色重置钮图标清晰可见）。
   expect(await page.getByTestId("sim-reset").evaluate((el) => getComputedStyle(el).fontSize)).toBe("22px");
 });

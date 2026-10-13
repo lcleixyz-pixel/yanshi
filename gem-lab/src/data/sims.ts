@@ -30,9 +30,9 @@ export const SIMS: Record<SimId, SimDef> = {
     ],
   },
   polariscope: {
-    id: 'polariscope', name: '偏光镜', migrated: [],
+    id: 'polariscope', name: '偏光镜', migrated: ['learn'],
     screens: [
-      { id: 'learn', summary: '部件、光路与偏振原理。', current: [{ label: '认识部件', to: '/explore/polariscope?lesson=components' }, { label: '光路', to: '/explore/polariscope?lesson=path' }, { label: '原理', to: '/explore/polariscope?lesson=principle' }] },
+      { id: 'learn', summary: '部件、光路与偏振原理：拆解、内部光源、5 步光路、空载与理想双折射；引导任务前三步也在这屏。', current: [] },
       { id: 'lab', summary: '放样旋转、换方向复核、锥光干涉图。', current: [{ label: '样品观察', to: '/explore/polariscope?lesson=sample' }, { label: '引导课程', to: '/explore/polariscope?course=basic&mode=student' }] },
       { id: 'challenge', summary: '抽未知样品独立判断光性并记录。', current: [{ label: '综合检测', to: '/detection' }] },
     ],

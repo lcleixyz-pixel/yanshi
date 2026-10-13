@@ -3,7 +3,7 @@ import SpectroscopeChallenge from './SpectroscopeChallenge';
 import { SIMS } from '../../../data/sims';
 import { changeLabMachine, labInitial, type LabScene, type Machine } from '../../../domain/spectroscopeSim';
 import { useDetection, type SpectroscopeData } from '../../../store/detectionStore';
-import '../../../styles/spectroscope-sim.css';
+import '../../../styles/sim-instrument.css';
 
 /**
  * 检测流程里的分光镜挑战屏（内联）：会话是本地的一次性状态（检测流程不经过仿真地址）。

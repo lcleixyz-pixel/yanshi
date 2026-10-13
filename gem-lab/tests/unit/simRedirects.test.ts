@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { spectroscopeRedirect } from "../../src/domain/simRedirects";
+import { legacySimRedirect, refractometerRedirect, spectroscopeRedirect } from "../../src/domain/simRedirects";
 
 const to = (path: string, search = "") => spectroscopeRedirect(path, search);
 
@@ -34,8 +34,43 @@ test("尾斜杠按同一地址处理：旧练习页与两个探索页都照样�
 
 test("其他地址不改动：2D 演示与别的仪器照常", () => {
   assert.equal(to("/demo/spectroscope"), null);
-  assert.equal(to("/explore/optics/refractometer"), null);
   assert.equal(to("/explore/polariscope"), null);
   assert.equal(to("/knowledge/spectroscope"), null);
   assert.equal(to("/sim/spectroscope/learn"), null);
+  // 折射仪由自己的映射处理，不落在分光镜映射里。
+  assert.equal(to("/explore/optics/refractometer"), null);
+});
+
+// ── 折射仪（阶段 3a） ──────────────────────────────────────────────
+const rTo = (path: string, search = "") => refractometerRedirect(path, search);
+
+test("折射仪：自由探索与知识库入口进认识屏，带样品的入口进实验屏", () => {
+  assert.equal(rTo("/explore/optics/refractometer"), "/sim/refractometer/learn");
+  assert.equal(rTo("/explore/optics/refractometer/"), "/sim/refractometer/learn");
+  assert.equal(rTo("/explore/optics/refractometer", "?sample=ruby"), "/sim/refractometer/lab?sample=ruby");
+});
+
+test("折射仪：课程入口保留讲师 / 学员与步骤，并落到该步骤所在的屏", () => {
+  // 课程从第一步「认识部件」开始，未写步骤时进认识屏（与分光镜一致）。
+  assert.equal(rTo("/explore/optics/refractometer", "?course=basic&mode=student"), "/sim/refractometer/learn?mode=student");
+  assert.equal(rTo("/explore/optics/refractometer", "?course=basic"), "/sim/refractometer/learn?mode=teacher");
+  assert.equal(rTo("/explore/optics/refractometer", "?course=basic&mode=student&step=parts"), "/sim/refractometer/learn?mode=student&step=parts");
+  assert.equal(rTo("/explore/optics/refractometer", "?course=basic&mode=teacher&step=parts"), "/sim/refractometer/learn?mode=teacher&step=parts");
+  assert.equal(rTo("/explore/optics/refractometer", "?course=basic&mode=student&step=observe"), "/sim/refractometer/lab?mode=student&step=observe");
+  // 不认识的步骤丢弃，课程入口照常进认识屏。
+  assert.equal(rTo("/explore/optics/refractometer", "?course=basic&mode=student&step=bogus"), "/sim/refractometer/learn?mode=student");
+});
+
+test("折射仪：其他地址与 2D 演示不改动", () => {
+  assert.equal(rTo("/demo/refractometer"), null);
+  assert.equal(rTo("/explore/optics/prism-spectroscope"), null);
+  assert.equal(rTo("/explore/polariscope"), null);
+  assert.equal(rTo("/sim/refractometer/lab"), null);
+});
+
+test("统一映射：分光镜与折射仪各走各的，两边都不误伤", () => {
+  assert.equal(legacySimRedirect("/explore/optics/refractometer", ""), "/sim/refractometer/learn");
+  assert.equal(legacySimRedirect("/explore/optics/prism-spectroscope", ""), "/sim/spectroscope/learn?machine=prism");
+  assert.equal(legacySimRedirect("/explore/polariscope", ""), null);
+  assert.equal(legacySimRedirect("/demo/refractometer", ""), null);
 });

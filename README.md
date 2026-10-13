@@ -131,11 +131,17 @@ yanshi/
 | --- | --- |
 | `/` | 工作台首页 |
 | `/knowledge/:instrumentId` | 仪器知识库，`instrumentId` 为 `refractometer`、`polariscope`、`spectroscope` |
-| `/demo/:instrumentId` | 仪器交互演示 |
+| `/demo/:instrumentId` | 仪器交互演示（2D；设备较旧时使用） |
+| `/sim/:instrumentId/:screen` | 仿真外壳：屏幕为 `learn` 认识、`lab` 实验、`challenge` 挑战；折射仪与分光镜已迁入，参数见下 |
 | `/detection` | 检测流程 |
 | `/assessment` | 命名评估 |
 | `/progress` | 学习图鉴与最近练习 |
 | `/explore/polariscope` | 偏光镜 3D 结构、光路与原理教学；`?course=basic` 为基础引导课程（`&mode=student` 为学员自学） |
+
+已迁入仿真的旧地址照常打开、自动转到新地址并保留参数：
+
+- 分光镜：`/explore/optics/{prism,grating}-spectroscope`、`/explore/spectroscope-bench` → `/sim/spectroscope/…`
+- 折射仪：`/explore/optics/refractometer` → `/sim/refractometer/…`（课程入口保留讲师 / 学员与步骤）
 
 未知路由会重定向到 `/`。
 

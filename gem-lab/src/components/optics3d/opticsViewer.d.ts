@@ -31,4 +31,5 @@ export interface OpticsViewer {
   reset(): void;
   dispose(): void;
 }
-export function createOpticsViewer(options: { container: HTMLElement; instrument: string; assetBase: string; onChange?: (snapshot: OpticsSnapshot) => void }): OpticsViewer;
+/** extraCasesUrl：附加案例包（折射仪逐样品光路）；取不到时只用主案例，不报错。 */
+export function createOpticsViewer(options: { container: HTMLElement; instrument: string; assetBase: string; onChange?: (snapshot: OpticsSnapshot) => void; extraCasesUrl?: string }): OpticsViewer;

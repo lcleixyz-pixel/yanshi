@@ -33,7 +33,7 @@ function disposeTree(object) {
   geometry.forEach(g => g.dispose()); mats.forEach(m => m.dispose()); textures.forEach(t => t.dispose());
 }
 
-export function createOpticsViewer({ container, instrument, assetBase, onChange }) {
+export function createOpticsViewer({ container, instrument, assetBase, onChange, extraCasesUrl }) {
   const scene = new THREE.Scene(); scene.background = new THREE.Color('#e7edef');
   const camera = new THREE.PerspectiveCamera(35, 1, .00001, 100);
   const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -218,7 +218,16 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange 
   async function load() {
     try {
       onChange?.({ status: 'loading' });
-      const [mf, cf, sf] = await Promise.all([json(assetBase + 'manifest.json'), json(assetBase + 'optical-cases.json'), json(assetBase + 'sources.json')]);
+      const [mf, baseCases, sf] = await Promise.all([json(assetBase + 'manifest.json'), json(assetBase + 'optical-cases.json'), json(assetBase + 'sources.json')]);
+      // 附加案例包（折射仪的逐样品光路）：按 id 并入，不覆盖已审核的主案例。取不到时照常运行。
+      let cf = baseCases;
+      if (extraCasesUrl) {
+        try {
+          const extra = await json(extraCasesUrl);
+          const known = new Set(baseCases.cases.map(item => item.id));
+          cf = { ...baseCases, cases: [...baseCases.cases, ...(extra.cases || []).filter(item => item && !known.has(item.id))] };
+        } catch (error) { console.warn('附加光路案例未载入，继续使用主案例：', error); }
+      }
       const response = await fetch(assetBase + (mf.model || 'model.glb') + '?sha=' + encodeURIComponent(mf.modelSha256 || ''));
       if (!response.ok) throw Error('模型读取失败 ' + response.status);
       const bytes = await response.arrayBuffer();

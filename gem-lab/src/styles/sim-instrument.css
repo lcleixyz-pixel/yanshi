@@ -1,6 +1,6 @@
-/* 分光镜仿真三屏（认识 / 实验 / 挑战）：操作区、面板小组件与任务卡补充样式。
-   颜色取 instrument-ui.css 的设计变量（主色随仪器，分光镜为 #0369a1）；
-   外壳与抽屉见 sim-shell.css；阶段 2 约束见 docs/整体重构规划-PhET风格-2026-10-11.md。 */
+/* 仿真三屏（认识 / 实验 / 挑战）共用的操作区、面板小组件与任务卡补充样式。
+   颜色取 instrument-ui.css 的设计变量（主色随仪器）；外壳与抽屉见 sim-shell.css；
+   约束见 docs/整体重构规划-PhET风格-2026-10-11.md 与 docs/折射仪迁入仿真外壳-2026-10-13.md。 */
 
 /* 操作区：三维宿主铺满，提示与错误态浮在上面 */
 .sim-stage { position: absolute; inset: 0; }
@@ -91,3 +91,21 @@
 /* 读数框收起后缩成小标签：停靠在操作区里，别挡住模型上的拖动点（狭缝环、目镜套筒、灯头）。 */
 .sim-readout[data-open="false"] { width: max-content; max-width: min(380px, 60%); }
 .sim-readout[data-open="false"] .sim-readout__head { width: auto; }
+
+/* 折射仪：目镜视场停靠在三维区右上角（桌面），手机上移到右下角并收小（同课程页的观察窗停靠）。 */
+.sim-eyepiece { position: absolute; z-index: 3; top: 12px; right: 12px; display: grid; justify-items: center; gap: 6px; width: 232px; padding: 10px 12px; border: 1px solid var(--iu-line-2); border-radius: 10px; background: #ffffffeb; box-shadow: 0 6px 20px #1a233214; backdrop-filter: blur(3px); }
+.sim-eyepiece h2 { margin: 0; color: var(--iu-ink); font-size: 12px; font-weight: 500; text-align: center; }
+.sim-eyepiece h2 span { margin-left: 4px; color: var(--iu-muted); font-size: 11px; font-weight: 400; }
+.sim-eyepiece > div { display: flex; justify-content: center; }
+.sim-eyepiece > p { margin: 0; color: var(--iu-ink-2); font-size: 12px; line-height: 1.55; text-align: center; }
+
+/* 认识屏的光路七段：竖排按钮，按顺序跟随 */
+.sim-path { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.sim-path button { width: 100%; padding: 6px 8px; border: 1px solid var(--iu-line-2); border-radius: 7px; background: #fff; color: var(--iu-ink-2); font-size: 12px; line-height: 1.5; text-align: left; }
+.sim-path button[aria-pressed="true"] { border-color: var(--iu-accent-strong); background: var(--iu-accent-soft); color: var(--iu-accent-ink); }
+
+@media (max-width: 680px) {
+  .sim-eyepiece { top: auto; bottom: 8px; right: 8px; width: 150px; padding: 7px 9px; gap: 3px; }
+  .sim-eyepiece h2 span { display: none; }
+  .sim-eyepiece > p { font-size: 11px; line-height: 1.45; }
+}

@@ -11,7 +11,7 @@ import { MACHINE_LABELS } from '../../../domain/spectroscopeCopy';
 import { changeLabMachine, labInitial, patchLab, type LabScene, type Machine } from '../../../domain/spectroscopeSim';
 import type { SimScreenId } from '../../../domain/simSession';
 import type { SpectroscopeData } from '../../../store/detectionStore';
-import '../../../styles/spectroscope-sim.css';
+import '../../../styles/sim-instrument.css';
 
 const MACHINES: readonly Machine[] = ['prism', 'grating'];
 const METHODS = Object.keys(BENCH_METHOD_LABELS) as BenchMethod[];

@@ -46,16 +46,18 @@ for (const [knowledge, ids] of [['refractometer', ['refractometer']]] as const) 
       page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
       await page.goto(`/knowledge/${knowledge}`);
       await page.getByTestId(`optics-link-${id}`).click();
+      // 折射仪已迁入仿真（阶段 3a）：知识库入口落到认识屏。
+      await expect(page).toHaveURL(new RegExp('/sim/refractometer/learn$'));
       await expect(canvas(page)).toHaveAttribute('data-loaded', 'true', { timeout: 60_000 });
-      await expect(canvas(page)).toHaveAttribute('data-asset-version', id==='refractometer'?'paper-optics-v2':'paper-optics-v1');
+      await expect(canvas(page)).toHaveAttribute('data-asset-version', 'paper-optics-v2');
       expect((await caseInfo(page)).visiblePathCount).toBeGreaterThan(0);
-      const select = page.getByRole('combobox', { name: '光路示例' });
+      const select = page.getByTestId('sim-refracto-case-select');
       const values = await select.locator('option').evaluateAll(options => options.map(option => (option as HTMLOptionElement).value));
       await select.selectOption(values[values.length - 1]);
       expect((await caseInfo(page)).id).toBe(values[values.length - 1]);
       await page.getByRole('slider', { name: '连续拆解' }).fill('50');
       expect((await caseInfo(page)).suspended).toBe(true);
-      await page.getByRole('button', { name: '全部复位' }).click();
+      await page.getByTestId('sim-reset').click();
       expect((await caseInfo(page)).suspended).toBe(false);
       await expect(page.locator('canvas')).toHaveCount(1);
       expect(errors).toEqual([]);

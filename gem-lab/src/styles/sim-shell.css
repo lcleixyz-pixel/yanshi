@@ -17,6 +17,15 @@
 .sim-shell__name strong { font-size: 16px; font-weight: 500; }
 .sim-shell__name span { color: var(--iu-muted); font-size: 12px; }
 
+/* 投屏模式（同课程外壳）：放大字号与操作区，屏幕导航与面板保留；Esc 退出。 */
+.sim-shell--projection { font-size: 15px; }
+.sim-shell--projection > .sim-shell__top { display: none; }
+.sim-shell--projection .sim-shell__main { grid-template-columns: minmax(0, 1fr) 340px; padding: 12px; }
+.sim-shell--projection .sim-panel__body,
+.sim-shell--projection .sim-note,
+.sim-shell--projection .sim-checks { font-size: 14px; }
+.sim-shell__projection-exit { position: fixed; top: 16px; right: 20px; z-index: 20; box-shadow: 0 4px 14px #1a233218; }
+
 .sim-shell__main { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 256px; gap: 10px; padding: 10px; min-height: 0; }
 .sim-shell__play { position: relative; min-width: 0; min-height: 0; overflow: hidden; border: 1px solid var(--iu-line); border-radius: 10px; background: radial-gradient(120% 90% at 40% 30%, #fff, var(--sim-play)); }
 .sim-shell__panels { display: grid; gap: 8px; align-content: start; min-width: 0; min-height: 0; overflow: auto; }

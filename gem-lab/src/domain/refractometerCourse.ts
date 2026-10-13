@@ -188,6 +188,10 @@ export interface Reading {
   angle: number;
   epoch: number;
   correct: boolean;
+  /** 刻面法双折射样品的上限读数；均质体与点测法不带。 */
+  max?: number | null;
+  /** 超接触液上限的记录：只表示「> 1.780」，value 仅作占位，不参与比较。 */
+  overLimit?: boolean;
 }
 export interface CourseState {
   mode: CourseMode;

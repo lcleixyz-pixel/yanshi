@@ -7,7 +7,7 @@ import SpectroscopeTaskCard from './SpectroscopeTaskCard';
 import type { SimScreenProps } from '../registry';
 import { MACHINE_LABELS, PART_SHORT } from '../../../domain/spectroscopeCopy';
 import { applyOperation, courseView, isMachine, LEARN_INITIAL, readLabScene, readLearnScene, readMachine, readTaskData, type LearnScene, type Machine } from '../../../domain/spectroscopeSim';
-import '../../../styles/spectroscope-sim.css';
+import '../../../styles/sim-instrument.css';
 
 const MACHINES: readonly Machine[] = ['prism', 'grating'];
 const instrumentOf = (machine: Machine): OpticsInstrumentId => machine === 'grating' ? 'grating-spectroscope' : 'prism-spectroscope';

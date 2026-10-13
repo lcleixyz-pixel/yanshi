@@ -1,4 +1,4 @@
-import { useId, useState, type DragEvent, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, type DragEvent, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { SIM_SCREEN_LABELS, type SimScreenId } from '../../domain/simSession';
 import type { SimDef } from '../../data/sims';
@@ -7,8 +7,9 @@ import '../../styles/instrument-ui.css';
 import '../../styles/sim-shell.css';
 
 /**
- * 仿真外壳（PhET 风格）：顶栏（仿真名、引导任务入口）、操作区为主、控制面板贴右侧、底部屏幕导航。
+ * 仿真外壳（PhET 风格）：顶栏（仿真名、投屏、引导任务入口）、操作区为主、控制面板贴右侧、底部屏幕导航。
  * 手机上控制面板收为底部抽屉，任务卡收为顶部一行、展开为底部抽屉。
+ * 投屏模式：放大字号与操作区，屏幕导航与面板保留（课程操作都在面板里）；Esc 退出，焦点在页内循环。
  */
 export function SimShell(props: {
   sim: SimDef;
@@ -36,12 +37,35 @@ function SimShellBody({ sim, screen, onScreen, taskSlot, play, panels, hideScree
   const [controlsOpen, setControlsOpen] = useState(false);
   const suppressed = useSimDrawer('controls', controlsOpen);
   const panelsId = useId();
+  // 投屏模式（同课程外壳与偏光镜）：进入时焦点到退出按钮，退出后回到入口；投屏期间 Tab 在页内循环。
+  const [projection, setProjection] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null), enterRef = useRef<HTMLButtonElement>(null), exitRef = useRef<HTMLButtonElement>(null);
+  const wasProjection = useRef(false);
+  useEffect(() => {
+    if (projection) exitRef.current?.focus();
+    else if (wasProjection.current) enterRef.current?.focus();
+    wasProjection.current = projection;
+    if (!projection) return;
+    const keydown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { setProjection(false); return; }
+      if (event.key !== 'Tab') return;
+      const focusable = Array.from(rootRef.current?.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), [tabindex="0"]') ?? []).filter((element) => element.getClientRects().length > 0);
+      const first = focusable[0], lastItem = focusable.at(-1);
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); lastItem?.focus(); }
+      if (!event.shiftKey && document.activeElement === lastItem) { event.preventDefault(); first?.focus(); }
+    };
+    window.addEventListener('keydown', keydown);
+    return () => window.removeEventListener('keydown', keydown);
+  }, [projection]);
+
   return (
-    <div className="sim-shell iu" data-instrument={sim.id} data-testid="sim-shell" data-sim={sim.id} data-screen={screen}>
+    <div ref={rootRef} className={`sim-shell iu${projection ? ' sim-shell--projection' : ''}`} data-instrument={sim.id} data-testid="sim-shell" data-sim={sim.id} data-screen={screen} data-projection={projection}>
       <header className="sim-shell__top">
         <div className="sim-shell__name"><strong>{sim.name}</strong><span>{SIM_SCREEN_LABELS[screen]}</span></div>
+        <button ref={enterRef} type="button" className="iu-button sim-shell__projection" onClick={() => setProjection(true)} aria-label="进入投屏模式" data-testid="sim-projection">投屏模式</button>
         {taskSlot}
       </header>
+      {projection && <button ref={exitRef} type="button" className="iu-button sim-shell__projection-exit" onClick={() => setProjection(false)} aria-label="退出投屏模式" data-testid="sim-projection-exit">退出投屏 · Esc</button>}
       <main className="sim-shell__main">
         <section className="sim-shell__play" aria-label={`${sim.name}${SIM_SCREEN_LABELS[screen]}操作区`} data-testid="sim-play">{play}</section>
         <button type="button" className="sim-shell__controls-toggle" aria-expanded={controlsOpen} aria-controls={panelsId} onClick={() => setControlsOpen((open) => !open)} data-testid="sim-controls-toggle">控制 {controlsOpen ? '▾' : '▴'}</button>

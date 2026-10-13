@@ -9,6 +9,7 @@ import PolariscopeDemo from '@/components/polariscope/PolariscopeDemo';
 // 偏光镜检测默认使用 3D；三维依赖按需加载，WebGL 不可用或加载失败时回退到 2D 检测模式。
 const PolariscopeDetection3D = lazy(() => import('@/components/polariscope3d/PolariscopeDetection3D'));
 const SpectroscopeDetectionChallenge = lazy(() => import('@/components/sim/spectroscope/SpectroscopeDetectionChallenge'));
+const RefractometerDetectionChallenge = lazy(() => import('@/components/sim/refractometer/RefractometerDetectionChallenge'));
 function supportsWebGL() {
   try { const canvas = document.createElement('canvas'); return !!(canvas.getContext('webgl2') ?? canvas.getContext('webgl')); } catch { return false; }
 }
@@ -83,6 +84,7 @@ export default function DetectionWorkflowPage() {
 
   const [polariscope2D, setPolariscope2D] = useState(() => !supportsWebGL());
   const [spectroscope2D, setSpectroscope2D] = useState(() => !supportsWebGL());
+  const [refractometer2D, setRefractometer2D] = useState(() => !supportsWebGL());
   const handleDetectionComplete = () => {
     setActiveInstrument(null);
     setStep(countValidObservations(useDetection.getState()) >= 2 ? 5 : 3);
@@ -111,6 +113,14 @@ export default function DetectionWorkflowPage() {
     return (
       <Suspense fallback={<div className="grid min-h-screen place-items-center text-sm text-ink-3">正在载入分光镜三维工作台…</div>}>
         <SpectroscopeDetectionChallenge sampleId={drawnSample} onDetectionComplete={handleDetectionComplete} onUse2D={() => setSpectroscope2D(true)} />
+      </Suspense>
+    );
+  }
+  // 折射仪检测默认使用三维操作台；三维依赖按需加载，WebGL 不可用或加载失败时回退到 2D 检测模式。
+  if (step === 4 && activeInstrument === 'refractometer' && drawnSample && !refractometer2D) {
+    return (
+      <Suspense fallback={<div className="grid min-h-screen place-items-center text-sm text-ink-3">正在载入折射仪三维操作台…</div>}>
+        <RefractometerDetectionChallenge sampleId={drawnSample} onDetectionComplete={handleDetectionComplete} onUse2D={() => setRefractometer2D(true)} />
       </Suspense>
     );
   }

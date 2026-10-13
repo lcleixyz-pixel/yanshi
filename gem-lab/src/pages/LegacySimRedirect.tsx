@@ -1,6 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
-import { spectroscopeRedirect } from '../domain/simRedirects';
+import { legacySimRedirect } from '../domain/simRedirects';
 
 /**
  * 已迁入仿真的旧入口重定向：命中映射表就转到新地址（保留机型、样品、观察方法、讲师 / 学员与步骤），
@@ -9,6 +9,6 @@ import { spectroscopeRedirect } from '../domain/simRedirects';
  */
 export default function LegacySimRedirect({ children }: { children: ReactNode }) {
   const { pathname, search } = useLocation();
-  const to = spectroscopeRedirect(pathname, search);
+  const to = legacySimRedirect(pathname, search);
   return to ? <Navigate to={`${to}`} replace /> : <>{children}</>;
 }

@@ -1,8 +1,12 @@
 import type { ComponentType, Dispatch } from 'react';
 import type { SimDef, SimId } from '../../data/sims';
 import type { SimAction, SimScene, SimScreenId, SimSession } from '../../domain/simSession';
+import { refractometerInitial, refractometerSessionReducer } from '../../domain/refractometerSession';
 import { spectroscopeInitial } from '../../domain/spectroscopeSim';
 import { spectroscopeSessionReducer } from '../../domain/spectroscopeSession';
+import RefractometerChallengeScreen from './refractometer/RefractometerChallengeScreen';
+import RefractometerLabScreen from './refractometer/RefractometerLabScreen';
+import RefractometerLearnScreen from './refractometer/RefractometerLearnScreen';
 import SpectroscopeChallengeScreen from './spectroscope/SpectroscopeChallengeScreen';
 import SpectroscopeLabScreen from './spectroscope/SpectroscopeLabScreen';
 import SpectroscopeLearnScreen from './spectroscope/SpectroscopeLearnScreen';
@@ -28,6 +32,11 @@ export interface SimImplementation {
 }
 
 export const SIM_IMPLEMENTATIONS: Partial<Record<SimId, SimImplementation>> = {
+  refractometer: {
+    initial: refractometerInitial,
+    reducer: refractometerSessionReducer,
+    screens: { learn: RefractometerLearnScreen, lab: RefractometerLabScreen, challenge: RefractometerChallengeScreen },
+  },
   spectroscope: {
     initial: spectroscopeInitial,
     reducer: spectroscopeSessionReducer,

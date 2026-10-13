@@ -17,8 +17,8 @@ export const INSTRUMENT_COURSES: Partial<Record<InstrumentId, InstrumentCourse>>
     summary: '约 8 分钟：认识部件、跟随光路、空载调正、放样旋转、换方向复核、解释。学员可以自学，讲师可以投屏演示；学完后到检测练习中独立判断未知样品。',
   },
   refractometer: {
-    student: '/explore/optics/refractometer?course=basic&mode=student',
-    teacher: '/explore/optics/refractometer?course=basic&mode=teacher',
+    student: '/sim/refractometer/learn?mode=student',
+    teacher: '/sim/refractometer/learn?mode=teacher',
     title: '在 3D 折射仪上完成基础读数课',
     summary: '约 9 分钟：认识部件、跟随光路、开灯滴液放样、恢复光学接触、先读数再核对、换方向复核、解释与清洁复位。学员可以自学，讲师可以投屏演示；学完后到检测练习中独立读数。',
   },

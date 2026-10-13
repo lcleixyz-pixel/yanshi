@@ -22,11 +22,11 @@ export interface SimDef {
 /** 各仪器仿真的屏幕划分（docs/整体重构规划-PhET风格-2026-10-11.md 第三节）。 */
 export const SIMS: Record<SimId, SimDef> = {
   refractometer: {
-    id: 'refractometer', name: '折射仪', migrated: [],
+    id: 'refractometer', name: '折射仪', migrated: ['learn', 'lab', 'challenge'],
     screens: [
-      { id: 'learn', summary: '结构与光路：拆解、透视、单色光路与部件名称。', current: [{ label: '3D 结构与光路', to: '/explore/optics/refractometer' }, { label: '基础读数课', to: '/explore/optics/refractometer?course=basic&mode=student' }] },
-      { id: 'lab', summary: '开灯、滴液、放样、恢复接触，读出明暗边界。', current: [{ label: '基础读数课', to: '/explore/optics/refractometer?course=basic&mode=student' }, { label: '2D 全样品读数', to: '/demo/refractometer' }] },
-      { id: 'challenge', summary: '抽未知样品独立读数并记录。', current: [{ label: '综合检测', to: '/detection' }] },
+      { id: 'learn', summary: '结构与光路：拆解、透视、单色光路与部件短名称；引导任务前两步也在这屏。', current: [] },
+      { id: 'lab', summary: '开灯、滴液、放样、恢复接触、读出明暗边界；引导任务后六步与自由练习都在这屏。', current: [] },
+      { id: 'challenge', summary: '抽一颗未知样品独立读数并记录，保存后揭示答案；检测流程也走这一屏。', current: [] },
     ],
   },
   polariscope: {

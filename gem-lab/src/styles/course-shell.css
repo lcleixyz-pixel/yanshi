@@ -41,16 +41,9 @@
 
 /* 三维区与操作面板 */
 .course-shell__main { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 14px; flex: 1; min-height: 0; padding: 0 20px 16px; }
-.course-shell__model { position: relative; min-width: 0; overflow: hidden; border: 1px solid var(--iu-line); border-radius: 10px; background: linear-gradient(180deg, #f7faff, #eaf1fa); }
-.course-shell__views { position: absolute; z-index: 2; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 5px; }
-.course-shell__views button { min-height: 32px; padding: 5px 11px; border: 1px solid var(--iu-line-2); border-radius: 6px; color: var(--iu-ink); background: #ffffffee; font-size: 12px; cursor: pointer; }
-.course-shell__views button:hover:not(:disabled) { border-color: var(--iu-faint); }
-.course-shell__views button[aria-pressed="true"] { border-color: var(--iu-accent-strong); color: var(--iu-accent-ink); background: var(--iu-accent-soft); }
-.course-shell__views button:disabled { opacity: .42; cursor: not-allowed; }
-.course-shell__model-note { position: absolute; bottom: 12px; left: 14px; color: var(--iu-muted); font-size: 11px; pointer-events: none; }
+
 .course-shell__panel { min-width: 0; overflow: auto; padding: 18px 18px 22px; border: 1px solid var(--iu-line); border-radius: 10px; background: #fff; }
-.course-shell__content { border: 0; padding: 0; margin: 0; min-width: 0; display: grid; gap: 14px; align-content: start; }
-.course-shell__content > * { margin: 0; }
+
 .course-shell h2 { font-size: 13px; font-weight: 500; }
 .course-shell h2 span { margin-left: 8px; color: var(--iu-faint); font-size: 11px; font-weight: 400; }
 .course-shell small { color: var(--iu-muted); font-size: 11px; line-height: 1.6; }
@@ -61,11 +54,6 @@
 .course-shell__panel button:disabled { cursor: not-allowed; opacity: .42; }
 .course-shell__panel button[aria-pressed="true"] { border-color: var(--iu-accent-strong); color: var(--iu-accent-ink); background: var(--iu-accent-soft); }
 .course-shell__panel fieldset:disabled button { cursor: not-allowed; }
-.course-shell__parts, .course-shell__operations { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
-.course-shell__path { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
-.course-shell__path button { width: 100%; }
-.course-shell__note { padding: 10px 12px; border-left: 3px solid var(--iu-info); border-radius: 0 6px 6px 0; background: var(--iu-info-soft); color: var(--iu-ink-2); font-size: 12px; line-height: 1.7; }
-.course-shell__state { color: var(--iu-faint); font-size: 11px; }
 
 /* 停靠在三维区内的观察窗（同偏光镜目镜视场） */
 .course-shell__dock { position: absolute; z-index: 3; display: grid; gap: 6px; padding: 10px 12px; border: 1px solid var(--iu-line-2); border-radius: 10px; background: #ffffffeb; box-shadow: 0 6px 20px #1a233214; backdrop-filter: blur(3px); }
@@ -88,28 +76,6 @@
 .course-shell__option[data-result="wrong"] small { color: var(--iu-danger); }
 .course-shell__submit { margin-top: 4px; }
 .course-shell__result { margin-top: 4px !important; color: var(--iu-success); font-size: 12px; font-weight: 500; }
-
-/* 观察窗、读数、核对 */
-.course-shell__observation { padding: 14px; border: 1px solid var(--iu-line); border-radius: 10px; background: #f7f9fc; text-align: center; }
-.course-shell__observation > div { display: flex; justify-content: center; }
-.course-shell__observation p { margin: 12px 0 4px; font-size: 12px; }
-.course-shell__observation small { display: block; }
-.course-shell__observation > .course-shell__spectrum { display: block; margin-top: 14px; text-align: left; }
-.course-shell__reading label { display: block; margin-bottom: 7px; font-weight: 500; }
-.course-shell__reading > div { display: flex; gap: 8px; }
-.course-shell__reading input { width: 120px; flex: 1; min-width: 0; padding: 9px 10px; border: 1px solid var(--iu-line-2); border-radius: 6px; font-family: var(--iu-mono); font-size: 16px; }
-.course-shell__feedback { padding: 10px 12px; border-left: 3px solid var(--iu-accent-strong); border-radius: 0 6px 6px 0; background: var(--iu-accent-soft); font-size: 12px; }
-.course-shell__feedback p { margin-top: 6px; }
-.course-shell__check { padding-left: 0; margin: 6px 0 0; list-style: none; font-size: 12px; line-height: 2; }
-.course-shell__tuning { display: grid; gap: 12px; padding: 12px; border: 1px solid var(--iu-line); border-radius: 8px; }
-.course-shell__structure, .course-shell__sources { color: var(--iu-muted); font-size: 11px; line-height: 1.8; }
-.course-shell__structure > * + *, .course-shell__sources > * + * { margin-top: 6px; }
-.course-shell__structure button { min-height: 30px; padding: 4px 9px; font-size: 11px; }
-
-/* 载入与失败 */
-.course-shell__loading { position: absolute; inset: 0; display: grid; place-content: center; color: var(--iu-muted); }
-.course-shell__fallback { position: absolute; inset: 64px 20px 20px; display: grid; place-content: center; gap: 10px; text-align: center; }
-.course-shell__fallback img { max-height: 40vh; margin: 0 auto; }
 
 /* 完成卡片：覆盖在三维区与面板之上 */
 .course-shell__overlay { position: absolute; inset: 0 20px 16px; z-index: 6; display: flex; justify-content: center; align-items: flex-start; overflow-y: auto; padding: 22px; border-radius: 10px; background: #eef4fbd9; backdrop-filter: blur(2px); }
@@ -150,8 +116,7 @@
   .course-shell__steps-nav { flex-basis: 100%; }
   .course-shell__exit { margin-left: auto; }
   .course-shell__main { grid-template-columns: 1fr; padding: 0 12px 14px; gap: 10px; }
-  /* 手机与窄屏：三维区连同停靠的观察窗吸附在顶部，下方操作面板滚动时模型与观察结果保持可见。 */
-  .course-shell__model { position: sticky; top: 0; z-index: 4; height: 50dvh; min-height: 330px; max-height: 520px; box-shadow: 0 6px 14px #1a23320f; }
+
   .course-shell__overlay { inset: 0 12px 14px; padding: 14px; }
   .course-shell__times { grid-template-columns: 1fr 1fr; }
 }
@@ -163,15 +128,14 @@
   .course-shell__checklist { flex-direction: row; flex-wrap: wrap; gap: 4px 14px; }
   .course-shell__checklist li { white-space: normal; }
   .course-shell__nav { justify-content: flex-end; }
-  .course-shell__parts, .course-shell__operations { grid-template-columns: 1fr; }
+
   .course-shell__times { grid-template-columns: 1fr; }
-  .course-shell__model { height: 46dvh; min-height: 300px; }
+
   .course-shell__dock { padding: 7px 9px; gap: 3px; }
   .course-shell__dock h2 span { display: none; }
   .course-shell__dock p { font-size: 11px; line-height: 1.45; }
   .course-shell__dock--strip { left: 8px; right: 8px; bottom: 8px; }
   .course-shell__dock--eyepiece { top: auto; bottom: 8px; right: 8px; width: 150px; }
   .course-shell__model:has(.course-shell__dock) .course-shell__model-note { display: none; }
-  .course-shell__views { top: 8px; left: 8px; }
-  .course-shell__views button { min-height: 30px; padding: 4px 8px; font-size: 11px; }
+
 }

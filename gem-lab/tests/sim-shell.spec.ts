@@ -65,6 +65,10 @@ test("四台仪器的旧入口都重定向到仿真，2D 演示照常打开", as
     await expect(page).toHaveURL(target);
     await expect(page.getByTestId("sim-shell")).toHaveCount(1);
   }
+  // 旧页面已删除：不认识的旧 3D 地址回首页，不再渲染旧页面。
+  await page.goto("/explore/optics/unknown-instrument");
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByTestId("home-page")).toBeVisible();
   // 2D 演示：原页面照常，不被重定向（设备较旧时使用）。
   for (const path of ["/demo/polariscope", "/demo/refractometer", "/demo/spectroscope"]) {
     await page.goto(path);

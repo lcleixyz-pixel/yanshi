@@ -1,0 +1,60 @@
+/* 首页：四张仪器仿真卡 + 综合检测与学习进度（样稿 docs/样稿/phet-样稿-2026-10-11.html「首页」）。颜色取 instrument-ui.css 设计变量，卡片主色随仪器。 */
+.home { min-height: 100dvh; background: var(--iu-paper); }
+.home__top { max-width: 1240px; margin: 0 auto; padding: 32px 24px 8px; }
+.home__eyebrow { color: var(--iu-muted); font-size: 11px; letter-spacing: .2em; }
+.home__top h1 { margin: 4px 0 0; color: var(--iu-ink); font-size: 28px; font-weight: 600; }
+.home__flow { margin: 6px 0 0; color: var(--iu-ink-2); font-size: 14px; }
+.home__flow i { margin: 0 6px; color: var(--iu-faint); font-style: normal; }
+.home__main { display: grid; gap: 16px; max-width: 1240px; margin: 0 auto; padding: 16px 24px 40px; }
+
+.home__cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.home-card { display: grid; grid-template-rows: auto 1fr; overflow: hidden; border: 1px solid var(--iu-line); border-top: 3px solid var(--iu-accent); border-radius: 12px; background: #fff; transition: box-shadow .15s, transform .15s; }
+.home-card:hover { box-shadow: 0 10px 28px #1a233214; transform: translateY(-2px); }
+.home-card__thumb { display: grid; place-items: center; aspect-ratio: 4 / 3; overflow: hidden; background: radial-gradient(120% 90% at 50% 30%, #fff, var(--iu-accent-soft)); border-bottom: 1px solid var(--iu-line); }
+.home-card__thumb img { width: 100%; height: 100%; object-fit: cover; }
+.home-card__body { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px 14px; }
+.home-card h2 { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0; color: var(--iu-ink); font-size: 17px; font-weight: 600; }
+.home-card__done { padding: 1px 8px; border-radius: 999px; background: #e8f7ef; color: var(--iu-success); font-size: 11px; font-weight: 500; }
+.home-card p { margin: 0; color: var(--iu-muted); font-size: 12.5px; line-height: 1.6; }
+.home-card__screens { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.home-card__screens li { padding: 2px 9px; border: 1px solid var(--iu-line-2); border-radius: 999px; color: var(--iu-faint); font-size: 11px; }
+.home-card__screens li[data-on="true"] { border-color: var(--iu-accent-line); background: var(--iu-accent-soft); color: var(--iu-accent-ink); }
+.home-card__actions { display: flex; align-items: center; gap: 12px; margin-top: auto; padding-top: 4px; }
+.home-card__open { padding: 8px 16px; border-radius: 8px; background: var(--iu-accent-strong); color: #fff; font-size: 13px; font-weight: 500; text-decoration: none; }
+.home-card__open:hover { filter: brightness(1.08); }
+.home-card__more { color: var(--iu-muted); font-size: 12px; text-decoration: none; }
+.home-card__more:hover { color: var(--iu-accent-ink); text-decoration: underline; }
+
+.home__row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.home-wide { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 18px; border: 1px solid var(--iu-line); border-radius: 12px; background: #fff; }
+.home-wide h2 { margin: 0 0 4px; color: var(--iu-ink); font-size: 16px; font-weight: 600; }
+.home-wide p { margin: 0; color: var(--iu-muted); font-size: 12.5px; line-height: 1.6; }
+.home-wide--detect { border-left: 3px solid #b45309; }
+.home-wide__go { flex: none; padding: 8px 16px; text-align: center; border-radius: 8px; background: #b45309; color: #fff; font-size: 13px; font-weight: 500; text-decoration: none; }
+.home-wide__go--quiet { background: var(--iu-brand); }
+.home-wide__links { display: grid; justify-items: end; gap: 6px; }
+.home-wide__reset { border: 0; background: transparent; color: var(--iu-faint); font-size: 11px; cursor: pointer; }
+.home-wide__reset:hover { color: var(--iu-danger); }
+.home__stats { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 4px 0 0; }
+.home__stats div { display: flex; align-items: baseline; gap: 6px; }
+.home__stats dt { color: var(--iu-muted); font-size: 12px; }
+.home__stats dd { margin: 0; color: var(--iu-ink); font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.home__note { margin: 0; color: var(--iu-faint); font-size: 12px; }
+
+.home a:focus-visible, .home button:focus-visible { outline: 2px solid var(--iu-accent-strong); outline-offset: 2px; }
+
+@media (max-width: 1024px) { .home__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 680px) {
+  .home__top { padding: 20px 16px 4px; }
+  .home__top h1 { font-size: 22px; }
+  .home__main { padding: 12px 16px 28px; }
+  .home__row { grid-template-columns: 1fr; }
+  .home-wide { flex-direction: column; align-items: stretch; }
+  .home-wide__links { justify-items: start; }
+}
+@media (max-width: 420px) {
+  .home__cards { grid-template-columns: 1fr; }
+  .home-card { grid-template-rows: none; grid-template-columns: 112px 1fr; }
+  .home-card__thumb { aspect-ratio: auto; border-bottom: 0; border-right: 1px solid var(--iu-line); }
+}
+@media (prefers-reduced-motion: reduce) { .home-card, .home-card:hover { transition: none; transform: none; } }

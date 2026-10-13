@@ -19,11 +19,23 @@ test.beforeEach(async ({ page }) => {
   }, progressStorage);
 });
 
-test('home page renders the teaching workbench', async ({ page }) => {
+test('home page shows one simulation card per instrument, plus detection and progress', async ({ page }) => {
   await page.goto('/');
-
-  await expect(page.getByText('宝石检测')).toBeVisible();
-  await expect(page.getByText('实验工作台')).toBeVisible();
+  await expect(page.getByRole('heading', { name: '宝石检测实训', level: 1 })).toBeVisible();
+  for (const [id, name] of [['refractometer', '折射仪'], ['polariscope', '偏光镜'], ['spectroscope', '分光镜'], ['microscope', '显微镜']] as const) {
+    const card = page.getByTestId(`home-card-${id}`);
+    await expect(card.getByRole('heading', { name })).toBeVisible();
+    await expect(card.getByRole('link', { name: '打开仿真' })).toHaveAttribute('href', `/sim/${id}/learn`);
+  }
+  // 显微镜只有认识屏：其余两屏标为待建；它没有知识库页。
+  await expect(page.getByTestId('home-card-microscope')).toContainText('实验 · 待建');
+  await expect(page.getByTestId('home-card-microscope').getByRole('link', { name: /知识库/ })).toHaveCount(0);
+  await expect(page.getByTestId('home-card-spectroscope').getByRole('link', { name: /知识库/ })).toHaveAttribute('href', '/knowledge/spectroscope');
+  await page.getByTestId('home-open-polariscope').click();
+  await expect(page).toHaveURL(/\/sim\/polariscope\/learn$/);
+  await page.getByTestId('sim-home').click();
+  await page.getByTestId('home-detection-link').click();
+  await expect(page).toHaveURL(/\/detection$/);
 });
 
 test.describe('instrument knowledge pages', () => {

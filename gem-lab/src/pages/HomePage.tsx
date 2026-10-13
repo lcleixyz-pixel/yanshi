@@ -1,202 +1,109 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Hotspot from '@/components/workbench/Hotspot';
 import OnboardingModal from '@/components/workbench/OnboardingModal';
+import { useResponsiveViewport } from '@/components/shared/useResponsiveViewport';
 import { INSTRUMENT_LIST } from '@/data/instruments';
 import { SAMPLES } from '@/data/samples';
+import { SIMS, type SimId } from '@/data/sims';
+import { SIM_SCREEN_LABELS } from '@/domain/simSession';
 import { masteryLevel } from '@/domain/practice';
 import { useProgress } from '@/store/progressStore';
+import '@/styles/instrument-ui.css';
+import '@/styles/home.css';
 
+/** 首页卡片顺序与说明：一台仪器一张卡（docs/整体重构规划-PhET风格-2026-10-11.md 第三节）。 */
+const CARDS: readonly { id: SimId; summary: string; knowledge: boolean }[] = [
+  { id: 'refractometer', summary: INSTRUMENT_LIST.find((item) => item.id === 'refractometer')!.intro.tagline, knowledge: true },
+  { id: 'polariscope', summary: INSTRUMENT_LIST.find((item) => item.id === 'polariscope')!.intro.tagline, knowledge: true },
+  { id: 'spectroscope', summary: INSTRUMENT_LIST.find((item) => item.id === 'spectroscope')!.intro.tagline, knowledge: true },
+  { id: 'microscope', summary: '底光暗域 / 明域、顶光与侧光三路照明，认识结构与光路', knowledge: false },
+];
+
+/**
+ * 首页：四台仪器各一张仿真卡（卡上标出有哪几屏，只有一个「打开仿真」主按钮），
+ * 下方是综合检测与学习进度。知识库降为卡片上的次要链接。
+ */
 export default function HomePage() {
+  // 首页按设备宽度排版（手机上卡片单列 / 双列），同仿真页。
+  useResponsiveViewport();
   const visited = useProgress((s) => s.visitedKnowledgeBases);
   const completedDemos = useProgress((s) => s.completedDemos);
   const totalPoints = useProgress((s) => s.totalPoints);
   const mastery = useProgress((s) => s.sampleMastery);
   const reset = useProgress((s) => s.reset);
 
-  const [bgLoaded, setBgLoaded] = useState(false);
-  useEffect(() => {
-    const img = new Image();
-    img.onload = () => setBgLoaded(true);
-    img.src = '/assets/scenes/workbench.png';
-  }, []);
-
-  const knowledgeProgress = `${visited.length} / ${INSTRUMENT_LIST.length}`;
-  const demoProgress = `${completedDemos.filter((d) => d.mode === 'learning').length} / ${INSTRUMENT_LIST.length}`;
+  // 完成过引导课程（学员自学写入的学习记录）的仪器；显微镜暂无引导课程。
+  const learned: readonly string[] = [...new Set(completedDemos.filter((item) => item.mode === 'learning').map((item) => item.instrumentId))];
+  const visitedIds: readonly string[] = visited;
   const masteredCount = SAMPLES.filter((sample) => masteryLevel(mastery[sample.id]) === 'mastered').length;
 
   return (
-    <div className="relative min-h-screen w-full overflow-x-hidden bg-workbench-gradient text-white lg:h-screen lg:w-screen lg:overflow-hidden">
-      {/* 噪点纹理 */}
-      <div className="pointer-events-none absolute inset-0 noise opacity-[0.04]" />
-
-      {/* 顶部桌灯光晕 */}
-      <div
-        className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[820px] -translate-x-1/2"
-        style={{
-          background:
-            'radial-gradient(ellipse at top, rgba(103,212,240,0.20), rgba(103,212,240,0.05) 45%, transparent 75%)',
-        }}
-      />
-
-      {/* 顶部品牌栏 */}
-      <header className="relative z-30 flex flex-wrap items-start justify-between gap-4 px-5 pt-5 sm:px-10 sm:pt-8 lg:absolute lg:left-0 lg:right-0 lg:top-0">
-        <div className="animate-drop-in">
-          <div className="text-[11px] tracking-[0.25em] text-lab-cyan/80">
-            教学演示
-          </div>
-          <h1 className="mt-1 font-display text-2xl font-semibold leading-tight sm:text-[34px]">
-            宝石检测 <span className="italic text-lab-cyan">实验工作台</span>
-          </h1>
-          <p className="mt-1 text-sm text-slate-300">
-            认识仪器，或从样品盘开始检测
-          </p>
-        </div>
-        <div className="flex animate-drop-in flex-wrap items-center gap-2 sm:gap-3">
-          <ProgressChip label="知识库" value={knowledgeProgress} />
-          <ProgressChip label="演示" value={demoProgress} />
-          <ProgressChip label="掌握" value={`${masteredCount}/${SAMPLES.length}`} />
-          <ProgressChip label="积分" value={`${totalPoints}`} highlight />
-          <Link
-            to="/sim/microscope/learn"
-            data-testid="home-microscope-link"
-            className="rounded-lg border border-white/15 bg-white/10 px-3 py-2 text-xs font-medium text-white transition hover:bg-white/20"
-          >
-            宝石显微镜 3D →
-          </Link>
-          <Link
-            to="/progress"
-            className="rounded-lg border border-lab-cyan/40 bg-lab-cyan/15 px-3 py-2 text-xs font-medium text-lab-cyan transition hover:bg-lab-cyan/25"
-          >
-            学习图鉴 →
-          </Link>
-          <button
-            onClick={() => {
-              if (confirm('确定重置全部学习进度？此操作不可恢复。')) reset();
-            }}
-            className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-slate-300 transition hover:bg-white/10"
-          >
-            重置进度
-          </button>
+    <div className="home iu" data-testid="home-page">
+      <header className="home__top">
+        <div>
+          <span className="home__eyebrow">教学演示</span>
+          <h1>宝石检测实训</h1>
+          <p className="home__flow" aria-label="学习顺序">认识 <i>→</i> 实验 <i>→</i> 挑战 <i>→</i> 综合检测</p>
         </div>
       </header>
 
-      {/* 主舞台：背景图 + 热区 */}
-      <main className="relative z-10 flex flex-col items-center justify-start gap-5 px-4 pb-8 pt-6 sm:px-6 lg:absolute lg:inset-0 lg:flex-row lg:justify-center lg:gap-0 lg:pb-16 lg:pt-28">
-        <div className="relative aspect-[16/9] w-full max-w-[1500px] overflow-hidden rounded-[28px] shadow-[0_40px_120px_-30px_rgba(0,0,0,0.8)] ring-1 ring-white/10">
-          {/* 背景图 */}
-          <img
-            src="/assets/scenes/workbench.png"
-            alt="实验工作台"
-            className={
-              'absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ' +
-              (bgLoaded ? 'opacity-100' : 'opacity-0')
-            }
-            draggable={false}
-          />
-
-          {/* 顶部渐变（让品牌栏更易读） */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-lab-ink/60 to-transparent" />
-          {/* 底部渐变 */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-lab-ink/70 to-transparent" />
-
-          {/* 顶部状态提示 */}
-          <div className="absolute inset-x-0 top-5 z-20 flex items-center justify-center px-6">
-            <div className="flex items-center gap-2 rounded-full border border-white/15 bg-lab-navy/70 px-4 py-2 text-xs text-slate-300 backdrop-blur">
-              <span className="inline-block h-1.5 w-1.5 animate-soft-pulse rounded-full bg-emerald-400 align-middle" />
-              <span>系统就绪</span>
-              <span className="hidden text-slate-500 md:inline">· 悬停查看仪器 · 点击进入</span>
-            </div>
-          </div>
-
-          {/* 折射仪热区 */}
-          <Hotspot
-            id="refractometer"
-            rect={{ left: '11%', top: '58%', width: '19%', height: '32%' }}
-            badgePosition="top"
-            to="/knowledge/refractometer"
-            title="折射仪"
-            themeHex="#e8a93a"
-            visited={visited.includes('refractometer')}
-          />
-
-          {/* 偏光镜热区 */}
-          <Hotspot
-            id="polariscope"
-            rect={{ left: '39%', top: '55%', width: '20%', height: '32%' }}
-            badgePosition="top"
-            to="/knowledge/polariscope"
-            title="偏光镜"
-            themeHex="#a78bfa"
-            visited={visited.includes('polariscope')}
-          />
-
-          {/* 分光镜热区 */}
-          <Hotspot
-            id="spectroscope"
-            rect={{ left: '69%', top: '81%', width: '11%', height: '10%' }}
-            badgePosition="top"
-            to="/knowledge/spectroscope"
-            title="分光镜"
-            themeHex="#67d4f0"
-            visited={visited.includes('spectroscope')}
-          />
-
-          {/* 样品盘热区 */}
-          <Hotspot
-            id="sample-tray"
-            rect={{ left: '35%', top: '88%', width: '30%', height: '11%' }}
-            badgePosition="bottom"
-            to="/detection"
-            title="样品盘 · 开始检测"
-            subtitle={`SAMPLES · ${SAMPLES.length} GEMS`}
-            themeHex="#fbbf24"
-            variant="sample"
-          />
-
-        </div>
-        <nav aria-label="触屏快速入口" className="grid w-full max-w-[1500px] grid-cols-2 gap-2 lg:hidden">
-          {INSTRUMENT_LIST.map((instrument, index) => (
-            <Link key={instrument.id} to={`/knowledge/${instrument.id}`} className="flex items-center justify-between rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/20">
-              <span><span className="mr-2 font-mono text-xs text-lab-cyan">0{index + 1}</span>{instrument.name}</span>
-              <span aria-hidden="true" className="text-lab-cyan">→</span>
-            </Link>
-          ))}
-          <Link to="/sim/microscope/learn" className="flex items-center justify-between rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/20">
-            <span><span className="mr-2 font-mono text-xs text-lab-cyan">3D</span>宝石显微镜</span>
-            <span aria-hidden="true" className="text-lab-cyan">→</span>
-          </Link>
-          <Link to="/detection" className="flex items-center justify-between rounded-xl border border-amber-300/35 bg-amber-400/20 px-4 py-3 text-sm font-medium text-amber-100 transition hover:bg-amber-400/30">
-            <span>开始检测</span><span aria-hidden="true">→</span>
-          </Link>
+      <main className="home__main">
+        <nav className="home__cards" aria-label="仪器仿真">
+          {CARDS.map((card) => {
+            const sim = SIMS[card.id];
+            const done = learned.includes(card.id);
+            return (
+              <article key={card.id} className="home-card iu" data-instrument={card.id} data-testid={`home-card-${card.id}`}>
+                <Link to={`/sim/${card.id}/learn`} className="home-card__thumb" tabIndex={-1} aria-hidden="true">
+                  <img src={`${import.meta.env.BASE_URL}assets/home/${card.id}.jpg`} alt="" loading="lazy" width={480} height={360} />
+                </Link>
+                <div className="home-card__body">
+                  <h2>{sim.name}{done && <span className="home-card__done" title="已完成引导课程">✓ 已学</span>}</h2>
+                  <p>{card.summary}</p>
+                  <ul className="home-card__screens" aria-label={`${sim.name}的屏幕`}>
+                    {(['learn', 'lab', 'challenge'] as const).map((id) => {
+                      const has = sim.screens.some((screen) => screen.id === id);
+                      return <li key={id} data-on={has}>{SIM_SCREEN_LABELS[id]}{has ? '' : ' · 待建'}</li>;
+                    })}
+                  </ul>
+                  <div className="home-card__actions">
+                    <Link to={`/sim/${card.id}/learn`} className="home-card__open" data-testid={card.id === 'microscope' ? 'home-microscope-link' : `home-open-${card.id}`}>打开仿真</Link>
+                    {card.knowledge && <Link to={`/knowledge/${card.id}`} className="home-card__more">知识库{visitedIds.includes(card.id) ? ' ✓' : ''}</Link>}
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </nav>
+
+        <div className="home__row">
+          <section className="home-wide home-wide--detect" aria-labelledby="home-detect-title">
+            <div>
+              <h2 id="home-detect-title">综合检测</h2>
+              <p>抽一颗未知样品，用折射仪、偏光镜、分光镜各自检测，最后命名。样品库共 {SAMPLES.length} 颗。</p>
+            </div>
+            <Link to="/detection" className="home-wide__go" data-testid="home-detection-link">开始检测</Link>
+          </section>
+          <section className="home-wide" aria-labelledby="home-progress-title">
+            <div>
+              <h2 id="home-progress-title">学习进度</h2>
+              <dl className="home__stats">
+                <div><dt>引导课程</dt><dd>{learned.length} / {INSTRUMENT_LIST.length}</dd></div>
+                <div><dt>知识库</dt><dd>{visited.length} / {INSTRUMENT_LIST.length}</dd></div>
+                <div><dt>掌握样品</dt><dd>{masteredCount} / {SAMPLES.length}</dd></div>
+                <div><dt>积分</dt><dd>{totalPoints}</dd></div>
+              </dl>
+            </div>
+            <div className="home-wide__links">
+              <Link to="/progress" className="home-wide__go home-wide__go--quiet">学习图鉴</Link>
+              <button type="button" className="home-wide__reset" onClick={() => { if (confirm('确定重置全部学习进度？此操作不可恢复。')) reset(); }}>重置进度</button>
+            </div>
+          </section>
+        </div>
+
+        <p className="home__note">2D 经典演示在各仪器知识库的「交互演示」一节，设备较旧或三维无法加载时使用。</p>
       </main>
 
       <OnboardingModal />
-    </div>
-  );
-}
-
-function ProgressChip({
-  label,
-  value,
-  highlight,
-}: {
-  label: string;
-  value: string;
-  highlight?: boolean;
-}) {
-  return (
-    <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs backdrop-blur">
-      <span className="font-mono text-[10px] uppercase tracking-widest text-slate-400">{label}</span>
-      <span
-        className={
-          'font-display text-sm font-semibold ' +
-          (highlight ? 'text-amber-300' : 'text-white')
-        }
-      >
-        {value}
-      </span>
     </div>
   );
 }

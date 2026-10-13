@@ -41,17 +41,18 @@ test('detection difficulty and drawn sample survive refresh, and restart clears 
   await expect(page.getByRole('heading', { name: '选择检测难度' })).toBeVisible();
 });
 
-test('touch sized home exposes direct instrument and detection links', async ({ page }) => {
+test('a phone-sized home lays the cards out at device width and links straight to the simulations and detection', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.addInitScript(() => window.localStorage.setItem('gem-lab-progress-v1', JSON.stringify({
     version: 2,
     state: { onboarded: true, visitedKnowledgeBases: [], completedDemos: [], detectionHistory: [], sampleMastery: {}, totalPoints: 0 },
   })));
   await page.goto('/');
-  const quickNav = page.getByRole('navigation', { name: '触屏快速入口' });
-  await expect(quickNav).toBeVisible();
-  await expect(quickNav.getByRole('link', { name: /折射仪/ })).toBeVisible();
-  await quickNav.getByRole('link', { name: /开始检测/ }).click();
+  await expect(page.locator('meta[name="viewport"]')).toHaveAttribute('content', 'width=device-width, initial-scale=1');
+  const cards = page.getByRole('navigation', { name: '仪器仿真' });
+  await expect(cards.getByRole('link', { name: '打开仿真' })).toHaveCount(4);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+  await page.getByTestId('home-detection-link').click();
   await expect(page).toHaveURL(/\/detection$/);
 });
 

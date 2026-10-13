@@ -78,3 +78,26 @@ export function simReducer(s: SimSession, action: SimAction): SimSession {
 export function parseSimScreen(value: string | undefined, available: readonly SimScreenId[]): SimScreenId {
   return available.includes(value as SimScreenId) ? value as SimScreenId : available[0];
 }
+
+/** 引导任务卡清单里的一条。 */
+export interface SimTaskItem { id: string; label: string; done: boolean }
+
+/**
+ * 任务卡里的清单与问答：课程清单已含「回答：…」条目时，不再另列「检查一下：…」；
+ * 每道题在清单里排在它前面的操作都做完后才出现（先动手观察，再回答），不在清单里的题等本步操作全做完；
+ * 只有问答的一步（如「解释」）直接出现。
+ */
+export function taskChecklist<Q extends { id: string; label: string; done: boolean }>(items: readonly SimTaskItem[], questions: readonly Q[]) {
+  // 清单里的题目条目按 id 取最后一次出现（操作与题目可能同 id，如分光镜的 continuous，题目总排在操作之后）。
+  const lastIndex = (id: string) => items.map((item) => item.id).lastIndexOf(id);
+  const questionAt = new Set(questions.map((item) => lastIndex(item.id)).filter((index) => index >= 0));
+  const listed = new Set(items.map((item) => item.id));
+  const actionsDone = (before: number) => items.slice(0, before).every((item, index) => questionAt.has(index) || item.done);
+  return {
+    items: [
+      ...items.map((item, index) => ({ ...item, id: `step:${index}:${item.id}` })),
+      ...questions.filter((item) => !listed.has(item.id)).map((item) => ({ id: `quiz:${item.id}`, label: `检查一下：${item.label}`, done: item.done })),
+    ],
+    ready: (id: string) => { const index = lastIndex(id); return actionsDone(index < 0 ? items.length : index); },
+  };
+}

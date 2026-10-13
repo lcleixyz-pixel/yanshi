@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { ChoiceQuestionField } from '../../course/CourseShell';
 import { useLearningRecord } from '../../course/useLearningRecord';
 import { useSimDrawer } from '../SimDrawer';
-import { SimTaskCard, SimTaskLine } from '../SimShell';
+import { SimTaskCard, SimTaskDock, SimTaskLine, taskChecklist } from '../SimShell';
 import type { CourseMode } from '../../../domain/course';
 import { STEP_SHORT, VARIANT_TEXT } from '../../../domain/spectroscopeCopy';
 import { isComplete, QUESTIONS } from '../../../domain/spectroscopeCourse';
@@ -41,6 +41,7 @@ export default function SpectroscopeTaskCard({ screen, view, machine, open, mode
     // 收起时与进行中的任务卡一样只留一行（手机上它是顶部一行，不占操作区）。
     if (!open) return <SimTaskLine title={VARIANT_TEXT[machine].title} done={view.progress.done} total={view.progress.total} onOpen={() => onOpen(true)} />;
     return (
+      <SimTaskDock>
       <section className="sim-task" aria-label="引导任务" data-testid="sim-task" data-suppressed={suppressed}>
         <header><span>引导任务</span><button type="button" onClick={() => onOpen(false)} data-testid="sim-task-close">收起 ▾</button></header>
         <strong>{VARIANT_TEXT[machine].title}</strong>
@@ -50,17 +51,16 @@ export default function SpectroscopeTaskCard({ screen, view, machine, open, mode
           <button type="button" className="iu-button" onClick={() => onChoose('student')} data-testid="sim-task-student">开始学习（学员）</button>
         </div>
       </section>
+      </SimTaskDock>
     );
   }
+
+  const checklist = taskChecklist(view.items, view.questions);
 
   return (
     <SimTaskCard
       title={`${STEP_SHORT[step]}${view.screenDone ? ' · 本屏已完成' : ''}`}
-      items={[
-        // 清单条目与「检查一下」可能同 id（如 continuous），键上加序号避免重复键导致列表错乱。
-        ...view.items.map((item, index) => ({ id: `step:${index}:${item.id}`, label: item.label, done: item.done })),
-        ...view.questions.map((item) => ({ id: `quiz:${item.id}`, label: `检查一下：${item.label}`, done: item.done })),
-      ]}
+      items={checklist.items}
       progress={view.progress}
       open={open}
       onOpen={onOpen}
@@ -71,7 +71,7 @@ export default function SpectroscopeTaskCard({ screen, view, machine, open, mode
       {view.screenDone && !view.allComplete && view.nextScreen && (
         <p className="sim-task__note" data-testid="sim-task-next-screen">本屏的任务已做完，继续到「{SIM_SCREEN_LABELS[view.nextScreen]}」屏。<button type="button" className="iu-button" onClick={() => onScreen(view.nextScreen!)}>去{SIM_SCREEN_LABELS[view.nextScreen]}屏</button></p>
       )}
-      {view.questions.map((item) => (
+      {view.questions.filter((item) => checklist.ready(item.id)).map((item) => (
         <ChoiceQuestionField key={item.id} question={QUESTIONS.find((q) => q.id === item.id)!} answer={view.state.answers[item.id]} onAnswer={(option) => onAnswer(item.id, option)} />
       ))}
       {view.allComplete && (

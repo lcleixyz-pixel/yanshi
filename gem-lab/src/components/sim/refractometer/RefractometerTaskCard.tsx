@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { ChoiceQuestionField } from '../../course/CourseShell';
 import { useLearningRecord } from '../../course/useLearningRecord';
 import { useSimDrawer } from '../SimDrawer';
-import { SimTaskCard, SimTaskLine } from '../SimShell';
+import { SimTaskCard, SimTaskDock, SimTaskLine, taskChecklist } from '../SimShell';
 import type { CourseMode } from '../../../domain/course';
 import { isComplete, QUESTIONS, STEPS } from '../../../domain/refractometerCourse';
 import { STEP_SHORT, type CourseView } from '../../../domain/refractometerSim';
@@ -37,6 +37,7 @@ export default function RefractometerTaskCard({ view, open, mode, hasSkipped, te
   if (mode === null) {
     if (!open) return <SimTaskLine title="折射仪基础读数课" done={view.progress.done} total={view.progress.total} onOpen={() => onOpen(true)} />;
     return (
+      <SimTaskDock>
       <section className="sim-task" aria-label="引导任务" data-testid="sim-task" data-suppressed={suppressed}>
         <header><span>引导任务</span><button type="button" onClick={() => onOpen(false)} data-testid="sim-task-close">收起 ▾</button></header>
         <strong>折射仪基础读数课</strong>
@@ -46,16 +47,16 @@ export default function RefractometerTaskCard({ view, open, mode, hasSkipped, te
           <button type="button" className="iu-button" onClick={() => onChoose('student')} data-testid="sim-task-student">开始学习（学员）</button>
         </div>
       </section>
+      </SimTaskDock>
     );
   }
+
+  const checklist = taskChecklist(view.items, view.questions);
 
   return (
     <SimTaskCard
       title={`${STEP_SHORT[step]}${view.screenDone ? ' · 本屏已完成' : ''}`}
-      items={[
-        ...view.items.map((item, index) => ({ id: `step:${index}:${item.id}`, label: item.label, done: item.done })),
-        ...view.questions.map((item) => ({ id: `quiz:${item.id}`, label: `检查一下：${item.label}`, done: item.done })),
-      ]}
+      items={checklist.items}
       progress={view.progress}
       open={open}
       onOpen={onOpen}
@@ -66,7 +67,7 @@ export default function RefractometerTaskCard({ view, open, mode, hasSkipped, te
       {view.screenDone && !view.allComplete && view.nextScreen && (
         <p className="sim-task__note" data-testid="sim-task-next-screen">本屏的任务已做完，继续到「{SIM_SCREEN_LABELS[view.nextScreen]}」屏。<button type="button" className="iu-button" onClick={() => onScreen(view.nextScreen!)}>去{SIM_SCREEN_LABELS[view.nextScreen]}屏</button></p>
       )}
-      {view.questions.map((item) => (
+      {view.questions.filter((item) => checklist.ready(item.id)).map((item) => (
         <ChoiceQuestionField key={item.id} question={QUESTIONS.find((q) => q.id === item.id)!} answer={view.state.answers[item.id]} onAnswer={(option) => onAnswer(item.id, option)} />
       ))}
       {view.allComplete && (

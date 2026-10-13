@@ -28,6 +28,12 @@
 
 .sim-shell__main { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 256px; gap: 10px; padding: 10px; min-height: 0; }
 .sim-shell__play { position: relative; min-width: 0; min-height: 0; overflow: hidden; border: 1px solid var(--iu-line); border-radius: 10px; background: radial-gradient(120% 90% at 40% 30%, #fff, var(--sim-play)); }
+.sim-shell__side { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 8px; min-width: 0; min-height: 0; }
+/* 引导任务停靠位（桌面）：在控制面板上方，限高可滚动；没有任务卡时不占位。 */
+.sim-shell__task-dock { min-height: 0; max-height: 52dvh; overflow: auto; }
+.sim-shell__task-dock:empty { display: none; }
+.sim-shell__task-dock .sim-task { position: static; width: auto; box-shadow: none; }
+.sim-shell .sim-shell__task-dock .sim-task-line { position: static; width: 100%; max-width: none; }
 .sim-shell__panels { display: grid; gap: 8px; align-content: start; min-width: 0; min-height: 0; overflow: auto; }
 .sim-shell .sim-shell__controls-toggle { display: none; }
 
@@ -118,8 +124,11 @@
   .sim-readout--bottom-left { bottom: 64px; }
   .sim-toolbox { left: 8px; right: auto; bottom: 8px; }
   .sim-shell .sim-task-line { left: 8px; right: 8px; top: 8px; }
-  /* 引导任务与记录都收为底部抽屉；被后打开的抽屉压住的那个隐藏（收起不是卸载，输入与进度都保留）。 */
-  .sim-task { left: 0; right: 0; top: auto; bottom: 0; width: auto; max-height: 70%; overflow: auto; border-left: 0; border-top: 3px solid var(--iu-accent-strong); border-radius: 14px 14px 0 0; padding: 12px 14px 16px; z-index: 7; }
+  .sim-shell__side { display: contents; }
+  /* 引导任务展开后仍在操作区顶部、限高可滚动，底部的读数框（目镜视场、光谱）保持可见。
+     记录收为底部抽屉；被后打开的抽屉压住的那个隐藏（收起不是卸载，输入与进度都保留）。 */
+  .sim-task { left: 8px; right: 8px; top: 8px; width: auto; max-height: 40%; overflow: auto; padding: 10px 12px 12px; z-index: 7; box-shadow: 0 8px 20px #1a23321f; }
+  .sim-readout { max-height: 44%; overflow: auto; }
   .sim-sheet { left: 0; right: 0; top: auto; bottom: 0; width: auto; max-height: 70%; border-radius: 14px 14px 0 0; border-top: 3px solid var(--iu-accent-strong); box-shadow: 0 -8px 24px #1a23321a; z-index: 7; }
   .sim-shell__panels[data-suppressed="true"],
   .sim-task[data-suppressed="true"],

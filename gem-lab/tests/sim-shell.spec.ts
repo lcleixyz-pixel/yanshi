@@ -77,7 +77,7 @@ test("各仿真主色随仪器；未迁入的屏幕指向现有页面", async ({
   expect(await page.getByTestId("sim-reset").evaluate((el) => getComputedStyle(el).fontSize)).toBe("22px");
 });
 
-test("手机：控制面板收为底部抽屉，任务卡展开为底部抽屉，底栏与首页始终可用，无横向溢出", async ({ page }) => {
+test("手机：控制面板收为底部抽屉，任务卡展开后在顶部且不挡读数框，底栏与首页始终可用，无横向溢出", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/sim/polariscope/lab");
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
@@ -86,12 +86,14 @@ test("手机：控制面板收为底部抽屉，任务卡展开为底部抽屉�
   await expect(page.getByTestId("sim-panel-display")).toBeVisible();
   await page.getByTestId("sim-controls-toggle").click();
   await expect(page.getByTestId("sim-panel-display")).toBeHidden();
-  // 手机上任务卡默认收起为顶部一行，点开为贴底抽屉。
+  // 手机上任务卡默认收起为顶部一行，点开后仍在操作区顶部，底部读数框照常可见。
   await expect(page.getByTestId("sim-task")).toHaveCount(0);
   await page.getByTestId("sim-task-open").click();
   const task = await page.getByTestId("sim-task").boundingBox();
   const play = await page.getByTestId("sim-play").boundingBox();
-  expect(Math.abs(task!.y + task!.height - (play!.y + play!.height))).toBeLessThanOrEqual(2);
+  const readout = await page.getByTestId("sim-readout").boundingBox();
+  expect(Math.abs(task!.y - play!.y)).toBeLessThanOrEqual(12);
+  expect(task!.y + task!.height).toBeLessThanOrEqual(readout!.y);
   // 任务抽屉打开时仍能打开控制抽屉，两者不叠放。
   await page.getByTestId("sim-controls-toggle").click();
   await expect(page.getByTestId("sim-task")).toBeHidden();

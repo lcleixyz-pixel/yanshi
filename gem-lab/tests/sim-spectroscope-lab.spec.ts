@@ -336,3 +336,21 @@ test("窄屏：实验屏无横向溢出，控制面板收为抽屉，光谱与�
   await expect(page.getByTestId("sim-panel-light")).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
 });
+
+test("任务卡停靠在控制面板上方、不挡目镜视场；问答在本步操作做完后才出现，清单不重复列题", async ({ page }) => {
+  await page.goto(`${route}?mode=student`);
+  await ready(page);
+  const play = (await page.getByTestId("sim-play").boundingBox())!;
+  const card = (await task(page).boundingBox())!;
+  expect(card.x).toBeGreaterThanOrEqual(play.x + play.width);
+  await expect(page.getByTestId("sim-task-dock").getByTestId("sim-task")).toBeVisible();
+  await expect(page.getByTestId("sim-spectro-field")).toBeVisible();
+  await expect(task(page)).not.toContainText("检查一下");
+  await expect(task(page).getByRole("radio")).toHaveCount(0);
+  await page.getByTestId("sim-task-continuous").getByRole("button").click();
+  await expect(task(page).getByRole("radio")).toHaveCount(0);
+  await page.getByTestId("sim-bench-place").click();
+  await expect(task(page).getByRole("radio")).toHaveCount(3);
+  await answer(page, "continuous", 1);
+  await expect(task(page)).toContainText("调节与对准");
+});

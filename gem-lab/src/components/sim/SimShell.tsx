@@ -1,6 +1,8 @@
-import { useEffect, useId, useRef, useState, type DragEvent, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useId, useRef, useState, type DragEvent, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
-import { SIM_SCREEN_LABELS, type SimScreenId } from '../../domain/simSession';
+import { SIM_SCREEN_LABELS, type SimScreenId, type SimTaskItem } from '../../domain/simSession';
+export { taskChecklist, type SimTaskItem } from '../../domain/simSession';
 import type { SimDef } from '../../data/sims';
 import { SimDrawerProvider, useSimDrawer } from './SimDrawer';
 import '../../styles/instrument-ui.css';
@@ -8,7 +10,8 @@ import '../../styles/sim-shell.css';
 
 /**
  * 仿真外壳（PhET 风格）：顶栏（仿真名、投屏、引导任务入口）、操作区为主、控制面板贴右侧、底部屏幕导航。
- * 手机上控制面板收为底部抽屉，任务卡收为顶部一行、展开为底部抽屉。
+ * 桌面上引导任务卡停靠在控制面板上方（不浮在操作区里，挡不住模型与读数框）；
+ * 手机上控制面板收为底部抽屉，任务卡收为顶部一行、展开后仍在顶部且限高，底部读数框保持可见。
  * 投屏模式：放大字号与操作区，屏幕导航与面板保留（课程操作都在面板里）；Esc 退出，焦点在页内循环。
  */
 export function SimShell(props: {
@@ -36,6 +39,8 @@ function SimShellBody({ sim, screen, onScreen, taskSlot, play, panels, hideScree
 }) {
   const [controlsOpen, setControlsOpen] = useState(false);
   const suppressed = useSimDrawer('controls', controlsOpen);
+  const [taskDock, setTaskDock] = useState<HTMLElement | null>(null);
+  const desktop = useMediaQuery(DESKTOP_QUERY);
   const panelsId = useId();
   // 投屏模式（同课程外壳与偏光镜）：进入时焦点到退出按钮，退出后回到入口；投屏期间 Tab 在页内循环。
   const [projection, setProjection] = useState(false);
@@ -59,6 +64,7 @@ function SimShellBody({ sim, screen, onScreen, taskSlot, play, panels, hideScree
   }, [projection]);
 
   return (
+    <SimTaskDockContext.Provider value={desktop ? taskDock : null}>
     <div ref={rootRef} className={`sim-shell iu${projection ? ' sim-shell--projection' : ''}`} data-instrument={sim.id} data-testid="sim-shell" data-sim={sim.id} data-screen={screen} data-projection={projection}>
       <header className="sim-shell__top">
         <div className="sim-shell__name"><strong>{sim.name}</strong><span>{SIM_SCREEN_LABELS[screen]}</span></div>
@@ -69,7 +75,10 @@ function SimShellBody({ sim, screen, onScreen, taskSlot, play, panels, hideScree
       <main className="sim-shell__main">
         <section className="sim-shell__play" aria-label={`${sim.name}${SIM_SCREEN_LABELS[screen]}操作区`} data-testid="sim-play">{play}</section>
         <button type="button" className="sim-shell__controls-toggle" aria-expanded={controlsOpen} aria-controls={panelsId} onClick={() => setControlsOpen((open) => !open)} data-testid="sim-controls-toggle">控制 {controlsOpen ? '▾' : '▴'}</button>
-        <aside id={panelsId} className="sim-shell__panels" data-open={controlsOpen} data-suppressed={suppressed} aria-label="控制面板">{panels}</aside>
+        <div className="sim-shell__side">
+          <div ref={setTaskDock} className="sim-shell__task-dock" data-testid="sim-task-dock" />
+          <aside id={panelsId} className="sim-shell__panels" data-open={controlsOpen} data-suppressed={suppressed} aria-label="控制面板">{panels}</aside>
+        </div>
       </main>
       {!hideScreens && (
         <nav className="sim-shell__screens" aria-label="屏幕">
@@ -83,7 +92,32 @@ function SimShellBody({ sim, screen, onScreen, taskSlot, play, panels, hideScree
         </nav>
       )}
     </div>
+    </SimTaskDockContext.Provider>
   );
+}
+
+/** 与 sim-shell.css 的手机断点（max-width: 680px）对应。 */
+const DESKTOP_QUERY = '(min-width: 681px)';
+
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() => typeof window !== 'undefined' && window.matchMedia(query).matches);
+  useEffect(() => {
+    const list = window.matchMedia(query);
+    const change = () => setMatches(list.matches);
+    change();
+    list.addEventListener('change', change);
+    return () => list.removeEventListener('change', change);
+  }, [query]);
+  return matches;
+}
+
+/** 桌面上任务卡的停靠位（控制面板上方）；手机或外壳之外为 null，任务卡留在原处渲染。 */
+const SimTaskDockContext = createContext<HTMLElement | null>(null);
+
+/** 把引导任务卡（含收起后的一行、选讲师 / 学员的开场卡）送到停靠位。 */
+export function SimTaskDock({ children }: { children: ReactNode }) {
+  const dock = useContext(SimTaskDockContext);
+  return dock ? createPortal(children, dock) : <>{children}</>;
 }
 
 function ScreenIcon({ id }: { id: SimScreenId }) {
@@ -164,11 +198,10 @@ export function SimDropZone({ label, selectedTool, onPlace, children, testId }: 
   );
 }
 
-export interface SimTaskItem { id: string; label: string; done: boolean }
 
 /**
  * 引导任务卡：可收起（只隐藏卡片，不清进度）；「重新开始任务」单独一个按钮。
- * 桌面浮在操作区左上；手机收起时为顶部一行，展开为底部抽屉。
+ * 桌面停靠在控制面板上方；手机收起时为顶部一行，展开后在操作区顶部、限高可滚动。
  * progress 给定时按步骤数显示 n / N（条目数多于步骤时更贴近实际进度）。
  */
 export function SimTaskCard({ title, items, open, onOpen, onRestart, progress, children }: {
@@ -185,6 +218,7 @@ export function SimTaskCard({ title, items, open, onOpen, onRestart, progress, c
   const total = progress?.total ?? items.length;
   if (!open) return <SimTaskLine title={title} done={done} total={total} onOpen={() => onOpen(true)} />;
   return (
+    <SimTaskDock>
     <section className="sim-task" aria-label="引导任务" data-testid="sim-task" data-suppressed={suppressed}>
       <header><span>引导任务 · {done} / {total}</span><button type="button" onClick={() => onOpen(false)} aria-expanded="true" data-testid="sim-task-close">收起 ▾</button></header>
       <strong>{title}</strong>
@@ -192,12 +226,13 @@ export function SimTaskCard({ title, items, open, onOpen, onRestart, progress, c
       {children}
       <button type="button" className="sim-task__restart" onClick={onRestart} data-testid="sim-task-restart">重新开始任务</button>
     </section>
+    </SimTaskDock>
   );
 }
 
 /** 收起后的任务卡：顶部一行，点开恢复卡片（手机与桌面同一形态）。 */
 export function SimTaskLine({ title, done, total, onOpen }: { title: string; done: number; total: number; onOpen: () => void }) {
-  return <button type="button" className="sim-task-line" onClick={onOpen} aria-expanded="false" data-testid="sim-task-open"><strong>引导任务 {done} / {total}</strong><span>{title}</span><i aria-hidden="true">▸</i></button>;
+  return <SimTaskDock><button type="button" className="sim-task-line" onClick={onOpen} aria-expanded="false" data-testid="sim-task-open"><strong>引导任务 {done} / {total}</strong><span>{title}</span><i aria-hidden="true">▸</i></button></SimTaskDock>;
 }
 
 /** 操作区里的记录面板：桌面为右上浮卡，手机为底部抽屉；与任务、控制抽屉互不叠放。由外部按钮控制开合。 */

@@ -159,34 +159,35 @@ test("在实验屏切换机型也使挑战屏原记录过期，收回答案并�
   await expectReferencesClosed(page);
 });
 
-test("先记录连续谱并答题、最后夹样完成对光步骤，立即全部重置仍保留 1 / 6", async ({ page }) => {
+test("对光步骤：记录连续谱、夹样之后才出现问答，答对完成本步，立即全部重置仍保留 1 / 6", async ({ page }) => {
   await page.goto(`${labRoute}?mode=student`);
   await ready(page);
   await page.getByTestId("sim-task-continuous").getByRole("button").click();
   await expect(task(page)).toContainText("记录：只见连续光谱（已完成）");
-  await answer(page, "continuous", 1);
+  // 先动手再回答：夹样之前不出题。
+  await expect(page.getByTestId("question-continuous")).toHaveCount(0);
   await expectProgress(page, 0);
-  await expect(canvas(page)).toHaveAttribute("data-sample-placed", "false");
-  // 最后一个条件由放样操作满足，不能等下一次答题才补记完成证据。
   await page.getByTestId("sim-bench-place").click();
   await expect(canvas(page)).toHaveAttribute("data-sample-placed", "true");
+  await answer(page, "continuous", 1);
   await expectProgress(page, 1);
   await page.getByTestId("sim-reset").click();
   await expect(canvas(page)).toHaveAttribute("data-sample-placed", "false");
   await expectProgress(page, 1);
 });
 
-test("先答狭缝题、最后调好狭缝和焦距完成调节步骤，立即全部重置仍保留 2 / 6", async ({ page }) => {
+test("调节步骤：狭缝和焦距都调好之后才出现狭缝题，答对完成本步，立即全部重置仍保留 2 / 6", async ({ page }) => {
   await page.goto(`${labRoute}?mode=student`);
   await ready(page);
   await completeLight(page);
-  await answer(page, "slit", 1);
-  await expectProgress(page, 1);
+  await expect(page.getByTestId("question-slit")).toHaveCount(0);
   await slider(page, "狭缝宽度").fill("3.2");
   await expect(page.getByTestId("sim-spectro-stage")).toHaveAttribute("data-problems", "defocus");
+  await expect(page.getByTestId("question-slit")).toHaveCount(0);
   await expectProgress(page, 1);
   await slider(page, "目镜焦距").fill("5");
   await expect(page.getByTestId("sim-spectro-stage")).toHaveAttribute("data-problems", "");
+  await answer(page, "slit", 1);
   await expectProgress(page, 2);
   await page.getByTestId("sim-reset").click();
   await expect(canvas(page)).toHaveAttribute("data-sample-placed", "false");

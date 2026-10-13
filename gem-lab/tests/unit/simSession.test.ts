@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createSimSession, parseSimScreen, simReducer, type SimAction, type SimSession } from "../../src/domain/simSession";
+import { createSimSession, parseSimScreen, simReducer, taskChecklist, type SimAction, type SimSession } from "../../src/domain/simSession";
 
 const run = (s: SimSession, ...actions: SimAction[]) => actions.reduce(simReducer, s);
 const initial = { lamp: 0, placed: [] as string[] };
@@ -72,4 +72,27 @@ test("地址里不认识或该仿真没有的屏幕，退回第一块可用屏�
   assert.equal(parseSimScreen("lab", ["learn"]), "learn");
   assert.equal(parseSimScreen(undefined, ["learn", "lab"]), "learn");
   assert.equal(parseSimScreen("unknown", ["learn", "lab"]), "learn");
+});
+
+test("任务卡清单：已在清单里的题不再另列「检查一下」，题目在它前面的操作做完后才出现", () => {
+  // 分光镜「对光与照明」：记录与题目同 id，题目排在两项操作之后。
+  const light = (recorded: boolean, placed: boolean) => taskChecklist(
+    [{ id: "continuous", label: "记录：只见连续光谱", done: recorded }, { id: "placed", label: "夹样", done: placed }, { id: "continuous", label: "回答：连续光谱说明什么", done: false }],
+    [{ id: "continuous", label: "连续光谱说明什么", done: false }],
+  );
+  assert.deepEqual(light(false, false).items.map((item) => item.label), ["记录：只见连续光谱", "夹样", "回答：连续光谱说明什么"]);
+  assert.equal(light(false, false).ready("continuous"), false);
+  assert.equal(light(true, false).ready("continuous"), false);
+  assert.equal(light(true, true).ready("continuous"), true);
+  // 折射仪「恢复接触」：题目夹在两项操作之间，只等前面的记录。
+  const contact = taskChecklist(
+    [{ id: "invalid", label: "记录：不能读数", done: true }, { id: "gap", label: "回答：为什么不能读", done: false }, { id: "recovered", label: "轻推恢复贴合", done: false }],
+    [{ id: "gap", label: "为什么不能读", done: false }],
+  );
+  assert.equal(contact.ready("gap"), true);
+  // 只有问答的一步直接出现；不在清单里的题另列一条，等本步操作全做完。
+  assert.equal(taskChecklist([{ id: "dark", label: "透光太弱", done: false }], [{ id: "dark", label: "透光太弱", done: false }]).ready("dark"), true);
+  const extra = taskChecklist([{ id: "cases", label: "查看光路", done: false }], [{ id: "q", label: "光谱怎样形成", done: false }]);
+  assert.deepEqual(extra.items.map((item) => item.label), ["查看光路", "检查一下：光谱怎样形成"]);
+  assert.equal(extra.ready("q"), false);
 });

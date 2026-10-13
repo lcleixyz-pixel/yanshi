@@ -163,7 +163,17 @@ test("挑战屏：抽未知样品不显示品种名，保存后揭示答案；�
     for (const name of names) expect(body, `${difficulty} 抽到样品后不得显示品种名`).not.toContain(name);
   }
   await benchReady(page);
-  await record(page, "1.718");
+  // 抽样是随机的：超过接触液上限的样品（如钻石）只能记「> 1.780」，没有数值输入框。
+  await page.getByTestId("sim-refracto-record-open").click();
+  if (await page.getByTestId("sim-refracto-over-oil").isVisible()) {
+    await page.getByTestId("sim-refracto-save").click();
+    await expect(page.getByTestId("sim-refracto-saved")).toContainText("> 1.780");
+  } else {
+    await page.getByTestId("sim-refracto-reading").fill("1.718");
+    await page.getByTestId("sim-refracto-save").click();
+    await expect(page.getByTestId("sim-refracto-saved")).toContainText("1.718");
+  }
+  await page.getByTestId("sim-refracto-record-close").click();
   await expect(page.getByTestId("sim-refracto-answer")).toBeVisible();
   // 换难度重新抽样：记录与答案一并重置。
   await page.getByTestId("sim-challenge-beginner").click();

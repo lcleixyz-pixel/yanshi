@@ -15,11 +15,10 @@ test.beforeEach(async ({ page }) => {
   await page.route("https://fonts.googleapis.com/**", (r) => r.fulfill({ contentType: "text/css", body: "" }));
 });
 
-test("知识库以 3D 读数课为主线，地址可直接打开学员或讲师课程", async ({ page }) => {
+test("知识库只留一个仿真入口，地址可直接打开学员或讲师课程", async ({ page }) => {
   await page.goto("/knowledge/refractometer");
-  await expect(page.getByTestId("knowledge-start-course")).toHaveAttribute("href", `${LEARN}?mode=student`);
-  await expect(page.getByTestId("knowledge-teacher-course")).toHaveAttribute("href", `${LEARN}?mode=teacher`);
-  await expect(page.getByTestId("knowledge-cta-learning")).toHaveAttribute("href", `${LEARN}?mode=student`);
+  await expect(page.getByTestId("knowledge-open-sim")).toHaveAttribute("href", LEARN);
+  await expect(page.getByTestId("knowledge-cta-learning")).toHaveAttribute("href", LEARN);
   await expect(page.getByTestId("knowledge-classic-demo")).toHaveAttribute("href", "/demo/refractometer");
   await expect(page.getByTestId("method-practice-facet").getByRole("link")).toHaveAttribute("href", `${LEARN}?mode=student`);
   // 直接打开学员课程：任务卡已选学员身份，并停在第一步。

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
 import Header from '@/components/shared/Header';
 import Breadcrumb from '@/components/shared/Breadcrumb';
 import SectionNav from '@/components/knowledge/SectionNav';
@@ -9,7 +9,13 @@ import { INSTRUMENTS, INSTRUMENT_LIST } from '@/data/instruments';
 import type { InstrumentId } from '@/data/types';
 import { useProgress } from '@/store/progressStore';
 import { INSTRUMENT_COURSES } from '@/data/courses';
-import { OPTICS_INSTRUMENTS, opticsAssetBase, opticsForKnowledge } from '@/components/optics3d/opticsInstruments';
+
+/** 结构讲解卡上的一句话：仿真认识屏里能看到什么。 */
+const STRUCTURE_COPY: Record<InstrumentId, string> = {
+  refractometer: '拆解、透视与七段单色光路：点选部件查看作用，看光线怎样在测台与刻度之间形成明暗边界。内部尺寸与参数为教学设定，不是厂家实测。',
+  polariscope: '点选部件查看作用，展开结构看清关系，再沿底座内部光源向上跟随光路，转动偏光片观察方向与明暗的关系。',
+  spectroscope: '棱镜式与光栅式在同一屏切换：点选部件查看作用，切换单色与白光光路，看光谱怎样形成。内部处方为教学设定，不是厂家实测。',
+};
 
 const SECTIONS = [
   { id: 'introduction', label: '基本介绍' },
@@ -38,7 +44,6 @@ const METHOD_PRACTICE: Partial<Record<InstrumentId, Record<string, { to: string;
 
 export default function KnowledgeBasePage() {
   const { instrumentId } = useParams<{ instrumentId: InstrumentId }>();
-  const navigate = useNavigate();
   const location = useLocation();
   const markVisited = useProgress((s) => s.markVisited);
 
@@ -61,6 +66,7 @@ export default function KnowledgeBasePage() {
 
   if (!instrument) return <Navigate to="/" replace />;
   const course = INSTRUMENT_COURSES[instrument.id];
+  const simPath = `/sim/${instrument.id}/learn`;
   const practice = METHOD_PRACTICE[instrument.id];
 
   const otherInstruments = INSTRUMENT_LIST.filter((i) => i.id !== instrument.id);
@@ -73,7 +79,7 @@ export default function KnowledgeBasePage() {
         subtitle="仪器知识库"
         right={
           <Link to="/" className="btn-ghost text-xs">
-            返回工作台
+            返回首页
           </Link>
         }
       />
@@ -89,7 +95,7 @@ export default function KnowledgeBasePage() {
           <div>
             <Breadcrumb
               items={[
-                { label: '工作台', to: '/' },
+                { label: '首页', to: '/' },
                 { label: '仪器知识库' },
                 { label: instrument.name },
               ]}
@@ -99,19 +105,10 @@ export default function KnowledgeBasePage() {
             </h1>
             <p className="mt-2 text-sm text-ink-3">{instrument.intro.tagline}</p>
             <div className="mt-6 flex flex-wrap gap-3">
-              {course ? <>
-                {/* 有 3D 引导课程的仪器以课程为主线；经典 2D 演示放在「交互演示」一节作为备用。 */}
-                <Link to={course.student} className="btn-primary" style={{ background: instrument.themeHex, color: '#fff' }} data-testid="knowledge-start-course">
-                  开始学习 →
-                </Link>
-                <Link to={course.teacher} className="btn-ghost" data-testid="knowledge-teacher-course">讲师演示</Link>
-              </> : <button
-                onClick={() => navigate(`/demo/${instrument.id}`)}
-                className="btn-primary"
-                style={{ background: instrument.themeHex, color: '#fff' }}
-              >
-                进入互动学习 →
-              </button>}
+              {/* 一台仪器一个仿真：引导课程（学员 / 讲师）、实验与挑战都在仿真里；知识库只留一个入口。 */}
+              <Link to={simPath} className="btn-primary" style={{ background: instrument.themeHex, color: '#fff' }} data-testid="knowledge-open-sim">
+                打开仿真 →
+              </Link>
               <a href="#structure" className="btn-ghost">
                 查看结构
               </a>
@@ -119,6 +116,7 @@ export default function KnowledgeBasePage() {
                 了解操作步骤
               </a>
             </div>
+            <p className="mt-3 text-xs text-ink-4">仿真分「认识 · 实验 · 挑战」三屏；引导课程在仿真里的任务卡中开始，可选学员自学或讲师演示。</p>
           </div>
           <div className="relative">
             <div
@@ -153,7 +151,6 @@ export default function KnowledgeBasePage() {
                     {p}
                   </p>
                 ))}
-                {instrument.id === 'polariscope' && <Link to="/sim/polariscope/learn?lesson=principle" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand-700" data-testid="polariscope-principle-link">在 3D 仪器上理解偏振原理 →</Link>}
               </Card>
 
               <Card title="主要用途" tone="emerald">
@@ -186,43 +183,23 @@ export default function KnowledgeBasePage() {
           {/* Section 2: 结构 */}
           <section id="structure" tabIndex={-1} aria-label="结构讲解" className="scroll-mt-24 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-brand-500">
             <SectionTitle index={2} title="结构讲解" themeHex={instrument.themeHex} />
-            {instrument.id === 'polariscope' ? <>
-              <div className="mb-6 overflow-hidden rounded-2xl border border-line bg-white">
-                <div className="grid items-center gap-6 p-6 sm:grid-cols-[180px_1fr]">
-                  <Link to="/sim/polariscope/learn?lesson=components" tabIndex={-1} aria-hidden="true"><img src={`${import.meta.env.BASE_URL}assets/3d/polariscope/structure-v1/poster.png`} alt="" className="h-44 w-full rounded-xl bg-brand-50/40 object-contain" loading="lazy" /></Link>
-                  <div>
-                    <h3 className="font-display text-xl font-semibold text-ink">在同一台 3D 仪器上，认识部件、光路与原理</h3>
-                    <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-3">点选部件查看作用，展开结构看清关系，再沿着底座内部光源向上，观察偏振方向与明暗如何改变。</p>
-                    <div className="mt-5 flex flex-wrap gap-3">
-                      <Link to="/sim/polariscope/learn?lesson=components" className="btn-primary text-xs" data-testid="polariscope-explore-link">认识 3D 部件 →</Link>
-                      <Link to="/sim/polariscope/learn?lesson=path" className="btn-ghost text-xs" data-testid="polariscope-path-link">跟随光路 →</Link>
-                      <Link to="/sim/polariscope/learn?lesson=principle" className="btn-ghost text-xs">理解偏振原理 →</Link>
-                    </div>
-                  </div>
+            <div className="mb-6 overflow-hidden rounded-2xl border border-line bg-white" data-testid="knowledge-structure-card">
+              <div className="grid items-center gap-6 p-6 sm:grid-cols-[180px_1fr]">
+                <Link to={simPath} tabIndex={-1} aria-hidden="true"><img src={`${import.meta.env.BASE_URL}assets/home/${instrument.id}.jpg`} alt="" className="h-40 w-full rounded-xl bg-brand-50/40 object-cover" loading="lazy" /></Link>
+                <div>
+                  <h3 className="font-display text-xl font-semibold text-ink">在仿真「认识」屏里看结构与光路</h3>
+                  <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-3">{STRUCTURE_COPY[instrument.id]}</p>
+                  <Link to={simPath} className="btn-primary mt-5 inline-flex text-xs" style={{ background: instrument.themeHex, color: '#fff' }} data-testid="knowledge-structure-sim">打开仿真 →</Link>
                 </div>
               </div>
+            </div>
+            {instrument.id === 'polariscope' ? (
               <details className="rounded-xl border border-line bg-white p-5" data-testid="polariscope-reference-diagram">
                 <summary className="cursor-pointer text-sm font-medium text-ink-2">对照：原产品图部件标注</summary>
                 <p className="mb-5 mt-3 text-xs leading-relaxed text-ink-3">原图和热点保留用于对照。点击或悬停编号，查看原有部件说明。</p>
                 <ComponentDiagram productImage={instrument.productImage} components={instrument.components} themeHex={instrument.themeHex} />
               </details>
-            </> : <>
-              {opticsForKnowledge(instrument.id).length > 0 && (
-                <div className="mb-6 overflow-hidden rounded-2xl border border-line bg-white" data-testid="optics-3d-card">
-                  <div className="p-6">
-                    <h3 className="font-display text-xl font-semibold text-ink">在 3D 仪器上看结构与光路</h3>
-                    <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-3">点选部件查看作用，展开结构看清关系，切换光路示例观察光线在仪器内部怎样传播。内部尺寸与参数为教学设定，不是厂家实测。</p>
-                    <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                      {opticsForKnowledge(instrument.id).map(id => (
-                        <Link key={id} to={`/explore/optics/${id}`} className="group flex gap-4 rounded-xl border border-line p-3 transition hover:border-brand-300 hover:bg-brand-50/40" data-testid={`optics-link-${id}`}>
-                          <img src={opticsAssetBase(id) + 'poster.png'} alt="" className="h-20 w-28 shrink-0 rounded-lg bg-brand-50/40 object-contain" loading="lazy" />
-                          <span className="text-sm"><span className="font-semibold text-ink group-hover:text-brand-700">{OPTICS_INSTRUMENTS[id].name} 3D →</span><span className="mt-1 block text-xs leading-relaxed text-ink-3">{OPTICS_INSTRUMENTS[id].summary}</span></span>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
+            ) : <>
               <p className="mb-5 max-w-3xl text-sm leading-relaxed text-ink-3">点击或悬停产品图上的编号热点，查看每个部件的详细说明。{hasExternalComponents ? ' 标记为外接附件的项目不在本体图片上，但会参与实际操作。' : ' 下方列表与图示双向联动。'}</p>
               <ComponentDiagram productImage={instrument.productImage} components={instrument.components} themeHex={instrument.themeHex} />
             </>}
@@ -258,16 +235,14 @@ export default function KnowledgeBasePage() {
                     {course ? course.summary : '跟随提示完成完整的检测流程，系统会即时反馈每一步操作是否正确，并显示对应的观察现象。'}
                   </p>
                   {course && <Link to={`/demo/${instrument.id}`} className="mt-3 inline-block text-xs underline opacity-80 hover:opacity-100" data-testid="knowledge-classic-demo">经典 2D 演示（设备较旧或 3D 无法加载时使用）</Link>}
-                  {instrument.id === 'spectroscope' && <Link to="/sim/spectroscope/learn?machine=grating&mode=student" className="mt-3 block text-sm font-semibold underline underline-offset-4" data-testid="knowledge-grating-course">光栅式分光镜观察课 · 固定狭缝与焦距、线性刻度 →</Link>}
-                  {instrument.id === 'spectroscope' && <Link to="/sim/spectroscope/lab" className="mt-3 block text-sm font-semibold underline underline-offset-4" data-testid="knowledge-spectroscope-bench">三维照明与夹样工作台 · 两种机型 / 全部样品 →</Link>}
                 </div>
                 <div className="flex flex-col gap-2 lg:flex-row">
                   <Link
-                    to={course ? course.student : `/demo/${instrument.id}`}
+                    to={simPath}
                     className="group inline-flex items-center justify-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-ink shadow-card transition hover:-translate-y-0.5 hover:shadow-lift"
                     data-testid="knowledge-cta-learning"
                   >
-                    <span>{course ? '开始 3D 引导课程' : '开始学习模式'}</span>
+                    <span>打开仿真</span>
                     <span className="transition-transform duration-300 group-hover:translate-x-1.5">
                       →
                     </span>
@@ -276,7 +251,7 @@ export default function KnowledgeBasePage() {
                     to="/detection"
                     className="group inline-flex items-center justify-center gap-2 rounded-lg border border-white/40 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/20"
                   >
-                    <span>{course ? '去检测练习' : '挑战检测模式'}</span>
+                    <span>去综合检测</span>
                     <span className="transition-transform duration-300 group-hover:translate-x-1">
                       →
                     </span>

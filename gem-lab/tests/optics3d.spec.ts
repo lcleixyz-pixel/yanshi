@@ -11,15 +11,16 @@ test.beforeEach(async ({ page }) => {
 const canvas = (page: Page) => page.getByTestId('optics3d-canvas');
 const caseInfo = async (page: Page) => JSON.parse(await canvas(page).getAttribute('data-case') ?? '{}');
 
-// 分光镜两个 3D 页已迁入仿真外壳（认识屏），旧地址重定向到 /sim/spectroscope/learn。
+// 知识库只有一个仿真入口：进认识屏后在「仪器」面板里切换棱镜式 / 光栅式。
 for (const [machine, instrument] of [['prism', 'prism-spectroscope'], ['grating', 'grating-spectroscope']] as const) {
-  test(`知识库进入 ${instrument}：旧地址转到认识屏，示例切换与拆解暂停光路`, async ({ page }) => {
+  test(`知识库进入分光镜认识屏并切到 ${instrument}：示例切换与拆解暂停光路`, async ({ page }) => {
     test.setTimeout(90_000);
     const errors: string[] = [];
     page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
     await page.goto(`/knowledge/spectroscope`);
-    await page.getByTestId(`optics-link-${instrument}`).click();
-    await expect(page).toHaveURL(new RegExp(`/sim/spectroscope/learn\\?machine=${machine}$`));
+    await page.getByTestId('knowledge-structure-sim').click();
+    await expect(page).toHaveURL(/\/sim\/spectroscope\/learn$/);
+    if (machine === 'grating') await page.getByTestId('sim-machine-grating').click();
     await expect(canvas(page)).toHaveAttribute('data-instrument', instrument, { timeout: 60_000 });
     await expect(canvas(page)).toHaveAttribute('data-loaded', 'true', { timeout: 60_000 });
     await expect(canvas(page)).toHaveAttribute('data-asset-version', 'paper-optics-v1');
@@ -45,7 +46,7 @@ for (const [knowledge, ids] of [['refractometer', ['refractometer']]] as const) 
       const errors: string[] = [];
       page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
       await page.goto(`/knowledge/${knowledge}`);
-      await page.getByTestId(`optics-link-${id}`).click();
+      await page.getByTestId('knowledge-structure-sim').click();
       // 折射仪已迁入仿真（阶段 3a）：知识库入口落到认识屏。
       await expect(page).toHaveURL(new RegExp('/sim/refractometer/learn$'));
       await expect(canvas(page)).toHaveAttribute('data-loaded', 'true', { timeout: 60_000 });

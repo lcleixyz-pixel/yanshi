@@ -55,7 +55,7 @@ export default function ProgressPage() {
       <Header
         title="学习图鉴"
         subtitle="本地学习进度"
-        right={<Link to="/" className="btn-ghost text-xs">返回工作台</Link>}
+        right={<Link to="/" className="btn-ghost text-xs">返回首页</Link>}
       />
       <main className="mx-auto max-w-[1200px] space-y-7 px-4 py-8 sm:px-8 lg:px-10">
         <section className="relative overflow-hidden rounded-3xl bg-lab-navy p-6 text-white shadow-lift sm:p-8">

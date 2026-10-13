@@ -19,8 +19,8 @@ test('knowledge entry keeps the original diagram and opens the learn screen in s
   await page.goto('/knowledge/polariscope');
   await page.getByTestId('polariscope-reference-diagram').locator('summary').click();
   await expect(page.getByTestId('polariscope-reference-diagram').locator('img')).toBeVisible();
-  await page.getByTestId('polariscope-explore-link').click();
-  await expect(page).toHaveURL(/\/sim\/polariscope\/learn\?lesson=components$/);
+  await page.getByTestId('knowledge-structure-sim').click();
+  await expect(page).toHaveURL(/\/sim\/polariscope\/learn$/);
   await expect(scene(page)).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
   await expect(page.getByTestId('sim-polari-mode-structure')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.getByTestId('sim-polari-mode-explode')).toBeVisible();
@@ -176,7 +176,7 @@ test('leaving and re-entering removes old canvases and starts a fresh learn scen
     await expect(canvas(page)).toHaveCount(0);
     await page.goto('/knowledge/polariscope');
     await expect(page.locator('meta[name="viewport"]')).toHaveAttribute('content', 'width=1280, initial-scale=1');
-    await page.getByTestId('polariscope-explore-link').click();
+    await page.getByTestId('knowledge-structure-sim').click();
     await expect(scene(page)).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
     await expect(page.getByTestId('sim-polari-mode-structure')).toHaveAttribute('aria-pressed', 'true');
     await expect(canvas(page)).toHaveAttribute('data-power', 'true');

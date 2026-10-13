@@ -323,11 +323,13 @@ test("棱镜视场里 694 / 692 看成一条细线；保存不足三组的观察
   for (let i = 1; i < boxes.length; i++) expect(boxes[i].left, `${boxes[i - 1].wl} / ${boxes[i].wl} nm 在画面上重叠`).toBeGreaterThanOrEqual(boxes[i - 1].right);
 });
 
-test("知识库链接指向新的认识屏与实验屏", async ({ page }) => {
+test("知识库只留一个仿真入口：进认识屏后从底部导航到实验屏", async ({ page }) => {
   await page.goto("/knowledge/spectroscope");
-  await expect(page.getByTestId("knowledge-grating-course")).toHaveAttribute("href", "/sim/spectroscope/learn?machine=grating&mode=student");
-  await expect(page.getByTestId("knowledge-spectroscope-bench")).toHaveAttribute("href", "/sim/spectroscope/lab");
-  await page.getByTestId("knowledge-spectroscope-bench").click();
+  await expect(page.getByTestId("knowledge-grating-course")).toHaveCount(0);
+  await expect(page.getByTestId("knowledge-spectroscope-bench")).toHaveCount(0);
+  await page.getByTestId("knowledge-open-sim").click();
+  await expect(page).toHaveURL(/\/sim\/spectroscope\/learn$/);
+  await page.getByTestId("sim-screen-lab").click();
   await expect(page).toHaveURL(new RegExp(`${route}$`));
   await expect(page.getByTestId("sim-shell")).toHaveAttribute("data-screen", "lab");
 });

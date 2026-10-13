@@ -10,5 +10,3 @@ export const OPTICS_INSTRUMENTS = {
 export type OpticsInstrumentId = keyof typeof OPTICS_INSTRUMENTS;
 export const isOpticsInstrument = (id: string | undefined): id is OpticsInstrumentId => !!id && id in OPTICS_INSTRUMENTS;
 export const opticsAssetBase = (id: OpticsInstrumentId) => `${import.meta.env.BASE_URL}assets/3d/${id}/${id==='refractometer'?'paper-optics-v2':'paper-optics-v1'}/`;
-export const opticsForKnowledge = (knowledgeId: InstrumentId) =>
-  (Object.keys(OPTICS_INSTRUMENTS) as OpticsInstrumentId[]).filter(id => OPTICS_INSTRUMENTS[id].knowledgeId === knowledgeId);

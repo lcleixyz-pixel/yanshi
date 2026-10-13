@@ -622,7 +622,7 @@ export default function NamingAssessmentPage() {
 
             <div className="mt-6 flex items-center justify-between border-t border-line pt-4">
               <Link to="/" className="btn-ghost text-xs">
-                ← 返回工作台
+                ← 返回首页
               </Link>
               <div className="flex flex-wrap gap-2">
                 <button type="button" onClick={() => window.print()} className="btn-ghost text-xs">

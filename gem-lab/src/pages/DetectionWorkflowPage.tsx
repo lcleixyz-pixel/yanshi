@@ -149,7 +149,7 @@ export default function DetectionWorkflowPage() {
         subtitle="实训演练"
         right={<div className="flex flex-wrap gap-2">
           {session.difficulty && <button type="button" onClick={handleReset} className="btn-ghost text-xs">重新开始</button>}
-          <Link to="/" className="btn-ghost text-xs">返回工作台</Link>
+          <Link to="/" className="btn-ghost text-xs">返回首页</Link>
         </div>}
       />
 

@@ -171,6 +171,30 @@ test("挑战屏：抽未知样品不显示品种名，保存后揭示答案；�
   expect(await audits(page)).toEqual([]);
 });
 
+test("操作条件不成立时不能记录；读错不进下一步，重读正确才继续", async ({ page }) => {
+  // 讲师用 ?step= 直达第一次读数（跳步不写学习记录，便于单独检查读数门禁）。
+  await page.goto(`${LAB}?mode=teacher&step=observe`);
+  await ready(page);
+  await expect(task(page)).toContainText("第一次读数");
+  await page.getByTestId("sim-refracto-record-open").click();
+  await expect(page.getByTestId("sim-refracto-save")).toBeDisabled();
+  await page.getByTestId("sim-refracto-record-close").click();
+  await button(page, "打开电源").click();
+  // 只开灯（未滴液）也还不能读：视场只有空载刻度。
+  await expect(page.getByTestId("sim-refracto-eyepiece")).toHaveAttribute("data-view", "scale-only");
+  await button(page, "滴一小滴接触液").click();
+  await button(page, "台面朝下放样").click();
+  await button(page, "轻推贴合").click();
+  await expect(page.getByTestId("sim-refracto-eyepiece")).toHaveAttribute("data-view", "single");
+  // 读错：记录下来了，但引导任务的这一步不算完成。
+  await record(page, "1.700");
+  await expect(task(page)).toContainText("第一次读数");
+  await expect(task(page)).toContainText("○独立读数并核对正确");
+  // 读对：本步完成并顺延到换方向复核。
+  await record(page, "1.718");
+  await expect(task(page)).toContainText("换方向复核");
+});
+
 test("实验屏引导任务：学员走完八步才写入学习进度", async ({ page }) => {
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));

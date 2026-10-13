@@ -127,3 +127,14 @@
   .sim-polari-observe { gap: 8px; }
   .sim-polari-observe .pol-eyepiece__ring { width: 104px; padding: 6px; }
 }
+
+/* 偏光镜挑战台：检测步骤、记录与答案核对。 */
+.sim-polari-bench { height: 100%; }
+.sim-polari-steps { display: grid; gap: 3px; margin: 0; padding: 0; list-style: none; font-size: 12px; }
+.sim-polari-steps li { display: flex; gap: 6px; padding: 4px 7px; border-radius: 6px; color: var(--iu-faint); }
+.sim-polari-steps li[data-done="true"] { color: var(--iu-success); }
+.sim-polari-steps li[aria-current="step"] { color: var(--iu-accent-ink); background: var(--iu-accent-soft); }
+.sim-polari-record { display: grid; gap: 5px; font-size: 12px; }
+.sim-polari-record label { display: flex; align-items: center; gap: 6px; }
+.sim-polari-record .sim-polari-record__select { display: grid; gap: 4px; }
+.sim-polari-answer { display: grid; gap: 4px; padding: 8px; border-radius: 8px; background: var(--iu-accent-soft); }

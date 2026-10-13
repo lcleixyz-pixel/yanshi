@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   COURSE_SETUP, courseView, emptyTaskData, enterStep, labInitial, LEARN_INITIAL, learnCoach, learnEvidence, lessonScene, parseLesson,
+  canSaveChallenge, challengeInitial, challengeSteps, checkChallenge, patchChallenge, readChallengeScene,
   isRecording, labCoach, pendingStep, labEnterStep, patchLab, polariscopeInitial, readLabScene, recordAnswer, recordReveal, readLearnScene, readTaskData, seePart, stateForLesson, STEP_SCREEN, type PolariscopeTaskData,
 } from '../../src/domain/polariscopeSim';
 import { COURSE_STEPS } from '../../src/domain/polariscopeCourse';
@@ -212,4 +213,27 @@ test('做完一步先停在结果上：同屏的下一步要等学员点「下�
   assert.equal(pendingStep(view, 'path'), null);
   assert.equal(pendingStep(view, null), null);
   assert.equal(pendingStep(courseView(withMode(), 'learn'), 'parts'), null);
+});
+
+test('挑战台：五步按顺序解锁，转检偏器或换方向重新记录，转满一周且写全才能保存', () => {
+  let scene = challengeInitial('tourmaline', 'beginner');
+  assert.deepEqual(challengeSteps(scene).map((step) => step.done), [false, false, false, false, false]);
+  scene = patchChallenge(scene, { power: true, analyzerAngle: 90 });
+  scene = patchChallenge(scene, { lesson: 'sample' });
+  assert.deepEqual(challengeSteps(scene).map((step) => step.done), [true, true, true, false, false]);
+  scene = { ...scene, visited: Array(72).fill(true) };
+  assert.equal(challengeSteps(scene)[3].done, true);
+  assert.equal(patchChallenge(scene, { orientation: 'optic-axis' }).visited.some(Boolean), false);
+  assert.equal(patchChallenge(scene, { stageAngle: 30 }).visited, scene.visited);
+  assert.equal(canSaveChallenge({ ...scene, reaction: 'four-bright-four-dark' }), false);
+  assert.equal(canSaveChallenge({ ...scene, reaction: 'four-bright-four-dark', judgement: 'anisotropic' }), true);
+  assert.equal(canSaveChallenge({ ...scene, reaction: 'not-applicable' }), true);
+  // 读回：抽样难度与记录随场景保存。
+  assert.equal(readChallengeScene({ ...scene, difficulty: 'beginner' }).difficulty, 'beginner');
+});
+
+test('挑战核对：现象与光性分开判；不透明样品记「透射法不适用」才算对', () => {
+  assert.deepEqual(checkChallenge('tourmaline', { reaction: 'four-bright-four-dark', judgement: 'anisotropic', stale: false }), { reaction: true, judgement: true });
+  assert.deepEqual(checkChallenge('spinel', { reaction: 'four-bright-four-dark', judgement: 'anisotropic', stale: false }), { reaction: false, judgement: false });
+  assert.deepEqual(checkChallenge('turquoise', { reaction: 'not-applicable', judgement: null, stale: false }).reaction, checkChallenge('turquoise', { reaction: 'not-applicable', judgement: null, stale: false }).judgement);
 });

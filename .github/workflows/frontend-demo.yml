@@ -172,7 +172,7 @@ jobs:
       - name: Run instrument browser regression
         run: |
           xvfb-run --auto-servernum glxinfo -B
-          xvfb-run --auto-servernum npx playwright test tests/optics3d.spec.ts tests/microscope3d.spec.ts tests/refractometer3d-course.spec.ts tests/spectroscope-grating.spec.ts tests/spectroscope-library.spec.ts tests/instrument-ui.spec.ts tests/sim-shell.spec.ts tests/sim-refractometer.spec.ts tests/sim-spectroscope-learn.spec.ts tests/sim-spectroscope-lab.spec.ts tests/sim-spectroscope-challenge.spec.ts tests/sim-spectroscope-workbench.spec.ts tests/sim-spectroscope-acceptance.spec.ts tests/sim-polariscope-learn.spec.ts tests/sim-polariscope-lab.spec.ts \
+          xvfb-run --auto-servernum npx playwright test tests/optics3d.spec.ts tests/microscope3d.spec.ts tests/refractometer3d-course.spec.ts tests/spectroscope-grating.spec.ts tests/spectroscope-library.spec.ts tests/instrument-ui.spec.ts tests/sim-shell.spec.ts tests/sim-refractometer.spec.ts tests/sim-spectroscope-learn.spec.ts tests/sim-spectroscope-lab.spec.ts tests/sim-spectroscope-challenge.spec.ts tests/sim-spectroscope-workbench.spec.ts tests/sim-spectroscope-acceptance.spec.ts tests/sim-polariscope-learn.spec.ts tests/sim-polariscope-lab.spec.ts tests/sim-polariscope-challenge.spec.ts \
             --workers=1 --max-failures=1 --output=test-results/instruments
           test -s test-results/instruments/results.json
 

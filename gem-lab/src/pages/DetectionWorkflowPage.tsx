@@ -7,7 +7,7 @@ import Pill from '@/components/shared/Pill';
 import RefractometerDemo from '@/components/refractometer/RefractometerDemo';
 import PolariscopeDemo from '@/components/polariscope/PolariscopeDemo';
 // 偏光镜检测默认使用 3D；三维依赖按需加载，WebGL 不可用或加载失败时回退到 2D 检测模式。
-const PolariscopeDetection3D = lazy(() => import('@/components/polariscope3d/PolariscopeDetection3D'));
+const PolariscopeDetectionChallenge = lazy(() => import('@/components/sim/polariscope/PolariscopeDetectionChallenge'));
 const SpectroscopeDetectionChallenge = lazy(() => import('@/components/sim/spectroscope/SpectroscopeDetectionChallenge'));
 const RefractometerDetectionChallenge = lazy(() => import('@/components/sim/refractometer/RefractometerDetectionChallenge'));
 function supportsWebGL() {
@@ -105,7 +105,7 @@ export default function DetectionWorkflowPage() {
   if (step === 4 && activeInstrument === 'polariscope' && drawnSample && !polariscope2D) {
     return (
       <Suspense fallback={<div className="grid min-h-screen place-items-center text-sm text-ink-3">正在载入 3D 偏光镜…</div>}>
-        <PolariscopeDetection3D sampleId={drawnSample} onDetectionComplete={handleDetectionComplete} onUse2D={() => setPolariscope2D(true)} />
+        <PolariscopeDetectionChallenge sampleId={drawnSample} onDetectionComplete={handleDetectionComplete} onUse2D={() => setPolariscope2D(true)} />
       </Suspense>
     );
   }

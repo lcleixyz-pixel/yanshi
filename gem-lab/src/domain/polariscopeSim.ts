@@ -326,7 +326,7 @@ export function polariscopeInitial(search: URLSearchParams) {
     scenes: {
       learn: { ...LEARN_INITIAL, structure: stateForLesson(learnLesson) } as unknown as Record<string, unknown>,
       lab: { ...lab, structure: stateForLesson(labLesson, lab.structure.sampleId) } as unknown as Record<string, unknown>,
-      challenge: labInitial() as unknown as Record<string, unknown>,
+      challenge: challengeInitial() as unknown as Record<string, unknown>,
     },
     options: {},
     taskData: task as unknown as Record<string, unknown>,
@@ -393,4 +393,76 @@ export function labCoach(step: CourseStepId, scene: LabScene, observation: Sampl
   if (!scene.revealed) return { part: 'stage', text: '眼睛看目镜视场，手拖动这里转一整周' };
   if (step === 'reorient' && structure.orientation === 'optic-axis' && observation === 'axis-dark') return { part: 'stage', text: '全暗不一定是均质体：换个方向放置，再转一周' };
   return null;
+}
+
+// ── 挑战屏：未知样品，无讲解与揭晓，步骤按顺序解锁（与 3D 检测模式同一套规则） ──
+
+export type ChallengeReaction = 'four-bright-four-dark' | 'all-dark' | 'all-bright' | 'not-applicable';
+export type ChallengeJudgement = 'isotropic' | 'anisotropic' | 'aggregate';
+
+export interface ChallengeScene extends Record<string, unknown> {
+  structure: PolariscopeStructureState;
+  visited: boolean[];
+  reaction: ChallengeReaction | null;
+  judgement: ChallengeJudgement | '';
+  /** 独立练习抽样的难度；为 null 时还没抽样（检测流程里不用）。 */
+  difficulty: ChallengeDifficulty | null;
+  /** 已保存的记录（独立练习保存后才揭示答案）；全部重置后标为过期。 */
+  saved: { reaction: ChallengeReaction; judgement: ChallengeJudgement | null; stale: boolean } | null;
+}
+
+/** 检测开始时：断电、检偏器平行、样品还没放上（讲次 components 表示载物台空着）。 */
+export function challengeInitial(sampleId = 'spinel', difficulty: ChallengeDifficulty | null = null): ChallengeScene {
+  return {
+    structure: createInitialStructureState({ lesson: 'components', power: false, analyzerAngle: 0, showAnnotations: false, sampleId, orientation: 'general' }),
+    visited: emptyCoverage(), reaction: null, judgement: '', difficulty, saved: null,
+  };
+}
+
+export function readChallengeScene(scene: Record<string, unknown> | undefined): ChallengeScene {
+  const raw = (scene ?? {}) as Partial<ChallengeScene>;
+  const structure = raw.structure as PolariscopeStructureState | undefined;
+  const sampleId = structure?.sampleId && getPolariscopeProfile(structure.sampleId) ? structure.sampleId : 'spinel';
+  const base = challengeInitial(sampleId, isDifficulty(raw.difficulty) ? raw.difficulty : null);
+  return {
+    ...base,
+    structure: structure && (structure.lesson === 'components' || structure.lesson === 'sample') ? { ...base.structure, ...structure, sampleId } : base.structure,
+    visited: Array.isArray(raw.visited) && raw.visited.length === TRACE_STEPS ? raw.visited.map((item) => item === true) : base.visited,
+    reaction: raw.reaction ?? null,
+    judgement: raw.judgement ?? '',
+    saved: raw.saved && typeof raw.saved === 'object' ? raw.saved : null,
+  };
+}
+
+/** 检测里改仪器状态：检偏器、放置方向或放样一变，之前的一周记录不再对应同一观察条件，重新记录。 */
+export function patchChallenge(scene: ChallengeScene, patch: Partial<PolariscopeStructureState>): ChallengeScene {
+  const reset = (['analyzerAngle', 'orientation', 'lesson'] as const).some((key) => key in patch && patch[key] !== scene.structure[key]);
+  return { ...scene, structure: { ...scene.structure, ...patch }, visited: reset ? emptyCoverage() : scene.visited };
+}
+
+export const challengePlaced = (scene: ChallengeScene) => scene.structure.lesson === 'sample';
+export const challengeCrossed = (scene: ChallengeScene) => deriveTeachingOptics(scene.structure).active && isCrossed(scene.structure);
+/** 正交下、已放样才记录转动。 */
+export const challengeRecording = (scene: ChallengeScene) => challengePlaced(scene) && challengeCrossed(scene);
+
+/** 检测五步：打开电源 → 调到正交 → 放样 → 正交下转满一周 → 记录。 */
+export function challengeSteps(scene: ChallengeScene) {
+  const placed = challengePlaced(scene);
+  return [
+    { id: 'power', label: '打开电源', done: scene.structure.power },
+    { id: 'crossed', label: '把上偏光片转到正交（视场最暗）', done: challengeCrossed(scene) || placed },
+    { id: 'place', label: '放置样品', done: placed },
+    { id: 'rotate', label: '在正交下转动载物台一整周', done: placed && scene.visited.every(Boolean) },
+    { id: 'record', label: '记录现象并判断光性', done: false },
+  ] as const;
+}
+
+export const canSaveChallenge = (scene: ChallengeScene) => challengePlaced(scene) && scene.visited.every(Boolean) && scene.reaction !== null && (scene.reaction === 'not-applicable' || scene.judgement !== '');
+
+/** 独立练习保存后的核对：现象与光性各自对不对（不透明样品记「透射法不适用」才算对）。 */
+export function checkChallenge(sampleId: string, saved: NonNullable<ChallengeScene['saved']>) {
+  const profile = getPolariscopeProfile(sampleId)!;
+  if (profile.observation === 'opaque') return { reaction: saved.reaction === 'not-applicable', judgement: saved.reaction === 'not-applicable' };
+  const expected = profile.expectedPhenomenon === 'four-bright-four-dark' || profile.expectedPhenomenon === 'all-dark' || profile.expectedPhenomenon === 'all-bright' ? profile.expectedPhenomenon : null;
+  return { reaction: expected === null || saved.reaction === expected, judgement: saved.judgement === profile.observation };
 }

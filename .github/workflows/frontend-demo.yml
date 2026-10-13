@@ -117,10 +117,10 @@ jobs:
 
       - name: Run polariscope browser regression shard
         # Keep real GLB loading and the fixture's llvmpipe renderer assertion.
-        # This prefix includes guided-course, student-mode, knowledge-entry and 3D detection specifications.
+        # This prefix includes the polariscope sim screens (structure, scene, lessons, course, entry, timing) and 3D detection specifications.
         run: |
           xvfb-run --auto-servernum glxinfo -B
-          xvfb-run --auto-servernum npx playwright test polariscope3d \
+          xvfb-run --auto-servernum npx playwright test sim-polariscope \
             --shard=${{ matrix.shard }}/3 --workers=1 --max-failures=3 \
             --output=test-results/polariscope-${{ matrix.shard }}
 
@@ -172,7 +172,7 @@ jobs:
       - name: Run instrument browser regression
         run: |
           xvfb-run --auto-servernum glxinfo -B
-          xvfb-run --auto-servernum npx playwright test tests/optics3d.spec.ts tests/microscope3d.spec.ts tests/refractometer3d-course.spec.ts tests/spectroscope-grating.spec.ts tests/spectroscope-library.spec.ts tests/instrument-ui.spec.ts tests/sim-shell.spec.ts tests/sim-refractometer.spec.ts tests/sim-spectroscope-learn.spec.ts tests/sim-spectroscope-lab.spec.ts tests/sim-spectroscope-challenge.spec.ts tests/sim-spectroscope-workbench.spec.ts tests/sim-spectroscope-acceptance.spec.ts tests/sim-polariscope-learn.spec.ts tests/sim-polariscope-lab.spec.ts tests/sim-polariscope-challenge.spec.ts \
+          xvfb-run --auto-servernum npx playwright test tests/optics3d.spec.ts tests/microscope3d.spec.ts tests/refractometer3d-course.spec.ts tests/spectroscope-grating.spec.ts tests/spectroscope-library.spec.ts tests/instrument-ui.spec.ts tests/sim-shell.spec.ts tests/sim-refractometer.spec.ts tests/sim-spectroscope-learn.spec.ts tests/sim-spectroscope-lab.spec.ts tests/sim-spectroscope-challenge.spec.ts tests/sim-spectroscope-workbench.spec.ts tests/sim-spectroscope-acceptance.spec.ts \
             --workers=1 --max-failures=1 --output=test-results/instruments
           test -s test-results/instruments/results.json
 
@@ -223,7 +223,7 @@ jobs:
 
       - name: Collect the complete expected case list
         working-directory: gem-lab
-        run: npx playwright test polariscope3d --list --reporter=json > expected-polariscope.json
+        run: npx playwright test sim-polariscope --list --reporter=json > expected-polariscope.json
 
       - name: Verify complete passing results
         run: |

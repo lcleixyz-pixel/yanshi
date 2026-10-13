@@ -34,7 +34,6 @@ test("尾斜杠按同一地址处理：旧练习页与两个探索页都照样�
 
 test("其他地址不改动：2D 演示与别的仪器照常", () => {
   assert.equal(to("/demo/spectroscope"), null);
-  assert.equal(to("/explore/polariscope"), null);
   assert.equal(to("/knowledge/spectroscope"), null);
   assert.equal(to("/sim/spectroscope/learn"), null);
   // 折射仪由自己的映射处理，不落在分光镜映射里。
@@ -64,13 +63,25 @@ test("折射仪：课程入口保留讲师 / 学员与步骤，并落到该步�
 test("折射仪：其他地址与 2D 演示不改动", () => {
   assert.equal(rTo("/demo/refractometer"), null);
   assert.equal(rTo("/explore/optics/prism-spectroscope"), null);
-  assert.equal(rTo("/explore/polariscope"), null);
   assert.equal(rTo("/sim/refractometer/lab"), null);
 });
 
 test("统一映射：分光镜与折射仪各走各的，两边都不误伤", () => {
   assert.equal(legacySimRedirect("/explore/optics/refractometer", ""), "/sim/refractometer/learn");
   assert.equal(legacySimRedirect("/explore/optics/prism-spectroscope", ""), "/sim/spectroscope/learn?machine=prism");
-  assert.equal(legacySimRedirect("/explore/polariscope", ""), null);
   assert.equal(legacySimRedirect("/demo/refractometer", ""), null);
+});
+
+test("偏光镜：五讲按屏落位并带上讲次，课程入口保留讲师 / 学员与步骤，画质参数保留", () => {
+  const go = (path: string) => legacySimRedirect(path.split("?")[0], path.includes("?") ? `?${path.split("?")[1]}` : "");
+  assert.equal(go("/explore/polariscope"), "/sim/polariscope/learn");
+  assert.equal(go("/explore/polariscope/"), "/sim/polariscope/learn");
+  assert.equal(go("/explore/polariscope?lesson=path"), "/sim/polariscope/learn?lesson=path");
+  assert.equal(go("/explore/polariscope?lesson=sample"), "/sim/polariscope/lab?lesson=sample");
+  assert.equal(go("/explore/polariscope?lesson=conoscope&quality=standard"), "/sim/polariscope/lab?lesson=conoscope&quality=standard");
+  assert.equal(go("/explore/polariscope?course=basic"), "/sim/polariscope/learn?mode=teacher");
+  assert.equal(go("/explore/polariscope?course=basic&mode=student&step=crossed"), "/sim/polariscope/learn?mode=student&step=crossed");
+  assert.equal(go("/explore/polariscope?course=basic&mode=student&step=reorient"), "/sim/polariscope/lab?mode=student&step=reorient");
+  assert.equal(go("/explore/polariscope?lesson=bogus&quality=ultra"), "/sim/polariscope/learn");
+  assert.equal(go("/demo/polariscope"), null);
 });

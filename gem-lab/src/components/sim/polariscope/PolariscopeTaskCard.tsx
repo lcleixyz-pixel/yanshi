@@ -4,7 +4,7 @@ import { useSimDrawer } from '../SimDrawer';
 import { SimTaskCard, SimTaskDock, SimTaskLine } from '../SimShell';
 import type { CourseMode } from '../../../domain/course';
 import { COURSE_MINUTES, COURSE_STEPS } from '../../../domain/polariscopeCourse';
-import { STEP_SHORT, STEP_TASK, type CourseView } from '../../../domain/polariscopeSim';
+import { ADVANCED_TOPICS, STEP_SHORT, STEP_TASK, type CourseView } from '../../../domain/polariscopeSim';
 import type { CourseStepId } from '../../../domain/polariscopeCourse';
 import { SIM_SCREEN_LABELS, type SimScreenId } from '../../../domain/simSession';
 
@@ -12,11 +12,13 @@ import { SIM_SCREEN_LABELS, type SimScreenId } from '../../../domain/simSession'
  * 引导任务卡：可收起的小卡，只写本步一句话、完成勾选与做完后的「为什么」。
  * 步骤、完成条件与学习记录规则沿用课程域（学员自学、未跳步、全部完成才写入学习进度）。
  */
-export default function PolariscopeTaskCard({ view, finished: done, open, mode, hasSkipped, teacherUsed, children, onOpen, onChoose, onNext, onRestart, onScreen }: {
+export default function PolariscopeTaskCard({ view, finished: done, open, mode, hasSkipped, teacherUsed, children, onOpen, onChoose, onNext, onTopic, onRestart, onScreen }: {
   view: CourseView;
   /** 刚做完、还停在画面上的一步：先看结果与「为什么」，点「下一步」再换场景。 */
   finished?: { step: CourseStepId; items: CourseView['items'] } | null;
   onNext?: () => void;
+  /** 完成课程后的进阶内容入口（进入实验屏的对应讲次与样品）。 */
+  onTopic?: (id: string) => void;
   open: boolean;
   mode: CourseMode | null;
   hasSkipped: boolean;
@@ -81,8 +83,14 @@ export default function PolariscopeTaskCard({ view, finished: done, open, mode, 
       {view.allComplete && (
         <div className="sim-task__finish" data-testid="sim-task-finish">
           {finished
-            ? <p role="status">{learning.status}</p>
+            ? <p role="status" data-testid="sim-task-save-status">{learning.status}</p>
             : <button type="button" className="iu-button iu-button--primary" onClick={() => { setFinished(true); void learning.record(hasSkipped, true); }}>完成课程并记录</button>}
+          {finished && onTopic && (
+            <div className="sim-task__topics" data-testid="sim-task-topics">
+              <span className="sim-task__note">进阶内容</span>
+              {ADVANCED_TOPICS.map((topic) => <button key={topic.id} type="button" className="iu-button" title={topic.text} onClick={() => onTopic(topic.id)} data-testid={`sim-task-topic-${topic.id}`}>{topic.title}</button>)}
+            </div>
+          )}
         </div>
       )}
     </SimTaskCard>

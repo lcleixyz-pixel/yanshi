@@ -1,7 +1,9 @@
 import { expect, test } from './fixtures/polariscope';
 
+/** 由 polariscope3d-timing.spec.ts 改写：画质切换与慢帧下的动画，改在仿真认识屏 / 实验屏上做。 */
+
 test('standard quality keeps the real model and restores the high-quality renderer', async ({ page }) => {
-  await page.goto('/explore/polariscope?quality=standard');
+  await page.goto('/sim/polariscope/learn?quality=standard');
   const canvas = page.getByTestId('polariscope-canvas');
   await expect(page.getByTestId('polariscope-scene')).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
   await expect(canvas).toHaveAttribute('data-loaded', 'true');
@@ -45,14 +47,14 @@ test('foreground animation remains usable with deliberately slow animation frame
       pending.delete(id);
     };
   });
-  await page.goto('/explore/polariscope?quality=standard&lesson=conoscope');
+  await page.goto('/sim/polariscope/lab?quality=standard&lesson=conoscope');
   const canvas = page.getByTestId('polariscope-canvas');
   await expect(page.getByTestId('polariscope-scene')).toHaveAttribute('data-status', 'ready', { timeout: 30_000 });
-  await page.getByTestId('conoscope-toggle').click();
+  await page.getByTestId('sim-polari-conoscope').click();
   await expect(canvas).toHaveAttribute('data-conoscope-progress', '1.000', { timeout: 4_000 });
-  await page.getByTestId('explore-lesson-sample').click();
-  await page.getByTestId('sample-demo-mode').click();
-  await page.getByTestId('sample-auto-rotate').click();
+  await page.getByTestId('sim-polari-lesson-sample').click();
+  await page.getByTestId('sim-polari-predict-demo').click();
+  await page.getByTestId('sim-polari-auto-rotate').click();
   await expect(page.getByTestId('rotation-trace')).toHaveAttribute('data-coverage', '100', { timeout: 15_000 });
-  await expect(page.getByTestId('sample-reveal')).toBeVisible();
+  await expect(page.getByTestId('sim-polari-reveal')).toBeVisible();
 });

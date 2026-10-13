@@ -135,3 +135,6 @@
   .sim-sheet[data-suppressed="true"] { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .sim-reset:active { transform: none; } }
+
+/* 完成课程后的进阶内容入口。 */
+.sim-task__topics { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 4px; }

@@ -328,10 +328,16 @@ export function polariscopeInitial(search: URLSearchParams) {
       lab: { ...lab, structure: stateForLesson(labLesson, lab.structure.sampleId) } as unknown as Record<string, unknown>,
       challenge: challengeInitial() as unknown as Record<string, unknown>,
     },
-    options: {},
+    // 课堂低配画质（?quality=standard，CI 软件渲染也用）：三屏共用，进入时读一次。
+    options: search.get('quality') === 'standard' || search.get('quality') === 'high' ? { quality: search.get('quality') } : {},
     taskData: task as unknown as Record<string, unknown>,
     teacherUsed: mode === 'teacher',
   };
+}
+
+/** 三维画质：地址指定的优先，否则手机流畅、桌面精细（同旧页）。 */
+export function initialQuality(options: Record<string, unknown> | undefined, mobile: boolean): 'standard' | 'high' {
+  return options?.quality === 'standard' || options?.quality === 'high' ? options.quality : mobile ? 'standard' : 'high';
 }
 
 /** 改变这些会换一次观察：重新记录一周、收起揭晓与平行复核（与旧页同一套规则）。 */
@@ -355,9 +361,15 @@ export function patchLab(scene: LabScene, patch: Partial<PolariscopeStructureSta
   };
 }
 
-/** 实验屏换讲 / 进入课程步骤：场景复位，观察记录从头开始。 */
+/**
+ * 实验屏换讲 / 进入课程步骤：场景复位，观察记录从头开始。
+ * 样品观察与干涉图看的是同一块晶体：双晶示意、厚度与应变跟着样品走（同旧页的换讲规则）。
+ */
 export function labLessonScene(scene: LabScene, lesson: Lesson): LabScene {
-  return { ...lessonScene(scene, lesson), prediction: null, revealed: false, visited: emptyCoverage(), adr: null };
+  const next = lessonScene(scene, lesson);
+  const { brazilTwin, thicknessMm, strain } = scene.structure;
+  const keep = next.structure.sampleId === scene.structure.sampleId ? { brazilTwin, thicknessMm, strain } : {};
+  return { ...next, structure: { ...next.structure, ...keep }, prediction: null, revealed: false, visited: emptyCoverage(), adr: null };
 }
 export function labEnterStep(scene: LabScene, step: CourseStepId): LabScene {
   const entered = enterStep(scene, step);
@@ -465,4 +477,20 @@ export function checkChallenge(sampleId: string, saved: NonNullable<ChallengeSce
   if (profile.observation === 'opaque') return { reaction: saved.reaction === 'not-applicable', judgement: saved.reaction === 'not-applicable' };
   const expected = profile.expectedPhenomenon === 'four-bright-four-dark' || profile.expectedPhenomenon === 'all-dark' || profile.expectedPhenomenon === 'all-bright' ? profile.expectedPhenomenon : null;
   return { reaction: expected === null || saved.reaction === expected, judgement: saved.judgement === profile.observation };
+}
+
+/** 基础课程之后的进阶内容（同旧页）：完成课程后从任务卡进入实验屏的对应讲次与样品。 */
+export const ADVANCED_TOPICS: readonly { id: string; title: string; text: string; lesson: Lesson; patch: Partial<PolariscopeStructureState> }[] = [
+  { id: 'quartz', title: '水晶旋光', text: '黄晶沿光轴放置：不暗也不闪。', lesson: 'sample', patch: { sampleId: 'citrine', orientation: 'optic-axis', strain: null, brazilTwin: false } },
+  { id: 'twin', title: '巴西律双晶', text: '紫晶双层旋光互相抵消。', lesson: 'sample', patch: { sampleId: 'amethyst', orientation: 'optic-axis', strain: null, brazilTwin: true } },
+  { id: 'adr', title: '异常双折射与平行复核', text: '本铁铝榴石教学样品的应变明暗，如何区分。', lesson: 'sample', patch: { sampleId: 'almandine', orientation: 'general', strain: null, brazilTwin: false } },
+  { id: 'conoscope', title: '锥光干涉图', text: '放上干涉球，区分一轴晶与二轴晶。', lesson: 'conoscope', patch: { sampleId: 'tourmaline', brazilTwin: false } },
+];
+
+/** 进入一个进阶内容：实验屏换到该讲次，套样品与放置方式，观察记录从头开始。 */
+export function topicScene(scene: LabScene, id: string): LabScene {
+  const topic = ADVANCED_TOPICS.find((item) => item.id === id);
+  if (!topic) return scene;
+  const base = labLessonScene({ ...scene, structure: { ...scene.structure, sampleId: topic.patch.sampleId ?? scene.structure.sampleId } }, topic.lesson);
+  return { ...base, structure: { ...base.structure, ...topic.patch } };
 }

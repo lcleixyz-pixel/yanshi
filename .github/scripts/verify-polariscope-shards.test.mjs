@@ -45,7 +45,7 @@ test('keeps the baseline aligned with actual Playwright discovery without launch
   delete env.PLAYWRIGHT_JSON_OUTPUT_NAME;
   const collected = spawnSync(process.execPath, [
     path.join(project, 'node_modules/playwright/cli.js'),
-    'test', 'polariscope3d', '--list', '--reporter=json',
+    'test', 'sim-polariscope', '--list', '--reporter=json',
   ], { cwd: project, env, encoding: 'utf8', timeout: 30_000 });
   assert.equal(collected.error, undefined, collected.error?.message);
   assert.equal(collected.status, 0, collected.stderr);

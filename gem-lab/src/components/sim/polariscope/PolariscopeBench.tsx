@@ -14,7 +14,7 @@ import { buildSampleFieldMap, meanSampleLuminance, rotationCurve } from '../../.
 import { getPolariscopeProfile } from '../../../domain/polariscopeSamples';
 import { REACTION_CHECK_LABEL } from '../../../domain/polariscopeRules';
 import { markRotation, TRACE_STEPS } from '../../../domain/rotationCoverage';
-import type { PolariscopeStructureState } from '../../../domain/polariscopeStructure';
+import { deriveTeachingOptics, type PolariscopeStructureState } from '../../../domain/polariscopeStructure';
 import type { SimScreenId } from '../../../domain/simSession';
 import '../../../styles/polariscope-explore.css';
 import '../../../styles/sim-instrument.css';
@@ -33,12 +33,14 @@ export const JUDGEMENTS: { id: ChallengeJudgement; label: string }[] = [
  * 偏光镜挑战台：未知样品，无讲解、揭晓与动作提示，五步按顺序解锁（原 3D 检测模式搬进仿真外壳）。
  * 挑战屏（独立练习）与检测流程共用；保存后做什么由外层决定（练习屏揭示答案，检测流程写回检测记录）。
  */
-export default function PolariscopeBench({ sim, screen, onScreen, embedded, scene, idle, header, after, onScene, onReset, onSave, onUse2D }: {
+export default function PolariscopeBench({ sim, screen, onScreen, embedded, quality: initialQuality = 'high', scene, idle, header, after, onScene, onReset, onSave, onUse2D }: {
   sim: SimDef;
   screen: SimScreenId;
   onScreen?: (screen: SimScreenId) => void;
   /** 检测流程内联：不显示底部屏幕导航。 */
   embedded?: boolean;
+  /** 初始三维画质（挑战屏随地址；检测流程默认精细，与原检测模式一致）。 */
+  quality?: 'standard' | 'high';
   scene: ChallengeScene;
   /** 还没抽样：载物台空着，不能放样。 */
   idle?: boolean;
@@ -50,7 +52,7 @@ export default function PolariscopeBench({ sim, screen, onScreen, embedded, scen
   onSave: (scene: ChallengeScene) => void;
   onUse2D?: () => void;
 }) {
-  const [quality, setQuality] = useState<'standard' | 'high'>('high');
+  const [quality, setQuality] = useState<'standard' | 'high'>(initialQuality);
   const [sceneStatus, setSceneStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [fieldCanvas, setFieldCanvas] = useState<HTMLCanvasElement | null>(null);
   const [fieldVersion, setFieldVersion] = useState(0);
@@ -107,7 +109,7 @@ export default function PolariscopeBench({ sim, screen, onScreen, embedded, scen
         <p className="sim-stage__hint">拖动空白旋转视角 · 拖动圆环旋转部件 · 点底座侧面按钮开关电源</p>
       </section>
       <SimReadout title="目镜视场" meta={placed ? '未知样品' : '空载'} placement="top-right" testId="sim-polari-field">
-        <EyepieceView content={eyepiece} stageDeg={structure.stageAngle} analyzerDeg={structure.analyzerAngle} active={structure.power} label={placed ? '目镜视场 · 未知样品' : '目镜视场 · 空载'} onRendered={onRendered} onCanvas={setFieldCanvas} />
+        <EyepieceView content={eyepiece} stageDeg={structure.stageAngle} analyzerDeg={structure.analyzerAngle} active={deriveTeachingOptics(structure).active} label={placed ? '目镜视场 · 未知样品' : '目镜视场 · 空载'} onRendered={onRendered} onCanvas={setFieldCanvas} />
       </SimReadout>
     </>
   );
@@ -127,10 +129,10 @@ export default function PolariscopeBench({ sim, screen, onScreen, embedded, scen
             <option value="high">精细画质</option><option value="standard">流畅画质</option>
           </select>
         </div>
-        <RangeControl label="上偏光片角度" min={0} max={360} value={Math.round(structure.analyzerAngle)} display={`${Math.round(structure.analyzerAngle)}°`} ends={['0°', '360°']} onChange={(value) => changeAngle('analyzer', value)} testId="sim-polari-analyzer" />
+        <RangeControl label="上偏光片角度" min={0} max={360} value={Math.round(structure.analyzerAngle)} display={`${Math.round(structure.analyzerAngle)}°`} valueText={`${Math.round(structure.analyzerAngle)} 度`} ends={['0°', '360°']} onChange={(value) => changeAngle('analyzer', value)} testId="sim-polari-analyzer" />
         <button type="button" className="iu-button iu-button--primary" disabled={!crossed || placed || idle} onClick={place} data-testid="detection-place-sample">{placed ? '样品已放上载物台' : '放置样品'}</button>
         {placed && <>
-          <RangeControl label="载物台角度" min={0} max={360} value={Math.round(structure.stageAngle)} display={`${Math.round(structure.stageAngle)}°`} ends={['0°', '360°']} onChange={(value) => changeAngle('stage', value)} testId="sim-polari-stage-angle" />
+          <RangeControl label="载物台角度" min={0} max={360} value={Math.round(structure.stageAngle)} display={`${Math.round(structure.stageAngle)}°`} valueText={`${Math.round(structure.stageAngle)} 度`} ends={['0°', '360°']} onChange={(value) => changeAngle('stage', value)} testId="sim-polari-stage-angle" />
           <RotationTrace curve={curve} visited={scene.visited} current={structure.stageAngle} reveal={false} analyzerDeg={structure.analyzerAngle} />
           {!crossed && <p className="sim-note" role="status">上偏光片不在正交位置，此时转动不计入记录。</p>}
           <div className="sim-row">

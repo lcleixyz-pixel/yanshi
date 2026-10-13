@@ -22,7 +22,7 @@ const SECTIONS = [
 const METHOD_PRACTICE: Partial<Record<InstrumentId, Record<string, { to: string; label: string } | { note: string }>>> = {
   polariscope: {
     'optical-character': { to: `${INSTRUMENT_COURSES.polariscope!.student}&step=crossed`, label: '在 3D 课程中练习：从空载调正开始' },
-    interference: { to: '/explore/polariscope?lesson=conoscope', label: '在 3D 仪器上观察干涉图' },
+    interference: { to: '/sim/polariscope/lab?lesson=conoscope', label: '在 3D 仪器上观察干涉图' },
     pleochroism: { note: '多色性观察暂无 3D 练习，请结合实物或教材图片学习。' },
   },
   refractometer: {
@@ -153,7 +153,7 @@ export default function KnowledgeBasePage() {
                     {p}
                   </p>
                 ))}
-                {instrument.id === 'polariscope' && <Link to="/explore/polariscope?lesson=principle" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand-700" data-testid="polariscope-principle-link">在 3D 仪器上理解偏振原理 →</Link>}
+                {instrument.id === 'polariscope' && <Link to="/sim/polariscope/learn?lesson=principle" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand-700" data-testid="polariscope-principle-link">在 3D 仪器上理解偏振原理 →</Link>}
               </Card>
 
               <Card title="主要用途" tone="emerald">
@@ -189,14 +189,14 @@ export default function KnowledgeBasePage() {
             {instrument.id === 'polariscope' ? <>
               <div className="mb-6 overflow-hidden rounded-2xl border border-line bg-white">
                 <div className="grid items-center gap-6 p-6 sm:grid-cols-[180px_1fr]">
-                  <Link to="/explore/polariscope?lesson=components" tabIndex={-1} aria-hidden="true"><img src={`${import.meta.env.BASE_URL}assets/3d/polariscope/structure-v1/poster.png`} alt="" className="h-44 w-full rounded-xl bg-brand-50/40 object-contain" loading="lazy" /></Link>
+                  <Link to="/sim/polariscope/learn?lesson=components" tabIndex={-1} aria-hidden="true"><img src={`${import.meta.env.BASE_URL}assets/3d/polariscope/structure-v1/poster.png`} alt="" className="h-44 w-full rounded-xl bg-brand-50/40 object-contain" loading="lazy" /></Link>
                   <div>
                     <h3 className="font-display text-xl font-semibold text-ink">在同一台 3D 仪器上，认识部件、光路与原理</h3>
                     <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-3">点选部件查看作用，展开结构看清关系，再沿着底座内部光源向上，观察偏振方向与明暗如何改变。</p>
                     <div className="mt-5 flex flex-wrap gap-3">
-                      <Link to="/explore/polariscope?lesson=components" className="btn-primary text-xs" data-testid="polariscope-explore-link">认识 3D 部件 →</Link>
-                      <Link to="/explore/polariscope?lesson=path" className="btn-ghost text-xs" data-testid="polariscope-path-link">跟随光路 →</Link>
-                      <Link to="/explore/polariscope?lesson=principle" className="btn-ghost text-xs">理解偏振原理 →</Link>
+                      <Link to="/sim/polariscope/learn?lesson=components" className="btn-primary text-xs" data-testid="polariscope-explore-link">认识 3D 部件 →</Link>
+                      <Link to="/sim/polariscope/learn?lesson=path" className="btn-ghost text-xs" data-testid="polariscope-path-link">跟随光路 →</Link>
+                      <Link to="/sim/polariscope/learn?lesson=principle" className="btn-ghost text-xs">理解偏振原理 →</Link>
                     </div>
                   </div>
                 </div>

@@ -8,7 +8,7 @@ import PolariscopeTaskCard from './PolariscopeTaskCard';
 import type { SimScreenProps } from '../registry';
 import { LEARN_LESSONS, LESSONS, PART_SHORT, PARTS, PARTS_BY_ID, PATH_STEPS } from '../../../domain/polariscopeCopy';
 import {
-  courseView, enterStep, isCrossed, pendingStep, stepChecklist, LEARN_INITIAL, learnCoach, learnEvidence, lessonScene, readLearnScene, readTaskData, seePart,
+  courseView, initialQuality, readLabScene, topicScene, enterStep, isCrossed, pendingStep, stepChecklist, LEARN_INITIAL, learnCoach, learnEvidence, lessonScene, readLearnScene, readTaskData, seePart,
   STEP_SCREEN, type LearnScene, type PolariscopeTaskData,
 } from '../../../domain/polariscopeSim';
 import { deriveTeachingOptics, STRUCTURE_PART_IDS, type PolariscopeStructureState, type StructurePartId, type StructureViewPreset, type TeachingLesson } from '../../../domain/polariscopeStructure';
@@ -40,7 +40,7 @@ export default function PolariscopeLearnScreen({ sim, screen, onScreen, session,
   const crossed = isCrossed(structure);
   const halfWave = structure.principleExample === 'half-wave';
   const guided = task.mode !== null && STEP_SCREEN[view.step] === screen && !view.screenDone;
-  const [quality, setQuality] = useState<'standard' | 'high'>(() => mobileQuery() ? 'standard' : 'high');
+  const [quality, setQuality] = useState<'standard' | 'high'>(() => initialQuality(session.options, mobileQuery()));
   const [sceneStatus, setSceneStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [fieldCanvas, setFieldCanvas] = useState<HTMLCanvasElement | null>(null);
   const [fieldVersion, setFieldVersion] = useState(0);
@@ -118,6 +118,12 @@ export default function PolariscopeLearnScreen({ sim, screen, onScreen, session,
           onSelectPart={selectPart} onAngleChange={changeAngle} onPowerChange={(power) => update({ power })} onStatus={setSceneStatus}
           field={sceneField} coach={coach} focusOnSelect={false} labels={labels} />
         {sceneStatus === 'error' && <Link to="/demo/polariscope" className="sim-stage__fallback" data-testid="sim-polari-fallback-2d">3D 暂不可用：改用经典 2D 演示 →</Link>}
+        {structure.isolatedPart && (
+          <div className="sim-stage__isolation" data-testid="sim-polari-isolation">
+            <span>单独查看 · {structure.isolatedPart === 'light' ? '内部光源与底座边界' : PARTS_BY_ID[structure.isolatedPart].shortName}</span>
+            <button type="button" className="iu-button" onClick={() => update({ isolatedPart: null })}>显示整机</button>
+          </div>
+        )}
         <p className="sim-stage__hint">{structure.mode === 'structure' && !structure.isolatedPart ? '拖动空白旋转视角 · 拖动圆环旋转部件 · 点底座侧面按钮开关电源' : '拖动旋转视角 · 滚轮缩放'}</p>
       </section>
       {eyepiece && (
@@ -132,6 +138,7 @@ export default function PolariscopeLearnScreen({ sim, screen, onScreen, session,
         onChoose={(mode) => { dispatch({ type: 'task-patch', patch: { mode } }); if (mode === 'teacher') dispatch({ type: 'task-teacher' }); }}
         onRestart={() => { dispatch({ type: 'task-restart' }); setScene({ ...currentScene(), enteredStep: null }); }}
         onScreen={onScreen}
+        onTopic={(id) => { dispatch({ type: 'patch-scene', screen: 'lab', patch: topicScene(readLabScene(latest.current.scenes.lab), id) }); onScreen('lab'); }}
       />
     </>
   );
@@ -149,7 +156,7 @@ export default function PolariscopeLearnScreen({ sim, screen, onScreen, session,
             <button type="button" aria-pressed={structure.mode === 'structure'} onClick={() => changeMode('structure')} data-testid="sim-polari-mode-structure">整机</button>
             <button type="button" aria-pressed={structure.mode === 'explode'} onClick={() => changeMode('explode')} data-testid="sim-polari-mode-explode">拆解</button>
           </div>
-          {structure.mode === 'explode' && <RangeControl label="拆解程度" min={0} max={100} value={Math.round(structure.explosion * 100)} display={`${Math.round(structure.explosion * 100)}%`} ends={['装配', '展开']} onChange={(value) => update({ explosion: value / 100 })} testId="sim-polari-explosion" />}
+          {structure.mode === 'explode' && <RangeControl label="拆解程度" min={0} max={1} step={0.01} value={structure.explosion} display={`${Math.round(structure.explosion * 100)}%`} ends={['装配', '展开']} onChange={(value) => update({ explosion: value })} testId="sim-polari-explosion" />}
           <div className="sim-parts">
             {PARTS.map((part) => <button key={part.id} type="button" aria-pressed={structure.selectedPart === part.id} onClick={() => selectPart(structure.selectedPart === part.id ? null : part.id)} data-testid={`sim-part-${part.id}`}>{part.shortName}</button>)}
           </div>
@@ -187,15 +194,15 @@ export default function PolariscopeLearnScreen({ sim, screen, onScreen, session,
       )}
       <SimPanel title="仪器操作" testId="sim-panel-instrument">
         <div className="sim-row">
-          <button type="button" role="switch" aria-checked={structure.power} className="iu-button" onClick={() => update({ power: !structure.power })} data-testid="sim-polari-power">{structure.power ? '电源已开' : '电源已关'}</button>
+          <button type="button" role="switch" aria-checked={structure.power} aria-label="电源开关" className="iu-button" onClick={() => update({ power: !structure.power })} data-testid="sim-polari-power">{structure.power ? '电源已开' : '电源已关'}</button>
         </div>
-        <RangeControl label="上偏光片角度" min={0} max={360} value={Math.round(structure.analyzerAngle)} display={`${Math.round(structure.analyzerAngle)}°`} ends={['0°', '360°']} onChange={(value) => changeAngle('analyzer', value)} testId="sim-polari-analyzer" />
+        <RangeControl label="上偏光片角度" min={0} max={360} value={Math.round(structure.analyzerAngle)} display={`${Math.round(structure.analyzerAngle)}°`} valueText={`${Math.round(structure.analyzerAngle)} 度`} ends={['0°', '360°']} onChange={(value) => changeAngle('analyzer', value)} testId="sim-polari-analyzer" />
         {lesson !== 'components' && (
           <div className="sim-row" role="group" aria-label="上偏光片常用角度">
             {[{ value: 0, label: '0° 平行' }, { value: 45, label: '45° 斜交' }, { value: 90, label: '90° 正交' }].map((choice) => <button key={choice.value} type="button" className="iu-button" aria-pressed={Math.abs(structure.analyzerAngle - choice.value) < 0.5} onClick={() => changeAngle('analyzer', choice.value)} data-testid={`sim-polari-analyzer-${choice.value}`}>{choice.label}</button>)}
           </div>
         )}
-        <RangeControl label="载物台角度" min={0} max={360} value={Math.round(structure.stageAngle)} display={`${Math.round(structure.stageAngle)}°`} ends={['0°', '360°']} onChange={(value) => changeAngle('stage', value)} testId="sim-polari-stage-angle" />
+        <RangeControl label="载物台角度" min={0} max={360} value={Math.round(structure.stageAngle)} display={`${Math.round(structure.stageAngle)}°`} valueText={`${Math.round(structure.stageAngle)} 度`} ends={['0°', '360°']} onChange={(value) => changeAngle('stage', value)} testId="sim-polari-stage-angle" />
         <p className="sim-note">下偏光片固定为 0°；只有载物台和上偏光片能转动。也可以在模型上直接拖动圆环。</p>
       </SimPanel>
       <SimPanel title="视角与显示" testId="sim-panel-display">

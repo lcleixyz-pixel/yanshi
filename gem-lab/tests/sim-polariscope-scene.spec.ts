@@ -1,9 +1,9 @@
-import { expect, test, polariscopeUrl, useCiSceneQuality, type Page } from './fixtures/polariscope';
+import { expect, test, polariscopeUrl, type Page } from './fixtures/polariscope';
 
-const ROUTE = '/explore/polariscope';
+/** 由 polariscope3d-scene.spec.ts 改写：直接拖动部件、相机与 WebGL 资源释放，改在仿真认识屏上做。 */
+const ROUTE = '/sim/polariscope/learn';
 
 async function waitForScene(page: Page) {
-  await useCiSceneQuality(page);
   await expect(page.getByTestId('polariscope-scene')).toHaveAttribute('data-status', 'ready');
   await expect(page.getByTestId('polariscope-canvas')).toHaveAttribute('data-loaded', 'true');
   await expect.poll(async () => Number(await page.getByTestId('polariscope-canvas').getAttribute('data-frames'))).toBeGreaterThan(5);
@@ -36,6 +36,10 @@ async function angles(page: Page) {
 /** Use projected part position plus actual raycast hover; no fixed asset/screen coordinates. */
 async function surfacePoint(page: Page, part: 'analyzer' | 'stage' | 'powerSwitch') {
   const canvas = page.getByTestId('polariscope-canvas');
+  // 仿真里部件标注默认不显示；勾「显示名称」后标注给出部件的投影位置。
+  const names = page.getByTestId('sim-check-names');
+  if (!(await names.isChecked())) await names.check();
+  await expect(page.locator(`.polariscope-hotspot[data-part-id="${part}"]`)).toBeVisible();
   const bounds = await canvas.boundingBox();
   expect(bounds).not.toBeNull();
   const marker = await page.locator(`.polariscope-hotspot[data-part-id="${part}"]`).boundingBox();
@@ -78,7 +82,7 @@ test.describe('native polariscope scene', () => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto(polariscopeUrl(ROUTE));
     await waitForScene(page);
-    await page.getByTestId('explore-mode-structure').click();
+    await page.getByTestId('sim-polari-mode-structure').click();
     await stableCamera(page);
     const canvas = page.getByTestId('polariscope-canvas');
 
@@ -106,7 +110,7 @@ test.describe('native polariscope scene', () => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto(polariscopeUrl(ROUTE));
     await waitForScene(page);
-    await page.getByTestId('explore-mode-structure').click();
+    await page.getByTestId('sim-polari-mode-structure').click();
     const initialCamera = await stableCamera(page);
     const initialAngles = await angles(page);
     const point = await backgroundPoint(page);
@@ -125,7 +129,7 @@ test.describe('native polariscope scene', () => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto(polariscopeUrl(ROUTE));
     await waitForScene(page);
-    await page.getByTestId('explore-mode-structure').click();
+    await page.getByTestId('sim-polari-mode-structure').click();
     await page.getByRole('combobox', { name: '观察视角', exact: true }).selectOption('05-analyzer-close');
     const beforeCamera = await stableCamera(page);
     const beforeAngles = await angles(page);
@@ -152,7 +156,7 @@ test.describe('native polariscope scene', () => {
     // Measure this viewport and pose's fitted preset, instead of using the old asset's metre-scale camera.
     await viewSelect.selectOption('02-side');
     const expectedCamera = await stableCamera(page);
-    await page.getByRole('button', { name: '恢复三维视角', exact: true }).click();
+    await page.getByTestId('sim-polari-reset-view').click();
     await stableCamera(page);
     const initialCamera = await stableCamera(page);
     const point = await backgroundPoint(page);
@@ -172,7 +176,7 @@ test.describe('native polariscope scene', () => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto(polariscopeUrl(ROUTE));
     await waitForScene(page);
-    await page.getByTestId('explore-part-powerSwitch').click();
+    await page.getByTestId('sim-part-powerSwitch').click();
     await stableCamera(page);
     const canvas = page.getByTestId('polariscope-canvas');
     const power = page.getByRole('switch', { name: '电源开关', exact: true });
@@ -186,8 +190,8 @@ test.describe('native polariscope scene', () => {
     await expect(canvas).toHaveAttribute('data-pointer-max-move', /buttons=1/);
     await expect(power).toHaveAttribute('aria-checked', initialPower!);
     // Re-select after orbiting so that the button has a verified visible mesh hit.
-    await page.getByRole('button', { name: '恢复三维视角', exact: true }).click();
-    await page.getByTestId('explore-part-powerSwitch').click();
+    await page.getByTestId('sim-polari-reset-view').click();
+    await page.getByTestId('sim-part-powerSwitch').click();
     await stableCamera(page);
     point = await surfacePoint(page, 'powerSwitch');
     await page.mouse.click(point.x, point.y);
@@ -199,7 +203,7 @@ test.describe('native polariscope scene', () => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto(polariscopeUrl(ROUTE));
     await waitForScene(page);
-    await page.getByTestId('explore-part-powerSwitch').click();
+    await page.getByTestId('sim-part-powerSwitch').click();
     const beforeCamera = await stableCamera(page);
     const canvas = page.getByTestId('polariscope-canvas');
     const power = page.getByRole('switch', { name: '电源开关', exact: true });
@@ -227,13 +231,13 @@ test.describe('native polariscope scene', () => {
     await page.goto(polariscopeUrl(ROUTE));
     await waitForScene(page);
     const canvas = page.getByTestId('polariscope-canvas');
-    await page.getByTestId('explore-part-light').click();
+    await page.getByTestId('sim-part-light').click();
     await expect(canvas).toHaveAttribute('data-internal-view', 'true');
     const lightPosition = await canvas.getAttribute('data-light-position');
     const switchPosition = await canvas.getAttribute('data-power-switch-position');
     expect(lightPosition).toBeTruthy();
     expect(switchPosition).toBeTruthy();
-    await page.getByTestId('explore-mode-explode').click();
+    await page.getByTestId('sim-polari-mode-explode').click();
     const explosion = page.getByRole('slider', { name: '拆解程度', exact: true });
     await explosion.press('End');
     await expect(canvas).toHaveAttribute('data-explosion', /^1(?:\.0+)?$/);
@@ -294,8 +298,8 @@ test.describe('native polariscope scene', () => {
       await expect.poll(async () => Number(await canvas.getAttribute('data-geometries'))).toBeGreaterThan(0);
       await expect.poll(async () => Number(await canvas.getAttribute('data-triangles'))).toBeGreaterThan(1000);
       memoryCounts.push(`${await canvas.getAttribute('data-geometries')}/${await canvas.getAttribute('data-textures')}`);
-      await page.getByTestId('explore-back-to-knowledge').click();
-      await expect(page).toHaveURL(/\/knowledge\/polariscope#structure$/);
+      await page.getByTestId('sim-home').click();
+      await expect(page).toHaveURL(/\/$/);
       await expect(page.getByTestId('polariscope-canvas')).toHaveCount(0);
       await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
       const disposed = await page.evaluate(() => {
@@ -314,7 +318,8 @@ test.describe('native polariscope scene', () => {
         expect(entry.lossRequests).toBe(1);
         for (const name of ['deleteBuffer', 'deleteTexture', 'deleteProgram']) expect(entry.deletes[name], name).toBeGreaterThan(0);
       }
-      if (visit < 2) await page.getByTestId('polariscope-explore-link').click();
+      // 浏览器后退回到仿真（单页内导航，不重新载入页面，审计记录保留）。
+      if (visit < 2) await page.goBack();
     }
     expect(new Set(memoryCounts).size).toBe(1);
     expect(errors).toEqual([]);
@@ -332,17 +337,19 @@ test.describe('native polariscope scene', () => {
     expect(bounds!.x).toBeGreaterThanOrEqual(0);
     expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(391);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+    // 手机上控制面板收在底部抽屉里。
+    await page.getByTestId('sim-controls-toggle').click();
     await page.getByLabel('上偏光片角度', { exact: true }).press('ArrowRight');
     await expect(canvas).toHaveAttribute('data-analyzer-angle', '1');
     await page.getByRole('switch', { name: '电源开关', exact: true }).click();
     await expect(canvas).toHaveAttribute('data-power', 'false');
-    await page.getByTestId('explore-internal-toggle').click();
+    await page.getByTestId('sim-polari-internal').click();
     await expect(canvas).toHaveAttribute('data-internal-view', 'true');
     await page.getByRole('button', { name: '进入投屏模式', exact: true }).click();
     await expect(page.getByRole('button', { name: '退出投屏模式', exact: true })).toBeInViewport();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
     await page.getByRole('button', { name: '退出投屏模式', exact: true }).click();
-    await expect(page.getByTestId('explore-mode-structure')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.getByTestId('sim-polari-mode-structure')).toHaveAttribute('aria-pressed', 'true');
     await expect(page.getByTestId('polariscope-scene')).toHaveAttribute('data-status', 'ready');
   });
 });

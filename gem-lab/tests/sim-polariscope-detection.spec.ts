@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+/** 原 polariscope3d-detection.spec.ts：检测流程的偏光镜一步改走仿真外壳的挑战台后，测试 ID 与写回不变，本文件原样保留。 */
 import { useCiSceneQuality } from './fixtures/polariscope';
 
 test.setTimeout(120_000);

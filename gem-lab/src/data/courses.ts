@@ -11,9 +11,9 @@ export interface InstrumentCourse {
 
 export const INSTRUMENT_COURSES: Partial<Record<InstrumentId, InstrumentCourse>> = {
   polariscope: {
-    student: '/explore/polariscope?course=basic&mode=student',
-    teacher: '/explore/polariscope?course=basic',
-    title: '在 3D 偏光镜上完成引导课程',
+    student: '/sim/polariscope/learn?mode=student',
+    teacher: '/sim/polariscope/learn?mode=teacher',
+    title: '在偏光镜仿真上完成引导课程',
     summary: '约 8 分钟：认识部件、跟随光路、空载调正、放样旋转、换方向复核、解释。学员可以自学，讲师可以投屏演示；学完后到检测练习中独立判断未知样品。',
   },
   refractometer: {

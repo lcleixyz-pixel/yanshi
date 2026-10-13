@@ -6,7 +6,7 @@ import { SAMPLES_BY_DIFFICULTY } from '../../../data/samples';
 import { getPolariscopeProfile } from '../../../domain/polariscopeSamples';
 import { OBSERVATION_RULES } from '../../../domain/polariscopeRules';
 import { CATEGORY_LABEL } from '../../../domain/polariscopeCopy';
-import { challengeInitial, checkChallenge, DIFFICULTY_LABELS, readChallengeScene, type ChallengeDifficulty, type ChallengeScene } from '../../../domain/polariscopeSim';
+import { challengeInitial, initialQuality, checkChallenge, DIFFICULTY_LABELS, readChallengeScene, type ChallengeDifficulty, type ChallengeScene } from '../../../domain/polariscopeSim';
 
 const DIFFICULTIES: readonly ChallengeDifficulty[] = ['beginner', 'intermediate', 'advanced'];
 
@@ -48,7 +48,7 @@ export default function PolariscopeChallengeScreen({ sim, screen, onScreen, sess
 
   return (
     <PolariscopeBench
-      sim={sim} screen={screen} onScreen={onScreen} scene={scene} idle={idle} header={header} after={after}
+      sim={sim} screen={screen} onScreen={onScreen} scene={scene} quality={initialQuality(session.options, false)} idle={idle} header={header} after={after}
       onScene={set}
       onReset={() => set({ ...challengeInitial(scene.structure.sampleId, scene.difficulty), saved: scene.saved ? { ...scene.saved, stale: true } : null })}
       onSave={(next) => set({ ...next, saved: { reaction: next.reaction!, judgement: next.reaction === 'not-applicable' ? null : next.judgement || null, stale: false } })}

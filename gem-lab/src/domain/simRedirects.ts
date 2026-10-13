@@ -1,11 +1,13 @@
 import { BENCH_METHOD_LABELS, type BenchMethod } from './spectroscopeBench';
 import { isStepId, STEP_SCREEN } from './spectroscopeSim';
 import { isStepId as isRefractometerStep, STEP_SCREEN as REFRACTOMETER_STEP_SCREEN } from './refractometerSim';
+import { isLesson as isPolariscopeLesson, isStepId as isPolariscopeStep, STEP_SCREEN as POLARISCOPE_STEP_SCREEN } from './polariscopeSim';
 
 /**
  * 旧入口 → 仿真新地址的纯映射（逐台迁移、保留参数）：
  * - 分光镜（阶段 2）：两个 3D 探索页（含课程入口）→ 认识屏 / 实验屏；照明夹样练习页 → 实验屏。
  * - 折射仪（阶段 3a）：3D 探索页（含基础读数课与步骤）→ 认识屏 / 实验屏。
+ * - 偏光镜（阶段 3b）：3D 教学页（五讲 `?lesson=` 与引导课程）→ 认识屏 / 实验屏。
  * - 2D 演示（/demo/…）不在此列：2D 能力保留，按「设备较旧时使用」入口进入。
  * 约束见 docs/整体重构规划-PhET风格-2026-10-11.md 第六节第 5 条。
  */
@@ -69,7 +71,30 @@ export function refractometerRedirect(rawPath: string, search: string): string |
 
 const queryOf = (out: URLSearchParams) => (out.toString() ? `?${out.toString()}` : '');
 
+/**
+ * 偏光镜的旧入口 → 新地址（阶段 3b）：部件 / 光路 / 原理三讲进认识屏，样品 / 干涉图两讲进实验屏，讲次随地址带过去；
+ * 课程入口（?course=basic）保留讲师 / 学员与步骤（落到该步骤所在屏）；课堂低配画质 ?quality= 照旧保留。
+ */
+export function polariscopeRedirect(rawPath: string, search: string): string | null {
+  const params = new URLSearchParams(search);
+  const pathname = rawPath.length > 1 ? rawPath.replace(/\/+$/, '') : rawPath;
+  if (pathname !== '/explore/polariscope') return null;
+  const out = new URLSearchParams();
+  const lesson = params.get('lesson');
+  let screen: 'learn' | 'lab' = lesson === 'sample' || lesson === 'conoscope' ? 'lab' : 'learn';
+  if (isPolariscopeLesson(lesson)) out.set('lesson', lesson);
+  if (params.get('course') === 'basic') {
+    out.set('mode', params.get('mode') === 'student' ? 'student' : 'teacher');
+    const step = params.get('step');
+    if (isPolariscopeStep(step)) { out.set('step', step); screen = POLARISCOPE_STEP_SCREEN[step] as 'learn' | 'lab'; }
+    else if (!isPolariscopeLesson(lesson)) screen = 'learn';
+  }
+  const quality = params.get('quality');
+  if (quality === 'standard' || quality === 'high') out.set('quality', quality);
+  return `/sim/polariscope/${screen}${queryOf(out)}`;
+}
+
 /** 全部已迁移仪器的旧入口映射：命中谁就转谁。 */
 export function legacySimRedirect(rawPath: string, search: string): string | null {
-  return spectroscopeRedirect(rawPath, search) ?? refractometerRedirect(rawPath, search);
+  return spectroscopeRedirect(rawPath, search) ?? refractometerRedirect(rawPath, search) ?? polariscopeRedirect(rawPath, search);
 }

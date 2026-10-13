@@ -8,7 +8,7 @@ import PolariscopeTaskCard from './PolariscopeTaskCard';
 import type { SimScreenProps } from '../registry';
 import { LEARN_LESSONS, LESSONS, PART_SHORT, PARTS, PARTS_BY_ID, PATH_STEPS } from '../../../domain/polariscopeCopy';
 import {
-  courseView, enterStep, isCrossed, LEARN_INITIAL, learnCoach, learnEvidence, lessonScene, readLearnScene, readTaskData, seePart,
+  courseView, enterStep, isCrossed, pendingStep, stepChecklist, LEARN_INITIAL, learnCoach, learnEvidence, lessonScene, readLearnScene, readTaskData, seePart,
   STEP_SCREEN, type LearnScene, type PolariscopeTaskData,
 } from '../../../domain/polariscopeSim';
 import { deriveTeachingOptics, STRUCTURE_PART_IDS, type PolariscopeStructureState, type StructurePartId, type StructureViewPreset, type TeachingLesson } from '../../../domain/polariscopeStructure';
@@ -61,10 +61,13 @@ export default function PolariscopeLearnScreen({ sim, screen, onScreen, session,
   };
 
   // 进入本屏的课程步骤时套该步的开场场景；同一步回到本屏不再重摆（换屏不清场景）。
+  // 本屏刚做完一步时先停在结果上（pending），学员点「下一步」才套下一步的场景。
+  const pending = guided ? pendingStep(view, learn.enteredStep) : null;
+  const enterCurrent = () => { const scene = currentScene(); setScene({ ...enterStep(scene, view.step), enteredStep: view.step }); };
   useEffect(() => {
-    if (!guided || learn.enteredStep === view.step) return;
-    setScene({ ...enterStep(learn, view.step), enteredStep: view.step });
-  }, [guided, view.step, learn.enteredStep]); // eslint-disable-line react-hooks/exhaustive-deps -- 只在步骤变化时套用
+    if (!guided || learn.enteredStep === view.step || pending) return;
+    enterCurrent();
+  }, [guided, view.step, learn.enteredStep, pending]); // eslint-disable-line react-hooks/exhaustive-deps -- 只在步骤变化时套用
   // 场景里自然产生的完成证据：走到光路第几步、空载平行最亮与正交全暗。
   useEffect(() => {
     const current = readTaskData(latest.current.task.data);
@@ -98,7 +101,7 @@ export default function PolariscopeLearnScreen({ sim, screen, onScreen, session,
     return null;
   }, [lesson, structure.pathStep, optics.relativeTransmission]);
   const sceneField = useMemo(() => ({ canvas: fieldCanvas, version: fieldVersion, show: !!eyepiece && lesson !== 'path', sampleGlow: 0 }), [fieldCanvas, fieldVersion, eyepiece, lesson]);
-  const coach = task.mode === 'student' && guided ? learnCoach(view.step, task.progress, structure) : null;
+  const coach = task.mode === 'student' && guided && !pending ? learnCoach(view.step, task.progress, structure) : null;
   const labels = useMemo(() => ({
     text: PART_SHORT,
     show: learn.names ? STRUCTURE_PART_IDS : guided && view.step === 'parts' ? KEY_PARTS : [],
@@ -124,7 +127,7 @@ export default function PolariscopeLearnScreen({ sim, screen, onScreen, session,
         </SimReadout>
       )}
       <PolariscopeTaskCard
-        view={view} open={session.task.open} mode={task.mode} hasSkipped={task.hasSkipped} teacherUsed={session.task.teacherUsed}
+        view={view} finished={pending ? { step: pending, items: stepChecklist(task, pending) } : null} onNext={enterCurrent} open={session.task.open} mode={task.mode} hasSkipped={task.hasSkipped} teacherUsed={session.task.teacherUsed}
         onOpen={(open) => dispatch({ type: 'task-open', open })}
         onChoose={(mode) => { dispatch({ type: 'task-patch', patch: { mode } }); if (mode === 'teacher') dispatch({ type: 'task-teacher' }); }}
         onRestart={() => { dispatch({ type: 'task-restart' }); setScene({ ...currentScene(), enteredStep: null }); }}

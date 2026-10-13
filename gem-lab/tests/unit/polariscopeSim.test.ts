@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   COURSE_SETUP, courseView, emptyTaskData, enterStep, labInitial, LEARN_INITIAL, learnCoach, learnEvidence, lessonScene, parseLesson,
-  polariscopeInitial, readLabScene, readLearnScene, readTaskData, seePart, stateForLesson, STEP_SCREEN, type PolariscopeTaskData,
+  isRecording, labCoach, pendingStep, labEnterStep, patchLab, polariscopeInitial, readLabScene, recordAnswer, recordReveal, readLearnScene, readTaskData, seePart, stateForLesson, STEP_SCREEN, type PolariscopeTaskData,
 } from '../../src/domain/polariscopeSim';
 import { COURSE_STEPS } from '../../src/domain/polariscopeCourse';
 
@@ -148,4 +148,68 @@ test('地址进入：讲次落到对应屏，讲师 / 学员与步骤只读一�
   assert.equal(readLabScene(conoscope.scenes.lab).structure.lesson, 'conoscope');
   assert.equal(conoscope.teacherUsed, true);
   assert.equal(readTaskData(conoscope.taskData).hasSkipped, false);
+});
+
+test('实验屏改仪器状态：换样品要重新预测，换方向只重新记录，转检偏器保留揭晓', () => {
+  const full = Array(72).fill(true);
+  const base = { ...labInitial('tourmaline'), prediction: 'four-bright-four-dark', revealed: true, visited: full };
+  const sample = patchLab(base, { sampleId: 'spinel' });
+  assert.equal(sample.prediction, null);
+  assert.equal(sample.revealed, false);
+  assert.equal(sample.visited.filter(Boolean).length, 0);
+  const orientation = patchLab(base, { orientation: 'optic-axis' });
+  assert.equal(orientation.prediction, 'four-bright-four-dark');
+  assert.equal(orientation.revealed, false);
+  const analyzer = patchLab(base, { analyzerAngle: 0 });
+  assert.equal(analyzer.revealed, true);
+  assert.equal(analyzer.visited.filter(Boolean).length, 0);
+  const stage = patchLab(base, { stageAngle: 40 });
+  assert.equal(stage.visited, full);
+  // 记录条件：已预测、通电、正交。
+  assert.equal(isRecording(base), true);
+  assert.equal(isRecording(analyzer), false);
+  assert.equal(isRecording({ ...base, prediction: null }), false);
+});
+
+test('实验屏的课程：开场场景、揭晓顺序判断换方向复核、答题完成解释', () => {
+  const entered = labEnterStep({ ...labInitial('jadeite'), prediction: 'all-bright' }, 'reorient');
+  assert.equal(entered.structure.sampleId, 'tourmaline');
+  assert.equal(entered.structure.orientation, 'optic-axis');
+  assert.equal(entered.prediction, null);
+  assert.equal(entered.enteredStep, 'reorient');
+  let task = withMode();
+  task = recordReveal(task, stateForLesson('sample', 'spinel'), 'all-dark');
+  task = recordReveal(task, stateForLesson('sample', 'tourmaline'), 'four-bright-four-dark');
+  task = recordReveal(task, stateForLesson('sample', 'jadeite'), 'all-bright');
+  assert.ok(task.completed.includes('rotate'));
+  // 先换方向、后沿光轴不算复核：顺序必须是沿光轴在前。
+  const general = { ...stateForLesson('sample', 'tourmaline'), orientation: 'general' as const };
+  const axis = { ...stateForLesson('sample', 'tourmaline'), orientation: 'optic-axis' as const };
+  const wrongOrder = recordReveal(recordReveal(task, general, 'four-bright-four-dark'), axis, 'axis-dark');
+  assert.equal(wrongOrder.completed.includes('reorient'), false);
+  task = recordReveal(recordReveal(task, axis, 'axis-dark'), general, 'four-bright-four-dark');
+  assert.ok(task.completed.includes('reorient'));
+  for (const id of ['why-crossed', 'why-reorient', 'no-conclusion']) task = recordAnswer(task, id);
+  assert.ok(task.completed.includes('explain'));
+  assert.equal(recordReveal(emptyTaskData(), axis, 'axis-dark').progress.reveals.length, 0);
+});
+
+test('实验屏学员提示：断电指向电源，未正交指向上偏光片，沿光轴全暗时提示换方向', () => {
+  const scene = { ...labInitial('tourmaline'), prediction: 'all-dark' };
+  assert.equal(labCoach('rotate', patchLab(scene, { power: false }), 'all-dark')?.part, 'powerSwitch');
+  assert.equal(labCoach('rotate', patchLab(scene, { analyzerAngle: 30 }), 'all-dark')?.part, 'analyzer');
+  assert.equal(labCoach('rotate', scene, 'four-bright-four-dark')?.part, 'stage');
+  assert.match(labCoach('reorient', { ...patchLab(scene, { orientation: 'optic-axis' }), revealed: true }, 'axis-dark')!.text, /换个方向/);
+  assert.equal(labCoach('explain', scene, 'all-dark'), null);
+});
+
+test('做完一步先停在结果上：同屏的下一步要等学员点「下一步」，跨屏或首次进入不算', () => {
+  let task = withMode();
+  for (const id of ['polarizer', 'stage', 'analyzer'] as const) task = seePart(task, id);
+  const view = courseView(task, 'learn');
+  assert.equal(view.step, 'path');
+  assert.equal(pendingStep(view, 'parts'), 'parts');
+  assert.equal(pendingStep(view, 'path'), null);
+  assert.equal(pendingStep(view, null), null);
+  assert.equal(pendingStep(courseView(withMode(), 'learn'), 'parts'), null);
 });

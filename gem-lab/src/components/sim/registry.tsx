@@ -5,6 +5,7 @@ import { polariscopeInitial } from '../../domain/polariscopeSim';
 import { refractometerInitial, refractometerSessionReducer } from '../../domain/refractometerSession';
 import { spectroscopeInitial } from '../../domain/spectroscopeSim';
 import { spectroscopeSessionReducer } from '../../domain/spectroscopeSession';
+import PolariscopeLabScreen from './polariscope/PolariscopeLabScreen';
 import PolariscopeLearnScreen from './polariscope/PolariscopeLearnScreen';
 import RefractometerChallengeScreen from './refractometer/RefractometerChallengeScreen';
 import RefractometerLabScreen from './refractometer/RefractometerLabScreen';
@@ -39,10 +40,10 @@ export const SIM_IMPLEMENTATIONS: Partial<Record<SimId, SimImplementation>> = {
     reducer: refractometerSessionReducer,
     screens: { learn: RefractometerLearnScreen, lab: RefractometerLabScreen, challenge: RefractometerChallengeScreen },
   },
-  // 偏光镜逐屏迁入（阶段 3b）：认识屏已迁，实验与挑战暂为占位并指向现有页面。
+  // 偏光镜逐屏迁入（阶段 3b）：认识、实验屏已迁，挑战暂为占位并指向现有页面。
   polariscope: {
     initial: polariscopeInitial,
-    screens: { learn: PolariscopeLearnScreen },
+    screens: { learn: PolariscopeLearnScreen, lab: PolariscopeLabScreen },
   },
   spectroscope: {
     initial: spectroscopeInitial,

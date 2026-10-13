@@ -5,14 +5,18 @@ import { SimTaskCard, SimTaskDock, SimTaskLine } from '../SimShell';
 import type { CourseMode } from '../../../domain/course';
 import { COURSE_MINUTES, COURSE_STEPS } from '../../../domain/polariscopeCourse';
 import { STEP_SHORT, STEP_TASK, type CourseView } from '../../../domain/polariscopeSim';
+import type { CourseStepId } from '../../../domain/polariscopeCourse';
 import { SIM_SCREEN_LABELS, type SimScreenId } from '../../../domain/simSession';
 
 /**
  * 引导任务卡：可收起的小卡，只写本步一句话、完成勾选与做完后的「为什么」。
  * 步骤、完成条件与学习记录规则沿用课程域（学员自学、未跳步、全部完成才写入学习进度）。
  */
-export default function PolariscopeTaskCard({ view, open, mode, hasSkipped, teacherUsed, children, onOpen, onChoose, onRestart, onScreen }: {
+export default function PolariscopeTaskCard({ view, finished: done, open, mode, hasSkipped, teacherUsed, children, onOpen, onChoose, onNext, onRestart, onScreen }: {
   view: CourseView;
+  /** 刚做完、还停在画面上的一步：先看结果与「为什么」，点「下一步」再换场景。 */
+  finished?: { step: CourseStepId; items: CourseView['items'] } | null;
+  onNext?: () => void;
   open: boolean;
   mode: CourseMode | null;
   hasSkipped: boolean;
@@ -45,6 +49,17 @@ export default function PolariscopeTaskCard({ view, open, mode, hasSkipped, teac
           </div>
         </section>
       </SimTaskDock>
+    );
+  }
+
+  if (done) {
+    const why = COURSE_STEPS.find((item) => item.id === done.step)!.why;
+    return (
+      <SimTaskCard title={`${STEP_SHORT[done.step]} · 已完成`} items={done.items.map((item, index) => ({ id: `step:${index}:${item.id}`, label: item.label, done: item.done }))}
+        progress={view.progress} open={open} onOpen={onOpen} onRestart={() => { setFinished(false); learning.reset(); onRestart(); }}>
+        <p className="sim-task__why" data-testid="sim-task-why">{why}</p>
+        <button type="button" className="iu-button iu-button--primary" onClick={onNext} data-testid="sim-task-next">下一步：{STEP_SHORT[view.step]}</button>
+      </SimTaskCard>
     );
   }
 

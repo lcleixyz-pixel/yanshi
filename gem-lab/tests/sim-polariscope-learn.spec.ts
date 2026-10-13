@@ -43,9 +43,15 @@ test("学员引导：认识部件、跟随光路、空载调正三步在本屏�
   // 认识部件一步：只给三个关键部件的名称标注，提示指向下一个要点的部件。
   await expect(page.getByTestId("scene-coach")).toHaveAttribute("data-part", "polarizer");
   for (const id of ["polarizer", "stage", "analyzer"]) await page.getByTestId(`sim-part-${id}`).click();
+  // 做完一步先停在结果上，看「为什么」，点「下一步」再换场景。
+  await expect(task(page)).toContainText("认识部件 · 已完成");
+  await expect(page.getByTestId("sim-task-why")).toContainText("只有载物台和上偏光片能转动");
+  await expect(stage(page)).toHaveAttribute("data-lesson", "components");
+  await page.getByTestId("sim-task-next").click();
   await expect(task(page)).toContainText("跟随光路");
   await expect(stage(page)).toHaveAttribute("data-lesson", "path");
   for (let i = 0; i < 4; i++) await page.getByTestId("sim-polari-path-next").click();
+  await page.getByTestId("sim-task-next").click();
   await expect(task(page)).toContainText("空载调正");
   await expect(stage(page)).toHaveAttribute("data-lesson", "principle");
   await expect(task(page)).toContainText("0° 平行：最亮（已完成）");

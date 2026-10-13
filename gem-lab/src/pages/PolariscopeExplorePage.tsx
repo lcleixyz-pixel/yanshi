@@ -20,7 +20,7 @@ import {
   type CourseStepId,
 } from '../domain/polariscopeCourse';
 import { COURSE_SETUP, lessonPatch, parseLesson, stateForLesson, type Lesson } from '../domain/polariscopeSim';
-import { LESSONS, PARTS, PARTS_BY_ID, PATH_STEPS } from '../domain/polariscopeCopy';
+import { CATEGORY_LABEL, conoscopeExplanation, EXPECTED_PREDICTION, LESSONS, ORIENTATION_LABEL, PARTS, PARTS_BY_ID, PATH_STEPS, PHENOMENA, type Observation } from '../domain/polariscopeCopy';
 import {
   createInitialStructureState,
   deriveTeachingOptics,
@@ -51,24 +51,12 @@ const MODES = [
   { id: 'explode', title: '拆解', caption: '展开部件，看清空间关系。' },
 ] as const;
 
-type Phenomenon = PolariscopeSampleProfile['expectedPhenomenon'];
-const PHENOMENA: { id: Phenomenon; label: string }[] = [
-  { id: 'all-dark', label: '始终暗' }, { id: 'four-bright-four-dark', label: '四明四暗' }, { id: 'all-bright', label: '始终亮' },
-  { id: 'anomalous', label: '不规则明暗' }, { id: 'not-applicable', label: '几乎不透光' },
-];
-type Observation = SampleObservation;
-/** 观察结论对应的「正确预测」：沿光轴的两种情况分别对应始终暗、始终亮。 */
-const EXPECTED_PREDICTION: Record<Observation, Phenomenon> = {
-  'all-dark': 'all-dark', 'axis-dark': 'all-dark', 'axis-twin-dark': 'all-dark', 'axis-rotation': 'all-bright', 'four-bright-four-dark': 'four-bright-four-dark',
-  'all-bright': 'all-bright', anomalous: 'anomalous', 'not-applicable': 'not-applicable',
-};
 /** 观察解释：与 2D 演示共用 polariscopeRules。 */
 const OBSERVATION_COPY = OBSERVATION_RULES;
 const PROFILES_BY_GROUP = {
   anisotropic: POLARISCOPE_PROFILES.filter((p) => p.observation === 'anisotropic'),
 };
 const CONOSCOPE_FEATURED = ['tourmaline', 'ruby', 'citrine', 'amethyst', 'zircon', 'peridot', 'topaz', 'tanzanite'] as const;
-const CATEGORY_LABEL: Record<PolariscopeSampleProfile['observation'], string> = { isotropic: '均质体', anisotropic: '非均质体', aggregate: '集合体', opaque: '不透明' };
 
 /** 基础课程之后的进阶内容：进入自由探索中对应的讲解与样品。 */
 const ADVANCED_TOPICS: (AdvancedTopic & { lesson: Lesson; patch: Partial<PolariscopeStructureState> })[] = [
@@ -561,47 +549,6 @@ function swatch(profile: PolariscopeSampleProfile) {
   const [r, g, b] = profile.bodyColor.map((v) => Math.round(255 * Math.pow(Math.max(0, Math.min(1, v)), 1 / 2.2)));
   return `rgb(${r}, ${g}, ${b})`;
 }
-const ORIENTATION_LABEL: Record<SampleOrientation, string> = { general: '一般方向', 'optic-axis': '光轴直立', 'off-axis': '光轴偏斜', 'acute-bisectrix': '锐角等分线' };
-interface ConoscopeContext {
-  twin: boolean;
-  visibleAxes: number;
-  wideField: boolean;
-  crossed: boolean;
-  parallel: boolean;
-  blockedReason: string | null;
-}
-/** 干涉图说明随实际状态（取向、双晶、视场内的光轴出露点、是否扩大角域）变化，不作超出当前条件的断言。 */
-function conoscopeExplanation(kind: 'uniaxial' | 'quartz' | 'biaxial' | null, view: SampleOrientation, inserted: boolean, context: ConoscopeContext) {
-  if (context.blockedReason) return `${context.blockedReason}当前暗场不能用于判断样品是否消光。`;
-  if (!kind) return '干涉图需要非均质单晶。均质体不分光，集合体中晶粒取向杂乱，都看不到干涉图。';
-  if (!context.crossed) {
-    const centre = context.parallel && kind === 'quartz' && context.twin && view === 'optic-axis'
-      ? '本例等厚左右旋双层沿光轴抵消旋光，两片平行时视场中心明亮。' : '黑带与颜色会随检偏器角度改变。';
-    return `当前为${context.parallel ? '平行' : '斜交'}偏光。${centre}请先转到 90° 正交${inserted ? '，再按本节方法观察干涉图。' : '，再把干涉球放到样品上方观察干涉图。'}`;
-  }
-  if (!inserted) return `在正交偏光下，把干涉球放到样品上方，靠近或轻触合适的观察区域。光自下而上穿过样品后进入干涉球；视场中每一点对应样品中的一个传播方向。当前样品方向：${ORIENTATION_LABEL[view]}${view === 'optic-axis' ? (kind === 'quartz' && !context.twin ? '——正光下呈恒定颜色（旋光），正是找干涉图的好方向。' : '——正光下近于全暗，正是找干涉图的好方向。') : '。'}`;
-  if (view === 'general') return context.visibleAxes > 0
-    ? '一般方向：本例有光轴出露点落在视场内，但偏离中心，图形不完整，判断轴性仍不可靠。应调整样品方向，使光轴大致直立后再观察。'
-    : '一般方向：本例光轴出露点不在视场内，只看到随物台转动扫过的黑带和色带，难以判断轴性。实际操作中要转动、翻动样品，找到合适方向后再观察。';
-  if (kind === 'quartz') {
-    if (context.twin) {
-      const axis = view === 'off-axis'
-        ? '光轴出露点已离开视场中心；正交下，该点因左右旋光互相抵消而近于消光，并随物台转动绕视场中心移动。视场中心不一定暗。'
-        : '光轴出露点位于视场中心；正交下，沿光轴的左右旋光互相抵消，中心消光。';
-      return `已开启巴西律双晶示意（等厚左右旋两层的理想模型）：${axis}天然双晶的层厚、分区与取向各异，实际图样更复杂，不能推广为所有双晶都呈现相同图样。`;
-    }
-    return view === 'off-axis'
-      ? '水晶光轴偏斜：牛眼中心随光轴出露点离开视场中心；转动物台，图形绕中心平移。旋光只在光轴附近明显。'
-      : '水晶的牛眼（单一旋向、光轴直立）：黑十字到不了中心，中心是彩色圆斑——这是旋光性的结果。转动检偏器，中心颜色随之改变。';
-  }
-  if (kind === 'uniaxial') return view === 'off-axis'
-    ? '光轴偏斜：黑十字中心离开视场中心。转动物台，十字绕中心平移，但两臂始终保持横竖方向、不旋转——这是一轴晶的判断要点。'
-    : '一轴晶：黑十字加同心色环。光轴居中时，转动物台十字保持不动。色环是等光程差线，越往外级次越高。';
-  return view === 'acute-bisectrix'
-    ? `二轴晶锐角等分线图：消光位时两条黑带合成十字；转动物台，十字分裂成两条双曲线，45° 时分得最开，每 90° 重新合拢。${context.wideField ? '本例 2V 较大，这里是「扩大角域原理图」：用超出普通干式干涉球的视场角显示两个光轴出露点，实际仪器中黑带通常会移出视场。' : ''}`
-    : '二轴晶单光轴图：一条穿过中心的黑带。转动物台，黑带绕中心转动并弯曲，45° 时弯曲最明显——一轴晶的十字臂不会这样旋转。';
-}
-
 function LessonTabs({ value, onChange }: { value: Lesson; onChange: (lesson: Lesson) => void }) {
   return <div className="pol-explore__lessons" role="group" aria-label="讲解内容">{LESSONS.map((lesson, index) => <button key={lesson.id} aria-pressed={value === lesson.id} onClick={() => onChange(lesson.id)} data-testid={`explore-lesson-${lesson.id}`}><span>0{index + 1}</span>{lesson.title}</button>)}</div>;
 }

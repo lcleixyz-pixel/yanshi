@@ -16,6 +16,8 @@ import { getPolariscopeProfile } from './polariscopeSamples';
 import { createInitialStructureState, deriveTeachingOptics, lessonUsesSample, TEACHING_LESSONS, type PolariscopeStructureState, type StructurePartId, type StructureViewPreset, type TeachingLesson } from './polariscopeStructure';
 import { PARTS_BY_ID, PATH_STEPS } from './polariscopeCopy';
 import type { SimScreenId } from './simSession';
+import { emptyCoverage, TRACE_STEPS } from './rotationCoverage';
+import type { ParallelCheckResult, SampleObservation } from './eyepieceField';
 
 export type Lesson = TeachingLesson;
 
@@ -121,6 +123,12 @@ export interface LabScene extends Record<string, unknown> {
   revealed: boolean;
   /** 转一周覆盖的 72 格；换屏与「全部重置」不清任务进度，但重置当前屏会清它。 */
   visited: boolean[];
+  /** 平行复核（区分 ADR）的结果；换样品或放置方式后作废。 */
+  adr: ParallelCheckResult | null;
+  /** 已套过开场场景的课程步骤（同认识屏）。 */
+  enteredStep: CourseStepId | null;
+  /** 显示名称（短标签，默认关）。 */
+  names: boolean;
   /** 挑战屏抽样的难度（只在该屏用）；抽到的样品就是场景里的 sampleId。 */
   difficulty: ChallengeDifficulty | null;
 }
@@ -135,7 +143,7 @@ export function labInitial(sampleId = 'tourmaline'): LabScene {
   return {
     structure: stateForLesson('sample', sampleId),
     viewPreset: 'free', resetViewKey: 0,
-    prediction: null, revealed: false, visited: [],
+    prediction: null, revealed: false, visited: emptyCoverage(), adr: null, enteredStep: null, names: false,
     difficulty: null,
   };
 }
@@ -168,7 +176,10 @@ export function readLabScene(scene: Record<string, unknown> | undefined): LabSce
     resetViewKey: Number.isFinite(raw.resetViewKey) ? Number(raw.resetViewKey) : 0,
     prediction: typeof raw.prediction === 'string' ? raw.prediction : null,
     revealed: raw.revealed === true,
-    visited: Array.isArray(raw.visited) ? raw.visited.map((item) => item === true) : [],
+    visited: Array.isArray(raw.visited) && raw.visited.length === TRACE_STEPS ? raw.visited.map((item) => item === true) : emptyCoverage(),
+    adr: raw.adr && typeof raw.adr === 'object' ? raw.adr as ParallelCheckResult : null,
+    enteredStep: isStepId(raw.enteredStep) ? raw.enteredStep : null,
+    names: raw.names === true,
     difficulty: isDifficulty(raw.difficulty) ? raw.difficulty : null,
   };
 }
@@ -196,12 +207,25 @@ export function enterStep<S extends LearnScene | LabScene>(scene: S, step: Cours
 
 export interface CourseView {
   step: CourseStepId;
-  items: { id: string; label: string; done: boolean }[];
+  items: { id: string; label: string; done: boolean; sampleId?: string; reorient?: boolean }[];
   progress: { done: number; total: number };
   screenDone: boolean;
   allComplete: boolean;
   nextScreen: SimScreenId | null;
   completed: CourseStepId[];
+}
+
+/** 某一步的完成清单（仿真里部件不编号，去掉旧页的部件编号前缀）。 */
+export function stepChecklist(task: PolariscopeTaskData, step: CourseStepId): CourseView['items'] {
+  return courseChecklist(step, task.progress).map((item) => ({ id: item.id, label: item.label.replace(/^\d{2} /, ''), done: item.done, sampleId: item.sampleId, reorient: item.reorient }));
+}
+
+/**
+ * 刚做完、还停在画面上的那一步：本屏已套过它的开场场景、它已完成，而课程已走到本屏的下一步。
+ * 这时不立刻换场景，先让学员看完结果与「为什么」，点「下一步」再套下一步的场景。
+ */
+export function pendingStep(view: CourseView, entered: CourseStepId | null): CourseStepId | null {
+  return entered !== null && entered !== view.step && view.completed.includes(entered) && STEP_SCREEN[entered] === STEP_SCREEN[view.step] ? entered : null;
 }
 
 /** 任务卡要显示的一切：本屏当前步骤、完成清单与总进度。 */
@@ -212,8 +236,7 @@ export function courseView(task: PolariscopeTaskData, screen: SimScreenId): Cour
   const done = (id: CourseStepId) => task.completed.includes(id) || isStepComplete(id, task.progress);
   return {
     step,
-    // 仿真里部件不编号（显示名称时用短名称），清单去掉旧页的部件编号前缀。
-    items: courseChecklist(step, task.progress).map((item) => ({ id: item.id, label: item.label.replace(/^\d{2} /, ''), done: item.done })),
+    items: stepChecklist(task, step),
     progress: { done: COURSE_STEPS.filter((item) => done(item.id)).length, total: COURSE_STEPS.length },
     screenDone: own.every((item) => done(item.id)),
     allComplete: COURSE_STEPS.every((item) => done(item.id)),
@@ -309,4 +332,65 @@ export function polariscopeInitial(search: URLSearchParams) {
     taskData: task as unknown as Record<string, unknown>,
     teacherUsed: mode === 'teacher',
   };
+}
+
+/** 改变这些会换一次观察：重新记录一周、收起揭晓与平行复核（与旧页同一套规则）。 */
+const OBSERVATION_KEYS = ['sampleId', 'orientation', 'strain', 'lesson', 'conoscopeInserted', 'thicknessMm', 'brazilTwin'] as const;
+
+/**
+ * 实验屏改仪器状态：换样品或放置方式要重新预测、重新记录；只改检偏器则重新记录曲线，
+ * 已揭晓的解释保留（平行复核需要转检偏器）。
+ */
+export function patchLab(scene: LabScene, patch: Partial<PolariscopeStructureState>): LabScene {
+  const changed = (key: keyof PolariscopeStructureState) => key in patch && patch[key] !== scene.structure[key];
+  const observation = OBSERVATION_KEYS.some(changed);
+  const fresh = changed('sampleId') || changed('lesson');
+  return {
+    ...scene,
+    structure: { ...scene.structure, ...patch },
+    visited: observation || changed('analyzerAngle') ? emptyCoverage() : scene.visited,
+    revealed: observation ? false : scene.revealed,
+    prediction: fresh ? null : scene.prediction,
+    adr: observation ? null : scene.adr,
+  };
+}
+
+/** 实验屏换讲 / 进入课程步骤：场景复位，观察记录从头开始。 */
+export function labLessonScene(scene: LabScene, lesson: Lesson): LabScene {
+  return { ...lessonScene(scene, lesson), prediction: null, revealed: false, visited: emptyCoverage(), adr: null };
+}
+export function labEnterStep(scene: LabScene, step: CourseStepId): LabScene {
+  const entered = enterStep(scene, step);
+  return entered === scene ? { ...scene, enteredStep: step } : { ...entered, prediction: null, revealed: false, visited: emptyCoverage(), adr: null, enteredStep: step };
+}
+
+/** 揭晓一次（预测 → 转满一周）：记入任务进度，换方向复核按发生顺序判断。没选身份时不记。 */
+export function recordReveal(task: PolariscopeTaskData, structure: PolariscopeStructureState, observation: SampleObservation): PolariscopeTaskData {
+  if (task.mode === null) return task;
+  return recordProgress(task, { reveals: [...task.progress.reveals, { sampleId: structure.sampleId, orientation: structure.orientation, observation }] });
+}
+
+/** 解释一步答对一道题。 */
+export function recordAnswer(task: PolariscopeTaskData, id: string): PolariscopeTaskData {
+  if (task.mode === null || task.progress.correctQuestions.includes(id)) return task;
+  return recordProgress(task, { correctQuestions: [...task.progress.correctQuestions, id] });
+}
+
+/** 正交偏光下才记录：已预测、通电装配完整、检偏器正交（先预测后观察）。 */
+export const isRecording = (scene: LabScene) => scene.structure.lesson === 'sample' && scene.prediction !== null && deriveTeachingOptics(scene.structure).active && isCrossed(scene.structure);
+
+/**
+ * 学员的「点这里」提示（实验屏两步）：前置条件不满足时先指向要纠正的部件；
+ * 预测与揭晓由观察面板承担，这时不再另给气泡。
+ */
+export function labCoach(step: CourseStepId, scene: LabScene, observation: SampleObservation): { part: StructurePartId; text: string; tone?: 'action' | 'done' } | null {
+  if (step !== 'rotate' && step !== 'reorient') return null;
+  const structure = scene.structure;
+  if (!structure.power) return { part: 'powerSwitch', text: '电源关着：点这个按钮打开光源' };
+  if (!deriveTeachingOptics(structure).active) return null;
+  if (!isCrossed(structure)) return { part: 'analyzer', text: '先把上偏光片转回 90° 正交，再观察样品' };
+  if (scene.prediction === null) return null;
+  if (!scene.revealed) return { part: 'stage', text: '眼睛看目镜视场，手拖动这里转一整周' };
+  if (step === 'reorient' && structure.orientation === 'optic-axis' && observation === 'axis-dark') return { part: 'stage', text: '全暗不一定是均质体：换个方向放置，再转一周' };
+  return null;
 }

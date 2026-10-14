@@ -677,9 +677,12 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
           coachVisible = true;
           const ax = (projected.x + 1) * width / 2, ay = (1 - projected.y) * height / 2;
           const bw = bubble.offsetWidth, bh = bubble.offsetHeight, margin = 14;
-          // 气泡放在锚点外侧（远离模型中心），水平方向优先；放不下时换到另一侧。
-          let side = ax >= centerX ? 1 : -1;
-          if (side > 0 && ax + 70 + bw > width - margin) side = -1; else if (side < 0 && ax - 70 - bw < margin) side = 1;
+          // 观察面板展开、仪器右移时，气泡留在右侧；空间不足时贴右边，避免翻到左侧曲线上。
+          // 普通视图仍放在锚点外侧，放不下时换边。
+          let side = current.viewShift ? 1 : ax >= centerX ? 1 : -1;
+          if (!current.viewShift) {
+            if (side > 0 && ax + 70 + bw > width - margin) side = -1; else if (side < 0 && ax - 70 - bw < margin) side = 1;
+          }
           const bx = Math.max(margin, Math.min(width - bw - margin, side > 0 ? ax + 70 : ax - 70 - bw));
           const by = Math.max(margin, Math.min(height - bh - margin, ay - bh / 2 - 26));
           bubble.style.transform = `translate(${bx.toFixed(1)}px, ${by.toFixed(1)}px)`;

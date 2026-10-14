@@ -148,5 +148,5 @@
 .sim-stepbar li[data-state="current"] { background: var(--iu-accent-soft); color: var(--iu-accent-ink); font-weight: 500; }
 .sim-stepbar li[data-state="current"] > span:first-child { border-color: var(--iu-accent-strong); background: var(--iu-accent-strong); color: #fff; }
 @media (max-width: 680px) { .sim-stepbar { display: none; } }
-/* 有步骤条时，右上停靠的读数框与左上的提示让到步骤条下方。 */
+/* 有步骤条时，右上停靠的读数框让到步骤条下方。 */
 @media (min-width: 681px) { .sim-stepbar ~ .sim-readout--top-right { top: 58px; } }

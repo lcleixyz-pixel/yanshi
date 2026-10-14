@@ -117,12 +117,17 @@
 .sim-polari-obs { position: absolute; z-index: 3; left: 12px; top: 12px; bottom: 12px; width: min(620px, 58%); display: flex; flex-direction: column; border: 1px solid var(--iu-line-2); border-radius: 12px; background: #fffffff5; box-shadow: 0 8px 24px #1a233214; overflow: hidden; }
 .sim-polari-obs[data-guided="true"] { top: 58px; }
 .sim-polari-obs[data-open="false"] { bottom: auto; width: auto; }
-.sim-polari-obs__head { display: flex; align-items: baseline; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--iu-line); font-size: 12px; }
+.sim-polari-obs__head { display: flex; flex-shrink: 0; align-items: baseline; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--iu-line); font-size: 12px; }
 .sim-polari-obs__head strong { font-size: 13px; font-weight: 600; }
 .sim-polari-obs__head span { color: var(--iu-muted); }
 .sim-shell .sim-polari-obs__head button { margin-left: auto; border: 0; background: transparent; color: var(--iu-muted); font-size: 11px; }
-.sim-polari-obs__body { display: grid; grid-template-columns: auto minmax(200px, 1fr); grid-template-areas: "eye poe" "hand hand" "cond cond"; align-content: start; gap: 10px 16px; padding: 10px 14px; overflow: auto; }
+.sim-polari-obs__body { display: grid; min-height: 0; grid-template-columns: auto minmax(200px, 1fr); grid-template-areas: "eye poe" "hand hand" "cond cond"; align-content: start; gap: 10px 16px; padding: 10px 14px; overflow: auto; }
 .sim-polari-obs__body[hidden] { display: none; }
+.sim-polari-obs__scroll-hint { display: none; }
+@media (min-width: 681px) {
+  .sim-stage[data-obs-open="true"] .sim-stage__hint { left: calc(min(620px, 58%) + 24px); right: 12px; }
+  .sim-stage[data-obs-open="true"] .polariscope-coach { max-width: min(250px, calc(100% - min(620px, 58%) - 40px)); }
+}
 .sim-polari-obs__eye { grid-area: eye; display: grid; justify-items: center; gap: 6px; }
 .sim-polari-obs .pol-eyepiece__ring { width: clamp(170px, min(24vw, 31dvh), 320px); }
 /* 面板标题已写明样品，目镜下的说明文字不再重复。 */
@@ -148,9 +153,16 @@
 .sim-polari-choices button:last-child { grid-column: 1 / -1; color: var(--iu-muted); }
 .sim-polari-choices button:hover { border-color: var(--iu-accent-strong); color: var(--iu-accent-ink); background: var(--iu-accent-soft); }
 @media (max-width: 680px) {
-  /* 手机：观察面板贴在底部（顶部留给任务卡），目镜缩小与预测并排，条件条收起。 */
-  .sim-polari-obs, .sim-polari-obs[data-guided="true"] { left: 8px; right: 8px; top: auto; bottom: 64px; width: auto; max-height: 52%; }
+  /* 手机：顶部任务一行、中间仪器、底部观察；场景与面板共用高度，物台不藏在面板后面。 */
+  .sim-shell[data-instrument="polariscope"][data-screen="lab"] .sim-shell__play { --sim-polari-obs-height: min(360px, 52%); }
+  .sim-stage[data-obs-open] { top: 48px; bottom: 112px; }
+  .sim-stage[data-obs-open="true"] { bottom: calc(var(--sim-polari-obs-height) + 72px); }
+  /* 场景本身的内联 380px 最小高度只在这个手机观察工作区解除。 */
+  .sim-stage[data-obs-open] .polariscope-scene { min-height: 0 !important; }
+  .sim-polari-obs, .sim-polari-obs[data-guided="true"] { left: 8px; right: 8px; top: auto; bottom: 64px; width: auto; max-height: var(--sim-polari-obs-height); }
+  .sim-polari-obs[data-open="true"] { height: var(--sim-polari-obs-height); }
   .sim-polari-obs__body { grid-template-columns: auto minmax(0, 1fr); gap: 8px 10px; padding: 8px 10px; }
+  .sim-polari-obs__scroll-hint { display: block; flex-shrink: 0; margin: 0; padding: 4px 10px; border-top: 1px solid var(--iu-line); color: var(--iu-muted); font-size: 11px; text-align: center; }
   .sim-polari-obs .pol-eyepiece__ring { width: 104px; padding: 6px; }
   .sim-polari-obs__role { display: none; }
   .sim-polari-obs__conditions { display: none; }

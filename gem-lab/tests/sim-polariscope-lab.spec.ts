@@ -174,3 +174,79 @@ test("手一栏：±15° 计入连续转动，选完预测后用加减按钮也�
   await expect(page.getByRole("slider", { name: "载物台角度" })).toHaveValue("90");
   expect(Number(await page.getByTestId("rotation-trace").getAttribute("data-coverage"))).toBeGreaterThanOrEqual(20);
 });
+
+test.describe("手机观察工作区", () => {
+  // 使用真实手机视口语义：初始固定教学 viewport 随挂载切换，不能只缩桌面窗口。
+  test.use({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+
+  test("390×844：任务默认一行，物台留在面板上方；预测提示可完整滚动到，观察与揭晓仍可操作", async ({ page }) => {
+    await page.goto(`${route}?mode=student`);
+    await ready(page);
+    const line = page.getByTestId("sim-task-open"), field = page.getByTestId("sim-polari-field");
+    const body = page.locator(".sim-polari-obs__body"), scrollHint = page.locator(".sim-polari-obs__scroll-hint");
+    await expect(line).toBeVisible();
+    await expect(task(page)).toHaveCount(0);
+    await expect(page.getByTestId("polariscope-canvas")).toHaveAttribute("data-view-shift", "0.000");
+    const taskBox = (await line.boundingBox())!, sceneBox = (await scene(page).boundingBox())!, fieldBox = (await field.boundingBox())!;
+    expect(taskBox.height).toBeLessThanOrEqual(44);
+    expect(sceneBox.y).toBeGreaterThanOrEqual(taskBox.y + taskBox.height);
+    expect(sceneBox.height).toBeGreaterThanOrEqual(180);
+    expect(sceneBox.y + sceneBox.height).toBeLessThanOrEqual(fieldBox.y);
+    // 物台的三维投影锚点必须在真正可交互的画布上，不能仅有一块空白 canvas 可见。
+    await expect.poll(async () => page.evaluate(() => {
+      const marker = document.querySelector('.polariscope-hotspot[data-part-id="stage"]') as HTMLElement;
+      const [ax, ay] = (marker.dataset.anchor ?? "").split(",").map(Number);
+      const rect = document.querySelector('[data-testid="polariscope-scene"]')!.getBoundingClientRect();
+      const x = rect.left + ax, y = rect.top + ay;
+      return ax >= 20 && ax <= rect.width - 20 && ay >= 20 && ay <= rect.height - 20
+        && document.elementFromPoint(x, y)?.getAttribute("data-testid") === "polariscope-canvas";
+    })).toBe(true);
+    await eyepieceClear(page, "390 预测");
+    await expect(scrollHint).toBeVisible();
+    const bodyBox = (await body.boundingBox())!, headBox = (await page.locator(".sim-polari-obs__head").boundingBox())!, hintBox = (await scrollHint.boundingBox())!;
+    expect(headBox.y + headBox.height).toBeLessThanOrEqual(bodyBox.y + 1);
+    expect(bodyBox.y + bodyBox.height).toBeLessThanOrEqual(hintBox.y + 1);
+    expect(hintBox.y + hintBox.height).toBeLessThanOrEqual(fieldBox.y + fieldBox.height);
+    const note = body.getByText("先选一个预测，转动才计入记录。", { exact: true });
+    await note.scrollIntoViewIfNeeded();
+    const noteBox = (await note.boundingBox())!;
+    expect(noteBox.y).toBeGreaterThanOrEqual(bodyBox.y - 1);
+    expect(noteBox.y + noteBox.height).toBeLessThanOrEqual(bodyBox.y + bodyBox.height + 1);
+    expect(await body.evaluate((e) => e.scrollWidth - e.clientWidth)).toBeLessThanOrEqual(1);
+    // 保留现有任务卡的展开/收起入口，展开也不盖住底部观察面板。
+    await line.click();
+    const card = (await task(page).boundingBox())!;
+    expect(card.y + card.height).toBeLessThanOrEqual(fieldBox.y);
+    await page.getByTestId("sim-task-close").click();
+    await page.getByTestId("sim-polari-predict-all-dark").click();
+    await expect(page.getByTestId("sim-polari-poe")).toHaveAttribute("data-phase", "observe");
+    await eyepieceClear(page, "390 观察");
+    await turn(page, "all-dark", "all-dark");
+    await expect(page.getByTestId("sim-polari-poe")).toContainText("与预测一致");
+    await eyepieceClear(page, "390 揭晓");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+  });
+});
+
+test("1280×720：学员转动气泡与观察面板不相交，操作提示让到面板右侧；收起后回到原位", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto(`${route}?mode=student`);
+  await ready(page);
+  await page.getByTestId("sim-polari-predict-all-dark").click();
+  await page.getByTestId("sim-polari-stage-plus").click();
+  const bubble = page.getByTestId("scene-coach"), field = page.getByTestId("sim-polari-field");
+  await expect(bubble).toHaveAttribute("data-part", "stage");
+  await expect(bubble).toBeVisible();
+  await expect.poll(async () => {
+    const a = (await bubble.boundingBox())!, b = (await field.boundingBox())!;
+    return a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height;
+  }, { message: "学员气泡不能落在观察面板或转动曲线上" }).toBe(false);
+  await expect(page.getByTestId("sim-polari-poe")).not.toContainText("眼睛看左边的视场");
+  const hint = page.locator(".sim-stage__hint"), hintBox = (await hint.boundingBox())!, fieldBox = (await field.boundingBox())!;
+  expect(hintBox.x).toBeGreaterThanOrEqual(fieldBox.x + fieldBox.width);
+  const canvasBox = (await page.getByTestId("polariscope-canvas").boundingBox())!;
+  expect(hintBox.x + hintBox.width).toBeLessThanOrEqual(canvasBox.x + canvasBox.width);
+  await page.getByTestId("sim-polari-obs-toggle").click();
+  await expect(page.getByTestId("polariscope-canvas")).toHaveAttribute("data-view-shift", "0.000");
+  expect((await hint.boundingBox())!.x).toBeLessThan(hintBox.x);
+});

@@ -56,6 +56,10 @@ export default function PolariscopeLabScreen({ sim, screen, onScreen, session, d
   const [fieldVersion, setFieldVersion] = useState(0);
   const [obsOpen, setObsOpen] = useState(true);
   const desktop = useDesktop();
+  // 手机首次渲染可能仍是旧的固定教学视口；响应式视口生效后复用任务卡的一行入口。
+  useEffect(() => {
+    if (mobileQuery()) dispatch({ type: 'task-open', open: false });
+  }, [desktop, dispatch]);
   const onFieldRendered = useCallback(() => setFieldVersion((value) => value + 1), []);
 
   // 自动转动每帧写一次物台角：在 ref 里先合并好最新场景，记录与转动不会互相覆盖（同认识屏）。
@@ -168,7 +172,7 @@ export default function PolariscopeLabScreen({ sim, screen, onScreen, session, d
   const play = (
     <>
       <section className="sim-stage" aria-label="偏光镜三维模型" data-testid="sim-polari-stage" data-lesson={lesson} data-status={sceneStatus}
-        data-sample={structure.sampleId} data-orientation={structure.orientation} data-revealed={lab.revealed} data-observation={lab.revealed ? observation : undefined}>
+        data-sample={structure.sampleId} data-orientation={structure.orientation} data-revealed={lab.revealed} data-observation={lab.revealed ? observation : undefined} data-obs-open={obsOpen}>
         <PolariscopeScene state={structure} quality={quality} resetViewKey={lab.resetViewKey} viewPreset={lab.viewPreset}
           onSelectPart={(id) => update({ selectedPart: id })} onAngleChange={changeAngle} onPowerChange={(power) => update({ power })} onStatus={setSceneStatus}
           field={sceneField} coach={coach} focusOnSelect={false} labels={labels} viewShift={desktop && obsOpen ? 0.24 : 0} />
@@ -207,7 +211,6 @@ export default function PolariscopeLabScreen({ sim, screen, onScreen, session, d
                   </> : <>
                     <span className="sim-polari-poe__step">② 观察 · 已转过 {Math.round(coverage * 100)}%</span>
                     <p className="sim-note" data-testid="sim-polari-live">{!recording ? '暂未记录' : brightness < 0.04 ? '当前：暗位，继续转，看有没有变亮' : '当前：较亮，继续转，看会不会再变暗'}</p>
-                    <p className="sim-note">眼睛看左边的视场，手在下面转载物台，转满一周后揭晓。</p>
                   </>}
               {!blocked && crossed && lab.prediction !== null && <RotationTrace curve={curve} visited={lab.visited} current={structure.stageAngle} reveal={lab.revealed} analyzerDeg={structure.analyzerAngle} />}
             </div>
@@ -234,6 +237,7 @@ export default function PolariscopeLabScreen({ sim, screen, onScreen, session, d
             <div><dt>光源</dt><dd>{structure.power ? '已开' : '已关'}</dd></div>
           </dl>
         </div>
+        {obsOpen && <p className="sim-polari-obs__scroll-hint">上下滑动查看观察与转动控件</p>}
       </section>
       <PolariscopeTaskCard
         view={view} finished={pending ? { step: pending, items: stepChecklist(task, pending) } : null} onNext={enterCurrent} open={session.task.open} mode={task.mode} hasSkipped={task.hasSkipped} teacherUsed={session.task.teacherUsed}
@@ -350,6 +354,7 @@ function useDesktop() {
   useEffect(() => {
     const list = window.matchMedia(query);
     const change = () => setMatches(list.matches);
+    change();
     list.addEventListener('change', change);
     return () => list.removeEventListener('change', change);
   }, []);

@@ -3,7 +3,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 
-export const EXPECTED_CASE_COUNT = 66;
+export const EXPECTED_CASE_COUNT = 67;
 export const SHARD_COUNT = 3;
 
 function collectCases(report, label, errors) {

@@ -1,42 +1,24 @@
 
-
 .pol-explore__button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 38px; padding: 8px 14px; border: 1px solid #d4dfee; border-radius: 6px; color: var(--pe-ink); background: transparent; font-size: 12px; font-weight: 500; text-decoration: none; transition: background .16s, border-color .16s; }
 .pol-explore__button:hover:not(:disabled) { border-color: #8a97ab; background: #f5f3ff; }
-
 .pol-explore__button[aria-pressed="true"] { border-color: var(--pe-accent); background: #f5f3ff; color: var(--pe-accent-ink); }
-
 .pol-explore .polariscope-hotspot { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 1px solid #a78bfa; border-radius: 50%; color: var(--pe-accent-dark); background: #ffffffe8; box-shadow: 0 2px 12px #1a233220; font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace; font-size: 10px; transition: background .15s, box-shadow .15s; }
 .pol-explore .polariscope-hotspot::before { content: ""; position: absolute; inset: -5px; border: 1px solid #6d28d947; border-radius: inherit; }
 .pol-explore .polariscope-hotspot.is-ghosted, .pol-explore .polariscope-scene .is-ghosted { opacity: .32; }
 .pol-explore .polariscope-hotspot:hover, .pol-explore .polariscope-hotspot.is-selected { background: var(--pe-accent); color: #fff; box-shadow: 0 0 0 5px #6d28d925; }
 .pol-explore .polariscope-scene-fallback .px-button { padding: 8px 16px; border: 1px solid #bcd3ed; border-radius: 5px; background: #ffffff; font-size: 12px; }
-
 .pol-explore__view-buttons .pol-explore__button { background: #ffffffe8; min-height: 34px; padding: 6px 10px; font-size: 10px; }
-
 .pol-explore__detail .pol-explore__button { margin-top: 14px; }
-
 .pol-explore__internal-control .pol-explore__button { width: 100%; justify-content: space-between; background: #f7f9fd; }
-
 .pol-explore__control > .pol-explore__button { margin-top: 12px; }
-
 @media (max-width: 680px) {
-
   .pol-explore__header .btn-ghost { padding: 5px 9px; font-size: 11px; }
-
 }
-
-/* One instrument carries the component { display: flex; align-items: center; gap: 4px; padding: 5px; border: 1px solid var(--pe-line); border-radius: 8px; background: #e8eff8; }
-
 .pol-explore__path-navigation > .pol-explore__button { font-size: 11px; padding: 7px 10px; }
-
 .pol-explore__path-navigation--compact > .pol-explore__button { white-space: nowrap; }
-
 @media (max-width: 680px) {
-
   .pol-explore__projection-controls .pol-explore__button { min-height: 32px; padding: 5px 8px; font-size: 10px; }
-
 }
-
 .pol-eyepiece { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .pol-eyepiece__ring { position: relative; width: clamp(150px, 15vw, 214px); aspect-ratio: 1; padding: 9px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #3d4a5e, #1a2332 62%); box-shadow: 0 10px 30px #1a233233, inset 0 0 0 1px #ffffff1c; }
 .pol-eyepiece__ring canvas { display: block; width: 100%; height: 100%; border-radius: 50%; background: #1a2332; box-shadow: inset 0 0 18px #1a2332; }
@@ -44,7 +26,6 @@
 .pol-eyepiece__mark--p { justify-content: flex-start; padding-left: 1px; color: #8a97ab; }
 .pol-eyepiece__mark--a i { font-style: normal; color: #bcd3ed; }
 .pol-eyepiece figcaption { padding: 3px 9px; border-radius: 999px; background: #ffffffe6; color: #3d4a5e; font-size: 10px; letter-spacing: .02em; box-shadow: 0 1px 6px #1a23320f; }
-
 .pol-explore--projection .pol-eyepiece__ring { width: min(34vh, 360px); }
 .pol-explore--projection .pol-eyepiece figcaption { font-size: 13px; }
 
@@ -54,7 +35,6 @@
 .polariscope-scene-label--sample { color: #6f4b8d; }
 .polariscope-scene-label--analyzer { color: #275b8e; }
 .pol-explore--projection .polariscope-scene-label { font-size: 15px; padding: 5px 12px; }
-
 .pol-trace { margin: 0; }
 .pol-trace svg { display: block; width: 100%; height: auto; }
 .pol-trace text { fill: #5b6b80; font-size: 9px; font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace; }
@@ -65,33 +45,18 @@
 .pol-trace__cursor { stroke: var(--pe-accent); stroke-width: 1; stroke-dasharray: 2 2; }
 .pol-trace__dot { fill: var(--pe-accent); stroke: #fff; stroke-width: 1.4; }
 .pol-trace figcaption { margin-top: 2px; color: #5b6b80; font-size: 10px; }
-
 @media (max-width: 1180px) {
-
   .pol-eyepiece__ring { width: 138px; }
-
 }
 @media (max-width: 680px) {
-
   .pol-eyepiece__ring { width: 112px; padding: 6px; }
   .pol-eyepiece figcaption { font-size: 9px; }
-
   .pol-explore--projection .pol-eyepiece__ring { width: 150px; }
-
   .polariscope-scene-label { font-size: 10px; padding: 3px 7px; }
   .polariscope-scene-label[data-label-key="field"] { visibility: hidden; }
 }
-
-/* 投屏窄屏：两侧放不下时课程条占满宽度，解释卡与目镜视场移到课程条下方。 */
-@media (max-width: 1279px) {
-  .pol-explore--projection .pol-course { width: calc(100vw - 220px); left: 20px; transform: none; }
-  .pol-explore--projection.pol-explore--course .pol-explore__projection-explainer,
-  .pol-explore--projection.pol-explore--course .pol-explore__eyepiece-dock { top: 300px; }
-}
-
 .pol-explore--projection .course-shell__steps { flex-wrap: nowrap; }
 .pol-explore--projection .course-shell__steps button { padding-inline: 8px; }
-
 .pol-explore--projection .course-shell__body { grid-template-columns: minmax(0, 1fr) auto; padding: 10px 14px; gap: 12px 16px; }
 .pol-explore--projection .course-shell__nav { grid-column: 1 / -1; justify-content: flex-end; }
 .pol-explore--projection .course-shell__guide .course-shell__task h1 { font-size: 20px; }
@@ -107,11 +72,7 @@
 .polariscope-coach__line { stroke: var(--pe-accent); stroke-width: 1.5; stroke-dasharray: 4 3; }
 .polariscope-coach__dot { fill: #fff; stroke: var(--pe-accent); stroke-width: 2; animation: pol-coach-pulse 1.6s ease-in-out infinite; }
 @keyframes pol-coach-pulse { 50% { stroke-width: 5; stroke-opacity: .45; } }
-
 @keyframes pol-toast { 0% { opacity: 0; transform: translate(-50%, -6px); } 12%, 82% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .polariscope-coach__dot { animation: none; } }
-
 .pol-student-observe .pol-eyepiece__ring { width: clamp(220px, 22vw, 320px); }
-
 .pol-student-card .btn-ghost { width: 100%; margin-top: 8px; }
-

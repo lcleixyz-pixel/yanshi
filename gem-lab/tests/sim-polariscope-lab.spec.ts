@@ -105,3 +105,39 @@ test("平行复核：铁铝榴石的应变明暗在平行时明显变亮", async
   await page.getByTestId("sim-polari-adr").click();
   await expect(page.getByTestId("sim-polari-adr-result")).toHaveAttribute("data-verdict", /strain|dark-no-check/);
 });
+
+/** 目镜画布在圆环里，且不与观察框里的按钮、文字相交（三版本对比报告 P0）。 */
+async function eyepieceClear(page: Page, phase: string) {
+  const result = await page.evaluate(() => {
+    const box = (e: Element) => e.getBoundingClientRect();
+    const ring = document.querySelector('[data-testid="sim-polari-field"] .pol-eyepiece__ring')!;
+    const canvas = box(ring.querySelector("canvas")!), outer = box(ring);
+    const inside = canvas.left >= outer.left - 0.5 && canvas.right <= outer.right + 0.5 && canvas.top >= outer.top - 0.5 && canvas.bottom <= outer.bottom + 0.5;
+    const hit = (b: DOMRect) => b.width > 0 && b.left < canvas.right && canvas.left < b.right && b.top < canvas.bottom && canvas.top < b.bottom;
+    const others = [...document.querySelectorAll('[data-testid="sim-polari-field"] button:not(.sim-readout__head), [data-testid="sim-polari-poe"] *, [data-testid="sim-polari-conoscope-note"]')].filter((e) => !ring.contains(e));
+    return { inside, overlaps: others.filter((e) => hit(box(e))).map((e) => (e.textContent ?? "").trim().slice(0, 12)) };
+  });
+  expect(result.inside, `${phase}：目镜画布越出圆环`).toBe(true);
+  expect(result.overlaps, `${phase}：目镜与按钮或文字相交`).toEqual([]);
+}
+
+test("观察框：预测、观察、揭晓与干涉图说明时，目镜都不越界、不与按钮文字相交；转动曲线有样式", async ({ page }) => {
+  for (const size of [{ width: 1280, height: 720 }, { width: 1440, height: 900 }]) {
+    await page.setViewportSize(size);
+    await page.goto(`${route}?sample=tourmaline`);
+    await ready(page);
+    await eyepieceClear(page, `${size.width} 预测`);
+    await page.getByTestId("sim-polari-predict-demo").click();
+    await eyepieceClear(page, `${size.width} 观察`);
+    // 曲线样式丢失时 SVG 会塌成 0 高或撑满父级，这里只要求它是一个有限的可见块。
+    const trace = await page.getByTestId("rotation-trace").boundingBox();
+    expect(trace!.height).toBeGreaterThan(30);
+    expect(trace!.height).toBeLessThan(200);
+    await page.getByTestId("sim-polari-auto-rotate").click();
+    await expect(stage(page)).toHaveAttribute("data-observation", "four-bright-four-dark", { timeout: 20_000 });
+    await eyepieceClear(page, `${size.width} 揭晓`);
+    await page.getByTestId("sim-polari-lesson-conoscope").click();
+    await page.getByTestId("sim-polari-conoscope").click();
+    await eyepieceClear(page, `${size.width} 干涉图`);
+  }
+});

@@ -23,6 +23,8 @@ export interface SpectroscopeBenchViewer {
   update(state: BenchState, evaluation: BenchEvaluation, specimen: BenchSpecimenAppearance): void;
   focus(view: 'whole' | 'lamp' | 'sample' | 'instrument'): void;
   setBeams(visible: boolean): void;
+  /** 画面右移比例（0–0.4），给左侧观察面板让位。 */
+  setViewShift(shift: number): void;
   dispose(): void;
 }
 
@@ -103,7 +105,7 @@ export function createSpectroscopeBenchViewer(host: HTMLElement, callbacks: Benc
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
   } catch {
     callbacks.onStatus('error', '当前浏览器无法启动 3D 图形；请使用二维观察区，或重新载入后再试。');
-    return { update() {}, focus() {}, setBeams() {}, dispose() {} };
+    return { update() {}, focus() {}, setBeams() {}, setViewShift() {}, dispose() {} };
   }
   // 手机默认流畅画质（同偏光镜）：降低像素比与阴影开销；遵守系统「减少动效」。
   const phone = window.matchMedia('(max-width: 680px)').matches;
@@ -189,8 +191,16 @@ export function createSpectroscopeBenchViewer(host: HTMLElement, callbacks: Benc
     const height = Math.max(1, host.clientHeight);
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
-    camera.updateProjectionMatrix();
+    applyViewShift();
   };
+  // 观察面板展开时画面整体右移（同偏光镜、折射仪）：只平移投影，拾取与拖动用同一投影矩阵。
+  let viewShift = 0;
+  function applyViewShift() {
+    const width = Math.max(1, host.clientWidth), height = Math.max(1, host.clientHeight);
+    if (viewShift) camera.setViewOffset(width, height, -viewShift * width, 0, width, height); else camera.clearViewOffset();
+    camera.updateProjectionMatrix();
+    canvas.dataset.viewShift = viewShift.toFixed(3);
+  }
   const observer = new ResizeObserver(resize);
   observer.observe(host);
   resize();
@@ -809,6 +819,7 @@ export function createSpectroscopeBenchViewer(host: HTMLElement, callbacks: Benc
   return {
     update(state, evaluation, specimen) { current = { state, evaluation, specimen }; apply(); },
     focus,
+    setViewShift(shift) { viewShift = Math.max(0, Math.min(0.4, shift || 0)); applyViewShift(); },
     setBeams(visible) { beamsEnabled = visible; rays.visible = visible; canvas.dataset.beamsVisible = String(visible); },
     dispose() {
       if (disposed) return;

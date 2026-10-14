@@ -7,7 +7,7 @@ import {
   operate, QUESTIONS, type CourseState, type CourseVariant, type Operation, type StepId,
 } from './spectroscopeCourse';
 import { QUESTION_SHORT, STEP_SCREEN, STEP_SHORT } from './spectroscopeCopy';
-import type { SimScreenId } from './simSession';
+import { stepBarStates, type SimScreenId, type SimStep } from './simSession';
 
 /**
  * 分光镜仿真的状态模型：把「屏幕场景」与「任务自有状态」合成为课程域认识的 CourseState，
@@ -295,6 +295,8 @@ export interface CourseView {
   allComplete: boolean;
   /** 下一处未完成步骤所在的其他屏幕（本屏做完了才用得上）。 */
   nextScreen: SimScreenId | null;
+  /** 引导步骤条：本机型六步各自的状态（做完 / 当前 / 未到）。 */
+  stepBar: SimStep[];
 }
 
 /** 任务卡要显示的一切：本屏当前步骤、清单、检查一下与总进度。 */
@@ -317,6 +319,7 @@ export function courseView(task: SpectroscopeTaskData, scene: LabScene, machine:
     screenDone: own.every((item) => done(item.id)),
     allComplete: config.steps.every((item) => done(item.id)),
     nextScreen: config.steps.filter((item) => STEP_SCREEN[item.id] !== screen && !done(item.id)).map((item) => STEP_SCREEN[item.id])[0] ?? null,
+    stepBar: stepBarStates(config.steps, done, step, own.every((item) => done(item.id))),
   };
 }
 

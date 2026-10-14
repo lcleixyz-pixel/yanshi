@@ -1,0 +1,81 @@
+/*
+ * 观察面板（观察区改版 P2，沿用偏光镜实验屏 P1a 的样式）：眼看读数、手调控件，紧挨在一起；
+ * 桌面贴在操作区左侧，展开时三维仪器右移让位；手机贴底、限高，面板内可滚动。
+ */
+.sim-obs { position: absolute; z-index: 3; left: 12px; top: 12px; bottom: 12px; width: min(620px, 58%); display: flex; flex-direction: column; border: 1px solid var(--iu-line-2); border-radius: 12px; background: #fffffff5; box-shadow: 0 8px 24px #1a233214; overflow: hidden; }
+.sim-obs[data-guided="true"] { top: 58px; }
+.sim-obs[data-open="false"] { bottom: auto; width: auto; }
+.sim-obs__head { display: flex; align-items: baseline; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--iu-line); font-size: 12px; }
+.sim-obs__head strong { font-size: 13px; font-weight: 600; }
+.sim-obs__head span { color: var(--iu-muted); }
+.sim-shell .sim-obs__head button { margin-left: auto; border: 0; background: transparent; color: var(--iu-muted); font-size: 11px; }
+.sim-obs__body { display: grid; grid-template-columns: auto minmax(200px, 1fr); grid-template-areas: "eye beside" "hand hand" "cond cond"; align-content: start; gap: 10px 16px; padding: 10px 14px; overflow: auto; }
+.sim-obs[data-layout="stack"] .sim-obs__body { grid-template-columns: minmax(0, 1fr); grid-template-areas: "eye" "beside" "hand" "cond"; }
+.sim-obs__body[hidden] { display: none; }
+.sim-obs__eye { grid-area: eye; display: grid; justify-items: center; align-content: start; gap: 6px; min-width: 0; }
+.sim-obs[data-layout="stack"] .sim-obs__eye { justify-items: stretch; }
+.sim-obs__beside { grid-area: beside; display: grid; align-content: center; gap: 8px; min-width: 0; font-size: 13px; }
+.sim-obs__role { justify-self: start; color: var(--iu-muted); font-size: 12px; }
+.sim-obs__role b { display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 6px; border-radius: 50%; background: var(--iu-accent-strong); color: #fff; font-size: 11px; font-weight: 600; }
+.sim-obs__hand { grid-area: hand; display: grid; gap: 6px; padding-top: 8px; border-top: 1px dashed var(--iu-line-2); min-width: 0; }
+.sim-obs__hand .iu-button { min-height: 36px; }
+.sim-obs__conditions { grid-area: cond; display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 0; padding: 8px 10px; border-radius: 8px; background: var(--iu-paper); font-size: 12px; }
+.sim-obs__conditions div { display: flex; gap: 6px; }
+.sim-obs__conditions dt { color: var(--iu-muted); }
+.sim-obs__conditions dd { margin: 0; color: var(--iu-ink); font-weight: 500; }
+
+/* 操作按钮按课程顺序排开；引导时下一步高亮并写明动作（与仪器上的热点一致）。 */
+.sim-obs__ops { display: grid; grid-template-columns: repeat(auto-fill, minmax(98px, 1fr)); gap: 6px; }
+.sim-obs__ops .iu-button { padding: 4px 6px; font-size: 12px; line-height: 1.3; }
+.sim-obs__ops .iu-button[data-next="true"] { border-color: var(--iu-accent-strong); background: var(--iu-accent-soft); color: var(--iu-accent-ink); font-weight: 600; box-shadow: 0 0 0 3px #6d28d922; }
+.sim-obs__next { margin: 0; color: var(--iu-accent-ink); font-size: 12px; font-weight: 500; }
+
+/* 仪器上的动作热点：不写编号，只是一个脉动的圆点，旁边气泡写明动作。 */
+.opt-hotspot[data-action="true"] { width: 22px; height: 22px; font-size: 0; border-width: 3px; animation: sim-obs-pulse 1.6s ease-in-out infinite; }
+@keyframes sim-obs-pulse { 50% { box-shadow: 0 0 0 8px #6d28d922; } }
+@media (prefers-reduced-motion: reduce) { .opt-hotspot[data-action="true"] { animation: none; } }
+
+/* 分光镜：谱条放大占面板整行，刻度写在谱条上方；手一栏的滑杆两列排开。 */
+.sim-spectro-field { display: grid; gap: 6px; min-width: 0; }
+.sim-spectro-field__scale { margin: 0; color: var(--iu-muted); font-size: 12px; }
+.sim-spectro-hand { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 16px; align-items: end; }
+.sim-spectro-hand > .sim-row, .sim-spectro-hand > .sim-note { grid-column: 1 / -1; margin: 0; }
+.sim-spectro-hand > .sim-row { align-items: center; }
+.sim-spectro-hand__label { color: var(--iu-muted); font-size: 12px; }
+.sim-obs .sim-spectro-field .sim-readout-list { display: flex; flex-wrap: wrap; gap: 2px 18px; margin: 0; font-size: 12px; }
+.sim-obs .sim-spectro-field .sim-readout-list div { display: flex; gap: 6px; }
+.sim-obs .sim-spectro-field > .sim-note { margin: 0; font-size: 12px; }
+.sim-obs .sim-spectro-hand .iu-range { margin: 0; }
+/* 短屏（如 1280×720）：说明文字让位给控件，面板内不需滚动。 */
+@media (min-width: 681px) and (max-height: 820px) {
+  /* 分光镜的亮度、狭缝、焦距在滑杆上已写明，条件条在短屏上省去。 */
+  .sim-spectro-hand > .sim-note, .sim-obs[data-layout="stack"] .sim-obs__role, .sim-obs[data-layout="stack"] .sim-obs__conditions { display: none; }
+  .sim-obs[data-layout="stack"] .sim-obs__body { gap: 6px 16px; padding-top: 8px; }
+}
+/* 右侧面板里「更多调节」分组标题。 */
+.sim-panels__group { margin: 6px 4px 0; color: var(--iu-muted); font-size: 11px; font-weight: 500; letter-spacing: .04em; }
+
+/* 三维载入失败的提示与「重新载入」盖在观察面板之上，不被挡住。 */
+.sim-shell__play:has(> .sim-obs) .sim-stage__error { z-index: 5; }
+
+/* 有步骤条时，右上停靠的记录抽屉让到步骤条下方。 */
+@media (min-width: 681px) { .sim-stepbar ~ .sim-sheet { top: 58px; max-height: calc(100% - 70px); } }
+
+/* 面板展开时，仪器左下角的操作提示移到面板右侧。 */
+@media (min-width: 681px) { .sim-obs[data-open="true"] ~ .sim-stage .sim-stage__hint, .sim-stage:has(~ .sim-obs[data-open="true"]) .sim-stage__hint { left: calc(min(620px, 58%) + 28px); } }
+
+@media (max-width: 680px) {
+  /* 手机：顶部任务一行、中间仪器、底部观察面板；仪器区缩到面板上方，不藏在面板后面（同偏光镜复查修正）。 */
+  .sim-shell__play:has(> .sim-obs) { --sim-obs-height: min(380px, 50%); }
+  .sim-shell__play:has(> .sim-obs) > .sim-stage { top: 48px; bottom: 112px; }
+  .sim-shell__play:has(> .sim-obs[data-open="true"]) > .sim-stage { bottom: calc(var(--sim-obs-height) + 72px); }
+  .sim-shell__play:has(> .sim-obs) > .sim-stage .sim-stage__hint { display: none; }
+  .sim-obs, .sim-obs[data-guided="true"] { left: 8px; right: 8px; top: auto; bottom: 64px; width: auto; max-height: var(--sim-obs-height); }
+  .sim-obs__beside .sim-note:last-child { display: none; }
+  .sim-spectro-hand { grid-template-columns: minmax(0, 1fr); }
+  .sim-spectro-hand > .sim-note { display: none; }
+  .sim-obs__body { grid-template-columns: auto minmax(0, 1fr); gap: 8px 10px; padding: 8px 10px; }
+  .sim-obs__role, .sim-obs__conditions { display: none; }
+  .sim-obs__ops { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 4px; }
+  .sim-obs__hand .iu-button { min-height: 34px; padding: 4px 8px; font-size: 12px; }
+}

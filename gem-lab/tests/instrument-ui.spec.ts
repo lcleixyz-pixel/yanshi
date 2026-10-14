@@ -50,10 +50,11 @@ test("手机上实验屏按手机布局显示，操作区与面板都在一屏�
   await expect(page.getByTestId("spectroscope-bench-canvas")).toHaveAttribute("data-loaded", "true", { timeout: 60_000 });
   expect(await page.evaluate(() => document.querySelector('meta[name="viewport"]')?.getAttribute("content"))).toContain("width=device-width");
   await expect(page.getByTestId("sim-spectro-field")).toBeVisible();
-  // 手机上控制面板默认收起为底部抽屉（内含光源开关）。
-  await expect(page.getByTestId("sim-panel-light")).toBeHidden();
+  // 手机上控制面板默认收起为底部抽屉；光源、夹样等常用控件在底部的观察面板里。
+  await expect(page.getByTestId("sim-panel-method")).toBeHidden();
   await page.getByTestId("sim-controls-toggle").click();
-  await expect(page.getByTestId("sim-panel-light")).toBeVisible();
+  await expect(page.getByTestId("sim-panel-method")).toBeVisible();
+  await page.getByTestId("sim-controls-toggle").click();
   await page.getByTestId("sim-bench-power").click();
   await page.getByTestId("sim-bench-place").click();
   await expect(page.getByTestId("sim-spectro-status")).toBeVisible();

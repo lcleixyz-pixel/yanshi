@@ -25,7 +25,11 @@ export interface OpticsViewer {
   /** focus 为 false 时只选中、不移动镜头。 */
   select(id: string, focus?: boolean): void;
   /** 部件热点：ids 依次编号（labelMode='name' 时改用 labels 的短名称）；done 为已查看；selected 为当前选中；hideOccluded 时被不透明部件挡住的热点隐藏；coach 为「点这里」指引的部件；null 关闭。 */
-  setHotspots(hotspots: { ids: string[]; done?: string[]; coach?: string | null; selected?: string | null; labels?: Record<string, string>; hideOccluded?: boolean; labelMode?: 'number' | 'name' } | null): void;
+  setHotspots(hotspots: { ids: string[]; done?: string[]; coach?: string | null; selected?: string | null; labels?: Record<string, string>; hideOccluded?: boolean; labelMode?: 'number' | 'name';
+    /** 动作热点：点击执行当前一步（不选中部件）；coachText 替换默认的「点这里：部件名」。 */
+    onActivate?: (id: string) => void; coachText?: string } | null): void;
+  /** 画面右移比例（0–0.4），给左侧观察面板让位。 */
+  setViewShift(shift: number): void;
   focusSelected(): void;
   fit(): void;
   reset(): void;

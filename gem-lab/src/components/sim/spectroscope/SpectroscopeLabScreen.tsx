@@ -1,9 +1,9 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import RangeControl from '../../shared/RangeControl';
 import SpectrumStrip from '../../spectroscope/SpectrumStrip';
-import { ResetAllButton, SimChecks, SimPanel, SimReadout, SimShell } from '../SimShell';
+import { OBS_VIEW_SHIFT, ResetAllButton, SimChecks, SimObsPanel, SimPanel, SimShell, SimStepBar, useDesktopLayout } from '../SimShell';
 import SpectroscopeRecord from './SpectroscopeRecord';
-import SpectroscopeStage from './SpectroscopeStage';
+import SpectroscopeStage, { SpectroscopeField } from './SpectroscopeStage';
 import SpectroscopeTaskCard from './SpectroscopeTaskCard';
 import { useSpectroscopeBench, type BenchView } from './useSpectroscopeBench';
 import type { SimScreenProps } from '../registry';
@@ -38,6 +38,11 @@ export default function SpectroscopeLabScreen({ sim, screen, onScreen, session, 
   const sample = guided ? COURSE_SAMPLE : SAMPLES_BY_ID[lab.sampleId] ?? SAMPLES[0];
   const hostRef = useRef<HTMLDivElement>(null);
   const [recording, setRecording] = useState(false);
+  // 观察面板（观察区改版 P2）：谱条放大，与光源、狭缝、焦距、夹样放在一起；展开时工作台右移让位。
+  const [obsOpen, setObsOpen] = useState(true);
+  const desktop = useDesktopLayout();
+  // 手机上任务卡先收为顶部一行，给工作台与观察面板让出高度。
+  useEffect(() => { if (!desktop) dispatch({ type: 'task-open', open: false }); }, [desktop]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const patch = (next: Partial<LabScene>) => dispatch({ type: 'patch-scene', screen, patch: next });
   // 引导任务的课程操作（标记、核对、记录连续光谱、回答）与被引导时的滑杆都走课程域，进度才会记上。
@@ -52,7 +57,7 @@ export default function SpectroscopeLabScreen({ sim, screen, onScreen, session, 
     dispatch({ type: 'task-patch', patch: next.task as unknown as Record<string, unknown> });
   };
   const bench = useSpectroscopeBench({
-    hostRef, state: lab.bench, sample, beams: lab.beams, view: lab.view,
+    hostRef, state: lab.bench, sample, beams: lab.beams, view: lab.view, viewShift: desktop && obsOpen ? OBS_VIEW_SHIFT : 0,
     onAdjust: (next) => patch(patchLab(lab, next)),
   });
 
@@ -78,13 +83,48 @@ export default function SpectroscopeLabScreen({ sim, screen, onScreen, session, 
       <SpectroscopeStage
         hostRef={hostRef} status={bench.status} error={bench.error} onRetry={bench.retry}
         evaluation={bench.evaluation} dispersion={machine} marks={lab.marks} interactive={mayObserve}
-        onAddMark={addMark} onRemoveMark={removeMark} values={lab.values}
-      >
-        <div className="sim-row">
-          <button type="button" className="iu-button" onClick={() => setRecording(true)} data-testid="sim-spectro-record-open">记录观察</button>
-          {pending && <span className="sim-note">{bench.evaluation.recordStatus === 'setup-only' ? '本方法先做布置练习' : '本样品参考谱尚未核定'}</span>}
-        </div>
-      </SpectroscopeStage>
+        onAddMark={addMark} onRemoveMark={removeMark} values={lab.values} docked={false}
+      />
+      {guided && <SimStepBar steps={view.stepBar} />}
+      <SimObsPanel
+        title="目镜视场" meta={`${MACHINE_LABELS[machine]} · ${guided ? sample.name : SAMPLES_BY_ID[lab.sampleId]?.name ?? ''}`} open={obsOpen} onOpen={setObsOpen} guided={guided}
+        layout="stack" eyeLabel="谱条（点谱条标记吸收）" testId="sim-spectro-obs"
+        eye={(
+          <SpectroscopeField evaluation={bench.evaluation} dispersion={machine} marks={lab.marks} interactive={mayObserve} onAddMark={addMark} onRemoveMark={removeMark}
+            values={lab.values} height={desktop ? 72 : 48} caption>
+            <div className="sim-row">
+              <button type="button" className="iu-button" onClick={() => setRecording(true)} data-testid="sim-spectro-record-open">记录观察</button>
+              {pending && <span className="sim-note">{bench.evaluation.recordStatus === 'setup-only' ? '本方法先做布置练习' : '本样品参考谱尚未核定'}</span>}
+            </div>
+          </SpectroscopeField>
+        )}
+        handLabel={machine === 'prism' ? '光源 · 狭缝 · 调焦 · 夹样' : '光源 · 夹样（狭缝与焦距固定）'}
+        hand={(
+          <div className="sim-spectro-hand" data-testid="sim-spectro-hand">
+            <div className="sim-row">
+              <span className="sim-spectro-hand__label">光源</span>
+              <button type="button" role="switch" aria-checked={lab.bench.power} className={`iu-switch${lab.bench.power ? ' is-on' : ''}`} onClick={() => setBench({ power: !lab.bench.power })} data-testid="sim-bench-power">{lab.bench.power ? '已开启' : '未开启'}</button>
+              <button type="button" aria-pressed={lab.bench.samplePlaced} className="iu-button" onClick={() => setBench({ samplePlaced: !lab.bench.samplePlaced })} data-testid="sim-bench-place">{lab.bench.samplePlaced ? '取下样品' : lab.bench.method === 'transmission' ? '镊子夹样' : '放到黑色台面'}</button>
+            </div>
+            <RangeControl label="光源亮度" min={0} max={100} value={Math.round(lab.bench.brightness * 100)} display={`${Math.round(lab.bench.brightness * 100)}%`} ends={['暗', '亮']} onChange={(value) => setBench({ brightness: value / 100 })} />
+            {machine === 'prism' && <>
+              <RangeControl label="狭缝宽度" min={0} max={10} step={0.1} value={Number((lab.bench.slit * 10).toFixed(1))} display={`${(lab.bench.slit * 10).toFixed(1)} / 10`} ends={['窄', '宽']} onChange={(value) => setBench({ slit: value / 10 })} />
+              <RangeControl label="目镜焦距" min={0} max={10} step={0.1} value={Number((lab.bench.focus * 10).toFixed(1))} display={`${(lab.bench.focus * 10).toFixed(1)} / 10`} ends={['缩回', '拉出']} onChange={(value) => setBench({ focus: value / 10 })} />
+            </>}
+            <p className="sim-note">{machine === 'prism'
+              ? '狭缝太宽谱线发糊、太窄变暗；焦距对准后谱线才清楚。刻度为 0–10 相对值，未经实物标定。'
+              : '本袖珍光栅式机型的狭缝与焦距固定：视场偏暗先查照明和对光，不把「暗」当成吸收。'}</p>
+            <RangeControl label="样品横移" min={-10} max={10} step={0.1} value={Number((lab.bench.sampleOffset * 10).toFixed(1))} display={`${(lab.bench.sampleOffset * 10).toFixed(1)} / 10`} ends={['左', '右']} onChange={(value) => setBench({ sampleOffset: value / 10 })} />
+          </div>
+        )}
+        conditions={[
+          { label: '机型', value: MACHINE_LABELS[machine] },
+          { label: '方法', value: BENCH_METHOD_LABELS[lab.bench.method] },
+          { label: '光源', value: lab.bench.power ? `开 ${Math.round(lab.bench.brightness * 100)}%` : '关' },
+          { label: '样品', value: lab.bench.samplePlaced ? '在光路中' : '未夹' },
+          ...(machine === 'prism' ? [{ label: '狭缝 / 焦距', value: `${(lab.bench.slit * 10).toFixed(1)} / ${(lab.bench.focus * 10).toFixed(1)}` }] : []),
+        ]}
+      />
       <SpectroscopeTaskCard
         screen={screen} view={view} machine={machine} open={session.task.open} mode={task.mode}
         teacherUsed={session.task.teacherUsed} hasSkipped={task.hasSkipped}
@@ -153,10 +193,14 @@ export default function SpectroscopeLabScreen({ sim, screen, onScreen, session, 
         </div>
         <p className="sim-note">{MACHINE_LABELS[machine]}分光镜：{machine === 'prism' ? '狭缝与焦距可调，红端压缩、紫端展开。' : '固定狭缝与焦距，刻度近似线性，整体较暗。'}</p>
       </SimPanel>
-      <SimPanel title="光源" testId="sim-panel-light">
-        <button type="button" role="switch" aria-checked={lab.bench.power} className={`iu-switch${lab.bench.power ? ' is-on' : ''}`} onClick={() => setBench({ power: !lab.bench.power })} data-testid="sim-bench-power">{lab.bench.power ? '已开启' : '未开启'}</button>
-        <RangeControl label="光源亮度" min={0} max={100} value={Math.round(lab.bench.brightness * 100)} display={`${Math.round(lab.bench.brightness * 100)}%`} ends={['暗', '亮']} onChange={(value) => setBench({ brightness: value / 100 })} />
+      <SimPanel title="样品" hint={guided ? '教学样品' : `${SAMPLES.length} 种`} testId="sim-panel-sample">
+        {guided
+          ? <p className="sim-note"><strong>{COURSE_SAMPLE.name}</strong>（教学样品）：品种透明度为透明至半透明，本课选用可清楚透射的一颗。</p>
+          : <label className="sim-field">练习样品<select className="sim-select" value={lab.sampleId} onChange={(event) => setSample(event.target.value)} data-testid="sim-sample-select">{SAMPLES.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>}
+        <p className="sim-note">夹样、横移与光源、{machine === 'prism' ? '狭缝、调焦' : '亮度'}在左侧「目镜视场」面板的「手」一栏；三维里也可以按住灯头、狭缝环或目镜套筒拖动。</p>
+        <RangeControl label="样品转角" min={0} max={360} value={lab.bench.sampleRotation} display={`${lab.bench.sampleRotation}°`} ends={['0°', '360°']} onChange={(sampleRotation) => setBench({ sampleRotation })} />
       </SimPanel>
+      <h3 className="sim-panels__group">更多调节</h3>
       <SimPanel title="观察方式" testId="sim-panel-method">
         <div className="sim-methods">
           {METHODS.map((method, index) => <button key={method} type="button" aria-pressed={lab.bench.method === method} disabled={guided} onClick={() => setBench({ method, ...benchMethodSetup(method) })} data-testid={`sim-method-${method}`}><span>0{index + 1}</span>{BENCH_METHOD_LABELS[method]}</button>)}
@@ -164,25 +208,6 @@ export default function SpectroscopeLabScreen({ sim, screen, onScreen, session, 
         {guided
           ? <p className="sim-note">引导任务用透射观察与教学样品（红宝石）；要试别的方法，可先「重新开始任务」，本屏即回到自由练习。</p>
           : <p className="sim-note">反射法只练布置：缺少方法对应的参考谱，记录为「仅布置练习」，不计有效观察。</p>}
-      </SimPanel>
-      <SimPanel title="样品" hint={guided ? '教学样品' : `${SAMPLES.length} 种`} testId="sim-panel-sample">
-        {guided
-          ? <p className="sim-note"><strong>{COURSE_SAMPLE.name}</strong>（教学样品）：品种透明度为透明至半透明，本课选用可清楚透射的一颗。</p>
-          : <label className="sim-field">练习样品<select className="sim-select" value={lab.sampleId} onChange={(event) => setSample(event.target.value)} data-testid="sim-sample-select">{SAMPLES.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>}
-        <div className="sim-row">
-          <button type="button" aria-pressed={lab.bench.samplePlaced} className="iu-button" onClick={() => setBench({ samplePlaced: !lab.bench.samplePlaced })} data-testid="sim-bench-place">{lab.bench.samplePlaced ? '取下样品' : lab.bench.method === 'transmission' ? '镊子夹样' : '放到黑色台面'}</button>
-        </div>
-        <RangeControl label="样品横移" min={-10} max={10} step={0.1} value={Number((lab.bench.sampleOffset * 10).toFixed(1))} display={`${(lab.bench.sampleOffset * 10).toFixed(1)} / 10`} ends={['左', '右']} onChange={(value) => setBench({ sampleOffset: value / 10 })} />
-        <RangeControl label="样品转角" min={0} max={360} value={lab.bench.sampleRotation} display={`${lab.bench.sampleRotation}°`} ends={['0°', '360°']} onChange={(sampleRotation) => setBench({ sampleRotation })} />
-      </SimPanel>
-      <SimPanel title={machine === 'prism' ? '狭缝与调焦' : '固定光学结构'} testId="sim-panel-optics">
-        {machine === 'prism' ? (
-          <>
-            <RangeControl label="狭缝宽度" min={0} max={10} step={0.1} value={Number((lab.bench.slit * 10).toFixed(1))} display={`${(lab.bench.slit * 10).toFixed(1)} / 10`} ends={['窄', '宽']} onChange={(value) => setBench({ slit: value / 10 })} />
-            <RangeControl label="目镜焦距" min={0} max={10} step={0.1} value={Number((lab.bench.focus * 10).toFixed(1))} display={`${(lab.bench.focus * 10).toFixed(1)} / 10`} ends={['缩回', '拉出']} onChange={(value) => setBench({ focus: value / 10 })} />
-            <p className="sim-note">狭缝开得太宽谱线发糊、太窄变暗；焦距对准后谱线才清楚。刻度为 0–10 相对值，未经实物标定；也可以在三维里按住狭缝环或目镜套筒拖动。</p>
-          </>
-        ) : <p className="sim-note">本袖珍光栅式机型的狭缝与焦距固定：视场偏暗先查照明和对光，不把「暗」当成吸收。</p>}
       </SimPanel>
       <SimPanel title="灯头" testId="sim-panel-lamp">
         <RangeControl label="灯头横移" min={-10} max={10} step={0.1} value={Number((lab.bench.lampLateral * 10).toFixed(1))} display={`${(lab.bench.lampLateral * 10).toFixed(1)} / 10`} ends={['左', '右']} onChange={(value) => setBench({ lampLateral: value / 10 })} />

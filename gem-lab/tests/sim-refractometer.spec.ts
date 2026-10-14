@@ -303,6 +303,8 @@ test("手机：控制面板收为底部抽屉，操作区与目镜视场都在�
   await expect(page.getByTestId("sim-controls-toggle")).toBeVisible();
   await page.getByTestId("sim-controls-toggle").click();
   await expect(page.locator(".sim-shell__panels")).toHaveAttribute("data-open", "true");
+  // 仪器操作在底部的观察面板里：收起控制抽屉再操作。
+  await page.getByTestId("sim-controls-toggle").click();
   await benchReady(page);
   await expect(page.getByTestId("sim-refracto-eyepiece")).toBeInViewport();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
@@ -355,4 +357,52 @@ test('检测流程里的折射仪走三维并写回记录', async ({ page }) => 
   if (saved.refractometer.riMin === null) expect(saved.refractometer.notes).toContain('> 1.780');
   else expect(saved.refractometer.riMin).toBeGreaterThan(1.3);
   expect(errors).toEqual([]);
+});
+
+test("实验屏观察面板：引导时顶部八步、目镜放大在左、仪器右移；下一步在面板高亮、仪器上只亮一个热点，点热点即执行", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto(`${LAB}?mode=student&step=prepare`);
+  await ready(page);
+  const bar = page.getByTestId("sim-stepbar");
+  await expect(bar.getByRole("listitem")).toHaveCount(8);
+  await expect(bar.locator('[aria-current="step"]')).toContainText("开灯与放样");
+  const eye = (await page.getByTestId("sim-refracto-eyepiece").boundingBox())!;
+  expect(eye.width).toBeGreaterThanOrEqual(180);
+  // 1280×720 下目镜、读数说明、操作按钮与条件条都在面板里，不用滚动。
+  expect(await page.locator(".sim-obs__body").evaluate((e) => e.scrollHeight - e.clientHeight)).toBeLessThanOrEqual(1);
+  await expect(canvas(page)).toHaveAttribute("data-view-shift", "0.240");
+  // 下一步：开电源 → 滴液 → 放样，依次只亮对应部件；点热点与点面板按钮效果相同。
+  for (const [part, text] of [["power_switch", "打开电源"], ["oil_bottle", "滴一小滴接触液"], ["test_prism", "台面朝下放样"]] as const) {
+    await expect(page.getByTestId("sim-refracto-next")).toContainText(text);
+    await expect(page.locator(".opt-hotspot")).toHaveCount(1);
+    await expect(page.getByRole("button", { name: text, exact: true }).first()).toHaveAttribute("data-next", "true");
+    await page.getByTestId(`hotspot-${part}`).click();
+  }
+  // 本步做完，课程进到「恢复光学接触」：下一步指向目镜上的「记录无法可靠读数」。
+  await expect(bar.locator('[aria-current="step"]')).toContainText("恢复光学接触");
+  await expect(page.getByTestId("sim-refracto-eyepiece")).toHaveAttribute("data-view", "scale-only");
+  await page.getByTestId("hotspot-eyepiece").click();
+  await expect(task(page)).toContainText("已记录：空气间隙下没有可靠的样品边界");
+  await expect(page.getByTestId("sim-refracto-next")).toContainText("在任务卡里回答问题");
+  await expect(page.locator(".opt-hotspot")).toHaveCount(0);
+  // 收起面板后仪器回中；自由练习不显示步骤条与动作热点。
+  await page.getByTestId("sim-obs-toggle").click();
+  await expect(canvas(page)).toHaveAttribute("data-view-shift", "0.000");
+  await page.goto(LAB);
+  await ready(page);
+  await expect(page.getByTestId("sim-stepbar")).toHaveCount(0);
+  await expect(page.locator(".opt-hotspot")).toHaveCount(0);
+});
+
+test("手机：实验屏任务卡收为一行，仪器在任务行与观察面板之间可见", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(`${LAB}?mode=student&step=prepare`);
+  await ready(page);
+  await expect(page.getByTestId("sim-task-open")).toBeVisible();
+  const stage = (await page.getByTestId("sim-refracto-bench").boundingBox())!;
+  const panel = (await page.getByTestId("sim-refracto-obs").boundingBox())!;
+  expect(stage.height).toBeGreaterThanOrEqual(180);
+  expect(stage.y + stage.height).toBeLessThanOrEqual(panel.y + 1);
+  await expect(page.getByTestId("sim-refracto-power")).toBeInViewport();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
 });

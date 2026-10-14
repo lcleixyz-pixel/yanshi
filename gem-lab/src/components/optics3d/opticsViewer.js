@@ -279,13 +279,15 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange,
       if (named) button.dataset.named = 'true';
       button.setAttribute('aria-label', `${named ? '部件' : '模型热点'} ${button.textContent}：${hotspots.labels?.[id] || part.label}${button.dataset.done === 'true' ? '（已查看）' : ''}`);
       // 点热点只选中、不推近镜头，其余热点仍在画面中（同偏光镜学员模式）。
-      button.addEventListener('click', () => select(id, false));
+      // 动作热点（实验屏）：点击直接执行该部件上的当前一步，不选中部件。
+      button.addEventListener('click', () => hotspots.onActivate ? hotspots.onActivate(id) : select(id, false));
+      if (hotspots.onActivate) { button.dataset.action = 'true'; if (hotspots.coachText) button.setAttribute('aria-label', hotspots.coachText); }
       hotspotLayer.append(button); hotspotButtons.set(id, button);
     });
     if (hotspots.coach && hotspotButtons.has(hotspots.coach)) {
       coachBubble = document.createElement('div'); coachBubble.className = 'opt-coach'; coachBubble.dataset.testid = 'optics-coach';
       coachBubble.setAttribute('role', 'status'); coachBubble.setAttribute('aria-live', 'polite');
-      coachBubble.textContent = '点这里：' + (hotspots.labels?.[hotspots.coach] || parts.find(p => p.id === hotspots.coach).label);
+      coachBubble.textContent = hotspots.coachText || '点这里：' + (hotspots.labels?.[hotspots.coach] || parts.find(p => p.id === hotspots.coach).label);
       hotspotLayer.append(coachBubble);
     }
     occlusionFrame = 0; placeHotspots();
@@ -342,9 +344,16 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange,
   canvas.addEventListener('pointerdown', onPointerDown); canvas.addEventListener('pointerup', onPointerUp);
   function resize() {
     const r = container.getBoundingClientRect(); if (!r.width || !r.height) return;
-    renderer.setSize(r.width, r.height, false); camera.aspect = r.width / r.height; camera.updateProjectionMatrix();
+    renderer.setSize(r.width, r.height, false); camera.aspect = r.width / r.height; applyViewShift();
     helpers.traverse(o => { if (o.material?.isLineMaterial) o.material.resolution.set(r.width, r.height); });
     fit();
+  }
+  // 观察面板展开时画面整体右移（同偏光镜）：只平移投影，不改变取景范围，拾取与热点投影用同一矩阵。
+  let viewShift = 0;
+  function applyViewShift() {
+    const w = canvas.clientWidth || 1, h = canvas.clientHeight || 1;
+    if (viewShift) camera.setViewOffset(w, h, -viewShift * w, 0, w, h); else camera.clearViewOffset();
+    camera.updateProjectionMatrix(); canvas.dataset.viewShift = viewShift.toFixed(3);
   }
   const observer = new ResizeObserver(resize); observer.observe(container);
   function animate() { if (disposed) return; animationFrame = requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); placeHotspots(); }
@@ -367,6 +376,7 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange,
     setExplode: explode => update({ explode }, true),
     toggleIsolate: () => update({ isolated: !state.isolated }, true),
     setHotspots,
+    setViewShift: shift => { viewShift = Math.max(0, Math.min(.4, shift || 0)); applyViewShift(); },
     select, focusSelected: () => { if (chosen()) fitBox(bounds([chosen().object])); },
     fit, reset: () => { external = null; update({ view: 'optics', caseId: caseFile.defaultCaseId || caseFile.cases[0].id, rays: true, explode: 0, selectedId: null, isolated: false }, true); },
     dispose,

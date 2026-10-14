@@ -10,12 +10,14 @@ export type BenchStatus = 'loading' | 'ready' | 'error';
  * 照明夹样工作台的查看器：状态一变就整体更新，三维里直接拖动部件经 ref 回写（不取闭包里的旧状态）。
  * 机型切换只由状态驱动可见性，不重建查看器；载入失败时换 attempt 原地重试（同练习页与偏光镜）。
  */
-export function useSpectroscopeBench({ hostRef, state, sample, beams, view, onAdjust }: {
+export function useSpectroscopeBench({ hostRef, state, sample, beams, view, viewShift = 0, onAdjust }: {
   hostRef: React.RefObject<HTMLElement>;
   state: BenchState;
   sample: SampleDef;
   beams: boolean;
   view: BenchView;
+  /** 画面右移比例（实验屏观察面板展开时让位）。 */
+  viewShift?: number;
   onAdjust: (patch: Partial<Pick<BenchState, 'lampLateral' | 'slit' | 'focus'>>) => void;
 }) {
   const viewerRef = useRef<SpectroscopeBenchViewer | null>(null);
@@ -46,6 +48,7 @@ export function useSpectroscopeBench({ hostRef, state, sample, beams, view, onAd
 
   useEffect(() => { viewerRef.current?.update(state, evaluation, specimen); }, [state, evaluation, specimen, status, attempt]);
   useEffect(() => { viewerRef.current?.setBeams(beams); }, [beams]);
+  useEffect(() => { viewerRef.current?.setViewShift(viewShift); }, [viewShift, status, attempt]);
   // 窄屏上画幅在状态就绪后才定下尺寸，就绪后按最终画幅重取一次视角。
   useEffect(() => {
     if (status !== 'ready') return;

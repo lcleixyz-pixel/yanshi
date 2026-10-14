@@ -199,8 +199,8 @@ test("在三维中直接拖动狭缝调节环、目镜套筒和灯头，滑杆�
   await page.getByTestId("sim-bench-power").click();
   await page.getByTestId("sim-bench-place").click();
   await page.getByTestId("sim-panel-display").getByRole("button", { name: "分光镜" }).click();
-  // 收起读数框：它停靠在操作区左下，会挡住模型上的拖动点。
-  await page.getByTestId("sim-spectro-field").getByRole("button").first().click();
+  // 收起观察面板：它贴在操作区左侧，会挡住模型上的拖动点（收起后工作台也回中）。
+  await page.getByTestId("sim-obs-toggle").click();
   await page.waitForTimeout(600);
   const handle = async (id: string) => {
     await canvas(page).scrollIntoViewIfNeeded();
@@ -228,12 +228,13 @@ test("在三维中直接拖动狭缝调节环、目镜套筒和灯头，滑杆�
     await page.mouse.move(x + dx, y, { steps: 4 });
     await page.mouse.up();
   };
-  const slit = slider(page, "狭缝宽度");
+  // 狭缝与调焦滑杆在已收起的观察面板里（隐藏时不在无障碍树中），直接读输入框的值。
+  const slit = page.locator('input[aria-label="狭缝宽度"]');
   const gapBefore = await attr(page, "slit-gap");
   await dragBy("slitControl", 60);
   await expect.poll(async () => Number(await slit.inputValue())).toBeGreaterThan(2.2);
   expect(await attr(page, "slit-gap")).toBeGreaterThan(gapBefore);
-  const focus = slider(page, "目镜焦距");
+  const focus = page.locator('input[aria-label="目镜焦距"]');
   await dragBy("focusTube", -60);
   await expect.poll(async () => Number(await focus.inputValue())).toBeLessThan(4);
   await page.getByTestId("sim-panel-display").getByRole("button", { name: "整体" }).click();
@@ -253,7 +254,7 @@ test("光栅式引导任务学员：固定狭缝焦距，靠亮度与对准排�
   await expect(task(page)).toContainText("调节与对准");
   await expect(task(page)).toContainText("亮度足够、灯头对准");
   await expect(page.getByRole("slider", { name: "狭缝宽度" })).toHaveCount(0);
-  await expect(page.getByTestId("sim-panel-optics")).toContainText("狭缝与焦距固定");
+  await expect(page.getByTestId("sim-spectro-hand")).toContainText("狭缝与焦距固定");
   await slider(page, "光源亮度").fill("80");
   await slider(page, "灯头横移").fill("0");
   await expect(stage(page)).toHaveAttribute("data-problems", "");

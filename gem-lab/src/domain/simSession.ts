@@ -101,3 +101,14 @@ export function taskChecklist<Q extends { id: string; label: string; done: boole
     ready: (id: string) => { const index = lastIndex(id); return actionsDone(index < 0 ? items.length : index); },
   };
 }
+
+/** 引导课程步骤条的一步（外壳 SimStepBar 显示）。 */
+export interface SimStep { id: string; label: string; state: 'done' | 'current' | 'todo' }
+
+/** 步骤条各步状态：做完 / 当前 / 未到；本屏都做完、停在最后一步时，该步算做完。 */
+export function stepBarStates<Id extends string>(steps: readonly { id: Id; title: string }[], done: (id: Id) => boolean, current: Id, screenDone: boolean): SimStep[] {
+  return steps.map((step) => ({
+    id: step.id, label: step.title,
+    state: step.id === current && !(screenDone && done(step.id)) ? 'current' : done(step.id) ? 'done' : 'todo',
+  }));
+}

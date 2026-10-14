@@ -1,12 +1,13 @@
 import { createContext, useContext, useEffect, useId, useRef, useState, type DragEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
-import { SIM_SCREEN_LABELS, type SimScreenId, type SimTaskItem } from '../../domain/simSession';
+import { SIM_SCREEN_LABELS, type SimScreenId, type SimStep, type SimTaskItem } from '../../domain/simSession';
 export { taskChecklist, type SimTaskItem } from '../../domain/simSession';
 import type { SimDef } from '../../data/sims';
 import { SimDrawerProvider, useSimDrawer } from './SimDrawer';
 import '../../styles/instrument-ui.css';
 import '../../styles/sim-shell.css';
+import '../../styles/sim-observe.css';
 
 /**
  * 仿真外壳（PhET 风格）：顶栏（仿真名、投屏、引导任务入口）、操作区为主、控制面板贴右侧、底部屏幕导航。
@@ -98,6 +99,9 @@ function SimShellBody({ sim, screen, onScreen, taskSlot, play, panels, hideScree
 
 /** 与 sim-shell.css 的手机断点（max-width: 680px）对应。 */
 const DESKTOP_QUERY = '(min-width: 681px)';
+
+/** 桌面布局（与手机断点对应）：观察面板展开时仪器向右让位只在桌面上做。 */
+export const useDesktopLayout = () => useMediaQuery(DESKTOP_QUERY);
 
 function useMediaQuery(query: string) {
   const [matches, setMatches] = useState(() => typeof window !== 'undefined' && window.matchMedia(query).matches);
@@ -251,7 +255,7 @@ export function SimSheet({ title, onClose, children, testId }: {
   );
 }
 
-export interface SimStep { id: string; label: string; state: 'done' | 'current' | 'todo' }
+export { stepBarStates, type SimStep } from '../../domain/simSession';
 
 /**
  * 引导课程的步骤条（操作区顶部，桌面显示；手机上任务卡已收为顶部一行，不再重复）。
@@ -267,5 +271,59 @@ export function SimStepBar({ steps }: { steps: readonly SimStep[] }) {
         </li>
       ))}
     </ol>
+  );
+}
+
+/** 观察面板展开时三维仪器向右平移的比例（同偏光镜实验屏）。 */
+export const OBS_VIEW_SHIFT = 0.24;
+
+/**
+ * 观察面板（观察区改版 P2，沿用偏光镜实验屏 P1a）：「眼」放观察结果，「手」放紧贴结果的调节控件，底部是当前条件条。
+ * 桌面贴在操作区左侧、可收起；展开时由调用方让三维仪器右移 {@link OBS_VIEW_SHIFT}。手机上贴底、限高、可在面板内滚动。
+ */
+export function SimObsPanel({ title, meta, open, onOpen, guided, eye, eyeLabel = '目镜视场', beside, hand, handLabel, conditions, layout = 'side', testId }: {
+  title: string;
+  meta?: ReactNode;
+  open: boolean;
+  onOpen: (open: boolean) => void;
+  /** 引导模式顶部有步骤条，面板让到它下方。 */
+  guided: boolean;
+  eye: ReactNode;
+  eyeLabel?: string;
+  /** 紧挨观察结果的说明与记录（side 布局在眼右侧，stack 布局在眼下方）。 */
+  beside?: ReactNode;
+  hand?: ReactNode;
+  handLabel?: string;
+  conditions?: readonly { label: string; value: ReactNode }[];
+  /** side：眼与结果说明左右并排（圆形目镜）；stack：眼占整行（谱条等横向读数）。 */
+  layout?: 'side' | 'stack';
+  testId?: string;
+}) {
+  const bodyId = useId();
+  return (
+    <section className="sim-obs" data-open={open} data-guided={guided} data-layout={layout} aria-label={title} data-testid={testId}>
+      <header className="sim-obs__head">
+        <strong>{title}</strong>{meta && <span>{meta}</span>}
+        <button type="button" aria-expanded={open} aria-controls={bodyId} onClick={() => onOpen(!open)} data-testid="sim-obs-toggle">{open ? '收起 ▾' : '展开 ▸'}</button>
+      </header>
+      <div id={bodyId} className="sim-obs__body" hidden={!open}>
+        <div className="sim-obs__eye">
+          <span className="sim-obs__role"><b>眼</b>{eyeLabel}</span>
+          {eye}
+        </div>
+        {beside && <div className="sim-obs__beside">{beside}</div>}
+        {hand && (
+          <div className="sim-obs__hand">
+            {handLabel && <span className="sim-obs__role"><b>手</b>{handLabel}</span>}
+            {hand}
+          </div>
+        )}
+        {conditions && conditions.length > 0 && (
+          <dl className="sim-obs__conditions" aria-label="当前条件" data-testid="sim-obs-conditions">
+            {conditions.map((item) => <div key={item.label}><dt>{item.label}</dt><dd>{item.value}</dd></div>)}
+          </dl>
+        )}
+      </div>
+    </section>
   );
 }

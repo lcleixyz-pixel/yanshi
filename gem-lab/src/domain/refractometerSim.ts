@@ -13,12 +13,12 @@ import type { SampleDef } from '../data/types';
 import type { RefractometerView } from '../components/refractometer/ObservationWindow';
 import type { CourseMode } from './course';
 import {
-  COURSE_SAMPLE, courseChecklist, deriveCourse, initialCourse, isComplete, operate, STEPS,
+  answerCorrect, COURSE_SAMPLE, courseChecklist, deriveCourse, directionDistance, initialCourse, isComplete, operate, STEPS,
   type CourseState, type Operation, type Reading, type StepId,
 } from './refractometerCourse';
 import { caseIdForSample, CONTACT_INDEX, displayRiForSample, isOverContactLimit, SAMPLE_CASES_PATH } from './refractometerSampleCases';
 import { checkRI } from './refractometerAssessment';
-import type { SimScreenId } from './simSession';
+import { stepBarStates, type SimScreenId, type SimStep } from './simSession';
 
 export type ChallengeDifficulty = 'beginner' | 'intermediate' | 'advanced';
 export const DIFFICULTY_LABELS: Record<ChallengeDifficulty, string> = { beginner: '初级', intermediate: '中级', advanced: '高级' };
@@ -365,4 +365,75 @@ export function viewerState(scene: LabScene, sample: SampleDef) {
     rays: scene.rays,
     partVisibility: derived.partVisibility,
   };
+}
+
+/** 实验屏的一步动作：仪器操作、记录「无法读数」、打开读数记录，或去任务卡回答问题。 */
+export type BenchAction = Operation | 'record-invalid' | 'read' | 'answer';
+
+/** 每个动作在仪器上的位置（动作热点）与写明的动作；回答问题不在仪器上。 */
+export const BENCH_ACTION_PART: Record<Exclude<BenchAction, 'answer'>, string> = {
+  power: 'power_switch', cover: 'cover', drop: 'oil_bottle', place: 'test_prism', recover: 'test_prism', turn: 'test_prism',
+  remove: 'test_prism', 'clean-stage': 'metal_stage', 'clean-sample': 'metal_stage', 'record-invalid': 'eyepiece', read: 'eyepiece',
+};
+export function benchActionText(action: BenchAction, scene: Pick<LabScene, 'power' | 'cover'>): string {
+  switch (action) {
+    case 'power': return scene.power ? '关闭电源' : '打开电源';
+    case 'cover': return scene.cover === 'open' ? '合上翻盖' : '打开翻盖';
+    case 'drop': return '滴一小滴接触液';
+    case 'place': return '台面朝下放样';
+    case 'recover': return '轻推样品贴合';
+    case 'turn': return '取下样品，转向 90° 放回';
+    case 'remove': return '取下样品';
+    case 'clean-stage': return '擦净测台';
+    case 'clean-sample': return '擦净样品';
+    case 'record-invalid': return '看目镜：记录「无法可靠读数」';
+    case 'read': return '看目镜读数并记录';
+    case 'answer': return '在任务卡里回答问题';
+  }
+}
+
+/**
+ * 引导任务里「下一步该做什么」：只按本步的完成清单与当前仪器状态推出一个动作（实验屏的四步与清理）。
+ * 只用于提示与高亮，完成与否仍由课程域判断；本步做完或不在实验屏时为 null。
+ */
+export function nextBenchAction(state: CourseState): BenchAction | null {
+  const s = state;
+  switch (s.step) {
+    case 'prepare':
+      if (!s.scaleSeen) return 'power';
+      if (s.placedCorrectly) return null;
+      if (s.sample === 'placed') return 'remove';
+      if (s.cover !== 'open') return 'cover';
+      if (!s.power) return 'power';
+      return s.liquid === 'none' ? 'drop' : 'place';
+    case 'contact':
+      if (!s.invalidRecorded) return 'record-invalid';
+      if (!answerCorrect(s, 'gap')) return 'answer';
+      return s.recovered ? null : 'recover';
+    case 'observe':
+      if (s.readings.some((r) => r.correct)) return null;
+      return s.sample === 'placed' && s.contact === 'air-gap' ? 'recover' : 'read';
+    case 'verify': {
+      const first = s.readings.find((r) => r.correct);
+      const turned = !!first && s.readings.some((r) => r.correct && directionDistance(r.angle, first.angle) >= 45);
+      if (!turned) {
+        if (first && directionDistance(s.angle, first.angle) < 45) return 'turn';
+        return s.contact === 'air-gap' ? 'recover' : 'read';
+      }
+      return answerCorrect(s, 'repeat') ? null : 'answer';
+    }
+    case 'cleanup':
+      if (s.sample === 'placed') return 'remove';
+      if (s.liquid === 'drop' || !s.stageClean) return 'clean-stage';
+      if (!s.sampleClean) return 'clean-sample';
+      if (s.power) return 'power';
+      return s.cover === 'open' ? 'cover' : null;
+    default:
+      return null;
+  }
+}
+
+/** 引导步骤条：八步各自的状态（同偏光镜）。 */
+export function courseStepBar(view: CourseView): SimStep[] {
+  return stepBarStates(STEPS, (id) => view.completed.includes(id) || isComplete(view.state, id), view.state.step, view.screenDone);
 }

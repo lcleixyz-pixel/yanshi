@@ -11,7 +11,7 @@ import { benchStatusLine } from '../../../domain/refractometerCopy';
  * 折射仪的操作区：三维仪器 + 停靠的目镜视场（同课程页的观察窗停靠）。
  * 三维按当前样品选光路案例（逐样品案例包），开关 / 翻盖 / 样品姿态与课程页同一组字段。
  */
-export default function RefractometerStage({ scene, sample, view, showReading, readout, children }: {
+export default function RefractometerStage({ scene, sample, view, showReading, readout, docked = true, viewShift = 0, action = null, children }: {
   scene: LabScene;
   sample: SampleDef;
   view: RefractometerView;
@@ -21,6 +21,12 @@ export default function RefractometerStage({ scene, sample, view, showReading, r
   readout?: string;
   /** 操作区里的按钮（记录观察、改用 2D 等）。 */
   children?: React.ReactNode;
+  /** 停靠的目镜视场；实验屏改用观察面板时为 false。 */
+  docked?: boolean;
+  /** 画面右移比例（观察面板展开时让位）。 */
+  viewShift?: number;
+  /** 引导时仪器上的动作热点：只亮当前一步，点击即执行。 */
+  action?: { part: string; text: string; onActivate: () => void } | null;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<OpticsViewer | null>(null);
@@ -48,6 +54,14 @@ export default function RefractometerStage({ scene, sample, view, showReading, r
   }, [key, snapshot.status]);
   useEffect(() => { viewerRef.current?.setView(scene.view); }, [scene.view, snapshot.status]);
   useEffect(() => { viewerRef.current?.setRays(scene.rays); }, [scene.rays, snapshot.status]);
+  useEffect(() => { if (snapshot.status === 'ready') viewerRef.current?.setViewShift(viewShift); }, [viewShift, snapshot.status]);
+  // 点击时取最新的动作（热点按钮只在部件或文字变化时重建）。
+  const activate = useRef(action?.onActivate);
+  activate.current = action?.onActivate;
+  useEffect(() => {
+    if (snapshot.status !== 'ready') return;
+    viewerRef.current?.setHotspots(action ? { ids: [action.part], coach: action.part, coachText: `点这里：${action.text}`, onActivate: () => activate.current?.() } : null);
+  }, [action?.part, action?.text, snapshot.status]);
 
   return (
     <>
@@ -61,12 +75,14 @@ export default function RefractometerStage({ scene, sample, view, showReading, r
             <button type="button" className="iu-button" onClick={() => setAttempt((n) => n + 1)} data-testid="sim-refracto-retry">重新载入</button>
           </div>
         )}
-        <div className="sim-eyepiece" data-testid="sim-refracto-eyepiece" data-view={view}>
-          <h2>目镜观察 <span>教学模拟</span></h2>
-          <ObservationWindow view={view} sample={sample} size={196} showReading={showReading} hideChrome />
-          {readout && <p role="status">{readout}</p>}
-          {children}
-        </div>
+        {docked && (
+          <div className="sim-eyepiece" data-testid="sim-refracto-eyepiece" data-view={view}>
+            <h2>目镜观察 <span>教学模拟</span></h2>
+            <ObservationWindow view={view} sample={sample} size={196} showReading={showReading} hideChrome />
+            {readout && <p role="status">{readout}</p>}
+            {children}
+          </div>
+        )}
         <p className="sim-stage__hint">{benchStatusLine(scene)} · 拖动旋转 · 滚轮缩放</p>
       </section>
     </>

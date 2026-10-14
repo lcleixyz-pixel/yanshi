@@ -1,11 +1,15 @@
 import { useState, type ReactNode } from 'react';
-import { ResetAllButton, SimChecks, SimPanel, SimShell } from '../SimShell';
+import { OBS_VIEW_SHIFT, ResetAllButton, SimChecks, SimObsPanel, SimPanel, SimShell, SimStepBar, useDesktopLayout, type SimStep } from '../SimShell';
+import ObservationWindow from '../../refractometer/ObservationWindow';
 import RefractometerStage from './RefractometerStage';
 import type { SimDef } from '../../../data/sims';
 import { SAMPLES } from '../../../data/samples';
 import type { SampleDef } from '../../../data/types';
 import { requiredRefractometerMethod, shapeLabelCn } from '../../../data/refractometerSampleMethod';
-import { applySceneOperation, CONTACT_INDEX, displayRiForSample, isOverContactLimit, observationView, patchLab, type LabScene, type SimOperation } from '../../../domain/refractometerSim';
+import {
+  applySceneOperation, BENCH_ACTION_PART, benchActionText, CONTACT_INDEX, displayRiForSample, isOverContactLimit, observationView, patchLab,
+  type BenchAction, type LabScene, type SimOperation,
+} from '../../../domain/refractometerSim';
 import { benchStatusLine } from '../../../domain/refractometerCopy';
 import type { SimScreenId } from '../../../domain/simSession';
 import '../../../styles/sim-instrument.css';
@@ -23,7 +27,7 @@ export interface ReadingRecord {
  * 折射仪的操作台（实验屏与挑战屏共用）：三维仪器 + 停靠目镜 + 操作与记录面板。
  * 两屏差别只在样品来源（所选 / 未知）与保存去向，控制项与读数条件完全一致。
  */
-export default function RefractometerBench({ sim, screen, onScreen, embedded, scene, sample, unknown, idle, reveal, reference, header, extraPanel, taskSlot, onOperate, onPatch, onReset, onSave, onUse2D }: {
+export default function RefractometerBench({ sim, screen, onScreen, embedded, scene, sample, unknown, idle, reveal, reference, header, extraPanel, taskSlot, observe, onOperate, onPatch, onReset, onSave, onUse2D }: {
   sim: SimDef;
   screen: SimScreenId;
   onScreen?: (screen: SimScreenId) => void;
@@ -40,6 +44,11 @@ export default function RefractometerBench({ sim, screen, onScreen, embedded, sc
   header?: ReactNode;
   extraPanel?: ReactNode;
   taskSlot?: ReactNode;
+  /**
+   * 观察面板布局（实验屏，观察区改版 P2）：目镜放大到左侧面板，仪器操作按课程顺序放在「手」一栏。
+   * 引导时给出步骤条与下一步动作（面板里高亮、仪器上亮一个热点）；挑战屏不传，保持停靠目镜。
+   */
+  observe?: { steps: readonly SimStep[] | null; next: BenchAction | null; onRecordInvalid?: () => void };
   /** 引导任务下的操作走课程域（记进度）；不传则只改场景（自由练习与挑战）。 */
   onOperate?: (op: SimOperation) => void;
   onPatch: (next: Partial<LabScene>) => void;
@@ -56,10 +65,89 @@ export default function RefractometerBench({ sim, screen, onScreen, embedded, sc
   const mayObserve = !idle && (view === 'single' || view === 'double' || view === 'spot');
   const op = (type: SimOperation) => { if (onOperate) onOperate(type); else onPatch(applySceneOperation(scene, type)); };
   const answered = reveal && scene.saved && !scene.saved.stale;
-
-  const play = (
+  const [obsOpen, setObsOpen] = useState(true);
+  const desktop = useDesktopLayout();
+  const next = observe?.next ?? null;
+  const runAction = (action: BenchAction) => {
+    if (action === 'read') setRecording(true);
+    else if (action === 'record-invalid') observe?.onRecordInvalid?.();
+    else if (action !== 'answer') op({ type: action });
+  };
+  const opsButtons = (
     <>
-      <RefractometerStage scene={{ ...scene, rays: scene.rays }} sample={sample} view={view} showReading={mayObserve} readout={readoutFor(scene, sample, view)}>
+      {([
+        ['power', scene.power ? '关闭电源' : '打开电源', false, 'sim-refracto-power'],
+        ['cover', scene.cover === 'open' ? '合上翻盖' : '打开翻盖', scene.sample === 'placed', 'sim-refracto-cover'],
+        ['drop', '滴一小滴接触液', scene.cover !== 'open', 'sim-refracto-drop'],
+        ['place', '台面朝下放样', scene.cover !== 'open' || scene.sample === 'placed', 'sim-refracto-place'],
+        ['recover', '轻推贴合', scene.sample !== 'placed' || scene.liquid === 'none' || scene.cover !== 'open', 'sim-refracto-recover'],
+        ['turn', '取下转向 90° 并放回', scene.sample !== 'placed' || scene.cover !== 'open', 'sim-refracto-turn'],
+        ['remove', '取下样品', scene.sample !== 'placed', 'sim-refracto-remove'],
+        ['clean-stage', '擦净测台', scene.sample === 'placed', 'sim-refracto-clean-stage'],
+        ['clean-sample', '擦净样品', scene.sample === 'placed', 'sim-refracto-clean-sample'],
+      ] as const).map(([type, label, disabled, testId]) => (
+        <button key={type} type="button" className="iu-button" disabled={disabled} aria-pressed={type === 'power' ? scene.power : undefined}
+          data-next={next === type} onClick={() => op({ type })} data-testid={testId}>{label}</button>
+      ))}
+    </>
+  );
+  const readout = readoutFor(scene, sample, view);
+  const recordButton = <button type="button" className="iu-button" data-next={next === 'read'} onClick={() => setRecording(true)} data-testid="sim-refracto-record-open">记录读数</button>;
+  const eyeSize = desktop ? Math.max(180, Math.min(300, Math.round(window.innerHeight * 0.27))) : 132;
+  const action = next && next !== 'answer' && !idle ? { part: BENCH_ACTION_PART[next], text: benchActionText(next, scene), onActivate: () => runAction(next) } : null;
+
+  const play = observe ? (
+    <>
+      <RefractometerStage scene={scene} sample={sample} view={view} showReading={mayObserve} docked={false}
+        viewShift={desktop && obsOpen ? OBS_VIEW_SHIFT : 0} action={action} />
+      {observe.steps && <SimStepBar steps={observe.steps} />}
+      <SimObsPanel
+        title="目镜观察" meta={unknown ? '未知样品' : sample.name} open={obsOpen} onOpen={setObsOpen} guided={!!observe.steps} testId="sim-refracto-obs"
+        eye={<div className="sim-refracto-eye" data-testid="sim-refracto-eyepiece" data-view={view}><ObservationWindow view={view} sample={sample} size={eyeSize} showReading={mayObserve} hideChrome /></div>}
+        beside={(
+          <>
+            <p className="sim-note" role="status" data-testid="sim-refracto-readout">{readout}</p>
+            <div className="sim-row">{recordButton}{onUse2D && <button type="button" className="iu-button" onClick={onUse2D} data-testid="detection-use-2d">改用 2D 版本</button>}</div>
+            <p className="sim-note">读数只在目镜里看：三维光路是示例参数的原理计算。</p>
+          </>
+        )}
+        handLabel="操作仪器"
+        hand={(
+          <>
+            {observe.steps && <p className="sim-obs__next" data-testid="sim-refracto-next">{next ? `下一步：${benchActionText(next, scene)}${next !== 'answer' ? '（仪器上亮的位置也可以点）' : ''}` : '本步操作已完成，看右侧任务卡。'}</p>}
+            <div className="sim-obs__ops">{opsButtons}</div>
+          </>
+        )}
+        conditions={[
+          { label: '电源', value: scene.power ? '已开' : '已关' },
+          { label: '翻盖', value: scene.cover === 'open' ? '打开' : '合上' },
+          { label: '接触液', value: scene.liquid === 'drop' ? '已滴' : '无' },
+          { label: '样品', value: scene.sample === 'placed' ? (scene.contact === 'good' ? '已贴合' : '空气间隙') : '未放' },
+          { label: '方向', value: `${scene.angle}°` },
+        ]}
+      />
+      {idle && <p className="sim-answer" data-testid="sim-refracto-idle">先在上面选一档难度抽一颗未知样品，再开始操作。</p>}
+      {answered && (
+        <div className="sim-answer" data-testid="sim-refracto-answer">
+          <strong>{sample.name}</strong>
+          <p>折射率 {displayRiForSample(sample) === null ? '> 1.780（超折射油）' : referenceRange(sample)}，光性 {opticalLabel(sample)}。</p>
+        </div>
+      )}
+      {recording && (
+        <RefractometerRecord
+          scene={scene} sample={sample} method={method} view={view}
+          min={min} max={max} onMin={setMin} onMax={setMax}
+          onClose={() => setRecording(false)}
+          onSave={(record) => onSave?.(record)}
+          onNotify={(text) => onPatch({ note: text })}
+          reference={answered ? reference : undefined}
+        />
+      )}
+      {taskSlot}
+    </>
+  ) : (
+    <>
+      <RefractometerStage scene={{ ...scene, rays: scene.rays }} sample={sample} view={view} showReading={mayObserve} readout={readout}>
         <div className="sim-row">
           <button type="button" className="iu-button" onClick={() => setRecording(true)} data-testid="sim-refracto-record-open">记录读数</button>
           {onUse2D && <button type="button" className="iu-button" onClick={onUse2D} data-testid="detection-use-2d">改用 2D 版本</button>}
@@ -90,26 +178,12 @@ export default function RefractometerBench({ sim, screen, onScreen, embedded, sc
     <>
       {header}
       {extraPanel}
-      <SimPanel title="仪器操作" testId="sim-panel-ops">
-        <div className="sim-row">
-          <button type="button" className="iu-button" aria-pressed={scene.power} onClick={() => op({ type: 'power' })} data-testid="sim-refracto-power">{scene.power ? '关闭电源' : '打开电源'}</button>
-          <button type="button" className="iu-button" disabled={scene.sample === 'placed'} onClick={() => op({ type: 'cover' })} data-testid="sim-refracto-cover">{scene.cover === 'open' ? '合上翻盖' : '打开翻盖'}</button>
-        </div>
-        <div className="sim-row">
-          <button type="button" className="iu-button" disabled={scene.cover !== 'open'} onClick={() => op({ type: 'drop' })} data-testid="sim-refracto-drop">滴一小滴接触液</button>
-          <button type="button" className="iu-button" disabled={scene.cover !== 'open' || scene.sample === 'placed'} onClick={() => op({ type: 'place' })} data-testid="sim-refracto-place">台面朝下放样</button>
-        </div>
-        <div className="sim-row">
-          <button type="button" className="iu-button" disabled={scene.sample !== 'placed' || scene.liquid === 'none' || scene.cover !== 'open'} onClick={() => op({ type: 'recover' })} data-testid="sim-refracto-recover">轻推贴合</button>
-          <button type="button" className="iu-button" disabled={scene.sample !== 'placed' || scene.cover !== 'open'} onClick={() => op({ type: 'turn' })} data-testid="sim-refracto-turn">取下转向 90° 并放回</button>
-        </div>
-        <div className="sim-row">
-          <button type="button" className="iu-button" disabled={scene.sample !== 'placed'} onClick={() => op({ type: 'remove' })} data-testid="sim-refracto-remove">取下样品</button>
-          <button type="button" className="iu-button" disabled={scene.sample === 'placed'} onClick={() => op({ type: 'clean-stage' })} data-testid="sim-refracto-clean-stage">擦净测台</button>
-          <button type="button" className="iu-button" disabled={scene.sample === 'placed'} onClick={() => op({ type: 'clean-sample' })} data-testid="sim-refracto-clean-sample">擦净样品</button>
-        </div>
-        <p className="sim-note" data-testid="sim-refracto-state">{benchStatusLine(scene)}</p>
-      </SimPanel>
+      {!observe && (
+        <SimPanel title="仪器操作" testId="sim-panel-ops">
+          <div className="sim-obs__ops">{opsButtons}</div>
+          <p className="sim-note" data-testid="sim-refracto-state">{benchStatusLine(scene)}</p>
+        </SimPanel>
+      )}
       <SimPanel title="样品" hint={unknown ? '未知样品' : undefined} testId="sim-panel-sample">
         {unknown
           ? <p className="sim-note" data-testid="sim-refracto-unknown">未知样品：先读数并记录，再对照答案。三维与目镜都不显示品种名。</p>

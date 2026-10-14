@@ -1,11 +1,12 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import { useDesktopLayout } from '../SimShell';
 import RefractometerBench from './RefractometerBench';
 import RefractometerTaskCard from './RefractometerTaskCard';
 import type { SimScreenProps } from '../registry';
 import { SAMPLES, SAMPLES_BY_ID } from '../../../data/samples';
 import { requiredRefractometerMethod } from '../../../data/refractometerSampleMethod';
 import {
-  applyOperation, COURSE_SAMPLE, courseView, EMPTY_SCENE_FIELDS, labInitial, readLabScene, readTaskData, sceneFields,
+  applyOperation, COURSE_SAMPLE, courseStepBar, courseView, EMPTY_SCENE_FIELDS, labInitial, nextBenchAction, readLabScene, readTaskData, sceneFields,
   type LabScene, type SimOperation,
 } from '../../../domain/refractometerSim';
 import '../../../styles/sim-instrument.css';
@@ -23,6 +24,10 @@ export default function RefractometerLabScreen({ sim, screen, onScreen, session,
   const scene: LabScene = guided ? { ...lab, sampleId: COURSE_SAMPLE.id } : lab;
   const view = courseView(task, sceneFields(scene), screen);
 
+  // 手机上任务卡先收为顶部一行，给仪器与观察面板让出高度；学员随时可以展开。
+  const desktop = useDesktopLayout();
+  useEffect(() => { if (!desktop) dispatch({ type: 'task-open', open: false }); }, [desktop]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const patch = (next: Partial<LabScene>) => dispatch({ type: 'patch-scene', screen, patch: next as unknown as Record<string, unknown> });
   // 引导任务的每个操作都走课程域，进度才会记上；用 ref 取最新会话，连点两下不会丢进度。
   const latest = useRef(session);
@@ -39,6 +44,7 @@ export default function RefractometerLabScreen({ sim, screen, onScreen, session,
       sim={sim} screen={screen} onScreen={onScreen}
       scene={scene} sample={sample}
       onOperate={guided ? operate : undefined}
+      observe={{ steps: guided ? courseStepBar(view) : null, next: guided ? nextBenchAction(view.state) : null, onRecordInvalid: () => operate({ type: 'record-invalid' }) }}
       onPatch={patch}
       onReset={() => dispatch({ type: 'reset-scene', screen, initial: { ...labInitial(guided ? COURSE_SAMPLE.id : lab.sampleId), saved: lab.saved ? { ...lab.saved, stale: true } : null } as unknown as Record<string, unknown> })}
       onSave={(record) => {
@@ -68,7 +74,7 @@ export default function RefractometerLabScreen({ sim, screen, onScreen, session,
           )}
           {['observe', 'verify'].includes(view.state.step) && (
             <div className="sim-task__step" data-testid="sim-task-reading">
-              <p className="sim-note">用操作区右上角的「记录读数」提交本次估读；{view.state.step === 'verify' ? '先把样品转向 90°。' : '先独立估读，再核对。'}</p>
+              <p className="sim-note">用观察面板里的「记录读数」提交本次估读；{view.state.step === 'verify' ? '先把样品转向 90°。' : '先独立估读，再核对。'}</p>
               <ReadingSummary readings={view.state.readings} />
             </div>
           )}

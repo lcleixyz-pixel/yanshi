@@ -44,9 +44,9 @@ test("自由练习：摆好光路、标记吸收特征、记录并保存后才�
   await expect(stage(page)).toHaveAttribute("data-problems", "weak-light");
   await page.getByTestId("sim-sample-select").selectOption("amethyst");
   await expect(stage(page)).toHaveAttribute("data-problems", "");
-  await expect(page.getByTestId("sim-panel-optics")).toContainText("3.2 / 10");
-  await expect(page.getByTestId("sim-panel-optics")).toContainText("5.0 / 10");
-  await expect(page.getByTestId("sim-panel-optics")).not.toContainText("mm");
+  await expect(page.getByTestId("sim-spectro-hand")).toContainText("3.2 / 10");
+  await expect(page.getByTestId("sim-spectro-hand")).toContainText("5.0 / 10");
+  await expect(page.getByTestId("sim-spectro-hand")).not.toContainText("mm");
   await mark(page, 694);
   await mark(page, 580);
   await page.getByTestId("sim-spectro-record-open").click();
@@ -173,7 +173,7 @@ test("光栅式：固定狭缝与焦距，排查靠亮度与对准，刻度换�
   await ready(page);
   await expect(canvas(page)).toHaveAttribute("data-rendered-instrument", "grating");
   await expect(canvas(page)).toHaveAttribute("data-focus-z", "fixed");
-  await expect(page.getByTestId("sim-panel-optics")).toContainText("狭缝与焦距固定");
+  await expect(page.getByTestId("sim-spectro-hand")).toContainText("狭缝与焦距固定");
   await expect(page.getByTestId("sim-spectro-field")).toContainText("光栅式刻度");
   // 光没有穿过样品：光谱条显示的是光源连续光谱，吸收特征一栏写「未显示」，不写「无」。
   await expect(page.getByTestId("sim-spectro-values")).toContainText("未显示");
@@ -324,7 +324,7 @@ test("窄屏：实验屏无横向溢出，控制面板收为抽屉，光谱与�
   await page.goto(route);
   await ready(page);
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
-  await expect(page.getByTestId("sim-panel-light")).toBeHidden();
+  await expect(page.getByTestId("sim-panel-method")).toBeHidden();
   // 手机上任务卡默认收起为顶部一行，不占操作区。
   await expect(page.getByTestId("sim-task")).toHaveCount(0);
   await expect(page.getByTestId("sim-task-open")).toBeVisible();
@@ -333,7 +333,7 @@ test("窄屏：实验屏无横向溢出，控制面板收为抽屉，光谱与�
   await expect(record(page)).toBeVisible();
   await page.getByTestId("sim-controls-toggle").click();
   await expect(record(page)).toBeHidden();
-  await expect(page.getByTestId("sim-panel-light")).toBeVisible();
+  await expect(page.getByTestId("sim-panel-method")).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
 });
 
@@ -353,4 +353,20 @@ test("任务卡停靠在控制面板上方、不挡目镜视场；问答在本�
   await expect(task(page).getByRole("radio")).toHaveCount(3);
   await answer(page, "continuous", 1);
   await expect(task(page)).toContainText("调节与对准");
+});
+
+test("观察面板：引导时顶部六步，谱条放大在左、与光源 / 狭缝 / 调焦 / 夹样在一起，1280×720 不用滚动；工作台右移让位", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto(`${route}?mode=student`);
+  await ready(page);
+  await expect(page.getByTestId("sim-stepbar").getByRole("listitem")).toHaveCount(6);
+  const strip = (await page.getByTestId("spectroscope-spectrum-visual").boundingBox())!;
+  expect(strip.width).toBeGreaterThanOrEqual(480);
+  const hand = page.getByTestId("sim-spectro-hand");
+  for (const name of ["光源亮度", "狭缝宽度", "目镜焦距", "样品横移"]) await expect(hand.getByRole("slider", { name })).toBeInViewport();
+  await expect(hand.getByTestId("sim-bench-power")).toBeInViewport();
+  expect(await page.locator(".sim-obs__body").evaluate((e) => e.scrollHeight - e.clientHeight)).toBeLessThanOrEqual(1);
+  await expect(canvas(page)).toHaveAttribute("data-view-shift", "0.240");
+  await page.getByTestId("sim-obs-toggle").click();
+  await expect(canvas(page)).toHaveAttribute("data-view-shift", "0.000");
 });

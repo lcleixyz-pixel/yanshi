@@ -6,14 +6,14 @@ import PolariscopeScene from '../../polariscope3d/PolariscopeScene';
 import EyepieceView, { EYEPIECE_RESOLUTION, type EyepieceContent } from '../../polariscope3d/EyepieceView';
 import RotationTrace from '../../polariscope3d/RotationTrace';
 import { useStageRotation } from '../../polariscope3d/useStageRotation';
-import { ResetAllButton, SimChecks, SimPanel, SimReadout, SimShell } from '../SimShell';
+import { ResetAllButton, SimChecks, SimPanel, SimShell, SimStepBar } from '../SimShell';
 import PolariscopeTaskCard from './PolariscopeTaskCard';
 import type { SimScreenProps } from '../registry';
 import {
   CATEGORY_LABEL, conoscopeExplanation, EXPECTED_PREDICTION, LAB_LESSONS, LESSONS, ORIENTATION_LABEL, PART_SHORT, PHENOMENA, type Observation,
 } from '../../../domain/polariscopeCopy';
 import {
-  courseView, initialQuality, topicScene, isCrossed, isRecording, pendingStep, stepChecklist, labCoach, labEnterStep, labInitial, labLessonScene, patchLab, readLabScene, readTaskData, recordAnswer, recordReveal,
+  courseSteps, courseView, initialQuality, topicScene, isCrossed, isRecording, pendingStep, stepChecklist, labCoach, labEnterStep, labInitial, labLessonScene, patchLab, readLabScene, readTaskData, recordAnswer, recordReveal,
   STEP_SCREEN, type LabScene, type PolariscopeTaskData,
 } from '../../../domain/polariscopeSim';
 import { COURSE_QUESTIONS, isAnswerCorrect, ROTATE_TARGETS } from '../../../domain/polariscopeCourse';
@@ -54,6 +54,8 @@ export default function PolariscopeLabScreen({ sim, screen, onScreen, session, d
   const [sceneStatus, setSceneStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [fieldCanvas, setFieldCanvas] = useState<HTMLCanvasElement | null>(null);
   const [fieldVersion, setFieldVersion] = useState(0);
+  const [obsOpen, setObsOpen] = useState(true);
+  const desktop = useDesktop();
   const onFieldRendered = useCallback(() => setFieldVersion((value) => value + 1), []);
 
   // 自动转动每帧写一次物台角：在 ref 里先合并好最新场景，记录与转动不会互相覆盖（同认识屏）。
@@ -169,14 +171,23 @@ export default function PolariscopeLabScreen({ sim, screen, onScreen, session, d
         data-sample={structure.sampleId} data-orientation={structure.orientation} data-revealed={lab.revealed} data-observation={lab.revealed ? observation : undefined}>
         <PolariscopeScene state={structure} quality={quality} resetViewKey={lab.resetViewKey} viewPreset={lab.viewPreset}
           onSelectPart={(id) => update({ selectedPart: id })} onAngleChange={changeAngle} onPowerChange={(power) => update({ power })} onStatus={setSceneStatus}
-          field={sceneField} coach={coach} focusOnSelect={false} labels={labels} />
+          field={sceneField} coach={coach} focusOnSelect={false} labels={labels} viewShift={desktop && obsOpen ? 0.24 : 0} />
         {sceneStatus === 'error' && <Link to="/demo/polariscope" className="sim-stage__fallback" data-testid="sim-polari-fallback-2d">3D 暂不可用：改用经典 2D 演示 →</Link>}
         <p className="sim-stage__hint">拖动样品或物台环旋转样品 · 拖动空白旋转视角</p>
       </section>
-      <SimReadout title={lesson === 'conoscope' ? '目镜视场 · 锥光' : '观察'} meta={profile.name} testId="sim-polari-field">
-        <div className="sim-polari-observe">
-          <EyepieceView content={eyepiece} stageDeg={structure.stageAngle} analyzerDeg={structure.analyzerAngle} active={optics.active} label={label} onRendered={onFieldRendered} onCanvas={setFieldCanvas} />
-          {lesson === 'sample' && (
+      {task.mode !== null && <SimStepBar steps={courseSteps(view, pending)} />}
+      {/* 观察面板（三版本对比 P1a）：眼看目镜、手转载物台，预测—观察—解释紧挨目镜；仪器向右让位作定位。 */}
+      <section className="sim-polari-obs" data-testid="sim-polari-field" data-open={obsOpen} data-guided={!!task.mode} aria-label="观察">
+        <header className="sim-polari-obs__head">
+          <strong>{lesson === 'conoscope' ? '干涉图观察' : '观察'}</strong><span>{profile.name}</span>
+          <button type="button" aria-expanded={obsOpen} onClick={() => setObsOpen(!obsOpen)} data-testid="sim-polari-obs-toggle">{obsOpen ? '收起 ▾' : '展开 ▸'}</button>
+        </header>
+        <div className="sim-polari-obs__body" hidden={!obsOpen}>
+          <div className="sim-polari-obs__eye">
+            <span className="sim-polari-obs__role"><b>眼</b>目镜视场</span>
+            <EyepieceView content={eyepiece} stageDeg={structure.stageAngle} analyzerDeg={structure.analyzerAngle} active={optics.active} label={label} onRendered={onFieldRendered} onCanvas={setFieldCanvas} />
+          </div>
+          {lesson === 'sample' ? (
             <div className="sim-polari-poe" data-testid="sim-polari-poe" data-phase={lab.revealed ? 'explain' : lab.prediction === null ? 'predict' : 'observe'}>
               {blocked ? <p className="sim-note" role="status">{blocked}</p>
                 // 已揭晓的解释在平行复核（检偏器转到 0°）时也保留，便于对照。
@@ -196,18 +207,34 @@ export default function PolariscopeLabScreen({ sim, screen, onScreen, session, d
                   </> : <>
                     <span className="sim-polari-poe__step">② 观察 · 已转过 {Math.round(coverage * 100)}%</span>
                     <p className="sim-note" data-testid="sim-polari-live">{!recording ? '暂未记录' : brightness < 0.04 ? '当前：暗位，继续转，看有没有变亮' : '当前：较亮，继续转，看会不会再变暗'}</p>
+                    <p className="sim-note">眼睛看左边的视场，手在下面转载物台，转满一周后揭晓。</p>
                   </>}
-              {!blocked && crossed && lab.prediction !== null && (
-                <>
-                  <RotationTrace curve={curve} visited={lab.visited} current={structure.stageAngle} reveal={lab.revealed} analyzerDeg={structure.analyzerAngle} />
-                  <button type="button" className="iu-button" aria-pressed={autoRotate} onClick={() => setAutoRotate(!autoRotate)} data-testid="sim-polari-auto-rotate">{autoRotate ? '停止转动' : '自动转一周'}</button>
-                </>
-              )}
+              {!blocked && crossed && lab.prediction !== null && <RotationTrace curve={curve} visited={lab.visited} current={structure.stageAngle} reveal={lab.revealed} analyzerDeg={structure.analyzerAngle} />}
+            </div>
+          ) : (
+            <div className="sim-polari-poe">
+              <span className="sim-polari-poe__step">{figure ? '干涉球已放上' : '先在「样品」面板里放上干涉球'}</span>
+              <p className="sim-note" data-testid="sim-polari-conoscope-note">{conoscopeText}</p>
             </div>
           )}
-          {lesson === 'conoscope' && <p className="sim-note" data-testid="sim-polari-conoscope-note">{conoscopeText}</p>}
+          <div className="sim-polari-obs__hand">
+            <span className="sim-polari-obs__role"><b>手</b>转动载物台</span>
+            <div className="sim-polari-obs__rotate">
+              <button type="button" className="iu-button" onClick={() => changeAngle('stage', (structure.stageAngle + 345) % 360)} aria-label="载物台减 15 度" data-testid="sim-polari-stage-minus">− 15°</button>
+              <RangeControl label="载物台角度" min={0} max={360} value={Math.round(structure.stageAngle)} display={`${Math.round(structure.stageAngle)}°`} valueText={`${Math.round(structure.stageAngle)} 度`} ends={['0°', '360°']} onChange={(value) => changeAngle('stage', value)} testId="sim-polari-stage-angle" />
+              <button type="button" className="iu-button" onClick={() => changeAngle('stage', (structure.stageAngle + 15) % 360)} aria-label="载物台加 15 度" data-testid="sim-polari-stage-plus">+ 15°</button>
+              <button type="button" className="iu-button iu-button--primary" aria-pressed={autoRotate} disabled={lesson === 'sample' && !recording && !autoRotate} onClick={() => setAutoRotate(!autoRotate)} data-testid="sim-polari-auto-rotate">{autoRotate ? '停止转动' : '自动转一周'}</button>
+            </div>
+            {lesson === 'sample' && lab.prediction === null && !blocked && crossed && <p className="sim-note">先选一个预测，转动才计入记录。</p>}
+          </div>
+          <dl className="sim-polari-obs__conditions" aria-label="当前条件">
+            <div><dt>样品</dt><dd>{profile.name}</dd></div>
+            <div><dt>偏光</dt><dd>{crossed ? '正交 ✓' : polarLabel(structure.analyzerAngle)}</dd></div>
+            <div><dt>物台</dt><dd>{Math.round(structure.stageAngle)}°</dd></div>
+            <div><dt>光源</dt><dd>{structure.power ? '已开' : '已关'}</dd></div>
+          </dl>
         </div>
-      </SimReadout>
+      </section>
       <PolariscopeTaskCard
         view={view} finished={pending ? { step: pending, items: stepChecklist(task, pending) } : null} onNext={enterCurrent} open={session.task.open} mode={task.mode} hasSkipped={task.hasSkipped} teacherUsed={session.task.teacherUsed}
         onOpen={(open) => dispatch({ type: 'task-open', open })}
@@ -278,7 +305,7 @@ export default function PolariscopeLabScreen({ sim, screen, onScreen, session, d
         <div className="sim-row" role="group" aria-label="上偏光片常用角度">
           {[{ value: 0, label: '0° 平行' }, { value: 45, label: '45° 斜交' }, { value: 90, label: '90° 正交' }].map((choice) => <button key={choice.value} type="button" className="iu-button" aria-pressed={Math.abs(structure.analyzerAngle - choice.value) < 0.5} onClick={() => changeAngle('analyzer', choice.value)} data-testid={`sim-polari-analyzer-${choice.value}`}>{choice.label}</button>)}
         </div>
-        <RangeControl label="载物台角度" min={0} max={360} value={Math.round(structure.stageAngle)} display={`${Math.round(structure.stageAngle)}°`} valueText={`${Math.round(structure.stageAngle)} 度`} ends={['0°', '360°']} onChange={(value) => changeAngle('stage', value)} testId="sim-polari-stage-angle" />
+        <p className="sim-note">载物台在「观察」面板的「手」一栏转动，也可以直接拖模型上的物台环。</p>
       </SimPanel>
       <SimPanel title="视角与显示" testId="sim-panel-display">
         <div className="sim-row">
@@ -308,4 +335,23 @@ function adrText(result: NonNullable<LabScene['adr']>) {
   if (result.verdict === 'along-axis') return '当前为沿光轴观察，平行复核不适用。水晶仍可能因旋光呈现颜色；请换个方向放置后复查。';
   if (result.verdict === 'dark-no-check') return `正交下最亮约 ${Math.round(result.crossed * 100)}%${result.scatter > 0.03 ? '，其中包含散射背景' : ''}，明暗反应较弱，本次平行复核无法可靠确认是否存在应变双折射。请换个方向放置后复查。`;
   return `先转到最亮位置（正交亮度 ${Math.round(result.crossed * 100)}%），再把检偏器转到平行：${Math.round(result.parallel * 100)}%。${result.verdict === 'strain' ? '明显变亮 → 应变造成的异常双折射（本质是均质体）。' : '没有明显变亮 → 真正的双折射。'}`;
+}
+
+/** 检偏器相对下偏光片的状态（条件条用）。 */
+function polarLabel(angle: number) {
+  const a = ((angle % 180) + 180) % 180;
+  return a < 0.5 || a > 179.5 ? '平行' : `斜交 ${Math.round(angle)}°`;
+}
+
+/** 与 sim-shell.css 的手机断点对应：桌面上仪器右移给观察面板让位。 */
+function useDesktop() {
+  const query = '(min-width: 681px)';
+  const [matches, setMatches] = useState(() => window.matchMedia(query).matches);
+  useEffect(() => {
+    const list = window.matchMedia(query);
+    const change = () => setMatches(list.matches);
+    list.addEventListener('change', change);
+    return () => list.removeEventListener('change', change);
+  }, []);
+  return matches;
 }

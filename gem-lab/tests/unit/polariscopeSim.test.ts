@@ -237,3 +237,10 @@ test('挑战核对：现象与光性分开判；不透明样品记「透射法�
   assert.deepEqual(checkChallenge('spinel', { reaction: 'four-bright-four-dark', judgement: 'anisotropic', stale: false }), { reaction: false, judgement: false });
   assert.deepEqual(checkChallenge('turquoise', { reaction: 'not-applicable', judgement: null, stale: false }).reaction, checkChallenge('turquoise', { reaction: 'not-applicable', judgement: null, stale: false }).judgement);
 });
+
+test('空载调正：先 0° 后 90° 两个状态依次经过时都记上（每次改场景当场判断，不靠渲染次数）', () => {
+  let task: PolariscopeTaskData = { ...withMode(), step: 'crossed' };
+  for (const angle of [0, 90]) task = learnEvidence(task, { ...stateForLesson('principle'), analyzerAngle: angle });
+  assert.equal(task.progress.parallelSeen, true);
+  assert.equal(task.progress.crossedSeen, true);
+});

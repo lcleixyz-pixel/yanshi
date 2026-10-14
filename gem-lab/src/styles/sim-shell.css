@@ -138,3 +138,15 @@
 
 /* 完成课程后的进阶内容入口。 */
 .sim-task__topics { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 4px; }
+
+/* 引导课程步骤条：桌面在操作区顶部；只表示进度，不可点击。 */
+.sim-stepbar { position: absolute; z-index: 4; left: 12px; right: 12px; top: 10px; display: flex; gap: 4px; margin: 0; padding: 5px 6px; list-style: none; border: 1px solid var(--iu-line); border-radius: 10px; background: #ffffffeb; font-size: 12px; overflow-x: auto; }
+.sim-stepbar li { display: flex; flex: 1; align-items: center; gap: 6px; min-width: max-content; padding: 4px 10px; border-radius: 7px; color: var(--iu-faint); white-space: nowrap; }
+.sim-stepbar li > span:first-child { display: grid; place-items: center; width: 20px; height: 20px; border: 1px solid currentColor; border-radius: 50%; font-size: 11px; }
+.sim-stepbar li[data-state="done"] { color: var(--iu-success); }
+.sim-stepbar li[data-state="done"] > span:first-child { border-color: var(--iu-success); background: var(--iu-success); color: #fff; }
+.sim-stepbar li[data-state="current"] { background: var(--iu-accent-soft); color: var(--iu-accent-ink); font-weight: 500; }
+.sim-stepbar li[data-state="current"] > span:first-child { border-color: var(--iu-accent-strong); background: var(--iu-accent-strong); color: #fff; }
+@media (max-width: 680px) { .sim-stepbar { display: none; } }
+/* 有步骤条时，右上停靠的读数框与左上的提示让到步骤条下方。 */
+@media (min-width: 681px) { .sim-stepbar ~ .sim-readout--top-right { top: 58px; } }

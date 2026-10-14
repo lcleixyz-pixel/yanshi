@@ -91,3 +91,21 @@ test("手机：任务卡在顶部，目镜视场贴底，两者不重叠", async
   expect(card.y + card.height).toBeLessThanOrEqual(field.y);
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
 });
+
+test("空载调正：进入本步后立刻转到 90°，0° 平行与 90° 正交两项都记上（两次改动合并成一次渲染也不漏记）", async ({ page }) => {
+  await page.goto(route);
+  await ready(page);
+  await page.getByTestId("sim-task-student").click();
+  for (const id of ["polarizer", "stage", "analyzer"]) await page.getByTestId(`sim-part-${id}`).click();
+  await page.getByTestId("sim-task-next").click();
+  for (let i = 0; i < 4; i++) await page.getByTestId("sim-polari-path-next").click();
+  // 同一段脚本里点「下一步」（场景摆到 0°）并立即把上偏光片设到 90°，React 合并为一次渲染。
+  await page.evaluate(() => {
+    (document.querySelector('[data-testid="sim-task-next"]') as HTMLButtonElement).click();
+    const slider = document.querySelector('input[aria-label="上偏光片角度"]') as HTMLInputElement;
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")!.set!.call(slider, "90");
+    slider.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  await expect(task(page)).toContainText("0° 平行：最亮（已完成）");
+  await expect(task(page)).toContainText("90° 正交：全暗（已完成）");
+});

@@ -494,3 +494,13 @@ export function topicScene(scene: LabScene, id: string): LabScene {
   const base = labLessonScene({ ...scene, structure: { ...scene.structure, sampleId: topic.patch.sampleId ?? scene.structure.sampleId } }, topic.lesson);
   return { ...base, structure: { ...base.structure, ...topic.patch } };
 }
+
+/** 步骤条：六步各自的状态（做完 / 当前 / 未到）。本屏刚做完、停在结果上的一步仍算当前步。 */
+export function courseSteps(view: CourseView, pending: CourseStepId | null): { id: CourseStepId; label: string; state: 'done' | 'current' | 'todo' }[] {
+  const current = pending ?? view.step;
+  return COURSE_STEPS.map((step) => ({
+    id: step.id, label: step.title,
+    state: step.id === current && !(pending === null && view.screenDone && view.completed.includes(step.id)) ? 'current'
+      : view.completed.includes(step.id) ? 'done' : 'todo',
+  }));
+}

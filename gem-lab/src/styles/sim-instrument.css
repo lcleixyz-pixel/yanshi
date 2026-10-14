@@ -113,19 +113,53 @@
 /* 三维不可用时的 2D 备用入口（偏光镜）。 */
 .sim-stage__fallback { position: absolute; z-index: 3; left: 50%; bottom: 44px; transform: translateX(-50%); padding: 6px 12px; border-radius: 999px; background: #fff; color: var(--iu-accent-ink); font-size: 12px; box-shadow: 0 2px 10px #1a233218; }
 
-/* 偏光镜实验屏的观察框：目镜视场 + 预测 → 观察 → 解释。 */
-.sim-polari-observe { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; }
-.sim-polari-observe .pol-eyepiece__ring { width: clamp(120px, 11vw, 168px); }
-.sim-polari-poe { display: grid; gap: 6px; min-width: 0; }
-.sim-polari-poe__step { color: var(--iu-muted); font-size: 11px; }
-.sim-polari-poe strong { font-size: 13px; font-weight: 500; }
-.sim-polari-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
-.sim-polari-choices button { padding: 5px 4px; border: 1px solid var(--iu-line-2); border-radius: 7px; background: #fff; color: var(--iu-ink-2); font-size: 12px; }
-.sim-polari-choices button:hover { border-color: var(--iu-accent-strong); color: var(--iu-accent-ink); }
+/* 偏光镜实验屏的观察面板（三版本对比 P1a）：眼看目镜、手转载物台，预测—观察—解释紧挨目镜；仪器向右让位。 */
+.sim-polari-obs { position: absolute; z-index: 3; left: 12px; top: 12px; bottom: 12px; width: min(620px, 58%); display: flex; flex-direction: column; border: 1px solid var(--iu-line-2); border-radius: 12px; background: #fffffff5; box-shadow: 0 8px 24px #1a233214; overflow: hidden; }
+.sim-polari-obs[data-guided="true"] { top: 58px; }
+.sim-polari-obs[data-open="false"] { bottom: auto; width: auto; }
+.sim-polari-obs__head { display: flex; align-items: baseline; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--iu-line); font-size: 12px; }
+.sim-polari-obs__head strong { font-size: 13px; font-weight: 600; }
+.sim-polari-obs__head span { color: var(--iu-muted); }
+.sim-shell .sim-polari-obs__head button { margin-left: auto; border: 0; background: transparent; color: var(--iu-muted); font-size: 11px; }
+.sim-polari-obs__body { display: grid; grid-template-columns: auto minmax(200px, 1fr); grid-template-areas: "eye poe" "hand hand" "cond cond"; align-content: start; gap: 10px 16px; padding: 10px 14px; overflow: auto; }
+.sim-polari-obs__body[hidden] { display: none; }
+.sim-polari-obs__eye { grid-area: eye; display: grid; justify-items: center; gap: 6px; }
+.sim-polari-obs .pol-eyepiece__ring { width: clamp(170px, min(24vw, 31dvh), 320px); }
+/* 面板标题已写明样品，目镜下的说明文字不再重复。 */
+.sim-polari-obs .pol-eyepiece figcaption { display: none; }
+/* 转动曲线在预测 / 观察卡里，紧挨「已转过 x%」。 */
+.sim-polari-obs .sim-polari-poe .pol-trace { max-width: 300px; }
+.sim-polari-obs .sim-polari-poe { grid-area: poe; align-self: center; }
+.sim-polari-obs__role { justify-self: start; color: var(--iu-muted); font-size: 12px; }
+.sim-polari-obs__role b { display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 6px; border-radius: 50%; background: var(--iu-accent-strong); color: #fff; font-size: 11px; font-weight: 600; }
+.sim-polari-obs__hand { grid-area: hand; display: grid; gap: 4px; padding-top: 8px; border-top: 1px dashed var(--iu-line-2); }
+.sim-polari-obs__rotate { display: flex; align-items: center; gap: 8px; }
+.sim-polari-obs__rotate .iu-range { flex: 1; min-width: 120px; }
+.sim-polari-obs__rotate .iu-button { min-height: 40px; white-space: nowrap; }
+.sim-polari-obs__conditions { grid-area: cond; display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 0; padding: 8px 10px; border-radius: 8px; background: var(--iu-paper); font-size: 12px; }
+.sim-polari-obs__conditions div { display: flex; gap: 6px; }
+.sim-polari-obs__conditions dt { color: var(--iu-muted); }
+.sim-polari-obs__conditions dd { margin: 0; color: var(--iu-ink); font-weight: 500; }
+.sim-polari-poe { display: grid; gap: 8px; min-width: 0; }
+.sim-polari-poe__step { color: var(--iu-accent-ink); font-size: 12px; font-weight: 500; }
+.sim-polari-poe strong { font-size: 14px; font-weight: 600; }
+.sim-polari-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.sim-polari-choices button { min-height: 40px; padding: 6px 8px; border: 1px solid var(--iu-line-2); border-radius: 8px; background: #fff; color: var(--iu-ink-2); font-size: 13px; }
+.sim-polari-choices button:last-child { grid-column: 1 / -1; color: var(--iu-muted); }
+.sim-polari-choices button:hover { border-color: var(--iu-accent-strong); color: var(--iu-accent-ink); background: var(--iu-accent-soft); }
 @media (max-width: 680px) {
-  /* 手机上视场缩小、与预测并排，给上方模型留出位置。 */
-  .sim-polari-observe { gap: 8px; }
-  .sim-polari-observe .pol-eyepiece__ring { width: 104px; padding: 6px; }
+  /* 手机：观察面板贴在底部（顶部留给任务卡），目镜缩小与预测并排，条件条收起。 */
+  .sim-polari-obs, .sim-polari-obs[data-guided="true"] { left: 8px; right: 8px; top: auto; bottom: 64px; width: auto; max-height: 52%; }
+  .sim-polari-obs__body { grid-template-columns: auto minmax(0, 1fr); gap: 8px 10px; padding: 8px 10px; }
+  .sim-polari-obs .pol-eyepiece__ring { width: 104px; padding: 6px; }
+  .sim-polari-obs__role { display: none; }
+  .sim-polari-obs__conditions { display: none; }
+  .sim-polari-obs__rotate { display: grid; grid-template-columns: auto auto 1fr; gap: 6px; }
+  .sim-polari-obs__rotate .iu-range { grid-column: 1 / -1; grid-row: 1; }
+  .sim-polari-obs__rotate .iu-button { min-height: 36px; padding: 4px 10px; }
+  .sim-polari-choices { gap: 4px; }
+  .sim-polari-choices button { min-height: 34px; padding: 4px 6px; font-size: 12px; }
+  .sim-polari-poe__step { font-size: 11px; }
 }
 
 /* 偏光镜挑战台：检测步骤、记录与答案核对。 */

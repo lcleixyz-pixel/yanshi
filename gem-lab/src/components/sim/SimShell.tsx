@@ -250,3 +250,22 @@ export function SimSheet({ title, onClose, children, testId }: {
     </section>
   );
 }
+
+export interface SimStep { id: string; label: string; state: 'done' | 'current' | 'todo' }
+
+/**
+ * 引导课程的步骤条（操作区顶部，桌面显示；手机上任务卡已收为顶部一行，不再重复）。
+ * 只表示进度，不能点击跳步：跳步只来自带 step= 的深链，并按跳步处理学习记录。
+ */
+export function SimStepBar({ steps }: { steps: readonly SimStep[] }) {
+  return (
+    <ol className="sim-stepbar" aria-label="引导课程进度" data-testid="sim-stepbar">
+      {steps.map((step, index) => (
+        <li key={step.id} data-state={step.state} aria-current={step.state === 'current' ? 'step' : undefined}>
+          <span aria-hidden="true">{step.state === 'done' ? '✓' : index + 1}</span>{step.label}
+          {step.state === 'done' && <span className="iu-sr">（已完成）</span>}
+        </li>
+      ))}
+    </ol>
+  );
+}

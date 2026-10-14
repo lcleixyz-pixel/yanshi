@@ -30,7 +30,8 @@ test("先预测后观察：未预测不记录，转满一周揭晓；换样品�
   await page.goto(`${route}?sample=tourmaline`);
   await ready(page);
   await expect(page.getByTestId("sim-panel-sample")).toContainText("光性揭晓前不显示");
-  await expect(page.getByTestId("sim-polari-auto-rotate")).toHaveCount(0);
+  // 「手」一栏一直在；未预测前自动转动不可用，转动不计入记录。
+  await expect(page.getByTestId("sim-polari-auto-rotate")).toBeDisabled();
   // 未正交：先调回正交才能开始。
   await page.getByTestId("sim-polari-analyzer-0").click();
   await expect(page.getByTestId("sim-polari-cross")).toBeVisible();
@@ -140,4 +141,36 @@ test("观察框：预测、观察、揭晓与干涉图说明时，目镜都不�
     await page.getByTestId("sim-polari-conoscope").click();
     await eyepieceClear(page, `${size.width} 干涉图`);
   }
+});
+
+test("观察面板布局：引导时顶部是课程六步，目镜在左与预测并排，仪器右移让位；收起面板后仪器回中", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto(`${route}?mode=student`);
+  await ready(page);
+  const bar = page.getByTestId("sim-stepbar");
+  await expect(bar.getByRole("listitem")).toHaveText([/认识部件/, /跟随光路/, /空载调正/, /放样旋转/, /换方向复核/, /解释/]);
+  await expect(bar.locator('[aria-current="step"]')).toContainText("放样旋转");
+  const eye = (await page.locator('[data-testid="sim-polari-field"] .pol-eyepiece__ring').boundingBox())!;
+  const poe = (await page.getByTestId("sim-polari-poe").boundingBox())!;
+  expect(eye.width).toBeGreaterThanOrEqual(170);
+  expect(poe.x).toBeGreaterThanOrEqual(eye.x + eye.width);
+  // 预测与观察阶段，目镜、预测、转动控件都在面板里不用滚动。
+  const body = page.locator(".sim-polari-obs__body");
+  expect(await body.evaluate((e) => e.scrollHeight - e.clientHeight)).toBeLessThanOrEqual(1);
+  await expect(page.getByTestId("polariscope-canvas")).toHaveAttribute("data-view-shift", "0.240", { timeout: 5_000 });
+  await page.getByTestId("sim-polari-obs-toggle").click();
+  await expect(page.getByTestId("polariscope-canvas")).toHaveAttribute("data-view-shift", "0.000", { timeout: 5_000 });
+  // 自由探索（未选身份）不显示步骤条。
+  await page.goto(route);
+  await ready(page);
+  await expect(page.getByTestId("sim-stepbar")).toHaveCount(0);
+});
+
+test("手一栏：±15° 计入连续转动，选完预测后用加减按钮也能累计覆盖率", async ({ page }) => {
+  await page.goto(`${route}?sample=spinel`);
+  await ready(page);
+  await page.getByTestId("sim-polari-predict-all-dark").click();
+  for (let i = 0; i < 6; i++) await page.getByTestId("sim-polari-stage-plus").click();
+  await expect(page.getByRole("slider", { name: "载物台角度" })).toHaveValue("90");
+  expect(Number(await page.getByTestId("rotation-trace").getAttribute("data-coverage"))).toBeGreaterThanOrEqual(20);
 });

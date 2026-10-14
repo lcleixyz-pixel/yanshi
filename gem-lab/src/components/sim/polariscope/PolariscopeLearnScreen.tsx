@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import RangeControl from '../../shared/RangeControl';
 import PolariscopeScene from '../../polariscope3d/PolariscopeScene';
 import EyepieceView, { type EyepieceContent } from '../../polariscope3d/EyepieceView';
-import { ResetAllButton, SimChecks, SimPanel, SimReadout, SimShell } from '../SimShell';
+import { ResetAllButton, SimChecks, SimPanel, SimReadout, SimShell, SimStepBar } from '../SimShell';
 import PolariscopeTaskCard from './PolariscopeTaskCard';
 import type { SimScreenProps } from '../registry';
 import { LEARN_LESSONS, LESSONS, PART_SHORT, PARTS, PARTS_BY_ID, PATH_STEPS } from '../../../domain/polariscopeCopy';
 import {
-  courseView, initialQuality, readLabScene, topicScene, enterStep, isCrossed, pendingStep, stepChecklist, LEARN_INITIAL, learnCoach, learnEvidence, lessonScene, readLearnScene, readTaskData, seePart,
+  courseSteps, courseView, initialQuality, readLabScene, topicScene, enterStep, isCrossed, pendingStep, stepChecklist, LEARN_INITIAL, learnCoach, learnEvidence, lessonScene, readLearnScene, readTaskData, seePart,
   STEP_SCREEN, type LearnScene, type PolariscopeTaskData,
 } from '../../../domain/polariscopeSim';
 import { deriveTeachingOptics, STRUCTURE_PART_IDS, type PolariscopeStructureState, type StructurePartId, type StructureViewPreset, type TeachingLesson } from '../../../domain/polariscopeStructure';
@@ -52,6 +52,11 @@ export default function PolariscopeLearnScreen({ sim, screen, onScreen, session,
   const setScene = (next: LearnScene) => {
     latest.current = { ...latest.current, scenes: { ...latest.current.scenes, learn: next } };
     dispatch({ type: 'patch-scene', screen, patch: next });
+    // 每次改场景当场记完成证据：两次改动若合并成一次渲染（如进入「空载调正」摆到 0° 后立刻转到 90°），
+    // 中间的 0° 平行也不会漏记。下面的副作用保留作兜底（选身份时场景未变），重复记录不会多算。
+    const current = readTaskData(latest.current.task.data);
+    const evidence = learnEvidence(current, next.structure);
+    if (evidence !== current) setTask(evidence);
   };
   const currentScene = () => readLearnScene(latest.current.scenes.learn);
   const update = (patch: Partial<PolariscopeStructureState>) => { const scene = currentScene(); setScene({ ...scene, structure: { ...scene.structure, ...patch } }); };
@@ -126,6 +131,7 @@ export default function PolariscopeLearnScreen({ sim, screen, onScreen, session,
         )}
         <p className="sim-stage__hint">{structure.mode === 'structure' && !structure.isolatedPart ? '拖动空白旋转视角 · 拖动圆环旋转部件 · 点底座侧面按钮开关电源' : '拖动旋转视角 · 滚轮缩放'}</p>
       </section>
+      {task.mode !== null && <SimStepBar steps={courseSteps(view, pending)} />}
       {eyepiece && (
         <SimReadout title="目镜视场" meta="空载" placement="top-right" testId="sim-polari-field">
           <EyepieceView content={eyepiece} stageDeg={structure.stageAngle} analyzerDeg={structure.analyzerAngle} active={optics.active} label="目镜视场 · 空载" onRendered={onFieldRendered} onCanvas={setFieldCanvas} />

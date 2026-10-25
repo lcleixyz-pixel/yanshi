@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "instrumentId": "refractometer",
-  "modelSha256": "ca614d532f7fee568998496d9b7299c3226c8cb44e2254dcc8ee9c58bf27e5b2",
+  "modelSha256": "87427bc1d13efef269105f3ff66c1450432940f845be8ac8ff3fa8f2b782434b",
   "sourceModelSha256": "81e265623fbae03bbe75ded1011aef3521ff2ac8439fa5af86aa80e3233aa383",
   "checks": [
     {

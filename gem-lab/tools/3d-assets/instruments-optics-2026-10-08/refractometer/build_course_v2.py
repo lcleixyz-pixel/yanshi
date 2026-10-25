@@ -101,9 +101,10 @@ stage_parent=bpy.data.objects['Refractometer_metal_stage']
 steel=bpy.data.materials.get('Stage brushed stainless steel')
 plate=box_mesh('Steel stage with narrow exposed prism',add(G['solids'][1]['center'],mul(N,.00001)),(.044,.062,.0016),G['stageAxes'],steel,stage_parent)
 # User-approved underside relief, not a change to the optical prescription.
-# Top 17 x 3.6 mm strip, flared to 12.4 mm below the top retaining lip.
-profile=[(-.0062,-.004),(.0062,-.004),(.0062,-.0016),(.0018,-.00015),(.0018,.004),(-.0018,.004),(-.0018,-.00015),(-.0062,-.0016)]
-vs=[tuple(Vector(C)+Vector((x,0,0))+Vector(G['stageAxes'][1])*y+Vector(N)*z) for x in [-.0087,.0087] for y,z in profile];k=len(profile)
+# 2026-10-25 user correction: the window's long side follows the steel plate's long side (front-back T), not the prism axis X.
+# Top 3.6 (X) x 10 (T) mm strip; the 12 mm prism face along T limits the length. Below the top lip the T walls still flare to 12.4 mm.
+profile=[(-.0062,-.004),(.0062,-.004),(.0062,-.0016),(.005,-.00015),(.005,.004),(-.005,.004),(-.005,-.00015),(-.0062,-.0016)]
+vs=[tuple(Vector(C)+Vector((x,0,0))+Vector(G['stageAxes'][1])*y+Vector(N)*z) for x in [-.0018,.0018] for y,z in profile];k=len(profile)
 fs=[tuple(range(k-1,-1,-1)),tuple(range(k,2*k))]+[(i,(i+1)%k,(i+1)%k+k,i+k) for i in range(k)]
 cut=mesh('Narrow top strip with underside optical relief',vs,fs,steel,None)
 bpy.context.view_layer.objects.active=plate
@@ -111,10 +112,10 @@ mod=plate.modifiers.new('Real narrow contact opening','BOOLEAN');mod.operation='
 bpy.ops.object.modifier_apply(modifier=mod.name);bpy.data.objects.remove(cut,do_unlink=True)
 mod=plate.modifiers.new('Soft steel edge','BEVEL');mod.width=.00012;mod.segments=3;bpy.ops.object.modifier_apply(modifier=mod.name)
 for part in manifest['parts']:
-    if part['id']=='metal_stage':part.update(contactWindowMeters=[.017,.0036],evidenceNote='17 × 3.6 mm 窄条开口直接露出同一半圆柱棱镜；仅教学设计比例，非实测。')
-manifest['contactWindow']={'center':gl(C),'axes':[gl((1,0,0)),gl(T)],'sizeMeters':[.017,.0036],'normal':gl(N),'directExposedPrism':True,'undersideReliefMeters':.0124,'topLipThicknessMeters':.00016,'steelTopAboveContactMeters':.00001,'reliefIllustrative':True,'approval':'User approved narrow top strip with underside relief on 2026-10-08; not manufacturer internal evidence'}
+    if part['id']=='metal_stage':part.update(contactWindowMeters=[.0036,.010],evidenceNote='3.6 × 10 mm 窄条开口，长边沿钢台长边（前后）；直接露出同一半圆柱棱镜，仅教学设计比例，非实测。')
+manifest['contactWindow']={'center':gl(C),'axes':[gl((1,0,0)),gl(T)],'sizeMeters':[.0036,.010],'normal':gl(N),'directExposedPrism':True,'undersideReliefMeters':.0124,'topLipThicknessMeters':.00016,'steelTopAboveContactMeters':.00001,'reliefIllustrative':True,'approval':'User approved narrow top strip with underside relief on 2026-10-08; long side turned to follow the steel plate on 2026-10-25; not manufacturer internal evidence'}
 film=new_part('contact_layer','接触层（液体 / 空气间隙由案例指定）',add(C,mul(N,FILM/2)),[.020,.016,0],'40 μm 厚度是假设；光线按平行三层界面计算，不是实测油膜。')
-box_mesh('Parallel contact layer',add(C,mul(N,FILM/2)),(.011,.0036,FILM),axes,film_mat,film)
+box_mesh('Parallel contact layer',add(C,mul(N,FILM/2)),(.0036,.010,FILM),axes,film_mat,film)
 sample=new_part('isotropic_sample','固定各向同性示例样品',add(C,mul(N,FILM+.002)),[0,.028,0],'理想均质抛光块；nD 按所选案例指定，不代表任何天然宝石的校准值。')
 box_mesh('Flat polished isotropic sample',add(C,mul(N,FILM+.002)),(.011,.011,.004),axes,sample_mat,sample)
 for p in manifest['parts']:

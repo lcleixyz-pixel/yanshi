@@ -37,7 +37,9 @@ test('折射仪 v2 窄条资产与独立检查绑定同一模型及案例，原�
   const mf = json('manifest.json'), bytes = fs.readFileSync(new URL('model.glb', v2));
   const hash = (b: Buffer) => crypto.createHash('sha256').update(b).digest('hex');
   assert.equal(mf.modelSha256, hash(bytes)); assert.equal(mf.modelBytes, bytes.length);
-  assert.equal(mf.version, 'paper-optics-v2'); assert.deepEqual(mf.contactWindow.sizeMeters, [.017, .0036]);
+  assert.equal(mf.version, 'paper-optics-v2'); assert.deepEqual(mf.contactWindow.sizeMeters, [.0036, .010]);
+  // 2026-10-25：窗口长边改沿钢台长边（前后方向 T），与 axes[1] 对应。
+  assert.ok(mf.contactWindow.sizeMeters[1] > mf.contactWindow.sizeMeters[0]);
   assert.equal(mf.contactWindow.directExposedPrism, true);
   const before = read('refractometer', 'manifest.json').parts.find((p: {id: string}) => p.id === 'test_prism');
   const after = mf.parts.find((p: {id: string}) => p.id === 'test_prism');

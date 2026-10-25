@@ -21,7 +21,7 @@ if (SOURCE/'poster.png').exists():shutil.copy2(SOURCE/'poster.png',PUBLIC/'poste
 provenance=dict(schemaVersion=1,instrumentId='refractometer',version='paper-optics-v2',date='2026-10-08',modelSha256=sha(PUBLIC/'model.glb'),modelBytes=(PUBLIC/'model.glb').stat().st_size,
  predecessor={'version':'paper-optics-v1','modelSha256':sha(OLD/'model.glb'),'preserved':True},editableMaster={'path':'assets-source/refractometer/course-v2/editable.blend','sha256':sha(SOURCE/'editable.blend'),'bundledInPublic':False},
  generator='tools/3d-assets/instruments-optics-2026-10-08/refractometer/build_course_v2.py',sampleSource='src/data/samples.ts spinel.characteristics.refractiveIndex; exported by write_course_sample.ts',
- changes=['测台开口直接露出棱镜：可见棱镜长17mm、窄边3.6mm，横向X；不另加深色玻璃条。','钢台底面退让腔12.4mm：用户确认的教学设计，避免窄口直壁阻挡原斜向光线。','新建v2网格统一向外法线；钢面与棱镜面错开10μm，避免共面竞争，不改棱镜接触平面，低于40μm教学膜厚。','四个v1案例原样保留，增加同源尖晶石良好接触/空气间隙案例。'],
+ changes=['测台开口直接露出棱镜：窄条3.6×10mm，长边沿钢台长边（前后方向T），2026-10-25按用户更正由横向X改来；不另加深色玻璃条。','钢台底面退让腔12.4mm：用户确认的教学设计，避免窄口直壁阻挡原斜向光线。','新建v2网格统一向外法线；钢面与棱镜面错开10μm，避免共面竞争，不改棱镜接触平面，低于40μm教学膜厚。','四个v1案例原样保留，增加同源尖晶石良好接触/空气间隙案例。'],
  preserved=['半圆柱半径6mm、长17mm、轴X、接触平面及法线不变','玻璃1.88、接触液1.78、波长589nm、理想中继透镜不变','原v1及其他仪器文件全部原样保留'],
  contactWindow=manifest['contactWindow'],appearanceReference={'file':'assets/instruments/refractometer.png','use':'Only strip proportions and orientation; no photo pixels embedded in model or poster'},deferred=[],
  assets={n:{'sha256':sha(PUBLIC/n),'bytes':(PUBLIC/n).stat().st_size} for n in ['model.glb','optical-cases.json','sources.json']},

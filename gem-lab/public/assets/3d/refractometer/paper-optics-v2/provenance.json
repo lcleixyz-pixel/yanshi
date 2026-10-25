@@ -3,8 +3,8 @@
   "instrumentId": "refractometer",
   "version": "paper-optics-v2",
   "date": "2026-10-08",
-  "modelSha256": "ca614d532f7fee568998496d9b7299c3226c8cb44e2254dcc8ee9c58bf27e5b2",
-  "modelBytes": 3055888,
+  "modelSha256": "87427bc1d13efef269105f3ff66c1450432940f845be8ac8ff3fa8f2b782434b",
+  "modelBytes": 3059448,
   "predecessor": {
     "version": "paper-optics-v1",
     "modelSha256": "801a87705268e57f66603b476b29d00109e56cbce06f9e88ce1a59e493ea24d6",
@@ -12,13 +12,13 @@
   },
   "editableMaster": {
     "path": "assets-source/refractometer/course-v2/editable.blend",
-    "sha256": "5bac68990d4c5a6a980853dec86cba1a0f9c5b887c5fbd4be1db2b51d40df51a",
+    "sha256": "607a75a23360eb509e51b69aaa8ae51ea0025540ba8036b46cece74ad6b3599c",
     "bundledInPublic": false
   },
   "generator": "tools/3d-assets/instruments-optics-2026-10-08/refractometer/build_course_v2.py",
   "sampleSource": "src/data/samples.ts spinel.characteristics.refractiveIndex; exported by write_course_sample.ts",
   "changes": [
-    "测台开口直接露出棱镜：可见棱镜长17mm、窄边3.6mm，横向X；不另加深色玻璃条。",
+    "测台开口直接露出棱镜：窄条3.6×10mm，长边沿钢台长边（前后方向T），2026-10-25按用户更正由横向X改来；不另加深色玻璃条。",
     "钢台底面退让腔12.4mm：用户确认的教学设计，避免窄口直壁阻挡原斜向光线。",
     "新建v2网格统一向外法线；钢面与棱镜面错开10μm，避免共面竞争，不改棱镜接触平面，低于40μm教学膜厚。",
     "四个v1案例原样保留，增加同源尖晶石良好接触/空气间隙案例。"
@@ -47,8 +47,8 @@
       ]
     ],
     "sizeMeters": [
-      0.017,
-      0.0036
+      0.0036,
+      0.01
     ],
     "normal": [
       0,
@@ -60,7 +60,7 @@
     "topLipThicknessMeters": 0.00016,
     "steelTopAboveContactMeters": 1e-05,
     "reliefIllustrative": true,
-    "approval": "User approved narrow top strip with underside relief on 2026-10-08; not manufacturer internal evidence"
+    "approval": "User approved narrow top strip with underside relief on 2026-10-08; long side turned to follow the steel plate on 2026-10-25; not manufacturer internal evidence"
   },
   "appearanceReference": {
     "file": "assets/instruments/refractometer.png",
@@ -69,8 +69,8 @@
   "deferred": [],
   "assets": {
     "model.glb": {
-      "sha256": "ca614d532f7fee568998496d9b7299c3226c8cb44e2254dcc8ee9c58bf27e5b2",
-      "bytes": 3055888
+      "sha256": "87427bc1d13efef269105f3ff66c1450432940f845be8ac8ff3fa8f2b782434b",
+      "bytes": 3059448
     },
     "optical-cases.json": {
       "sha256": "a73ee06ba7a0f7520d5e0259a1c3b615d3f3ab758ac8ddb3f783b09090c6e77b",
@@ -88,8 +88,8 @@
     "无付费云生成，无提交推送部署。"
   ],
   "poster": {
-    "sha256": "dcd20f5e92a69a30737623d4917e6f05363b8059f21442e1c6d9e9d3f5ffb8fa",
-    "masterSha256": "5bac68990d4c5a6a980853dec86cba1a0f9c5b887c5fbd4be1db2b51d40df51a",
+    "sha256": "8b78f3245720d196995fce9a02baadf18e621474a82be441966070a9a7e2e996",
+    "masterSha256": "607a75a23360eb509e51b69aaa8ae51ea0025540ba8036b46cece74ad6b3599c",
     "method": "Cycles; identical geometry, hide optional teaching sample/film only"
   }
 }

@@ -5,15 +5,15 @@
       "name": "actual steel top faces outward for browser backface culling",
       "pass": true,
       "metrics": [
-        0.0,
-        0.9890158701718775,
-        0.14780936556309318
+        7.753813240406247e-07,
+        0.9890159327010456,
+        0.14780894716788912
       ]
     },
     {
       "name": "steel and prism are not coplanar; offset below contact film",
       "pass": true,
-      "metrics": 9.997308865460798e-06
+      "metrics": 9.998766498014394e-06
     },
     {
       "name": "actual prism contact plane faces outward",
@@ -33,7 +33,7 @@
       }
     },
     {
-      "name": "narrow top opening real steel probe 0.008,0",
+      "name": "narrow top opening real steel probe 0,0.004",
       "pass": true,
       "metrics": {
         "insideExpected": true,
@@ -41,7 +41,7 @@
       }
     },
     {
-      "name": "narrow top opening real steel probe 0,0.0016",
+      "name": "narrow top opening real steel probe 0,-0.004",
       "pass": true,
       "metrics": {
         "insideExpected": true,
@@ -49,7 +49,7 @@
       }
     },
     {
-      "name": "narrow top opening real steel probe 0,-0.0016",
+      "name": "narrow top opening real steel probe 0.0012,0",
       "pass": true,
       "metrics": {
         "insideExpected": true,
@@ -57,31 +57,69 @@
       }
     },
     {
-      "name": "narrow top opening real steel probe 0,0.0022",
+      "name": "narrow top opening real steel probe -0.0012,0",
+      "pass": true,
+      "metrics": {
+        "insideExpected": true,
+        "steelHit": null
+      }
+    },
+    {
+      "name": "narrow top opening real steel probe 0.0024,0",
       "pass": true,
       "metrics": {
         "insideExpected": false,
         "steelHit": [
-          0.00029000272799260525,
+          0.0002900007682731809,
           [
-            0.0,
-            0.07637152579215481,
-            -0.02364531611635993
+            0.0024,
+            0.07669670843483356,
+            -0.025821150726091178
           ]
         ]
       }
     },
     {
-      "name": "narrow top opening real steel probe 0,-0.0022",
+      "name": "narrow top opening real steel probe -0.0024,0",
       "pass": true,
       "metrics": {
         "insideExpected": false,
         "steelHit": [
-          0.0002899963918875106,
+          0.00028999992606346423,
+          [
+            -0.0024,
+            0.07669670926779233,
+            -0.025821150601604653
+          ]
+        ]
+      }
+    },
+    {
+      "name": "narrow top opening real steel probe 0,0.0058",
+      "pass": true,
+      "metrics": {
+        "insideExpected": false,
+        "steelHit": [
+          0.000289998071423157,
           [
             0.0,
-            0.07702189346763355,
-            -0.027996984978616406
+            0.07583941651750928,
+            -0.020084858319972247
+          ]
+        ]
+      }
+    },
+    {
+      "name": "narrow top opening real steel probe 0,-0.0058",
+      "pass": true,
+      "metrics": {
+        "insideExpected": false,
+        "steelHit": [
+          0.00029000262898566003,
+          [
+            0.0,
+            0.07755400117911114,
+            -0.03155744300862111
           ]
         ]
       }
@@ -95,8 +133,8 @@
           0.0
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -109,8 +147,8 @@
           7.012403756639525e-05
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -123,8 +161,8 @@
           0.00014024807513279212
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -137,8 +175,8 @@
           0.0
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -151,8 +189,8 @@
           8.205128205128365e-05
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -165,8 +203,8 @@
           0.00016410256410256683
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -179,8 +217,8 @@
           0.0
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -193,8 +231,8 @@
           9.861291962487877e-05
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -207,8 +245,8 @@
           0.0001972258392497571
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -753,8 +791,8 @@
           0.0
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -767,8 +805,8 @@
           0.00010132492297249662
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -781,8 +819,8 @@
           0.0002026498459449928
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -795,8 +833,8 @@
           0.0
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -809,8 +847,8 @@
           0.00012887666740841243
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -823,8 +861,8 @@
           0.0002577533348168245
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -837,8 +875,8 @@
           0.0
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -851,8 +889,8 @@
           0.00018472781292643326
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -865,8 +903,8 @@
           0.00036945562585286615
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -1411,8 +1449,8 @@
           0.0
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -1425,8 +1463,8 @@
           0.0
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -1439,8 +1477,8 @@
           0.0
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -1836,8 +1874,8 @@
           0.0
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -1850,8 +1888,8 @@
           6.681674185009441e-05
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -1864,8 +1902,8 @@
           0.00013363348370018835
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -1878,8 +1916,8 @@
           0.0
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -1892,8 +1930,8 @@
           8.205128205128365e-05
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -1906,8 +1944,8 @@
           0.00016410256410256683
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -1920,8 +1958,8 @@
           0.0
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -1934,8 +1972,8 @@
           0.00010579078904885561
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -1948,8 +1986,8 @@
           0.00021158157809771284
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -2510,8 +2548,8 @@
           0.0
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -2524,8 +2562,8 @@
           0.00011164028925160247
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -2538,8 +2576,8 @@
           0.00022328057850320448
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -2552,8 +2590,8 @@
           0.0
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -2566,8 +2604,8 @@
           0.0001475629753734464
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -2580,8 +2618,8 @@
           0.0002951259507468924
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -2594,8 +2632,8 @@
           0.0
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -2608,8 +2646,8 @@
           0.00023909930155397062
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -2622,8 +2660,8 @@
           0.0004781986031079408
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -3168,8 +3206,8 @@
           0.0
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -3182,8 +3220,8 @@
           0.0
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -3196,8 +3234,8 @@
           0.0
         ],
         "halfWindowMeters": [
-          0.0085,
-          0.0018
+          0.0018,
+          0.005
         ]
       }
     },
@@ -4084,9 +4122,9 @@
   "instrumentId": "refractometer",
   "inputDirectory": "/Users/lc.leixyz/Documents/AI工作台/01-项目代码/yanshi/gem-lab/assets-source/refractometer/course-v2",
   "method": "independent direct GLB parse, numpy world triangles, finite face projection, vector Snell/reflection, Moller-Trumbore intersections; no author optics or Blender imports",
-  "modelSha256": "ca614d532f7fee568998496d9b7299c3226c8cb44e2254dcc8ee9c58bf27e5b2",
+  "modelSha256": "87427bc1d13efef269105f3ff66c1450432940f845be8ac8ff3fa8f2b782434b",
   "casesSha256": "a73ee06ba7a0f7520d5e0259a1c3b615d3f3ab758ac8ddb3f783b09090c6e77b",
-  "validatorSha256": "b573cfac01d0594d9d0f5f828da0ebc5561988c9a20e40ee971963272300f84a",
-  "checkCount": 600,
+  "validatorSha256": "e19833485b9eaf544638084b712b51729c3f7dcb2eb4e724d330cd4ee0557bb0",
+  "checkCount": 603,
   "failureCount": 0
 }

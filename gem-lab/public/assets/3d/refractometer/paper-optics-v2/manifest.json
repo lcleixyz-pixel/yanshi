@@ -3,8 +3,8 @@
   "version": "paper-optics-v2",
   "revision": "paper-optics-v2",
   "model": "model.glb",
-  "sha256": "ca614d532f7fee568998496d9b7299c3226c8cb44e2254dcc8ee9c58bf27e5b2",
-  "byteLength": 3055888,
+  "sha256": "87427bc1d13efef269105f3ff66c1450432940f845be8ac8ff3fa8f2b782434b",
+  "byteLength": 3059448,
   "units": "meter",
   "dimensionsCalibrated": false,
   "teachingOpticsSimulated": true,
@@ -64,7 +64,7 @@
         0.0766868,
         -0.0258226
       ],
-      "evidenceNote": "17 × 3.6 mm 窄条开口直接露出同一半圆柱棱镜；仅教学设计比例，非实测。",
+      "evidenceNote": "3.6 × 10 mm 窄条开口，长边沿钢台长边（前后）；直接露出同一半圆柱棱镜，仅教学设计比例，非实测。",
       "steelSizeMeters": [
         0.044,
         0.062,
@@ -76,8 +76,8 @@
         0.0096
       ],
       "contactWindowMeters": [
-        0.017,
-        0.0036
+        0.0036,
+        0.01
       ],
       "prismWindowVisible": true
     },
@@ -1200,8 +1200,8 @@
       ]
     ],
     "sizeMeters": [
-      0.017,
-      0.0036
+      0.0036,
+      0.01
     ],
     "normal": [
       0,
@@ -1213,10 +1213,10 @@
     "topLipThicknessMeters": 0.00016,
     "steelTopAboveContactMeters": 1e-05,
     "reliefIllustrative": true,
-    "approval": "User approved narrow top strip with underside relief on 2026-10-08; not manufacturer internal evidence"
+    "approval": "User approved narrow top strip with underside relief on 2026-10-08; long side turned to follow the steel plate on 2026-10-25; not manufacturer internal evidence"
   },
-  "modelSha256": "ca614d532f7fee568998496d9b7299c3226c8cb44e2254dcc8ee9c58bf27e5b2",
-  "modelBytes": 3055888,
+  "modelSha256": "87427bc1d13efef269105f3ff66c1450432940f845be8ac8ff3fa8f2b782434b",
+  "modelBytes": 3059448,
   "poster": "poster.png",
   "opticalCases": "optical-cases.json",
   "sources": "sources.json",

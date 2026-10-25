@@ -73,13 +73,14 @@ def evaluate(glb,cases,window=None):
   center=np.asarray(window['center']);axes=np.asarray(window['axes']);normal=unit(window['normal']);half=np.asarray(window['sizeMeters'])/2
   # Independently probe the actual exported steel triangles at the top opening.
   steel=glb.surface('Refractometer_metal_stage')
-  top=glb.nearest('Refractometer_metal_stage',center+axes[1]*.003)
+  # 2026-10-25: window is 3.6 (X) x 10 (T) mm; probe steel 3 mm along X, outside the strip.
+  top=glb.nearest('Refractometer_metal_stage',center+axes[0]*.003)
   check('actual steel top faces outward for browser backface culling',top['normal'].dot(normal)>.9999,top['normal'].tolist())
-  separation=(top['projected']-(center+axes[1]*.003)).dot(normal)
+  separation=(top['projected']-(center+axes[0]*.003)).dot(normal)
   check('steel and prism are not coplanar; offset below contact film',6e-6<separation<12e-6 and separation<cases['cases'][0]['parameters']['contactThicknessMeters'],float(separation))
   contact=glb.nearest('Refractometer_test_prism',center)
   check('actual prism contact plane faces outward',contact['normal'].dot(normal)>.9999,contact['normal'].tolist())
-  for x,z,inside in [(0,0,True),(.008,0,True),(0,.0016,True),(0,-.0016,True),(0,.0022,False),(0,-.0022,False)]:
+  for x,z,inside in [(0,0,True),(0,.004,True),(0,-.004,True),(.0012,0,True),(-.0012,0,True),(.0024,0,False),(-.0024,0,False),(0,.0058,False),(0,-.0058,False)]:
    point=center+axes[0]*x+axes[1]*z
    hit=ray_segment(steel,point+normal*.0003,point-normal*.00002)
    check(f'narrow top opening real steel probe {x},{z}',(hit is None)==inside,{'insideExpected':inside,'steelHit':hit})

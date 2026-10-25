@@ -35,7 +35,7 @@ export const COURSE_STEPS: readonly CourseStep[] = [
     task: '不放样品，转动上偏光片：先在 0° 平行时看到最亮，再转到 90°，让视场变成全暗——这就是正交。',
     why: COURSE_RULES.crossedWhy },
   { id: 'rotate', title: '放样旋转', minutes: 2, lesson: 'sample',
-    task: '正交下依次观察尖晶石、碧玺、翡翠：每块先选预测，再转动载物台一整周（可点「自动转动一周」）。',
+    task: '正交下依次观察尖晶石、碧玺、翡翠：每块先选预测，再转动载物台一整周（可点「自动转一周」）。',
     why: '三种典型反应：均质体始终暗，非均质体一周四明四暗，多晶质集合体始终亮。' },
   { id: 'reorient', title: '换方向复核', minutes: 1.5, lesson: 'sample',
     task: '同一块碧玺改为沿光轴放置。先预测并转一周，再点「换个方向放置」，重新转一周。',

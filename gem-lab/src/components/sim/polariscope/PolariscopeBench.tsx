@@ -136,7 +136,7 @@ export default function PolariscopeBench({ sim, screen, onScreen, embedded, qual
           <RotationTrace curve={curve} visited={scene.visited} current={structure.stageAngle} reveal={false} analyzerDeg={structure.analyzerAngle} />
           {!crossed && <p className="sim-note" role="status">上偏光片不在正交位置，此时转动不计入记录。</p>}
           <div className="sim-row">
-            <button type="button" className="iu-button" onClick={() => setAutoRotate(!autoRotate)} disabled={!recording} data-testid="detection-auto-rotate">{autoRotate ? '停止转动' : '自动转动一周'}</button>
+            <button type="button" className="iu-button" onClick={() => setAutoRotate(!autoRotate)} disabled={!recording} data-testid="detection-auto-rotate">{autoRotate ? '停止转动' : '自动转一周'}</button>
             <button type="button" className="iu-button" onClick={reorient} data-testid="detection-reorient">换个方向放置</button>
           </div>
         </>}

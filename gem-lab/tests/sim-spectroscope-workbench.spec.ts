@@ -251,7 +251,7 @@ test("光栅式引导任务学员：固定狭缝焦距，靠亮度与对准排�
   await page.getByTestId("sim-task-continuous").getByRole("button").click();
   await page.getByTestId("sim-bench-place").click();
   await answer(page, "continuous", 1);
-  await expect(task(page)).toContainText("调节与对准");
+  await expect(task(page)).toContainText("对准与亮度");
   await expect(task(page)).toContainText("亮度足够、灯头对准");
   await expect(page.getByRole("slider", { name: "狭缝宽度" })).toHaveCount(0);
   await expect(page.getByTestId("sim-spectro-hand")).toContainText("狭缝与焦距固定");
@@ -259,7 +259,7 @@ test("光栅式引导任务学员：固定狭缝焦距，靠亮度与对准排�
   await slider(page, "灯头横移").fill("0");
   await expect(stage(page)).toHaveAttribute("data-problems", "");
   await answer(page, "fixed", 1);
-  await expect(task(page)).toContainText("标记吸收特征");
+  await expect(task(page)).toContainText("在线性刻度上标记");
   for (const wl of [694, 580, 476]) await mark(page, wl, "grating");
   await openRecord(page);
   await review(page);

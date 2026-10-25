@@ -41,6 +41,18 @@ export function createInitialStructureState(overrides: Partial<PolariscopeStruct
     ...overrides };
 }
 
+/** 三维里拖动检偏器环时，离 0° / 90° / 180° / 270° 不到这么多度就吸附到整角，手拖也能落到正交与平行。 */
+export const ANALYZER_SNAP_DEG = 3;
+
+/**
+ * 只用于三维拖动（按拖动起点 + 位移算出的绝对角度）。滑杆与键盘逐度步进，不吸附：
+ * 否则在整角上按一次方向键会被吸回原处，永远离不开 0° / 90°。
+ */
+export function snapAnalyzerDrag(degrees: number): number {
+  const nearest = Math.round(degrees / 90) * 90;
+  return Math.abs(degrees - nearest) < ANALYZER_SNAP_DEG ? nearest % 360 : degrees;
+}
+
 export interface TeachingOptics {
   /** Whether power and the current assembly permit an optical demonstration. */
   active: boolean;

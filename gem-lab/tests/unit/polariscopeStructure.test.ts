@@ -3,6 +3,7 @@ import test from 'node:test';
 import {
   createInitialStructureState,
   deriveTeachingOptics,
+  snapAnalyzerDrag,
   STRUCTURE_PART_IDS,
   type PolariscopeStructureState,
   type PrincipleExample,
@@ -98,4 +99,15 @@ test('direction wrapping preserves mechanical input while producing equivalent o
   assert.equal(state.analyzerAngle, -90);
   assert.equal(state.stageAngle, 405);
   closeTo(result.relativeTransmission, optics({ principleExample: 'half-wave', analyzerAngle: 90, stageAngle: 45 }).relativeTransmission);
+});
+
+test('三维拖动检偏器在整 90° 附近吸附，离开 3° 以外恢复连续', () => {
+  assert.equal(snapAnalyzerDrag(88.4), 90);
+  assert.equal(snapAnalyzerDrag(92.9), 90);
+  assert.equal(snapAnalyzerDrag(1.5), 0);
+  assert.equal(snapAnalyzerDrag(358), 0);
+  assert.equal(snapAnalyzerDrag(181), 180);
+  assert.equal(snapAnalyzerDrag(86.9), 86.9);
+  assert.equal(snapAnalyzerDrag(45), 45);
+  assert.equal(optics({ analyzerAngle: snapAnalyzerDrag(91.7) }).relativeTransmission, 0);
 });

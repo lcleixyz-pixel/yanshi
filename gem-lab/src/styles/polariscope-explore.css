@@ -1,11 +1,11 @@
 
-.pol-explore__button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 38px; padding: 8px 14px; border: 1px solid #d4dfee; border-radius: 6px; color: var(--pe-ink); background: transparent; font-size: 12px; font-weight: 500; text-decoration: none; transition: background .16s, border-color .16s; }
+.pol-explore__button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 38px; padding: 8px 14px; border: 1px solid #d4dfee; border-radius: 6px; color: var(--iu-ink, #1a2332); background: transparent; font-size: 12px; font-weight: 500; text-decoration: none; transition: background .16s, border-color .16s; }
 .pol-explore__button:hover:not(:disabled) { border-color: #8a97ab; background: #f5f3ff; }
-.pol-explore__button[aria-pressed="true"] { border-color: var(--pe-accent); background: #f5f3ff; color: var(--pe-accent-ink); }
-.pol-explore .polariscope-hotspot { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 1px solid #a78bfa; border-radius: 50%; color: var(--pe-accent-dark); background: #ffffffe8; box-shadow: 0 2px 12px #1a233220; font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace; font-size: 10px; transition: background .15s, box-shadow .15s; }
+.pol-explore__button[aria-pressed="true"] { border-color: var(--iu-accent-strong, #6d28d9); background: #f5f3ff; color: var(--iu-accent-ink, #5b21b6); }
+.pol-explore .polariscope-hotspot { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 1px solid #a78bfa; border-radius: 50%; color: var(--iu-accent-ink, #5b21b6); background: #ffffffe8; box-shadow: 0 2px 12px #1a233220; font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace; font-size: 10px; transition: background .15s, box-shadow .15s; }
 .pol-explore .polariscope-hotspot::before { content: ""; position: absolute; inset: -5px; border: 1px solid #6d28d947; border-radius: inherit; }
 .pol-explore .polariscope-hotspot.is-ghosted, .pol-explore .polariscope-scene .is-ghosted { opacity: .32; }
-.pol-explore .polariscope-hotspot:hover, .pol-explore .polariscope-hotspot.is-selected { background: var(--pe-accent); color: #fff; box-shadow: 0 0 0 5px #6d28d925; }
+.pol-explore .polariscope-hotspot:hover, .pol-explore .polariscope-hotspot.is-selected { background: var(--iu-accent-strong, #6d28d9); color: #fff; box-shadow: 0 0 0 5px #6d28d925; }
 .pol-explore .polariscope-scene-fallback .px-button { padding: 8px 16px; border: 1px solid #bcd3ed; border-radius: 5px; background: #ffffff; font-size: 12px; }
 .pol-explore__view-buttons .pol-explore__button { background: #ffffffe8; min-height: 34px; padding: 6px 10px; font-size: 10px; }
 .pol-explore__detail .pol-explore__button { margin-top: 14px; }
@@ -41,9 +41,9 @@
 .pol-trace__grid { stroke: #d4dfee; stroke-width: 1; }
 .pol-trace__axis { stroke: #bcd3ed; stroke-width: 1; }
 .pol-trace__theory { fill: none; stroke: #a9b7c9; stroke-width: 1.2; stroke-dasharray: 3 3; }
-.pol-trace__seen { fill: none; stroke: var(--pe-accent); stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
-.pol-trace__cursor { stroke: var(--pe-accent); stroke-width: 1; stroke-dasharray: 2 2; }
-.pol-trace__dot { fill: var(--pe-accent); stroke: #fff; stroke-width: 1.4; }
+.pol-trace__seen { fill: none; stroke: var(--iu-accent-strong, #6d28d9); stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
+.pol-trace__cursor { stroke: var(--iu-accent-strong, #6d28d9); stroke-width: 1; stroke-dasharray: 2 2; }
+.pol-trace__dot { fill: var(--iu-accent-strong, #6d28d9); stroke: #fff; stroke-width: 1.4; }
 .pol-trace figcaption { margin-top: 2px; color: #5b6b80; font-size: 10px; }
 @media (max-width: 1180px) {
   .pol-eyepiece__ring { width: 138px; }
@@ -65,12 +65,12 @@
 .pol-explore--projection .course-shell__checklist, .pol-explore--projection .course-shell__check-button { font-size: 14px; }
 
 /* ── 学员自学模式：提示与控件集中在中间展台 ── */
-.polariscope-coach { position: absolute; left: 0; top: 0; z-index: 4; display: flex; gap: 8px; align-items: flex-start; max-width: 250px; padding: 9px 13px; border: 1px solid var(--pe-accent-line); border-radius: 10px; color: var(--pe-ink); background: #fffffff2; box-shadow: 0 8px 24px #1a233218; font-size: 13px; font-weight: 500; line-height: 1.55; pointer-events: none; }
-.polariscope-coach > span { flex: none; display: grid; place-items: center; width: 20px; height: 20px; margin-top: 1px; border-radius: 50%; color: #fff; background: var(--pe-accent); font-size: 11px; }
+.polariscope-coach { position: absolute; left: 0; top: 0; z-index: 4; display: flex; gap: 8px; align-items: flex-start; max-width: 250px; padding: 9px 13px; border: 1px solid var(--iu-accent-line, #ddd6fe); border-radius: 10px; color: var(--iu-ink, #1a2332); background: #fffffff2; box-shadow: 0 8px 24px #1a233218; font-size: 13px; font-weight: 500; line-height: 1.55; pointer-events: none; }
+.polariscope-coach > span { flex: none; display: grid; place-items: center; width: 20px; height: 20px; margin-top: 1px; border-radius: 50%; color: #fff; background: var(--iu-accent-strong, #6d28d9); font-size: 11px; }
 .polariscope-coach[data-tone="done"] { border-color: #bfe8d3; }
-.polariscope-coach[data-tone="done"] > span { background: var(--pe-success); }
-.polariscope-coach__line { stroke: var(--pe-accent); stroke-width: 1.5; stroke-dasharray: 4 3; }
-.polariscope-coach__dot { fill: #fff; stroke: var(--pe-accent); stroke-width: 2; animation: pol-coach-pulse 1.6s ease-in-out infinite; }
+.polariscope-coach[data-tone="done"] > span { background: var(--iu-success, #15803d); }
+.polariscope-coach__line { stroke: var(--iu-accent-strong, #6d28d9); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.polariscope-coach__dot { fill: #fff; stroke: var(--iu-accent-strong, #6d28d9); stroke-width: 2; animation: pol-coach-pulse 1.6s ease-in-out infinite; }
 @keyframes pol-coach-pulse { 50% { stroke-width: 5; stroke-opacity: .45; } }
 @keyframes pol-toast { 0% { opacity: 0; transform: translate(-50%, -6px); } 12%, 82% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .polariscope-coach__dot { animation: none; } }

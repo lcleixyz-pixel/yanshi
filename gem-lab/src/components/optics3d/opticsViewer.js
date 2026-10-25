@@ -313,22 +313,37 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange,
     if (hotspots.hideOccluded && occlusionFrame++ % 6 === 0) updateOcclusion();
     if (!hotspots.hideOccluded) occluded.clear();
     const w = container.clientWidth, h = container.clientHeight;
+    const placed = [];
+    let coachAt = null;
     for (const [id, button] of hotspotButtons) {
       const part = parts.find(p => p.id === id);
       projected.copy(part.hotspotLocal); part.object.localToWorld(projected); projected.project(camera);
       const visible = isShown(part.object) && !occluded.has(id) && projected.z > -1 && projected.z < 1 && Math.abs(projected.x) < 1.02 && Math.abs(projected.y) < 1.02;
+      const x = (projected.x * .5 + .5) * w, y = (-projected.y * .5 + .5) * h;
       button.hidden = !visible;
-      button.style.transform = `translate(${(projected.x * .5 + .5) * w}px, ${(-projected.y * .5 + .5) * h}px) translate(-50%, -50%)`;
-      if (coachBubble && id === hotspots.coach) {
-        // 右侧放不下时改到热点左侧，避免气泡被三维区边缘裁掉。
-        // 依次尝试右侧、左侧；两侧都放不下（手机窄画幅）时放到热点正上方，不压住热点。
-        const x = (projected.x * .5 + .5) * w, y = (-projected.y * .5 + .5) * h, width = coachBubble.offsetWidth, height = coachBubble.offsetHeight;
-        const side = x + 24 + width <= w - 8 ? 'right' : x - 24 - width >= 8 ? 'left' : 'above';
-        const left = side === 'right' ? x + 24 : side === 'left' ? x - 24 - width : Math.min(w - 8 - width, Math.max(8, x - width / 2));
-        const top = side === 'above' ? y - 24 - height : y - height / 2;
-        coachBubble.hidden = !visible; coachBubble.dataset.side = side;
-        coachBubble.style.transform = `translate(${left}px, ${top}px)`;
+      button.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+      if (visible) placed.push({ x, y, hw: button.offsetWidth / 2, hh: button.offsetHeight / 2 });
+      if (coachBubble && id === hotspots.coach) coachAt = { x, y, visible };
+    }
+    if (coachBubble && coachAt) {
+      // 依次尝试热点右侧、左侧（各试居中、偏上、偏下），避开其他标签且不出三维区；
+      // 都不行时退回第一个不出界的位置，两侧都放不下（手机窄画幅）时放到热点正上方，不压住热点。
+      const { x, y, visible } = coachAt, width = coachBubble.offsetWidth, height = coachBubble.offsetHeight;
+      const hits = (left, top) => placed.some(p => Math.abs(p.x - x) + Math.abs(p.y - y) > 1
+        && left < p.x + p.hw + 4 && left + width > p.x - p.hw - 4 && top < p.y + p.hh + 4 && top + height > p.y - p.hh - 4);
+      const options = [];
+      for (const side of ['right', 'left']) {
+        const left = side === 'right' ? x + 24 : x - 24 - width;
+        if (left < 8 || left + width > w - 8) continue;
+        for (const dy of [0, -44, 44]) {
+          const top = Math.max(8, Math.min(h - 8 - height, y - height / 2 + dy));
+          options.push({ side, left, top });
+        }
       }
+      const chosen = options.find(o => !hits(o.left, o.top)) ?? options[0]
+        ?? { side: 'above', left: Math.min(w - 8 - width, Math.max(8, x - width / 2)), top: y - 24 - height };
+      coachBubble.hidden = !visible; coachBubble.dataset.side = chosen.side;
+      coachBubble.style.transform = `translate(${chosen.left}px, ${chosen.top}px)`;
     }
   }
   let pointerDown;

@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { lessonUsesSample, STRUCTURE_ASSETS, STRUCTURE_PART_IDS, type PolariscopeStructureState, type StructurePartId } from '../../domain/polariscopeStructure';
+import { lessonUsesSample, snapAnalyzerDrag, STRUCTURE_ASSETS, STRUCTURE_PART_IDS, type PolariscopeStructureState, type StructurePartId } from '../../domain/polariscopeStructure';
 import { getPolariscopeProfile } from '../../domain/polariscopeSamples';
 import { createOpticalTeachingOverlay } from './OpticalTeachingOverlay';
 import { createSampleModel } from './SampleOnStage';
@@ -333,7 +333,10 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
       }
       if (drag && event.pointerId === drag.pointer) {
         if (Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) >= 5) drag.moved = true;
-        if (drag.moved) latest.current.onAngleChange(drag.id, Math.round((((drag.startAngle + (event.clientX - drag.startX) * .65) % 360 + 360) % 360) * 10) / 10);
+        if (drag.moved) {
+          const raw = Math.round((((drag.startAngle + (event.clientX - drag.startX) * .65) % 360 + 360) % 360) * 10) / 10;
+          latest.current.onAngleChange(drag.id, drag.id === 'analyzer' ? snapAnalyzerDrag(raw) : raw);
+        }
         event.stopImmediatePropagation(); event.preventDefault();
       } else if (performance.now() - lastHoverAt > 45 && activePointers.size === 0) {
         lastHoverAt = performance.now(); const { part, power } = pick(event); canvas.dataset.hoveredPart = part ?? '';
@@ -683,8 +686,18 @@ export default function PolariscopeScene(props: PolariscopeSceneProps) {
           if (!current.viewShift) {
             if (side > 0 && ax + 70 + bw > width - margin) side = -1; else if (side < 0 && ax - 70 - bw < margin) side = 1;
           }
-          const bx = Math.max(margin, Math.min(width - bw - margin, side > 0 ? ax + 70 : ax - 70 - bw));
-          const by = Math.max(margin, Math.min(height - bh - margin, ay - bh / 2 - 26));
+          // 气泡不压部件名称：读出可见标签的实际位置，按「默认高度 → 上移 → 下移 → 换边」依次找空位，都不行时用默认位置。
+          const box = container.getBoundingClientRect();
+          const labelRects = [...markers.current.values()].filter(marker => marker.style.display !== 'none').map(marker => {
+            const r = marker.getBoundingClientRect(); return { l: r.left - box.left, t: r.top - box.top, r: r.right - box.left, b: r.bottom - box.top };
+          });
+          const place = (s: number, dy: number) => ({ s, x: Math.max(margin, Math.min(width - bw - margin, s > 0 ? ax + 70 : ax - 70 - bw)), y: Math.max(margin, Math.min(height - bh - margin, ay - bh / 2 + dy)) });
+          const sides = current.viewShift ? [side] : [side, -side];
+          const candidates = sides.flatMap(s => [-26, -72, 30, -118, 76].map(dy => place(s, dy)));
+          const free = candidates.find(c => !labelRects.some(r => c.x < r.r + 4 && c.x + bw > r.l - 4 && c.y < r.b + 4 && c.y + bh > r.t - 4));
+          const chosen = free ?? candidates[0];
+          side = chosen.s;
+          const bx = chosen.x, by = chosen.y;
           bubble.style.transform = `translate(${bx.toFixed(1)}px, ${by.toFixed(1)}px)`;
           const ex = side > 0 ? bx : bx + bw, ey = Math.max(by + 10, Math.min(by + bh - 10, ay));
           coachLine.current?.setAttribute('x1', String(ax)); coachLine.current?.setAttribute('y1', String(ay));

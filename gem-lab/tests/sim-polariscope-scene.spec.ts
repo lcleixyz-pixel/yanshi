@@ -106,6 +106,25 @@ test.describe('native polariscope scene', () => {
     }
   });
 
+  test('dragging the analyzer ring near 90° settles exactly on crossed, while keyboard steps stay continuous', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.goto(polariscopeUrl(ROUTE));
+    await waitForScene(page);
+    await page.getByTestId('sim-polari-mode-structure').click();
+    await stableCamera(page);
+    expect((await angles(page)).analyzer).toBe(0);
+    const point = await surfacePoint(page, 'analyzer');
+    // 0.65°/px：拖 136 px 约 88.4°，离 90° 不到 3°，应吸附到正好 90°。
+    await page.mouse.move(point.x, point.y);
+    await page.mouse.down();
+    await page.mouse.move(point.x + 136, point.y, { steps: 16 });
+    await page.mouse.up();
+    await expect.poll(async () => (await angles(page)).analyzer).toBe(90);
+    // 键盘逐度步进不吸附：从 90° 按一次右键就是 91°。
+    await page.getByLabel('上偏光片角度', { exact: true }).press('ArrowRight');
+    await expect.poll(async () => (await angles(page)).analyzer).toBe(91);
+  });
+
   test('orbit and zoom change the camera while preserving both mechanical angles', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto(polariscopeUrl(ROUTE));

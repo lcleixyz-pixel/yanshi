@@ -69,6 +69,8 @@
 .iu-button[aria-pressed="true"] { border-color: var(--iu-accent-strong); background: var(--iu-accent-soft); color: var(--iu-accent-ink); }
 .iu-button--primary { border-color: var(--iu-accent-strong); color: #fff; background: var(--iu-accent-strong); }
 .iu-button--primary:hover:not(:disabled) { border-color: var(--iu-accent-ink); background: var(--iu-accent-ink); }
+/* 主按钮处于按下状态（如「停止转动」）时文字是深紫，悬停换成深底后改回白字，避免文字与底色同色。 */
+.iu-button--primary[aria-pressed="true"]:hover:not(:disabled) { color: #fff; }
 .iu-button--quiet { border-color: transparent; background: transparent; padding-inline: 8px; color: var(--iu-muted); }
 .iu-eyebrow { display: block; color: var(--iu-muted); font-family: var(--iu-mono); font-size: 10px; letter-spacing: .18em; line-height: 1.6; }
 

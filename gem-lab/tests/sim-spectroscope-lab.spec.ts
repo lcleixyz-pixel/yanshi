@@ -75,7 +75,7 @@ test("引导任务学员：对光、调狭缝焦距、标记核对、解释，�
   await page.getByTestId("sim-task-continuous").getByRole("button").click();
   await page.getByTestId("sim-bench-place").click();
   await answer(page, "continuous", 1);
-  await expect(task(page)).toContainText("调节与对准");
+  await expect(task(page)).toContainText("调节狭缝与焦距");
   // 第二步：调好狭缝与焦距。
   await slider(page, "狭缝宽度").fill("3.2");
   await slider(page, "目镜焦距").fill("5");
@@ -228,7 +228,7 @@ test("全部重置只恢复实验屏：认识屏的部件与两机型的任务�
 test("完成课程的进度不被重置退回：做完后「全部重置」仍是 6 / 6，可以完成课程", async ({ page }) => {
   await page.goto(`${route}?mode=student`);
   await ready(page);
-  // 实验屏四步：对光与照明 → 调节与对准 → 标记吸收特征 → 解释与适用条件。
+  // 实验屏四步：对光与照明 → 调节狭缝与焦距 → 标记吸收特征 → 解释与适用条件。
   await page.getByTestId("sim-task-continuous").getByRole("button").click();
   await page.getByTestId("sim-bench-place").click();
   await answer(page, "continuous", 1);
@@ -275,7 +275,7 @@ test("换机型：三屏共用一个选择，工作台回到该机型的课程�
   await page.getByTestId("sim-task-continuous").getByRole("button").click();
   await page.getByTestId("sim-bench-place").click();
   await answer(page, "continuous", 1);
-  await expect(task(page)).toContainText("调节与对准");
+  await expect(task(page)).toContainText("调节狭缝与焦距");
   await page.getByTestId("sim-machine-grating").click();
   await expect(canvas(page)).toHaveAttribute("data-rendered-instrument", "grating", { timeout: 60_000 });
   // 光栅式是另一门课：从自己的第一步开始，进度 0 / 6。
@@ -352,7 +352,7 @@ test("任务卡停靠在控制面板上方、不挡目镜视场；问答在本�
   await page.getByTestId("sim-bench-place").click();
   await expect(task(page).getByRole("radio")).toHaveCount(3);
   await answer(page, "continuous", 1);
-  await expect(task(page)).toContainText("调节与对准");
+  await expect(task(page)).toContainText("调节狭缝与焦距");
 });
 
 test("观察面板：引导时顶部六步，谱条放大在左、与光源 / 狭缝 / 调焦 / 夹样在一起，1280×720 不用滚动；工作台右移让位", async ({ page }) => {

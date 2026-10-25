@@ -287,7 +287,8 @@ export function evaluateBench(sample: SampleDef, rawState: BenchState): BenchEva
       opticsNeedAdjustment = true;
     }
     if (Math.abs(state.focus - 0.5) > FOCUS_TOLERANCE) {
-      problem('defocus', '焦距偏离清晰位置；调焦后再记录。');
+      // 指明方向（与焦距滑杆两端的「缩回 / 拉出」一致），学员不必来回试。
+      problem('defocus', `焦距偏离清晰位置：目镜套筒往「${state.focus < 0.5 ? '拉出' : '缩回'}」方向调，谱线变锐后再记录。`);
       opticsNeedAdjustment = true;
     }
   }

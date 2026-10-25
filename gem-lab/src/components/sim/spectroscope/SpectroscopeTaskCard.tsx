@@ -4,7 +4,7 @@ import { useLearningRecord } from '../../course/useLearningRecord';
 import { useSimDrawer } from '../SimDrawer';
 import { SimTaskCard, SimTaskDock, SimTaskLine, taskChecklist } from '../SimShell';
 import type { CourseMode } from '../../../domain/course';
-import { STEP_SHORT, VARIANT_TEXT } from '../../../domain/spectroscopeCopy';
+import { VARIANT_TEXT } from '../../../domain/spectroscopeCopy';
 import { isComplete, QUESTIONS } from '../../../domain/spectroscopeCourse';
 import { STEP_SCREEN, type CourseView, type Machine } from '../../../domain/spectroscopeSim';
 import { SIM_SCREEN_LABELS, type SimScreenId } from '../../../domain/simSession';
@@ -59,7 +59,7 @@ export default function SpectroscopeTaskCard({ screen, view, machine, open, mode
 
   return (
     <SimTaskCard
-      title={`${STEP_SHORT[step]}${view.screenDone ? ' · 本屏已完成' : ''}`}
+      title={`${current.title}${view.screenDone ? ' · 本屏已完成' : ''}`}
       items={checklist.items}
       progress={view.progress}
       open={open}

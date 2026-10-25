@@ -25,7 +25,7 @@ const VIEWS: readonly (readonly [BenchView, string])[] = [['whole', '整体'], [
 
 /**
  * 分光镜 · 实验屏：照明夹样工作台与两门课的操作合在一屏。
- * 引导任务的四步（对光与照明、调节与对准、标记吸收特征、解释与适用条件）用的是同一套工作台状态；
+ * 引导任务的四步（对光与照明、调节狭缝与焦距（光栅式为对准与亮度）、标记吸收特征、解释与适用条件）用的是同一套工作台状态；
  * 机型三屏共用；狭缝、调焦与横移用相对刻度（0–10 / −10…10），三维仍按原单位回写。
  */
 export default function SpectroscopeLabScreen({ sim, screen, onScreen, session, dispatch }: SimScreenProps) {

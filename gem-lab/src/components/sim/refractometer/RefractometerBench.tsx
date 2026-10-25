@@ -86,7 +86,8 @@ export default function RefractometerBench({ sim, screen, onScreen, embedded, sc
         ['clean-stage', '擦净测台', scene.sample === 'placed', 'sim-refracto-clean-stage'],
         ['clean-sample', '擦净样品', scene.sample === 'placed', 'sim-refracto-clean-sample'],
       ] as const).map(([type, label, disabled, testId]) => (
-        <button key={type} type="button" className="iu-button" disabled={disabled} aria-pressed={type === 'power' ? scene.power : undefined}
+        // 电源按钮靠文字区分开关，不再用 aria-pressed：按下样式与「下一步」高亮相同，会让人误以为该关电源。
+        <button key={type} type="button" className="iu-button" disabled={disabled}
           data-next={next === type} onClick={() => op({ type })} data-testid={testId}>{label}</button>
       ))}
     </>

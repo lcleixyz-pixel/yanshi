@@ -35,7 +35,7 @@ async function completeLight(page: Page) {
   await expect(canvas(page)).toHaveAttribute("data-sample-placed", "true");
   await answer(page, "continuous", 1);
   await expectProgress(page, 1);
-  await expect(task(page)).toContainText("调节与对准");
+  await expect(task(page)).toContainText("调节狭缝与焦距");
 }
 
 async function completeTune(page: Page) {

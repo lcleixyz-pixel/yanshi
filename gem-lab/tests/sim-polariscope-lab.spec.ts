@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, polariscopeUrl, type Page } from "./fixtures/polariscope";
 
 const route = "/sim/polariscope/lab";
 const scene = (page: Page) => page.getByTestId("polariscope-scene");
@@ -53,8 +53,12 @@ test("先预测后观察：未预测不记录，转满一周揭晓；换样品�
 });
 
 test("学员引导：实验屏三步（放样旋转、换方向复核、解释）完成后回认识屏补齐，全部完成写入学习进度", async ({ page }) => {
-  await page.goto("/sim/polariscope/learn?mode=student");
+  // 与认识屏课程共用 CI 的公开流畅画质；五次完整转动及全部学习门禁仍实际执行。
+  await page.goto(polariscopeUrl("/sim/polariscope/learn?mode=student"));
   await ready(page);
+  const canvas = page.getByTestId("polariscope-canvas");
+  await expect(canvas).toHaveAttribute("data-loaded", "true");
+  if (process.env.CI) await expect(canvas).toHaveAttribute("data-quality", "standard");
   for (const id of ["polarizer", "stage", "analyzer"]) await page.getByTestId(`sim-part-${id}`).click();
   await page.getByTestId("sim-task-next").click();
   for (let i = 0; i < 4; i++) await page.getByTestId("sim-polari-path-next").click();
@@ -63,6 +67,8 @@ test("学员引导：实验屏三步（放样旋转、换方向复核、解释�
   await expect(task(page)).toContainText("引导任务 · 3 / 6");
   await page.getByTestId("sim-task-next-screen").getByRole("button").click();
   await ready(page);
+  await expect(canvas).toHaveAttribute("data-loaded", "true");
+  if (process.env.CI) await expect(canvas).toHaveAttribute("data-quality", "standard");
   await expect(task(page)).toContainText("放样旋转");
   await expect(stage(page)).toHaveAttribute("data-sample", "spinel");
   await turn(page, "all-dark");

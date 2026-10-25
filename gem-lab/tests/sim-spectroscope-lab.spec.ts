@@ -1,5 +1,11 @@
 import { expect, test, type Page } from "@playwright/test";
 
+/** 原理计算卡默认收起；要用里面的示例下拉框或读数时先展开。 */
+const openCase = async (page: Page, id: string) => {
+  const card = page.getByTestId(id);
+  if ((await card.getAttribute("data-open")) === "false") await card.locator(".sim-readout__head").click();
+};
+
 const route = "/sim/spectroscope/lab";
 const canvas = (page: Page) => page.getByTestId("spectroscope-bench-canvas");
 const stage = (page: Page) => page.getByTestId("sim-spectro-stage");
@@ -28,6 +34,66 @@ test.beforeEach(async ({ page }) => {
   test.setTimeout(120_000);
   await page.route("https://fonts.googleapis.com/**", (r) => r.fulfill({ contentType: "text/css", body: "" }));
 });
+
+for (const machine of ["prism", "grating"]) {
+  test(`条件表区分放样与对光：${machine} 偏轴、无光、弱光及反射布置与工作台一致`, async ({ page }) => {
+    await page.goto(`${route}?machine=${machine}&sample=amethyst`);
+    await ready(page);
+    const conditions = page.getByTestId("sim-obs-conditions");
+    const condition = (label: string) => conditions.locator("dt").filter({ hasText: new RegExp(`^${label}$`) }).locator("..").locator("dd");
+    await page.getByTestId("sim-bench-power").click();
+    await page.getByTestId("sim-bench-place").click();
+    await slider(page, "样品横移").fill("10");
+    await expect(canvas(page)).toHaveAttribute("data-light-path", "missed");
+    // 原错误：样品仍夹着，但光束已经错开，条件表却仍写「在光路中」。
+    await expect(conditions).not.toContainText("在光路中");
+    await expect(condition("样品")).toHaveText("已夹持");
+    await expect(condition("光路")).toHaveText("灯束未照中样品");
+    await expect(page.getByTestId("sim-spectro-status")).toContainText("没有照中样品");
+    // 灯头跟着横移虽能照中样品，样品仍在分光镜接收轴外。
+    await slider(page, "灯头横移").fill("3.2");
+    await expect(canvas(page)).toHaveAttribute("data-light-path", "missed");
+    await expect(condition("光路")).toHaveText("样品偏离观察轴");
+    await expect(page.getByTestId("sim-spectro-status")).toContainText("离开分光镜的接收轴");
+
+    await slider(page, "样品横移").fill("0");
+    await slider(page, "灯头横移").fill("0");
+    await expect(canvas(page)).toHaveAttribute("data-light-path", "aligned");
+    await expect(condition("光路")).toHaveText("已对准");
+    await slider(page, "光源亮度").fill("30");
+    await expect(canvas(page)).toHaveAttribute("data-light-path", "weak");
+    await expect(condition("光路")).toHaveText("收光偏弱");
+    await slider(page, "光源亮度").fill("0");
+    await expect(canvas(page)).toHaveAttribute("data-light-path", "off");
+    await expect(condition("光路")).toHaveText("光量不足");
+    await page.getByTestId("sim-bench-power").click();
+    await expect(condition("样品")).toHaveText("已夹持");
+    await expect(condition("光路")).toHaveText("光源未开");
+    await slider(page, "光源亮度").fill("80");
+    await page.getByTestId("sim-bench-power").click();
+    await page.getByTestId("sim-bench-place").click();
+    await expect(canvas(page)).toHaveAttribute("data-light-path", "bypass");
+    await expect(condition("样品")).toHaveText("未夹持");
+    await expect(condition("光路")).toHaveText("光未经过样品");
+    await page.getByTestId("sim-bench-place").click();
+
+    for (const method of ["internal-reflection", "surface-reflection"]) {
+      await page.getByTestId(`sim-method-${method}`).click();
+      await expect(canvas(page)).toHaveAttribute("data-light-path", "aligned");
+      await expect(condition("样品")).toHaveText("已放到黑色台面");
+      await expect(condition("光路")).toHaveText("已对准（仅布置练习）");
+      await expect(page.getByTestId("sim-spectro-field")).toContainText("本方法先做布置练习");
+    }
+    // 放好不透明样品也不能把受阻的内部光路写成已对准。
+    await page.getByTestId("sim-sample-select").selectOption("pearl");
+    await page.getByTestId("sim-method-internal-reflection").click();
+    await expect(canvas(page)).toHaveAttribute("data-light-path", "blocked");
+    await expect(condition("光路")).toHaveText("内部光路不可观察");
+    await page.getByTestId("sim-method-transmission").click();
+    await expect(canvas(page)).toHaveAttribute("data-light-path", "blocked");
+    await expect(condition("光路")).toHaveText("样品不透光");
+  });
+}
 
 test("自由练习：摆好光路、标记吸收特征、记录并保存后才开放对照资料，改条件后旧记录过期", async ({ page }) => {
   await page.goto(route);
@@ -124,6 +190,7 @@ test("引导任务学员：对光、调狭缝焦距、标记核对、解释，�
   }
   await page.getByTestId("sim-part-focusTube").click();
   await expect(page.getByTestId("sim-task")).toContainText("查看光路 0 / 4");
+  await openCase(page, "sim-spectro-case");
   for (const id of ["white-light", "wavelength-400", "wavelength-550", "wavelength-700"]) await page.getByTestId("sim-spectro-case-select").selectOption(id);
   await answer(page, "dispersion", 0);
   await expect(page.getByTestId("sim-task-finish")).toBeVisible();
@@ -161,6 +228,7 @@ test("引导任务讲师演示：完整做完也不写学习进度", async ({ pa
   }
   await page.getByTestId("sim-part-focusTube").click();
   await expect(page.getByTestId("sim-task")).toContainText("查看光路 0 / 4");
+  await openCase(page, "sim-spectro-case");
   for (const id of ["white-light", "wavelength-400", "wavelength-550", "wavelength-700"]) await page.getByTestId("sim-spectro-case-select").selectOption(id);
   await answer(page, "dispersion", 0);
   await page.getByTestId("sim-task-finish").getByRole("button").click();
@@ -253,6 +321,7 @@ test("完成课程的进度不被重置退回：做完后「全部重置」仍�
   }
   await page.getByTestId("sim-part-focusTube").click();
   await expect(page.getByTestId("sim-task")).toContainText("查看光路 0 / 4");
+  await openCase(page, "sim-spectro-case");
   for (const id of ["white-light", "wavelength-400", "wavelength-550", "wavelength-700"]) await page.getByTestId("sim-spectro-case-select").selectOption(id);
   await expect(page.getByTestId("sim-task")).toContainText("查看光路 4 / 4");
   await answer(page, "dispersion", 0);

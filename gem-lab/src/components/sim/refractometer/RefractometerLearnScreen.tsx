@@ -2,12 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import RangeControl from '../../shared/RangeControl';
 import { createOpticsViewer, type OpticsSnapshot, type OpticsViewer } from '../../optics3d/opticsViewer.js';
 import { opticsAssetBase } from '../../optics3d/opticsInstruments';
-import { ResetAllButton, SimChecks, SimPanel, SimReadout, SimShell } from '../SimShell';
+import { ResetAllButton, SimChecks, SimPanel, SimReadout, SimShell, SimStepBar } from '../SimShell';
 import RefractometerTaskCard from './RefractometerTaskCard';
 import type { SimScreenProps } from '../registry';
 import { KEY_PARTS, PATH_STAGES } from '../../../domain/refractometerCourse';
 import {
-  applyOperation, COURSE_SAMPLE, courseView, EMPTY_SCENE_FIELDS, LEARN_INITIAL, labInitial, readLearnScene, readTaskData,
+  applyOperation, COURSE_SAMPLE, courseStepBar, courseView, EMPTY_SCENE_FIELDS, LEARN_INITIAL, labInitial, readLearnScene, readTaskData,
   SAMPLE_CASES_PATH, type LearnScene, type SimOperation,
 } from '../../../domain/refractometerSim';
 import { PART_SHORT } from '../../../domain/refractometerCopy';
@@ -52,8 +52,12 @@ export default function RefractometerLearnScreen({ sim, screen, onScreen, sessio
   useEffect(() => { viewerRef.current?.setRays(learn.rays); }, [learn.rays]);
   useEffect(() => { viewerRef.current?.setExplode(learn.explode); }, [learn.explode]);
   useEffect(() => { if (snapshot.status === 'ready') viewerRef.current?.setView(learn.view); }, [learn.view, snapshot.status]);
-  // 跟随光路一步：预置良好接触的教学示例（与课程页一致）。
-  useEffect(() => { if (snapshot.status === 'ready' && view.state.step === 'path') viewerRef.current?.setCase(`sample-${COURSE_SAMPLE.characteristics.refractiveIndex}`); }, [snapshot.status, view.state.step]);
+  // 跟随光路一步：预置良好接触的教学示例（与课程页一致），并切到内部光路、打开光路——整机外观下光线藏在机身里看不见。
+  useEffect(() => {
+    if (snapshot.status !== 'ready' || view.state.step !== 'path') return;
+    viewerRef.current?.setCase(`sample-${COURSE_SAMPLE.characteristics.refractiveIndex}`);
+    if (task.mode !== null) { viewerRef.current?.setView('optics'); patch({ view: 'optics', rays: true }); }
+  }, [snapshot.status, view.state.step, task.mode]);
 
   // 选中模型上的部件即记为已看（学员模式的「点这里」据此指向下一个未看的部件）。
   const selectedId = ready?.state.selectedId ?? null;
@@ -96,7 +100,9 @@ export default function RefractometerLearnScreen({ sim, screen, onScreen, sessio
         )}
         <p className="sim-stage__hint">拖动旋转 · 滚轮缩放 · 比例及内部处方未标定</p>
       </section>
-      <SimReadout title="光路示例" meta="原理计算" testId="sim-refracto-case">
+      {task.mode !== null && <SimStepBar steps={courseStepBar(view)} />}
+      {/* 原理计算卡默认收起：数值面向讲解与复核，学员第一眼先看模型与光路。 */}
+      <SimReadout title="光路示例" meta="原理计算" defaultOpen={false} testId="sim-refracto-case">
         <select className="sim-select" aria-label="光路示例" disabled={!ready} value={ready?.state.caseId ?? ''} onChange={(event) => viewerRef.current?.setCase(event.target.value)} data-testid="sim-refracto-case-select">
           {ready?.cases.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}
         </select>

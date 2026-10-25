@@ -1,6 +1,12 @@
 import { expect, test, type Page } from "@playwright/test";
 import { SAMPLES } from "../src/data/samples";
 
+/** 原理计算卡默认收起；要用里面的示例下拉框或读数时先展开。 */
+const openCase = async (page: Page, id: string) => {
+  const card = page.getByTestId(id);
+  if ((await card.getAttribute("data-open")) === "false") await card.locator(".sim-readout__head").click();
+};
+
 const route = "/sim/spectroscope/lab";
 const canvas = (page: Page) => page.getByTestId("spectroscope-bench-canvas");
 const stage = (page: Page) => page.getByTestId("sim-spectro-stage");
@@ -281,6 +287,7 @@ test("光栅式引导任务学员：固定狭缝焦距，靠亮度与对准排�
     await expect(page.getByTestId(`sim-part-${id}`)).toHaveAttribute("aria-pressed", "true");
   }
   await expect(task(page)).toContainText("查看光路 0 / 3");
+  await openCase(page, "sim-spectro-case");
   for (const id of ["order-0", "order-1", "order--1"]) await page.getByTestId("sim-spectro-case-select").selectOption(id);
   await expect(task(page)).toContainText("查看光路 3 / 3");
   await answer(page, "diffraction", 0);

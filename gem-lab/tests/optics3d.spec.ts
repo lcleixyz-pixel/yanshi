@@ -1,5 +1,11 @@
 import { expect, test, type Page } from '@playwright/test';
 
+/** 原理计算卡默认收起；要用里面的示例下拉框或读数时先展开。 */
+const openCase = async (page: Page, id: string) => {
+  const card = page.getByTestId(id);
+  if ((await card.getAttribute('data-open')) === 'false') await card.locator('.sim-readout__head').click();
+};
+
 test.beforeEach(async ({ page }) => {
   // 外部字体服务不属于仪器回归范围；固定使用系统备用字体，保留全部本地资源和控制台错误检查。
   await page.route('https://fonts.googleapis.com/**', route => route.fulfill({ contentType: 'text/css', body: '' }));
@@ -25,6 +31,7 @@ for (const [machine, instrument] of [['prism', 'prism-spectroscope'], ['grating'
     await expect(canvas(page)).toHaveAttribute('data-loaded', 'true', { timeout: 60_000 });
     await expect(canvas(page)).toHaveAttribute('data-asset-version', 'paper-optics-v1');
     expect((await caseInfo(page)).visiblePathCount).toBeGreaterThan(0);
+    await openCase(page, 'sim-spectro-case');
     const select = page.getByTestId('sim-spectro-case-select');
     const values = await select.locator('option').evaluateAll((options) => options.map((option) => (option as HTMLOptionElement).value));
     await select.selectOption(values[values.length - 1]);
@@ -52,6 +59,7 @@ for (const [knowledge, ids] of [['refractometer', ['refractometer']]] as const) 
       await expect(canvas(page)).toHaveAttribute('data-loaded', 'true', { timeout: 60_000 });
       await expect(canvas(page)).toHaveAttribute('data-asset-version', 'paper-optics-v2');
       expect((await caseInfo(page)).visiblePathCount).toBeGreaterThan(0);
+      await openCase(page, 'sim-refracto-case');
       const select = page.getByTestId('sim-refracto-case-select');
       const values = await select.locator('option').evaluateAll(options => options.map(option => (option as HTMLOptionElement).value));
       await select.selectOption(values[values.length - 1]);

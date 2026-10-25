@@ -108,6 +108,8 @@
   .sim-eyepiece { top: auto; bottom: 8px; right: 8px; width: 150px; padding: 7px 9px; gap: 3px; }
   .sim-eyepiece h2 span { display: none; }
   .sim-eyepiece > p { font-size: 11px; line-height: 1.45; }
+  /* 记录抽屉止于底部控制按钮上方，保存按钮不被浮动的「控制」入口盖住。 */
+  .sim-sheet { bottom: 56px; max-height: calc(70% - 56px); }
 }
 
 /* 三维不可用时的 2D 备用入口（偏光镜）。 */
@@ -152,6 +154,10 @@
 .sim-polari-choices button { min-height: 40px; padding: 6px 8px; border: 1px solid var(--iu-line-2); border-radius: 8px; background: #fff; color: var(--iu-ink-2); font-size: 13px; }
 .sim-polari-choices button:last-child { grid-column: 1 / -1; color: var(--iu-muted); }
 .sim-polari-choices button:hover { border-color: var(--iu-accent-strong); color: var(--iu-accent-ink); background: var(--iu-accent-soft); }
+/* 平板的操作区还需留出右侧控制栏，观察框容不下目镜与预测两列，改为上下排列。 */
+@media (min-width: 681px) and (max-width: 1100px) {
+  .sim-polari-obs__body { grid-template-columns: minmax(0, 1fr); grid-template-areas: "eye" "poe" "hand" "cond"; }
+}
 @media (max-width: 680px) {
   /* 手机：顶部任务一行、中间仪器、底部观察；场景与面板共用高度，物台不藏在面板后面。 */
   .sim-shell[data-instrument="polariscope"][data-screen="lab"] .sim-shell__play { --sim-polari-obs-height: min(360px, 52%); }
@@ -159,8 +165,9 @@
   .sim-stage[data-obs-open="true"] { bottom: calc(var(--sim-polari-obs-height) + 72px); }
   /* 场景本身的内联 380px 最小高度只在这个手机观察工作区解除。 */
   .sim-stage[data-obs-open] .polariscope-scene { min-height: 0 !important; }
-  .sim-polari-obs, .sim-polari-obs[data-guided="true"] { left: 8px; right: 8px; top: auto; bottom: 64px; width: auto; max-height: var(--sim-polari-obs-height); }
+  .sim-polari-obs, .sim-polari-obs[data-guided="true"], .sim-polari-obs[data-open="false"] { left: 8px; right: 8px; top: auto; bottom: 64px; width: auto; max-height: var(--sim-polari-obs-height); }
   .sim-polari-obs[data-open="true"] { height: var(--sim-polari-obs-height); }
+  .sim-shell__play:has(> .sim-polari-obs[data-open="true"]) > .sim-task { max-height: min(40%, calc(100% - var(--sim-polari-obs-height) - 80px)); }
   .sim-polari-obs__body { grid-template-columns: auto minmax(0, 1fr); gap: 8px 10px; padding: 8px 10px; }
   .sim-polari-obs__scroll-hint { display: block; flex-shrink: 0; margin: 0; padding: 4px 10px; border-top: 1px solid var(--iu-line); color: var(--iu-muted); font-size: 11px; text-align: center; }
   .sim-polari-obs .pol-eyepiece__ring { width: 104px; padding: 6px; }
@@ -187,3 +194,10 @@
 
 /* 单独查看某个部件时的提示条：说明当前在看什么，并给回到整机的出口。 */
 .sim-stage__isolation { position: absolute; z-index: 3; left: 50%; top: 12px; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; padding: 4px 6px 4px 12px; border: 1px solid var(--iu-line-2); border-radius: 999px; background: #fff; font-size: 12px; box-shadow: 0 2px 10px #1a233214; }
+/* 实验屏：记录读数嵌在观察面板目镜旁，保存后收起为一行。 */
+.sim-record--inline { border: 1px solid var(--iu-line-2); border-radius: 8px; background: #fff; }
+.sim-record--inline header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 6px 9px; border-bottom: 1px solid var(--iu-line); }
+.sim-record--inline header strong { font-weight: 500; }
+.sim-shell .sim-record--inline header button { border: 0; background: transparent; color: var(--iu-muted); font-size: 11px; }
+.sim-record__line { margin: 0; padding: 5px 8px; border-left: 3px solid var(--iu-success); border-radius: 4px; background: #f0fdf4; color: var(--iu-ink-2); font-size: 12px; }
+.sim-record__line[data-stale="true"] { border-left-color: var(--iu-warn, #b45309); background: var(--iu-warn-soft, #fffbeb); }

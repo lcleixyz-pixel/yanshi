@@ -24,6 +24,11 @@
 .sim-obs__conditions dt { color: var(--iu-muted); }
 .sim-obs__conditions dd { margin: 0; color: var(--iu-ink); font-weight: 500; }
 
+/* 平板上右侧控制栏压缩了观察框宽度，圆形目镜与记录上下排列，避免目镜越出网格盖住输入。 */
+@media (min-width: 681px) and (max-width: 1100px) {
+  .sim-obs[data-layout="side"] .sim-obs__body { grid-template-columns: minmax(0, 1fr); grid-template-areas: "eye" "beside" "hand" "cond"; }
+}
+
 /* 操作按钮按课程顺序排开；引导时下一步高亮并写明动作（与仪器上的热点一致）。 */
 .sim-obs__ops { display: grid; grid-template-columns: repeat(auto-fill, minmax(98px, 1fr)); gap: 6px; }
 .sim-obs__ops .iu-button { padding: 4px 6px; font-size: 12px; line-height: 1.3; }
@@ -70,7 +75,9 @@
   .sim-shell__play:has(> .sim-obs) > .sim-stage { top: 48px; bottom: 112px; }
   .sim-shell__play:has(> .sim-obs[data-open="true"]) > .sim-stage { bottom: calc(var(--sim-obs-height) + 72px); }
   .sim-shell__play:has(> .sim-obs) > .sim-stage .sim-stage__hint { display: none; }
-  .sim-obs, .sim-obs[data-guided="true"] { left: 8px; right: 8px; top: auto; bottom: 64px; width: auto; max-height: var(--sim-obs-height); }
+  /* 收起状态仍停在底部，覆盖桌面的 bottom:auto，避免展开按钮回到顶部任务条下面。 */
+  .sim-obs, .sim-obs[data-guided="true"], .sim-obs[data-open="false"] { left: 8px; right: 8px; top: auto; bottom: 64px; width: auto; max-height: var(--sim-obs-height); }
+  .sim-shell__play:has(> .sim-obs[data-open="true"]) > .sim-task { max-height: min(40%, calc(100% - var(--sim-obs-height) - 80px)); }
   .sim-obs__beside .sim-note:last-child { display: none; }
   .sim-spectro-hand { grid-template-columns: minmax(0, 1fr); }
   .sim-spectro-hand > .sim-note { display: none; }

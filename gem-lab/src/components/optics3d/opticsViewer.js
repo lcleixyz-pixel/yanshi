@@ -322,8 +322,31 @@ export function createOpticsViewer({ container, instrument, assetBase, onChange,
       const x = (projected.x * .5 + .5) * w, y = (-projected.y * .5 + .5) * h;
       button.hidden = !visible;
       button.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
-      if (visible) placed.push({ x, y, hw: button.offsetWidth / 2, hh: button.offsetHeight / 2 });
+      if (visible) placed.push({ x, y, hw: button.offsetWidth / 2, hh: button.offsetHeight / 2, button });
       if (coachBubble && id === hotspots.coach) coachAt = { x, y, visible };
+    }
+    if (hotspots.labelMode === 'name') {
+      // 名称标签从上到下寻找视口内最近的空位；候选取已有标签的四边，密集处可少量错列。
+      // 不因两档纵向空间不足而退回重叠位置；只挪名称标签，不改部件锚点或数字热点。
+      const settled = [];
+      for (const p of [...placed].sort((a, b) => a.y - b.y)) {
+        const minX = p.hw + 4, maxX = w - p.hw - 4, minY = p.hh + 4, maxY = h - p.hh - 4;
+        const x = Math.max(minX, Math.min(maxX, p.x)), y = Math.max(minY, Math.min(maxY, p.y));
+        const xs = [...new Set([x, minX, maxX, ...settled.flatMap(q => [q.x - q.hw - p.hw - 5, q.x + q.hw + p.hw + 5])])].filter(v => v >= minX && v <= maxX);
+        const ys = [...new Set([y, minY, maxY, ...settled.flatMap(q => [q.y - q.hh - p.hh - 5, q.y + q.hh + p.hh + 5])])].filter(v => v >= minY && v <= maxY);
+        let best = null, distance = Infinity;
+        for (const cx of xs) for (const cy of ys) {
+          const d = (cx - p.x) ** 2 + (cy - p.y) ** 2;
+          if (d >= distance || settled.some(q => Math.abs(q.x - cx) < q.hw + p.hw + 4 && Math.abs(q.y - cy) < q.hh + p.hh + 4)) continue;
+          best = { x: cx, y: cy }; distance = d;
+        }
+        // 只有视口确实没有剩余空位时才保留边界内位置，仍保留所有名称与点选入口。
+        const position = best ?? { x, y };
+        const moved = position.x !== p.x || position.y !== p.y;
+        if (moved) { p.x = position.x; p.y = position.y; p.button.style.transform = `translate(${p.x}px, ${p.y}px) translate(-50%, -50%)`; }
+        p.button.dataset.nudged = String(moved);
+        settled.push(p);
+      }
     }
     if (coachBubble && coachAt) {
       // 依次尝试热点右侧、左侧（各试居中、偏上、偏下），避开其他标签且不出三维区；

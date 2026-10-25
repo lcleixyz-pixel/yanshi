@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import RangeControl from '../../shared/RangeControl';
 import { createOpticsViewer, type OpticsSnapshot, type OpticsViewer } from '../../optics3d/opticsViewer.js';
 import { opticsAssetBase, type OpticsInstrumentId } from '../../optics3d/opticsInstruments';
-import { ResetAllButton, SimChecks, SimPanel, SimReadout, SimShell } from '../SimShell';
+import { ResetAllButton, SimChecks, SimPanel, SimReadout, SimShell, SimStepBar } from '../SimShell';
 import SpectroscopeTaskCard from './SpectroscopeTaskCard';
 import type { SimScreenProps } from '../registry';
 import { MACHINE_LABELS, PART_SHORT } from '../../../domain/spectroscopeCopy';
@@ -106,7 +106,9 @@ export default function SpectroscopeLearnScreen({ sim, screen, onScreen, session
         )}
         <p className="sim-stage__hint">拖动旋转 · 滚轮缩放 · 箭头表示传播方向</p>
       </section>
-      <SimReadout title="光路示例" meta={MACHINE_LABELS[machine]} testId="sim-spectro-case">
+      {task.mode !== null && <SimStepBar steps={view.stepBar} />}
+      {/* 原理计算卡默认收起；「跟随光路」一步在任务卡里直接切换示例。 */}
+      <SimReadout title="光路示例" meta={MACHINE_LABELS[machine]} defaultOpen={false} testId="sim-spectro-case">
         <select className="sim-select" aria-label="光路示例" disabled={!ready} value={ready?.state.caseId ?? ''} onChange={(event) => { viewerRef.current?.setCase(event.target.value); operate({ type: 'see-case', id: event.target.value }); patchVariant({ caseId: event.target.value }); }} data-testid="sim-spectro-case-select">
           {ready?.cases.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}
         </select>
@@ -127,7 +129,22 @@ export default function SpectroscopeLearnScreen({ sim, screen, onScreen, session
         onAnswer={(id, option) => operate({ type: 'answer', id, option })}
         onRestart={() => dispatch({ type: 'task-restart' })}
         onScreen={onScreen}
-      />
+      >
+        {view.state.step === 'path' && (
+          <div className="sim-task__step" data-testid="sim-task-path">
+            <ol className="sim-path">
+              {view.config.cases.map((item) => (
+                <li key={item.id}>
+                  <button type="button" aria-pressed={view.state.casesSeen.includes(item.id)} disabled={!ready} data-testid={`sim-spectro-path-${item.id}`}
+                    onClick={() => { viewerRef.current?.setCase(item.id); if (variant.view !== 'optics') { viewerRef.current?.setView('optics'); patchVariant({ view: 'optics', caseId: item.id }); } else patchVariant({ caseId: item.id }); operate({ type: 'see-case', id: item.id }); }}>
+                    {view.state.casesSeen.includes(item.id) ? '✓ ' : ''}{item.label}
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
+      </SpectroscopeTaskCard>
     </>
   );
 

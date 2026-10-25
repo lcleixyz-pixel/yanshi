@@ -42,14 +42,15 @@ async function benchReady(page: Page) {
   await button(page, "轻推贴合").click();
 }
 
-/** 记录一次读数并保存（保存后记录页留在原位，显示已保存）。 */
+/** 记录一次读数并保存。实验屏的记录嵌在目镜旁，保存后自动收起、留一行已保存；浮层版保存后留在原位，再手动收起。 */
 async function record(page: Page, value: string, max?: string) {
   await page.getByTestId("sim-refracto-record-open").click();
   await page.getByTestId("sim-refracto-reading").fill(value);
   if (max !== undefined) await page.getByTestId("sim-refracto-reading-max").fill(max);
   await page.getByTestId("sim-refracto-save").click();
   await expect(page.getByTestId("sim-refracto-saved")).toContainText(value);
-  await page.getByTestId("sim-refracto-record-close").click();
+  const close = page.getByTestId("sim-refracto-record-close");
+  if (await close.isVisible()) await close.click();
 }
 
 const answer = async (page: Page, id: string, option: number) => {
@@ -93,12 +94,19 @@ test("认识屏：结构、部件短名称、光路七段与引导任务前两�
   expect((await caseInfo(page)).suspended).toBe(true);
   await page.getByTestId("sim-reset").click();
   expect((await caseInfo(page)).suspended).toBe(false);
+  // 原理计算卡默认收起，不挡模型；选身份后顶部出现八步步骤条。
+  await expect(page.getByTestId("sim-refracto-case")).toHaveAttribute("data-open", "false");
+  await expect(page.getByTestId("sim-stepbar")).toHaveCount(0);
   // 引导任务：前两步（认识部件、跟随光路）。
   await choose(page, "student");
+  await expect(page.getByTestId("sim-stepbar").locator("li")).toHaveCount(8);
   await expect(task(page)).toContainText("认识部件");
   for (const id of ["test_prism", "internal_light", "internal_scale", "eyepiece", "cover", "oil_bottle"])
     await page.getByTestId(`sim-part-${id}`).click();
   await expect(task(page)).toContainText("跟随光路");
+  // 进入跟随光路时自动切到内部光路并打开光路，不必学员自己找「内部光路」。
+  await expect.poll(async () => JSON.parse((await canvas(page).getAttribute("data-state")) ?? "{}")).toMatchObject({ view: "optics", rays: true });
+  await expect(page.getByRole("button", { name: "内部光路" })).toHaveAttribute("aria-pressed", "true");
   for (let i = 0; i < 7; i++) await page.getByTestId(`sim-refracto-path-${i}`).click();
   await answer(page, "boundary", 0);
   await expect(task(page)).toContainText("本屏已完成");
@@ -127,6 +135,12 @@ test("实验屏：操作条件决定案例与目镜视场，读数保存后记�
   expect(operation.partVisibility.isotropic_sample).toBe(true);
   // 记录读数：保存后条件不变，记录仍有效。
   await record(page, "1.718");
+  // 实验屏的记录嵌在观察面板目镜旁，保存后收起，面板里留一行已保存。
+  await expect(page.getByTestId("sim-refracto-record")).toHaveCount(0);
+  await expect(page.getByTestId("sim-refracto-obs").getByTestId("sim-refracto-saved")).toContainText("已保存");
+  await page.getByTestId("sim-refracto-record-open").click();
+  await expect(page.getByTestId("sim-refracto-obs").getByTestId("sim-refracto-record")).toBeVisible();
+  await page.getByTestId("sim-refracto-record-close").click();
   // 转向后旧记录只标为过期，条件恢复后重新确认。
   await button(page, "取下转向 90° 并放回").click();
   await reviewSaved(page, "条件已变");
@@ -392,6 +406,22 @@ test("实验屏观察面板：引导时顶部八步、目镜放大在左、仪�
   await ready(page);
   await expect(page.getByTestId("sim-stepbar")).toHaveCount(0);
   await expect(page.locator(".opt-hotspot")).toHaveCount(0);
+});
+
+test("收起观察面板后点目镜读数热点，会展开面板并可完成记录", async ({ page }) => {
+  await page.goto(`${LAB}?mode=student&step=observe`);
+  await ready(page);
+  await benchReady(page);
+  await expect(page.getByTestId("sim-refracto-next")).toContainText("看目镜读数并记录");
+  await page.getByTestId("sim-obs-toggle").click();
+  await expect(page.getByTestId("sim-refracto-obs")).toHaveAttribute("data-open", "false");
+  await page.getByTestId("hotspot-eyepiece").click();
+  await expect(page.getByTestId("sim-refracto-record")).toBeVisible();
+  await expect(page.getByTestId("sim-refracto-obs")).toHaveAttribute("data-open", "true");
+  await page.getByTestId("sim-refracto-reading").fill("1.718");
+  await page.getByTestId("sim-refracto-save").click();
+  await expect(page.getByTestId("sim-refracto-record")).toHaveCount(0);
+  await expect(page.getByTestId("sim-refracto-saved")).toContainText("1.718");
 });
 
 test("手机：实验屏任务卡收为一行，仪器在任务行与观察面板之间可见", async ({ page }) => {

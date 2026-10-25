@@ -195,6 +195,58 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  responsive:
+    name: Phone and tablet layout regression
+    needs: build-and-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: gem-lab
+    env:
+      CI_WEBGL_BACKEND: mesa
+      LIBGL_ALWAYS_SOFTWARE: 'true'
+      GALLIUM_DRIVER: llvmpipe
+      PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/responsive/results.json
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: gem-lab/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Restore the same production build
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: gem-lab/dist/
+
+      - name: Install Playwright Chromium and Mesa
+        run: |
+          npx playwright install --with-deps chromium
+          sudo apt-get install --no-install-recommends -y libgl1-mesa-dri libegl-mesa0 libglx-mesa0 mesa-utils
+
+      - name: Run phone and tablet layouts
+        # Keep WebGL serial; these viewports exercise full models and real controls.
+        run: |
+          xvfb-run --auto-servernum glxinfo -B
+          xvfb-run --auto-servernum npx playwright test tests/sim-responsive.spec.ts tests/sim-label-layout.spec.ts \
+            --workers=1 --max-failures=1 --output=test-results/responsive
+          test -s test-results/responsive/results.json
+
+      - name: Save responsive browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: responsive-browser-evidence
+          path: gem-lab/test-results/responsive/
+          if-no-files-found: error
+          retention-days: 14
+
   polariscope-complete:
     name: Verify all 73 polariscope cases
     needs: [build-and-smoke, polariscope]

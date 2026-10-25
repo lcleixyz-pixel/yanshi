@@ -8,7 +8,7 @@ import SpectroscopeTaskCard from './SpectroscopeTaskCard';
 import { useSpectroscopeBench, type BenchView } from './useSpectroscopeBench';
 import type { SimScreenProps } from '../registry';
 import { SAMPLES, SAMPLES_BY_ID } from '../../../data/samples';
-import { BENCH_METHOD_LABELS, benchMethodSetup, type BenchMethod, type BenchState } from '../../../domain/spectroscopeBench';
+import { BENCH_METHOD_LABELS, benchMethodSetup, type BenchEvaluation, type BenchMethod, type BenchState } from '../../../domain/spectroscopeBench';
 import { IDEAL, MACHINE_LABELS, WEAK_LIGHT } from '../../../domain/spectroscopeCopy';
 import { isPendingReference } from '../../../domain/spectroscopeRecord';
 import { COURSE_SAMPLE } from '../../../domain/spectroscopeCourse';
@@ -121,7 +121,10 @@ export default function SpectroscopeLabScreen({ sim, screen, onScreen, session, 
           { label: '机型', value: MACHINE_LABELS[machine] },
           { label: '方法', value: BENCH_METHOD_LABELS[lab.bench.method] },
           { label: '光源', value: lab.bench.power ? `开 ${Math.round(lab.bench.brightness * 100)}%` : '关' },
-          { label: '样品', value: lab.bench.samplePlaced ? '在光路中' : '未夹' },
+          { label: '样品', value: lab.bench.method === 'transmission'
+            ? lab.bench.samplePlaced ? '已夹持' : '未夹持'
+            : lab.bench.samplePlaced ? '已放到黑色台面' : '未放到黑色台面' },
+          { label: '光路', value: lightPathStatus(bench.evaluation) },
           ...(machine === 'prism' ? [{ label: '狭缝 / 焦距', value: `${(lab.bench.slit * 10).toFixed(1)} / ${(lab.bench.focus * 10).toFixed(1)}` }] : []),
         ]}
       />
@@ -240,4 +243,20 @@ export default function SpectroscopeLabScreen({ sim, screen, onScreen, session, 
   );
 
   return <SimShell sim={sim} screen={screen} onScreen={onScreen} play={play} panels={panels} />;
+}
+
+/** 放样不等于对光；条件表与目镜提示使用同一份工作台判断，不另算合格条件。 */
+function lightPathStatus(evaluation: BenchEvaluation): string {
+  switch (evaluation.lightPath) {
+    case 'off': return evaluation.problemCodes.includes('power-off') ? '光源未开' : '光量不足';
+    case 'bypass': return '光未经过样品';
+    case 'missed':
+      if (evaluation.problemCodes.includes('sample-absent')) return '待放样与对光';
+      if (evaluation.problemCodes.includes('lamp-missed')) return '灯束未照中样品';
+      if (evaluation.problemCodes.includes('sample-off-axis')) return '样品偏离观察轴';
+      return '照明方向未对准';
+    case 'blocked': return evaluation.problemCodes.includes('opaque-internal-reflection') ? '内部光路不可观察' : '样品不透光';
+    case 'weak': return evaluation.methodEvidence === 'setup-only' ? '收光偏弱（仅布置练习）' : '收光偏弱';
+    case 'aligned': return evaluation.methodEvidence === 'setup-only' ? '已对准（仅布置练习）' : '已对准';
+  }
 }

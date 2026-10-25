@@ -157,8 +157,9 @@ export function ResetAllButton({ onReset }: { onReset: () => void }) {
 }
 
 /** 操作区内的读数框：可收起，不挡模型。placement 决定停靠位置。 */
-export function SimReadout({ title, meta, placement = 'bottom-left', children, testId }: { title: string; meta?: string; placement?: 'bottom-left' | 'top-right'; children: ReactNode; testId?: string }) {
-  const [open, setOpen] = useState(true);
+/** 停靠的读数卡；`defaultOpen={false}` 时先收成标题条（如原理计算卡，不在学员第一眼挡住模型）。 */
+export function SimReadout({ title, meta, placement = 'bottom-left', defaultOpen = true, children, testId }: { title: string; meta?: string; placement?: 'bottom-left' | 'top-right'; defaultOpen?: boolean; children: ReactNode; testId?: string }) {
+  const [open, setOpen] = useState(defaultOpen);
   const bodyId = useId();
   return (
     <div className={`sim-readout sim-readout--${placement}`} data-testid={testId} data-open={open}>

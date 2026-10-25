@@ -1,5 +1,11 @@
 import { expect, test, type Page } from "@playwright/test";
 
+/** 原理计算卡默认收起；要用里面的示例下拉框或读数时先展开。 */
+const openCase = async (page: Page, id: string) => {
+  const card = page.getByTestId(id);
+  if ((await card.getAttribute("data-open")) === "false") await card.locator(".sim-readout__head").click();
+};
+
 const route = "/sim/spectroscope/learn";
 const canvas = (page: Page) => page.getByTestId("optics3d-canvas");
 const task = (page: Page) => page.getByTestId("sim-task");
@@ -70,11 +76,15 @@ test("学员做「认识部件」：显示短名称与「点这里」，点过�
 test("光路示例：切换示例改读数与图例，关掉「显示数值」只隐藏数值行", async ({ page }) => {
   await page.goto(`${route}?mode=teacher`);
   await ready(page);
+  // 原理计算卡默认收起，展开后才看读数。
+  await expect(page.getByTestId("sim-spectro-case")).toHaveAttribute("data-open", "false");
+  await openCase(page, "sim-spectro-case");
   const readout = page.getByTestId("sim-spectro-readout");
   const first = () => readout.locator("dd").first().textContent();
   await expect(readout).toBeVisible();
   await expect(page.getByTestId("sim-spectro-condition")).not.toBeEmpty();
   const white = await first();
+  await openCase(page, "sim-spectro-case");
   await page.getByTestId("sim-spectro-case-select").selectOption("wavelength-550");
   await expect(page.getByTestId("sim-spectro-case")).toContainText("550 nm");
   await expect(page.getByTestId("sim-spectro-case")).toContainText("单色光");
@@ -140,6 +150,7 @@ test("自由探索不会被当成学员课：点部件、看光路都还留在�
   await ready(page);
   await expect(page.getByTestId("sim-task-student")).toBeVisible();
   await page.getByTestId("sim-part-slitHousing").click();
+  await openCase(page, "sim-spectro-case");
   await page.getByTestId("sim-spectro-case-select").selectOption("wavelength-550");
   // 身份没选，就不进入引导任务：选择仍在，任务卡不出现步骤清单。
   await expect(page.getByTestId("sim-task-student")).toBeVisible();
@@ -163,4 +174,31 @@ test("窄屏：认识屏无横向溢出，控制面板与任务卡收为抽屉�
   await expect(task(page)).toBeHidden();
   await expect(page.getByTestId("sim-panel-parts")).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+});
+
+test("学员引导：顶部步骤条；跟随光路在任务卡里切示例并切到内部光路，原理计算卡不必展开；名称标签互不重叠", async ({ page }) => {
+  await page.goto(`${route}?mode=student`);
+  await ready(page);
+  await expect(page.getByTestId("sim-stepbar").locator("li")).toHaveCount(6);
+  await expect(page.getByTestId("sim-spectro-case")).toHaveAttribute("data-open", "false");
+  // 名称标签（学员认识部件时显示）两两不相交。
+  const boxes = await page.locator("[data-named='true']:visible").evaluateAll((els) => els.map((el) => { const r = el.getBoundingClientRect(); return [r.left, r.top, r.right, r.bottom]; }));
+  expect(boxes.length).toBeGreaterThan(1);
+  for (let i = 0; i < boxes.length; i++) for (let j = i + 1; j < boxes.length; j++) {
+    const [a, b] = [boxes[i], boxes[j]];
+    expect(a[0] < b[2] && b[0] < a[2] && a[1] < b[3] && b[1] < a[3], `标签 ${i} 与 ${j} 重叠`).toBe(false);
+  }
+  // 点一个等一次，避免连点丢状态（同实验屏用例）。
+  for (const [index, id] of ["slitHousing", "slitControl", "collimator", "prismTrain"].entries()) {
+    await page.getByTestId(`sim-part-${id}`).click();
+    await expect(task(page)).toContainText(`点选关键部件 ${index + 1} / 5`);
+  }
+  await page.getByTestId("sim-part-focusTube").click();
+  await expect(task(page)).toContainText("查看光路 0 / 4");
+  for (const [index, id] of ["white-light", "wavelength-400", "wavelength-550", "wavelength-700"].entries()) {
+    await page.getByTestId(`sim-spectro-path-${id}`).click();
+    await expect(task(page)).toContainText(`查看光路 ${index + 1} / 4`);
+  }
+  await expect(page.getByRole("button", { name: "内部光路" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByTestId("sim-spectro-case")).toHaveAttribute("data-open", "false");
 });

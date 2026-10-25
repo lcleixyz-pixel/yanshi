@@ -68,8 +68,12 @@ export default function RefractometerBench({ sim, screen, onScreen, embedded, sc
   const [obsOpen, setObsOpen] = useState(true);
   const desktop = useDesktopLayout();
   const next = observe?.next ?? null;
+  const openRecord = () => {
+    setObsOpen(true);
+    setRecording(true);
+  };
   const runAction = (action: BenchAction) => {
-    if (action === 'read') setRecording(true);
+    if (action === 'read') openRecord();
     else if (action === 'record-invalid') observe?.onRecordInvalid?.();
     else if (action !== 'answer') op({ type: action });
   };
@@ -93,7 +97,7 @@ export default function RefractometerBench({ sim, screen, onScreen, embedded, sc
     </>
   );
   const readout = readoutFor(scene, sample, view);
-  const recordButton = <button type="button" className="iu-button" data-next={next === 'read'} onClick={() => setRecording(true)} data-testid="sim-refracto-record-open">记录读数</button>;
+  const recordButton = <button type="button" className="iu-button" data-next={next === 'read'} onClick={openRecord} data-testid="sim-refracto-record-open">记录读数</button>;
   const eyeSize = desktop ? Math.max(180, Math.min(300, Math.round(window.innerHeight * 0.27))) : 132;
   const action = next && next !== 'answer' && !idle ? { part: BENCH_ACTION_PART[next], text: benchActionText(next, scene), onActivate: () => runAction(next) } : null;
 
@@ -105,9 +109,20 @@ export default function RefractometerBench({ sim, screen, onScreen, embedded, sc
       <SimObsPanel
         title="目镜观察" meta={unknown ? '未知样品' : sample.name} open={obsOpen} onOpen={setObsOpen} guided={!!observe.steps} testId="sim-refracto-obs"
         eye={<div className="sim-refracto-eye" data-testid="sim-refracto-eyepiece" data-view={view}><ObservationWindow view={view} sample={sample} size={eyeSize} showReading={mayObserve} hideChrome /></div>}
-        beside={(
+        beside={recording ? (
+          // 记录读数就放在目镜右边：眼看刻度、手填数值不必在屏幕两端来回找；保存后收起，只留一行已保存。
+          <RefractometerRecord inline
+            scene={scene} sample={sample} method={method} view={view}
+            min={min} max={max} onMin={setMin} onMax={setMax}
+            onClose={() => setRecording(false)}
+            onSave={(record) => { onSave?.(record); setRecording(false); }}
+            onNotify={(text) => onPatch({ note: text })}
+            reference={answered ? reference : undefined}
+          />
+        ) : (
           <>
             <p className="sim-note" role="status" data-testid="sim-refracto-readout">{readout}</p>
+            {scene.saved && <p className="sim-record__line" data-stale={scene.saved.stale} data-testid="sim-refracto-saved">{scene.saved.stale ? '上一次记录（条件已变，需重新确认）' : '已保存'}：{scene.saved.summary}</p>}
             <div className="sim-row">{recordButton}{onUse2D && <button type="button" className="iu-button" onClick={onUse2D} data-testid="detection-use-2d">改用 2D 版本</button>}</div>
             <p className="sim-note">读数只在目镜里看：三维光路是示例参数的原理计算。</p>
           </>
@@ -134,23 +149,13 @@ export default function RefractometerBench({ sim, screen, onScreen, embedded, sc
           <p>折射率 {displayRiForSample(sample) === null ? '> 1.780（超折射油）' : referenceRange(sample)}，光性 {opticalLabel(sample)}。</p>
         </div>
       )}
-      {recording && (
-        <RefractometerRecord
-          scene={scene} sample={sample} method={method} view={view}
-          min={min} max={max} onMin={setMin} onMax={setMax}
-          onClose={() => setRecording(false)}
-          onSave={(record) => onSave?.(record)}
-          onNotify={(text) => onPatch({ note: text })}
-          reference={answered ? reference : undefined}
-        />
-      )}
       {taskSlot}
     </>
   ) : (
     <>
       <RefractometerStage scene={{ ...scene, rays: scene.rays }} sample={sample} view={view} showReading={mayObserve} readout={readout}>
         <div className="sim-row">
-          <button type="button" className="iu-button" onClick={() => setRecording(true)} data-testid="sim-refracto-record-open">记录读数</button>
+          <button type="button" className="iu-button" onClick={openRecord} data-testid="sim-refracto-record-open">记录读数</button>
           {onUse2D && <button type="button" className="iu-button" onClick={onUse2D} data-testid="detection-use-2d">改用 2D 版本</button>}
         </div>
       </RefractometerStage>
@@ -236,11 +241,13 @@ function referenceRange(sample: SampleDef): string {
 }
 
 /** 记录读数：与 2D 检测同一套输入（点测只给近似读数；超量程只记「> 1.780」，不填数值）。 */
-function RefractometerRecord({ scene, sample, method, view, min, max, onMin, onMax, onClose, onSave, onNotify, reference }: {
+function RefractometerRecord({ scene, sample, method, view, min, max, onMin, onMax, onClose, onSave, onNotify, reference, inline = false }: {
   scene: LabScene; sample: SampleDef; method: 'facet' | 'spot'; view: string;
   min: string; max: string; onMin: (value: string) => void; onMax: (value: string) => void;
   onClose: () => void; onSave: (record: ReadingRecord) => void; onNotify: (text: string) => void;
   reference?: ReactNode;
+  /** 嵌在观察面板目镜旁（实验屏）；否则是三维区右上角的浮层（挑战与检测）。 */
+  inline?: boolean;
 }) {
   const spot = method === 'spot';
   const over = isOverContactLimit(sample);
@@ -255,7 +262,7 @@ function RefractometerRecord({ scene, sample, method, view, min, max, onMin, onM
   const record: ReadingRecord = { summary, min: numeric, max: upper, overLimit: false, valid };
   const overRecord: ReadingRecord = { summary: '折射率 > 1.780（超折射油）', min: null, max: null, overLimit: true, valid: true };
   return (
-    <section className="sim-sheet sim-record" data-testid="sim-refracto-record" aria-label="记录读数">
+    <section className={inline ? 'sim-record sim-record--inline' : 'sim-sheet sim-record'} data-testid="sim-refracto-record" aria-label="记录读数">
       <header><strong>记录读数</strong><button type="button" onClick={onClose} data-testid="sim-refracto-record-close">收起 ▾</button></header>
       <div className="sim-sheet__body">
         {over ? (

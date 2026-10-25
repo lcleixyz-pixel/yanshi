@@ -10,10 +10,12 @@ async function ready(page: Page) {
   await expect(scene(page)).toHaveAttribute("data-status", "ready", { timeout: 60_000 });
 }
 /** 预测（或不预测）→ 自动转一周 → 揭晓。 */
+// 自动转一周按时间推进，但每帧最多转 12°；CI 的 Mesa 软件渲染只有一两帧每秒时转满一周要 20 多秒（2026-10-25 在 1440×900 停在 94%）。
+const FULL_TURN_TIMEOUT = 45_000;
 async function turn(page: Page, observation: string, prediction = "demo") {
   if (await page.getByTestId(`sim-polari-predict-${prediction}`).isVisible()) await page.getByTestId(`sim-polari-predict-${prediction}`).click();
   await page.getByTestId("sim-polari-auto-rotate").click();
-  await expect(stage(page)).toHaveAttribute("data-observation", observation, { timeout: 20_000 });
+  await expect(stage(page)).toHaveAttribute("data-observation", observation, { timeout: FULL_TURN_TIMEOUT });
 }
 async function answer(page: Page, id: string, options: number[]) {
   const card = page.getByTestId(`sim-polari-question-${id}`);
@@ -135,7 +137,7 @@ test("观察框：预测、观察、揭晓与干涉图说明时，目镜都不�
     expect(trace!.height).toBeGreaterThan(30);
     expect(trace!.height).toBeLessThan(200);
     await page.getByTestId("sim-polari-auto-rotate").click();
-    await expect(stage(page)).toHaveAttribute("data-observation", "four-bright-four-dark", { timeout: 20_000 });
+    await expect(stage(page)).toHaveAttribute("data-observation", "four-bright-four-dark", { timeout: FULL_TURN_TIMEOUT });
     await eyepieceClear(page, `${size.width} 揭晓`);
     await page.getByTestId("sim-polari-lesson-conoscope").click();
     await page.getByTestId("sim-polari-conoscope").click();

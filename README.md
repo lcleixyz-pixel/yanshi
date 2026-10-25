@@ -163,7 +163,7 @@ yanshi/
 GitHub Actions（`.github/workflows/frontend-demo.yml`）在推送到 `main` 或向 `main` 发起 Pull Request 时运行三组任务：
 
 1. **构建与烟测**：安装依赖、生产构建、单元测试（`npm run test:unit`）、测试代码类型检查（`npm run test:types --prefix gem-lab`）、CI 完整性脚本自检、核心烟测。
-2. **偏光镜分片回归**：同一份构建，`npx playwright test sim-polariscope` 分 3 片在 Mesa 软件渲染下串行跑；`.github/scripts/verify-polariscope-shards.mjs` 核对三片合起来正好是全部用例（当前基线 72 项）。新增或删除 `sim-polariscope-*.spec.ts` 用例时要同步改基线。
+2. **偏光镜分片回归**：同一份构建，`npx playwright test sim-polariscope` 分 3 片在 Mesa 软件渲染下串行跑；`.github/scripts/verify-polariscope-shards.mjs` 核对三片合起来正好是全部用例（当前基线 73 项）。新增或删除 `sim-polariscope-*.spec.ts` 用例时要同步改基线。
 3. **其余仪器回归**：折射仪、分光镜、显微镜、外壳与知识库相关的浏览器用例。
 
 本地交接或改动后建议至少执行：

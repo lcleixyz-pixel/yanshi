@@ -196,7 +196,7 @@ jobs:
           retention-days: 14
 
   polariscope-complete:
-    name: Verify all 64 polariscope cases
+    name: Verify all 73 polariscope cases
     needs: [build-and-smoke, polariscope]
     if: always()
     runs-on: ubuntu-latest

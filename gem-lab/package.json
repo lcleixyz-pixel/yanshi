@@ -9,6 +9,7 @@
     "preview": "vite preview --port 4173",
     "prepare-assets": "tsx scripts/prepare-assets.ts",
     "test:smoke": "playwright test tests/smoke.spec.ts tests/learning-loop.spec.ts tests/legacy-garnet-session.spec.ts",
+    "test:instruments": "playwright test tests/optics3d.spec.ts tests/microscope3d.spec.ts tests/refractometer3d-course.spec.ts tests/spectroscope-grating.spec.ts tests/spectroscope-library.spec.ts tests/instrument-ui.spec.ts tests/sim-shell.spec.ts tests/sim-refractometer.spec.ts tests/sim-spectroscope-learn.spec.ts tests/sim-spectroscope-lab.spec.ts tests/sim-spectroscope-challenge.spec.ts tests/sim-spectroscope-workbench.spec.ts tests/sim-spectroscope-acceptance.spec.ts",
     "test:matrix": "playwright test tests/matrix.spec.ts",
     "test:unit": "tsx --test tests/unit/*.test.ts",
     "test:types": "tsc --project tsconfig.tests.json"

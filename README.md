@@ -164,7 +164,7 @@ GitHub Actions（`.github/workflows/frontend-demo.yml`）在推送到 `main` 或
 
 1. **构建与烟测**：安装依赖、生产构建、单元测试（`npm run test:unit`）、测试代码类型检查（`npm run test:types --prefix gem-lab`）、CI 完整性脚本自检、核心烟测。
 2. **偏光镜分片回归**：同一份构建，`npx playwright test sim-polariscope` 分 3 片在 Mesa 软件渲染下串行跑；`.github/scripts/verify-polariscope-shards.mjs` 核对三片合起来正好是全部用例（当前基线 73 项）。新增或删除 `sim-polariscope-*.spec.ts` 用例时要同步改基线。
-3. **其余仪器回归**：折射仪、分光镜、显微镜、外壳与知识库相关的浏览器用例。
+3. **其余仪器回归**：`npm run test:instruments --prefix gem-lab` 统一登记折射仪、分光镜、显微镜、外壳与知识库用例，分 3 片在独立 runner 上串行运行；`Other instrument browser regression` 汇总检查三片的用例身份与通过结果（当前基线 91 项）。新增或删除这组用例时同步更新 `.github/scripts/verify-instrument-shards.mjs` 基线。
 4. **手机和平板布局回归**：375 × 667、390 × 844、1024 × 768 浏览器视口，检查三台仪器的面板收展、操作与溢出，并复核折射仪和两种分光镜的名称标签布局与点选；使用同一份构建，独立串行运行并保留报告。这是浏览器尺寸模拟，不等同于实体设备验收。
 
 本地交接或改动后建议至少执行：

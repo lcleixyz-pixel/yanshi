@@ -43,7 +43,7 @@ jobs:
         run: npm run test:types --prefix gem-lab
 
       - name: Test CI completeness checks
-        run: node --test .github/scripts/verify-polariscope-shards.test.mjs
+        run: node --test .github/scripts/verify-*-shards.test.mjs
 
       - name: Install Playwright Chromium and Mesa
         run: |
@@ -133,11 +133,15 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-  instruments:
-    name: Other instrument browser regression
+  instrument-shards:
+    name: Instrument shard ${{ matrix.shard }}/3
     needs: build-and-smoke
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     defaults:
       run:
         working-directory: gem-lab
@@ -145,7 +149,7 @@ jobs:
       CI_WEBGL_BACKEND: mesa
       LIBGL_ALWAYS_SOFTWARE: 'true'
       GALLIUM_DRIVER: llvmpipe
-      PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/instruments/results.json
+      PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/instruments-${{ matrix.shard }}/results.json
       DEBUG: pw:browser
 
     steps:
@@ -169,29 +173,78 @@ jobs:
           npx playwright install --with-deps chromium
           sudo apt-get install --no-install-recommends -y libgl1-mesa-dri libegl-mesa0 libglx-mesa0 mesa-utils
 
-      - name: Run instrument browser regression
+      - name: Run instrument browser regression shard
+        # Split the full suite across runners; each real WebGL session stays serial.
         run: |
           xvfb-run --auto-servernum glxinfo -B
-          xvfb-run --auto-servernum npx playwright test tests/optics3d.spec.ts tests/microscope3d.spec.ts tests/refractometer3d-course.spec.ts tests/spectroscope-grating.spec.ts tests/spectroscope-library.spec.ts tests/instrument-ui.spec.ts tests/sim-shell.spec.ts tests/sim-refractometer.spec.ts tests/sim-spectroscope-learn.spec.ts tests/sim-spectroscope-lab.spec.ts tests/sim-spectroscope-challenge.spec.ts tests/sim-spectroscope-workbench.spec.ts tests/sim-spectroscope-acceptance.spec.ts \
-            --workers=1 --max-failures=1 --output=test-results/instruments
-          test -s test-results/instruments/results.json
+          xvfb-run --auto-servernum npm run test:instruments -- \
+            --shard=${{ matrix.shard }}/3 --workers=1 --max-failures=1 \
+            --output=test-results/instruments-${{ matrix.shard }}
+          test -s test-results/instruments-${{ matrix.shard }}/results.json
 
       - name: Capture browser process state
         if: always()
         run: |
-          mkdir -p test-results/instrument-diagnostics
-          date -u > test-results/instrument-diagnostics/processes.txt
-          ps -eo pid,ppid,stat,pcpu,rss,time,comm | awk 'NR == 1 || $7 ~ /^(node|chrome|chromium|Xvfb)/' >> test-results/instrument-diagnostics/processes.txt
-          cat test-results/instrument-diagnostics/processes.txt
+          mkdir -p test-results/instruments-${{ matrix.shard }}/diagnostics
+          date -u > test-results/instruments-${{ matrix.shard }}/diagnostics/processes.txt
+          ps -eo pid,ppid,stat,pcpu,rss,time,comm | awk 'NR == 1 || $7 ~ /^(node|chrome|chromium|Xvfb)/' >> test-results/instruments-${{ matrix.shard }}/diagnostics/processes.txt
+          cat test-results/instruments-${{ matrix.shard }}/diagnostics/processes.txt
 
       - name: Save instrument browser evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: instrument-browser-evidence
+          name: instrument-shard-${{ matrix.shard }}
+          path: gem-lab/test-results/instruments-${{ matrix.shard }}/
+          if-no-files-found: error
+          retention-days: 14
+
+  instruments:
+    # Preserve the existing check name as the complete-suite gate.
+    name: Other instrument browser regression
+    needs: [build-and-smoke, instrument-shards]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SHARDS_RESULT: ${{ needs.instrument-shards.result }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: gem-lab/package-lock.json
+      - name: Install dependencies
+        run: npm ci --prefix gem-lab
+
+      - name: Download every instrument shard report
+        uses: actions/download-artifact@v4
+        with:
+          pattern: instrument-shard-*
+          path: gem-lab/instrument-shard-evidence
+          merge-multiple: false
+
+      - name: Collect the complete expected instrument case list
+        working-directory: gem-lab
+        run: npm run --silent test:instruments -- --list --reporter=json > expected-instruments.json
+
+      - name: Verify complete passing instrument results
+        run: |
+          node .github/scripts/verify-instrument-shards.mjs \
+            --expected gem-lab/expected-instruments.json \
+            --reports-dir gem-lab/instrument-shard-evidence \
+            --output gem-lab/instrument-completeness.json
+
+      - name: Save instrument completeness evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: instrument-completeness
           path: |
-            gem-lab/test-results/instruments/
-            gem-lab/test-results/instrument-diagnostics/
+            gem-lab/expected-instruments.json
+            gem-lab/instrument-completeness.json
           if-no-files-found: error
           retention-days: 14
 
